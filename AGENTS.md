@@ -28,6 +28,14 @@ Do not begin implementation against an unapproved local assumption when the requ
 - Frontend validation for user experience
 - Frontend tests
 
+## Cross-repository access
+
+- `WonhoOne/frontend` is this Agent's writable implementation area.
+- `WonhoOne/backend` and `WonhoOne/ai-console` are **read-only by default**.
+- Their code may be inspected for API usage, integration debugging, and impact analysis.
+- Do not modify, commit to, or open implementation PRs against those repositories unless their Owner or the team explicitly delegates the task.
+- If another repository needs a change, create/request an Issue for its Owner with the required behavior, contract impact, and reproduction context.
+
 ## Non-negotiable rules
 
 - Use the approved Backend API contract. Do not invent endpoint paths or shared request/response fields.
