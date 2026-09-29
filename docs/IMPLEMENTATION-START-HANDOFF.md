@@ -856,7 +856,7 @@ Stop implementation and raise a contract issue if:
 - a DTO field must be guessed
 - a business rule must be invented
 - participantCount behavior must be guessed
-- Honeymoon couple/team mapping must be guessed
+- a Couple/Team entity, persistence model, API field, or participant-count UI/default/max must be guessed beyond v0.1.2
 - Auth/session persistence must be guessed
 - price calculation must be invented
 

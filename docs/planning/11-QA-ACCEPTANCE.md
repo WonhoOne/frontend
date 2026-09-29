@@ -183,9 +183,8 @@ Contract-gate assumptions = 0 hidden assumptions
 아직 Shared Contract가 닫히지 않은 항목은:
 
 ```text
-Theme ↔ TourProduct
-participantCount
-Honeymoon couple/team mapping
+Theme ↔ TourProduct public DTO/selection data
+participantCount UI/default/max/API representation
 Auth DTO/session
 Tour/Schedule/Configuration/Reservation DTOs
 Price

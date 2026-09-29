@@ -972,7 +972,7 @@ Reservation submission
 Auth contract guessing
 price logic
 participantCount assumption
-Honeymoon mapping logic
+Honeymoon feature-specific recruitment logic (not Foundation scope)
 all 11 screens at once
 ```
 
@@ -1112,7 +1112,7 @@ CTA states
 금지:
 
 ```text
-live couple calculation
+independent confirmed-state calculation from raw participant totals
 invented Schedule DTO
 ```
 
@@ -1577,7 +1577,7 @@ endpoint가 필요하지만 docs에 없음
 DTO field를 추측해야 함
 Business Rule을 새로 정해야 함
 participantCount UX를 임의 결정해야 함
-Honeymoon couple mapping을 계산해야 함
+Couple/Team Entity·API field 또는 participantCount UI/default/max를 추측해야 함
 Auth storage를 추측해야 함
 price formula를 만들어야 함
 ```
