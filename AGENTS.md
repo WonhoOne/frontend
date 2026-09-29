@@ -2,11 +2,11 @@
 
 This repository implements the Mister World **Customer GUI**.
 
-`WonhoOne/docs` **main** is the approved common SSOT. A docs feature branch is a proposal. Do not implement against the v0.1.1 proposal until it is merged into `docs/main`; use the currently approved baseline on `docs/main` until then.
+`WonhoOne/docs` **main** is the approved common SSOT. The current shared planning baseline used by this repository is **v0.1.1 on `docs/main`**. A docs feature branch is a proposal and must not be treated as approved until merged into `docs/main`.
 
 ## Mandatory reading before implementation
 
-Before writing or modifying code, read the latest approved documents in `WonhoOne/docs`. The following v0.1.1 list applies after its merge into `docs/main`; until then follow the approved `docs/main` mandatory reading list:
+Before writing or modifying code, read the latest approved documents in `WonhoOne/docs/main`:
 
 1. `baseline/BASELINE-v0.1.1.md`
 2. `requirements/requirements.md`
@@ -20,9 +20,17 @@ Before writing or modifying code, read the latest approved documents in `WonhoOn
 10. `CONTRIBUTING.md`
 11. `AGENTS.md`
 
+Then read the frontend-owned planning package:
+
+1. `docs/planning/00-PLANNING-INDEX.md`
+2. `docs/planning/12-IMPLEMENTATION-HANDOFF.md`
+3. the relevant `docs/planning/screens/*.md`
+4. `docs/planning/audits/CP6-H-CONTRACT-TBD-AUDIT.md`
+5. `docs/planning/audits/CP6-I-FINAL-IMPLEMENTATION-READINESS.md`
+
 Docs repository: https://github.com/WonhoOne/docs
 
-Do not begin implementation against an unapproved local assumption when the required baseline is not yet available on the approved docs branch.
+Do not begin implementation against an unapproved local assumption when the required shared contract is missing.
 
 ## Frontend responsibilities
 
@@ -51,10 +59,11 @@ Do not begin implementation against an unapproved local assumption when the requ
 - If a required API or contract is missing, surface the gap and propose a docs/API change before depending on it.
 - Do not implement Backend or Voice Recognition logic in this repository.
 - If code and docs conflict, stop and surface the conflict.
+- Keep raw Backend DTOs behind frontend adapters/view models; do not let draft API shapes spread through page components.
 
 ## Mocking
 
-Mocks are allowed for parallel development, but they must follow the approved API/domain contract. Clearly mark mock-only behavior and remove or replace it when real Backend integration is available.
+Mocks are allowed for parallel development. Keep them clearly marked and behind the frontend data/view-model boundary. A mock shape is **not** an approved Backend contract.
 
 ## PR expectations
 
@@ -64,4 +73,7 @@ Every implementation PR should identify:
 - affected screens / flows
 - Backend API endpoints used
 - tests executed
+- responsive / accessibility checks
 - whether any shared contract assumption was required
+
+Use `.github/pull_request_template.md` as the default evidence format.
