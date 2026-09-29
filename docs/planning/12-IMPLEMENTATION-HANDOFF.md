@@ -4,7 +4,7 @@
 > Status: **CP11 Complete — Planning Handoff Finalized**  
 > Target repository: `WonhoOne/frontend`  
 > Repository state verified: 2026-09-29  
-> Frontend repository baseline at handoff: **greenfield (`README.md`, `AGENTS.md` only on `main`)**  
+> Frontend repository baseline at handoff: **planning/docs + agreed source-directory skeleton; React scaffold not yet created**  
 > Shared SSOT: `WonhoOne/docs/main`  
 > Frontend responsibility: **Customer-facing React + TypeScript GUI**
 
@@ -332,16 +332,28 @@ S11  My Trips
 
 # 10. Target Source Architecture
 
+The repository now tracks this human-first skeleton:
+
 ```text
 src/
 ├── app/
-│   ├── App.tsx
-│   ├── AppProviders.tsx
 │   ├── router/
-│   ├── errors/
-│   └── config/
+│   ├── providers/
+│   ├── config/
+│   └── errors/
 │
 ├── pages/
+│   ├── home/
+│   ├── tours/
+│   ├── tour-detail/
+│   ├── configure/
+│   ├── reservation-review/
+│   ├── reservation-success/
+│   ├── reservation-detail/
+│   ├── login/
+│   ├── signup/
+│   └── my-trips/
+│
 ├── features/
 │   ├── tour-discovery/
 │   ├── tour-detail/
@@ -351,35 +363,31 @@ src/
 │   ├── travel-history/
 │   └── voice-bridge/
 │
-├── domain/
-│   ├── tour/
-│   ├── schedule/
-│   ├── configuration/
-│   ├── reservation/
-│   ├── customer/
-│   └── travel-history/
-│
 ├── integrations/
 │   ├── backend/
 │   │   ├── client/
 │   │   ├── contracts/
-│   │   ├── adapters/
-│   │   └── errors/
+│   │   └── adapters/
 │   └── voice/
 │
 ├── shared/
 │   ├── ui/
 │   ├── motion/
-│   ├── state/
 │   ├── hooks/
-│   ├── utils/
-│   ├── constants/
-│   ├── accessibility/
+│   ├── lib/
 │   └── assets/
 │
-├── mocks/
-└── test/
+└── mocks/
+
+tests/
+└── e2e/
+
+public/
 ```
+
+Frontend-facing models belong near their owning feature, for example `features/configuration/model/`, rather than in a separate top-level domain hierarchy.
+
+The structural folders are already present. The first implementation foundation PR fills them with the actual React/TypeScript scaffold and runtime/test files.
 
 ---
 
@@ -934,7 +942,7 @@ CP3–CP10 요구를 실제로 해결하는지 확인하고 추가한다.
 포함:
 
 ```text
-React + TypeScript scaffold
+React + TypeScript scaffold inside the pre-created source skeleton
 lint/format/test baseline
 app root
 router shell
