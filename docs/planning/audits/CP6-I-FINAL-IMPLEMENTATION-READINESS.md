@@ -1,5 +1,9 @@
 # CP6-I — Final Implementation Readiness Review
 
+> **HISTORICAL / SUPERSEDED AUDIT — retained for traceability.**  
+> This audit records the pre-v0.1.2 state. Its H-00/H-03 conclusions were superseded by Shared Baseline **v0.1.2**, which formally defines Honeymoon couple semantics. For current implementation decisions use `docs/implementation/IMPLEMENTATION-MASTER-PLAN.md` and the CP0~CP9 implementation checkpoints. Do not treat unresolved H-03 language below as current policy.
+
+
 > Status: **COMPLETE**  
 > Date baseline: 2026-09-29  
 > Scope: CP0–CP6-H, S01–S11, and current `WonhoOne/docs/main` shared contracts  

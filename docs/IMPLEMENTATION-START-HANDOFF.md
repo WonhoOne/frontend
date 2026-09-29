@@ -1,5 +1,9 @@
 # Mister World Frontend — Implementation Start Handoff
 
+> **CURRENT IMPLEMENTATION NOTICE — 2026-09-30**  
+> Shared implementation baseline is **v0.1.2**. For current coding decisions, read `docs/implementation/IMPLEMENTATION-MASTER-PLAN.md` first. Older H-03 “Honeymoon mapping unresolved” language in pre-v0.1.2 planning is superseded.
+
+
 > Status: **READY FOR IMPLEMENTATION**  
 > Date: 2026-09-29  
 > Repository: `WonhoOne/frontend`  
@@ -101,7 +105,7 @@ Read the latest approved files in `WonhoOne/docs/main`.
 Minimum required set:
 
 ```text
-baseline/BASELINE-v0.1.1.md
+baseline/BASELINE-v0.1.2.md
 requirements/requirements.md
 requirements/product-catalog.md
 requirements/domain-model.md
@@ -428,7 +432,7 @@ PR-01 is done only when all of the following are true.
 - [ ] no invented DTO
 - [ ] no hidden participant count default
 - [ ] no frontend price engine
-- [ ] no Honeymoon couple math
+- [ ] Honeymoon logic, if present in later feature work, follows v0.1.2 (`participantCount >= 2`, even, derived `coupleCount = participantCount / 2`) and does not invent Couple/Team entities or API fields
 - [ ] no fake Auth/session strategy
 
 ---
@@ -459,23 +463,20 @@ The shared model contains participant count, but Frontend placement/default/rang
 
 Do not send a hidden permanent default.
 
-## H-03 Honeymoon semantics
+## H-03 Honeymoon semantics — CLOSED in v0.1.2
 
-Frontend intent:
+Approved Shared Contract:
 
 ```text
-2 couples / 2 teams
+HONEYMOON_ROMANCE participantCount >= 2
+participantCount is even
+coupleCount = participantCount / 2
+TourSchedule confirms at >= 2 derived couples/teams
 ```
 
-Current shared counting contract is participant-based.
+`Couple` / `Team` remain derived semantics, not separate Shared entities.
 
-Do not implement:
-
-```ts
-participantCount / 2
-```
-
-until a shared mapping rule exists.
+Frontend may derive couple count only from a valid Honeymoon participant count. It must not invent a separate Couple/Team persistence model or assume a `coupleCount` API field.
 
 ## H-04 Authentication
 
@@ -927,7 +928,7 @@ Create a focused implementation branch from main and scaffold React + TypeScript
 Architecture:
 Backend DTO → integrations adapter → feature-local frontend model → feature/page UI.
 
-Do not invent Backend endpoints, DTO fields, Auth mechanics, participantCount defaults, Honeymoon couple/team mapping, option catalogs, price formulas, Reservation status values, History detail routes, SMS delivery state, or Voice payloads.
+Do not invent Backend endpoints, DTO fields, Auth mechanics, participantCount defaults/max values, Couple/Team entities or API fields, option catalogs, price formulas, Reservation status values, History detail routes, SMS delivery state, or Voice payloads.
 
 Do not implement real Backend integration in the foundation PR.
 

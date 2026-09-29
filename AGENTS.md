@@ -2,13 +2,13 @@
 
 This repository implements the Mister World **Customer GUI**.
 
-`WonhoOne/docs` **main** is the approved common SSOT. The current shared planning baseline used by this repository is **v0.1.1 on `docs/main`**. A docs feature branch is a proposal and must not be treated as approved until merged into `docs/main`.
+`WonhoOne/docs` **main** is the approved common SSOT. Implementation must use the **latest approved baseline present on `docs/main`**; as of 2026-09-30 this is **v0.1.2**. A docs feature branch is a proposal and must not be treated as approved until merged into `docs/main`.
 
 ## Mandatory reading before implementation
 
 Before writing or modifying code, read the latest approved documents in `WonhoOne/docs/main`:
 
-1. `baseline/BASELINE-v0.1.1.md`
+1. `baseline/BASELINE-v0.1.2.md`
 2. `requirements/requirements.md`
 3. `requirements/product-catalog.md`
 4. `requirements/domain-model.md`
@@ -20,13 +20,15 @@ Before writing or modifying code, read the latest approved documents in `WonhoOn
 10. `CONTRIBUTING.md`
 11. `AGENTS.md`
 
-Then read the frontend-owned planning package:
+Then read the frontend-owned implementation package:
 
-1. `docs/planning/00-PLANNING-INDEX.md`
-2. `docs/planning/12-IMPLEMENTATION-HANDOFF.md`
-3. the relevant `docs/planning/screens/*.md`
-4. `docs/planning/audits/CP6-H-CONTRACT-TBD-AUDIT.md`
-5. `docs/planning/audits/CP6-I-FINAL-IMPLEMENTATION-READINESS.md`
+1. `docs/implementation/IMPLEMENTATION-MASTER-PLAN.md`
+2. the relevant `docs/implementation/checkpoints/CP*.md`
+3. `docs/planning/00-PLANNING-INDEX.md`
+4. the relevant `docs/planning/screens/*.md`
+5. `docs/planning/12-IMPLEMENTATION-HANDOFF.md`
+
+The CP6-H / CP6-I audit files under `docs/planning/audits/` are historical evidence. Their v0.1.1/H-03 conclusions were superseded by Shared Baseline v0.1.2.
 
 Docs repository: https://github.com/WonhoOne/docs
 

@@ -1,5 +1,9 @@
 # Mister World Frontend QA & Acceptance
 
+> **CURRENT IMPLEMENTATION NOTICE — 2026-09-30**  
+> Shared implementation baseline is **v0.1.2**. Current execution policy lives in `docs/implementation/IMPLEMENTATION-MASTER-PLAN.md`. Any older H-03 text that treats Honeymoon couple semantics as unresolved is superseded.
+
+
 > Document: `11-QA-ACCEPTANCE.md`  
 > Status: **CP10 Complete**  
 > Scope: all 11 customer-facing screens + shared UI/data/motion systems  
@@ -582,7 +586,7 @@ image crop regression
 - [ ] Configure disabled until required context
 - [ ] keyboard style/schedule selection
 - [ ] recruitment has text alternative
-- [ ] H-03 mapping not invented
+- [ ] Honeymoon v0.1.2 semantics are applied exactly (`participantCount >= 2`, even, derived `coupleCount = participantCount / 2`) without inventing Couple/Team entities or API fields
 
 **Acceptance: PASS required**
 
@@ -682,7 +686,7 @@ image crop regression
 - [ ] no cancel/refund/payment UI
 - [ ] stale/offline visibly distinguished
 - [ ] recruitment text semantics
-- [ ] H-03 mapping not fabricated
+- [ ] Honeymoon recruitment presentation follows v0.1.2 derived couple semantics while Backend remains the final confirmation authority
 
 **Acceptance: PASS required**
 
@@ -1560,8 +1564,9 @@ error telemetry
 ```text
 hard-coded API path not in docs
 Theme used as tourId
-participantCount default = 1
-participantCount / 2
+participantCount hidden default = 1 or 2
+Honeymoon couple math without >=2/even validation
+invented Couple/Team Entity or coupleCount API field
 frontend price formula
 fake discount
 fake SMS delivered
@@ -1670,13 +1675,17 @@ Contract close 후:
 - invalid range
 - price relationship if any
 
-## Honeymoon mapping
+## Honeymoon semantics — CLOSED in v0.1.2
 
-Contract close 후:
+Always test:
 
-- exact approved couple/team semantics
-- recruitment display
-- confirmation transition
+- participantCount 1 → invalid
+- participantCount 2 → valid / 1 couple
+- participantCount 3 → invalid
+- participantCount 4 → valid / 2 couples
+- participantCount 6 → valid / 3 couples
+- recruitment display uses derived couple semantics only for valid Honeymoon counts
+- final confirmation truth still comes from Backend
 
 ## Auth
 
