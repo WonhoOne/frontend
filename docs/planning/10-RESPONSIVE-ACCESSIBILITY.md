@@ -1,5 +1,9 @@
 # Mister World Frontend Responsive & Accessibility
 
+> **CURRENT IMPLEMENTATION NOTICE — 2026-09-30**  
+> Shared implementation baseline is **v0.1.2**. Current execution policy lives in `docs/implementation/IMPLEMENTATION-MASTER-PLAN.md`. Any older H-03 text that treats Honeymoon couple semantics as unresolved is superseded.
+
+
 > Document: `10-RESPONSIVE-ACCESSIBILITY.md`  
 > Status: **CP9 Complete**  
 > Scope: all 11 customer-facing screens  
@@ -977,7 +981,7 @@ Recruitment:
 text alternative mandatory
 ```
 
-**Status: PASS, with H-03 live Honeymoon mapping contract gate**
+**Status: PASS — Honeymoon semantics aligned with Shared Baseline v0.1.2**
 
 ---
 
@@ -1419,10 +1423,16 @@ General:
 
 Honeymoon:
 
-shared mapping이 확정되면 couple/team text.
+Shared Baseline v0.1.2에 따라:
 
-현재 H-03이 열려 있으므로
-실제 participant total에서 couple text를 계산하지 않는다.
+```text
+participantCount >= 2 and even
+coupleCount = participantCount / 2
+```
+
+유효한 Honeymoon participant count에 대해서는 couple/team text를 사용할 수 있다.
+단 `Couple` / `Team`은 별도 Shared Entity가 아니며,
+최종 TourSchedule confirmed truth는 Backend가 소유한다.
 
 ---
 

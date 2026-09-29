@@ -1,5 +1,9 @@
 # Mister World Frontend — Implementation Handoff
 
+> **CURRENT IMPLEMENTATION NOTICE — 2026-09-30**  
+> Shared implementation baseline is **v0.1.2**. For current coding decisions, read `docs/implementation/IMPLEMENTATION-MASTER-PLAN.md` first. Older H-03 “Honeymoon mapping unresolved” language in pre-v0.1.2 planning is superseded.
+
+
 > Document: `12-IMPLEMENTATION-HANDOFF.md`  
 > Status: **CP11 Complete — Planning Handoff Finalized**  
 > Target repository: `WonhoOne/frontend`  
@@ -73,7 +77,7 @@ Live Backend integration         CONTRACT-GATED
 WonhoOne/frontend/AGENTS.md
 
 WonhoOne/docs/main:
-1. baseline/BASELINE-v0.1.1.md
+1. baseline/BASELINE-v0.1.2.md
 2. requirements/requirements.md
 3. requirements/product-catalog.md
 4. requirements/domain-model.md
@@ -768,29 +772,25 @@ Theme에서 여러 TourProduct를 어떻게 선택하는가?
 Shared model에는 존재하지만
 화면 위치/default/range 미확정.
 
-## H-03 Honeymoon
+## H-03 Honeymoon — CLOSED in v0.1.2
 
-Frontend intent:
-
-```text
-2 couples / 2 teams
-```
-
-Shared domain:
+Approved Shared Domain:
 
 ```text
-participant total >= 4
+Honeymoon Reservation:
+participantCount >= 2 and even
+
+Derived:
+coupleCount = participantCount / 2
+
+TourSchedule confirmation:
+sum(valid Reservation.coupleCount) >= 2 couples/teams
 ```
 
-Couple/Team mapping contract 없음.
+`Couple` / `Team`은 별도 Shared Entity가 아니다.
 
-절대:
-
-```ts
-participantCount / 2
-```
-
-로 해결하지 않는다.
+Frontend는 유효한 Honeymoon participant count에 대해서만 derived couple count를 사용할 수 있고,
+별도 Couple/Team persistence model이나 `coupleCount` API field를 발명하지 않는다.
 
 ## H-04 Auth
 
@@ -972,7 +972,7 @@ Reservation submission
 Auth contract guessing
 price logic
 participantCount assumption
-Honeymoon mapping logic
+Honeymoon feature-specific recruitment logic (not Foundation scope)
 all 11 screens at once
 ```
 
@@ -1112,7 +1112,7 @@ CTA states
 금지:
 
 ```text
-live couple calculation
+independent confirmed-state calculation from raw participant totals
 invented Schedule DTO
 ```
 
@@ -1577,7 +1577,7 @@ endpoint가 필요하지만 docs에 없음
 DTO field를 추측해야 함
 Business Rule을 새로 정해야 함
 participantCount UX를 임의 결정해야 함
-Honeymoon couple mapping을 계산해야 함
+Couple/Team Entity·API field 또는 participantCount UI/default/max를 추측해야 함
 Auth storage를 추측해야 함
 price formula를 만들어야 함
 ```
@@ -1823,7 +1823,7 @@ You are implementing the customer-facing React + TypeScript frontend for Mister 
 
 Before coding, read `frontend/AGENTS.md`, the mandatory approved documents in `WonhoOne/docs/main`, then read the complete frontend planning package `00-PLANNING-INDEX.md` through `12-IMPLEMENTATION-HANDOFF.md`, plus the relevant `screens/*.md` and CP6-H/CP6-I audits.
 
-Do not invent shared API endpoints, DTO fields, authentication mechanics, price formulas, participantCount defaults, Honeymoon couple/team mappings, option catalogs, Reservation statuses, Travel History routes, or Voice payloads.
+Do not invent shared API endpoints, DTO fields, authentication mechanics, price formulas, participantCount defaults/max values, Couple/Team entities or API fields, option catalogs, Reservation statuses, Travel History routes, or Voice payloads.
 
 Architecture rule:
 Backend DTO → Adapter → Frontend View Model → Feature/UI.

@@ -1,5 +1,9 @@
 # Mister World Frontend Screen Specifications
 
+> **CURRENT IMPLEMENTATION NOTICE — 2026-09-30**  
+> Shared implementation baseline is **v0.1.2**. For current coding decisions, read `docs/implementation/IMPLEMENTATION-MASTER-PLAN.md` first. Older H-03 “Honeymoon mapping unresolved” language in pre-v0.1.2 planning is superseded.
+
+
 > Document: `07-SCREEN-SPECS.md`  
 > Status: **CP6 COMPLETE — Final Implementation Readiness Reviewed**  
 > Scope: `WonhoOne/frontend` Customer GUI  
@@ -1141,7 +1145,7 @@ Critical gates surfaced:
 H-00 Active baseline status
 H-01 Theme ↔ TourProduct mapping
 H-02 Reservation participantCount
-H-03 Honeymoon 2 couples vs 4 participants
+H-03 Honeymoon semantics — CLOSED in v0.1.2
 H-04 Auth contract
 H-05 TourProduct DTO
 H-06 TourSchedule DTO
@@ -1183,7 +1187,7 @@ Live API integration     CONTRACT-GATED
 ```
 
 CP6-I explicitly re-checked `WonhoOne/docs/main`.
-v0.1.1 files are present on `main`, so v0.1.1 is used as the active Frontend planning baseline.
+v0.1.2 files are present on `main`, so v0.1.2 is used as the active Frontend planning baseline.
 The remaining “Proposal until merged” banner is treated as stale docs-governance text.
 
 Active P0 gates:
@@ -1191,7 +1195,7 @@ Active P0 gates:
 ```text
 Theme ↔ TourProduct
 Reservation participantCount
-Honeymoon couple/team mapping
+Honeymoon participant-count UI/default/max and API representation
 Auth contract
 TourProduct DTO
 TourSchedule DTO
