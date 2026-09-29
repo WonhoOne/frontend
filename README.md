@@ -4,6 +4,7 @@ Customer-facing web GUI for Mister World.
 
 ## Start here
 
+- **Implementation start handoff:** [`docs/IMPLEMENTATION-START-HANDOFF.md`](docs/IMPLEMENTATION-START-HANDOFF.md)
 - Frontend documentation: [`docs/README.md`](docs/README.md)
 - Frontend planning index: [`docs/planning/00-PLANNING-INDEX.md`](docs/planning/00-PLANNING-INDEX.md)
 - Implementation handoff: [`docs/planning/12-IMPLEMENTATION-HANDOFF.md`](docs/planning/12-IMPLEMENTATION-HANDOFF.md)
@@ -26,6 +27,7 @@ frontend/
 │   └── pull_request_template.md
 ├── docs/
 │   ├── README.md
+│   ├── IMPLEMENTATION-START-HANDOFF.md
 │   └── planning/
 │       ├── 00-PLANNING-INDEX.md
 │       ├── 01-... through 12-...

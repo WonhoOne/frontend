@@ -4,10 +4,11 @@ This directory contains **frontend-owned documentation only**.
 
 ## Where to start
 
-1. [`planning/00-PLANNING-INDEX.md`](planning/00-PLANNING-INDEX.md) — master planning index and current status
-2. [`planning/12-IMPLEMENTATION-HANDOFF.md`](planning/12-IMPLEMENTATION-HANDOFF.md) — implementation-session handoff
-3. [`planning/screens/`](planning/screens/) — screen-by-screen implementation specifications
-4. [`planning/audits/`](planning/audits/) — consistency / contract / readiness audits
+1. [`IMPLEMENTATION-START-HANDOFF.md`](IMPLEMENTATION-START-HANDOFF.md) — **next-session implementation handoff**
+2. [`planning/00-PLANNING-INDEX.md`](planning/00-PLANNING-INDEX.md) — master planning index and current status
+3. [`planning/12-IMPLEMENTATION-HANDOFF.md`](planning/12-IMPLEMENTATION-HANDOFF.md) — complete planning-to-implementation contract
+4. [`planning/screens/`](planning/screens/) — screen-by-screen implementation specifications
+5. [`planning/audits/`](planning/audits/) — consistency / contract / readiness audits
 
 ## Planning map
 
