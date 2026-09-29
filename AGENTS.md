@@ -2,19 +2,23 @@
 
 This repository implements the Mister World **Customer GUI**.
 
+`WonhoOne/docs` **main** is the approved common SSOT. A docs feature branch is a proposal. Do not implement against the v0.1.1 proposal until it is merged into `docs/main`; use the currently approved baseline on `docs/main` until then.
+
 ## Mandatory reading before implementation
 
-Before writing or modifying code, read the latest approved documents in `WonhoOne/docs`:
+Before writing or modifying code, read the latest approved documents in `WonhoOne/docs`. The following v0.1.1 list applies after its merge into `docs/main`; until then follow the approved `docs/main` mandatory reading list:
 
-1. `baseline/BASELINE-v0.1.md`
+1. `baseline/BASELINE-v0.1.1.md`
 2. `requirements/requirements.md`
-3. `requirements/domain-model.md`
-4. `requirements/business-rules.md`
-5. `architecture/system-architecture.md`
-6. `architecture/repository-responsibilities.md`
-7. `api/api-spec-draft.md`
-8. `CONTRIBUTING.md`
-9. `AGENTS.md`
+3. `requirements/product-catalog.md`
+4. `requirements/domain-model.md`
+5. `requirements/business-rules.md`
+6. `requirements/non-functional-requirements.md`
+7. `architecture/system-architecture.md`
+8. `architecture/repository-responsibilities.md`
+9. `api/api-spec-draft.md`
+10. `CONTRIBUTING.md`
+11. `AGENTS.md`
 
 Docs repository: https://github.com/WonhoOne/docs
 
