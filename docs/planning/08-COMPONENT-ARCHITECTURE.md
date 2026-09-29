@@ -50,18 +50,23 @@ Mock 데이터는 어디까지 허용되는가?
 
 # 1. Current Repository Reality
 
-`WonhoOne/frontend/main`을 다시 확인한 결과 현재 root에는:
+Repository setup now tracks the agreed source-directory skeleton on the frontend planning branch.
+
+Current state:
 
 ```text
-README.md
-AGENTS.md
+README / AGENTS / docs
++
+public/
+src/
+tests/
 ```
 
-만 존재하고, 실제 React scaffold는 아직 없다.
+The folders are structural placeholders only. The actual React + TypeScript scaffold, package configuration, runtime files, and tests are still the responsibility of the first implementation foundation PR.
 
-따라서 이 문서는 **현재 코드 구조를 설명하는 문서가 아니라 구현 시작 시 적용할 Target Architecture**다.
+The source skeleton follows the human-first structure in this document so contributors can see ownership boundaries before implementation begins.
 
-현재 Frontend 책임은 shared repo 계약대로:
+Current Frontend responsibility remains:
 
 ```text
 React + TypeScript Customer GUI
@@ -70,9 +75,7 @@ Frontend validation for UX
 Frontend tests
 ```
 
-이다.
-
-금지:
+Prohibited:
 
 ```text
 DB direct access
@@ -122,33 +125,37 @@ User Action
 
 # 3. Architecture Layers
 
-Mister World Frontend는 아래 6개 층으로 나눈다.
+Mister World Frontend keeps the top-level code model intentionally small.
 
 ```text
 1. app
-2. routes/pages
+2. pages
 3. features
-4. domain/view-model
-5. integrations
-6. shared
+4. integrations
+5. shared
 ```
 
-각 layer의 역할은 겹치지 않는다.
+Frontend-facing View Models and Draft Models stay close to the feature that owns them instead of creating a second top-level domain hierarchy.
 
----
+Supporting areas:
+
+```text
+mocks
+tests
+public
+```
 
 # 4. Proposed Source Tree
 
-React scaffold 생성 후 목표 구조:
+The tracked repository skeleton is:
 
 ```text
 src/
 ├── app/
-│   ├── App.tsx
-│   ├── AppProviders.tsx
 │   ├── router/
-│   ├── errors/
-│   └── config/
+│   ├── providers/
+│   ├── config/
+│   └── errors/
 │
 ├── pages/
 │   ├── home/
@@ -171,57 +178,46 @@ src/
 │   ├── travel-history/
 │   └── voice-bridge/
 │
-├── domain/
-│   ├── tour/
-│   ├── schedule/
-│   ├── configuration/
-│   ├── reservation/
-│   ├── customer/
-│   └── travel-history/
-│
 ├── integrations/
 │   ├── backend/
 │   │   ├── client/
 │   │   ├── contracts/
-│   │   ├── adapters/
-│   │   └── errors/
+│   │   └── adapters/
 │   └── voice/
-│       ├── contracts/
-│       └── adapter/
 │
 ├── shared/
 │   ├── ui/
 │   ├── motion/
-│   ├── state/
 │   ├── hooks/
-│   ├── utils/
-│   ├── constants/
-│   ├── accessibility/
+│   ├── lib/
 │   └── assets/
 │
-├── mocks/
-│   ├── fixtures/
-│   ├── handlers/
-│   └── scenarios/
-│
-└── test/
-    ├── helpers/
-    └── setup/
+└── mocks/
+
+tests/
+└── e2e/
+
+public/
 ```
 
-이 구조는 “폴더를 많이 만드는 것”이 목적이 아니다.
+Feature-local internal folders may be introduced only when useful, for example:
 
-핵심은:
+```text
+features/configuration/
+├── components/
+├── model/
+├── hooks/
+└── index.ts
+```
+
+The purpose is not folder count. The purpose is to make these boundaries obvious:
 
 ```text
 Page composition
-Feature behavior
-Frontend domain state
-External contract
-Shared UI
+Feature behavior + frontend models
+External contract boundary
+Shared business-agnostic UI/tooling
 ```
-
-를 물리적으로 분리하는 것이다.
 
 ---
 
@@ -319,29 +315,29 @@ domain View Model composition
 
 ---
 
-## 5.4 `domain/`
+## 5.4 Feature-local models
 
-Backend entity를 복제하는 폴더가 아니다.
+Backend entities are not copied into a new top-level domain tree.
 
-Frontend가 화면을 안정적으로 그리기 위한 **Frontend-facing View Model과 Draft Model**을 둔다.
+Frontend-facing View Models and Draft Models live near the feature that owns them, normally under a feature-local `model/` boundary when the feature becomes large enough.
 
-예:
+Examples:
 
 ```ts
 TourCardModel
 TourDetailModel
 ScheduleChoiceModel
-ConfigurationDraft
+ReservationDraft
 TripReviewModel
 ReservationDisplayModel
 TravelHistoryItemModel
 ```
 
-중요:
+Important:
 
-> `domain/`은 새로운 Business Rule의 진실의 원천이 아니다.
+> Feature-local models are not a second source of truth for Business Rules.
 
-Backend rule을 계산하기 위한 별도 business engine을 만들지 않는다.
+They shape data for the frontend and keep Backend DTO changes away from visual components. They do not become a separate business engine.
 
 ---
 
@@ -403,13 +399,13 @@ Motion primitives
 focus utilities
 ```
 
-`TourStyleSelector`처럼 Tour 의미가 들어가면 `shared/ui`가 아니라 feature/domain 쪽이다.
+`TourStyleSelector`처럼 Tour 의미가 들어가면 `shared/ui`가 아니라 해당 feature 쪽이다.
 
 ---
 
 # 6. Dependency Direction — LOCKED
 
-허용:
+Allowed:
 
 ```text
 app
@@ -417,28 +413,28 @@ app
 pages
 ↓
 features
-↓
-domain
 
-features/domain
+features
 ↓
 integrations
 
-pages/features/domain
+pages/features
 ↓
 shared
 ```
 
-금지:
+Feature-local models stay inside their owning feature and may be consumed through that feature's public API.
+
+Forbidden:
 
 ```text
 shared → feature
-domain → page
 integration → visual page component
 backend DTO → arbitrary UI component
+one feature → another feature's private internals
 ```
 
-순환 dependency를 만들지 않는다.
+Do not create cyclic dependencies.
 
 ---
 
@@ -2411,7 +2407,7 @@ Voice만 별도 state/action path.
 
 ## D-701 — Target Architecture is layered
 
-`app / pages / features / domain / integrations / shared`.
+`app / pages / features / integrations / shared` with feature-local models.
 
 ## D-702 — Page is orchestration only
 
@@ -2488,7 +2484,7 @@ React/TS는 fixed, Query/router/styling library exact choice는 scaffold 단계 
 - [x] target source tree
 - [x] page ownership
 - [x] feature boundaries
-- [x] shared/domain distinction
+- [x] shared/feature-model distinction
 - [x] public API/barrel rule
 
 ## Data
@@ -2521,7 +2517,7 @@ React/TS는 fixed, Query/router/styling library exact choice는 scaffold 단계 
 ## UI
 
 - [x] primitive ownership
-- [x] domain component ownership
+- [x] feature/domain-semantic component ownership
 - [x] skeleton pairing
 - [x] image ownership
 - [x] motion ownership

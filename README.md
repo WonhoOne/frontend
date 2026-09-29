@@ -7,6 +7,7 @@ Customer-facing web GUI for Mister World.
 - Frontend documentation: [`docs/README.md`](docs/README.md)
 - Frontend planning index: [`docs/planning/00-PLANNING-INDEX.md`](docs/planning/00-PLANNING-INDEX.md)
 - Implementation handoff: [`docs/planning/12-IMPLEMENTATION-HANDOFF.md`](docs/planning/12-IMPLEMENTATION-HANDOFF.md)
+- Source-structure guide: [`src/README.md`](src/README.md)
 - Development rules: [`AGENTS.md`](AGENTS.md)
 
 ## Shared source of truth
@@ -30,7 +31,23 @@ frontend/
 │       ├── 01-... through 12-...
 │       ├── screens/
 │       └── audits/
-└── src/                 # created with the implementation foundation
+├── public/
+├── src/
+│   ├── README.md
+│   ├── app/
+│   │   ├── router/
+│   │   ├── providers/
+│   │   ├── config/
+│   │   └── errors/
+│   ├── pages/
+│   ├── features/
+│   ├── integrations/
+│   │   ├── backend/
+│   │   └── voice/
+│   ├── shared/
+│   └── mocks/
+└── tests/
+    └── e2e/
 ```
 
-The application source tree is intentionally not filled with empty placeholder directories. It will be created by the first implementation foundation PR according to `docs/planning/08-COMPONENT-ARCHITECTURE.md`.
+The source directories are intentionally tracked before the React scaffold so every contributor starts from the same human-readable structure. The first implementation foundation PR fills this skeleton with the app bootstrap, tokens, shared UI, router, test harness, and mocks.
