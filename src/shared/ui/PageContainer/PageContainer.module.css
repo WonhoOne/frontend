@@ -1,0 +1,26 @@
+.root {
+  width: 100%;
+  min-width: 0;
+  margin-inline: auto;
+  padding-inline: var(--mw-page-gutter);
+}
+
+.wide {
+  max-width: calc(var(--mw-container-wide) + (2 * var(--mw-page-gutter)));
+}
+
+.main {
+  max-width: calc(var(--mw-container-main) + (2 * var(--mw-page-gutter)));
+}
+
+.transaction {
+  max-width: calc(var(--mw-container-transaction) + (2 * var(--mw-page-gutter)));
+}
+
+.reading {
+  max-width: calc(var(--mw-container-reading) + (2 * var(--mw-page-gutter)));
+}
+
+.auth {
+  max-width: calc(var(--mw-container-auth) + (2 * var(--mw-page-gutter)));
+}

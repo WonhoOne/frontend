@@ -1,5 +1,6 @@
 import { AppErrorBoundary } from '@/app/errors/AppErrorBoundary';
 import { AppProviders } from '@/app/providers/AppProviders';
+import { PageContainer } from '@/shared/ui';
 
 /**
  * Root application composition.
@@ -12,9 +13,14 @@ export function App() {
   return (
     <AppErrorBoundary>
       <AppProviders>
-        <main id="main-content">
-          <h1>Mister World</h1>
-          <p>Frontend foundation is running.</p>
+        <a className="skip-link" href="#main-content">
+          Skip to main content
+        </a>
+        <main id="main-content" tabIndex={-1}>
+          <PageContainer>
+            <h1>Mister World</h1>
+            <p>Frontend foundation is running.</p>
+          </PageContainer>
         </main>
       </AppProviders>
     </AppErrorBoundary>
