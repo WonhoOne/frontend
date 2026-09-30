@@ -8,6 +8,26 @@ export {
   type ReservationDraftV1,
 } from '@/features/reservation/ReservationDraft';
 export {
+  ReservationDraftContext,
+  useReservationDraft,
+  type ReservationDraftContextValue,
+} from '@/features/reservation/reservationDraftContext';
+export { ReservationDraftProvider } from '@/features/reservation/ReservationDraftProvider';
+export {
+  hasReservationDraftIntent,
+  hydrateReservationDraft,
+  migrateReservationDraft,
+  parseReservationDraft,
+  persistReservationDraft,
+  RESERVATION_DRAFT_STORAGE_KEY,
+  resolveBrowserSessionStorage,
+  serializeReservationDraft,
+  type ReservationDraftHydrationResult,
+  type ReservationDraftHydrationStatus,
+  type ReservationDraftPersistenceStatus,
+  type ReservationDraftStorage,
+} from '@/features/reservation/reservationDraftPersistence';
+export {
   reservationDraftReducer,
   type ReservationDraftAction,
 } from '@/features/reservation/reservationDraftReducer';
