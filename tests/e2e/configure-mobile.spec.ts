@@ -28,7 +28,7 @@ async function completeRequiredConfiguration(page: Page) {
   await page.getByRole('radio', { name: /Fixture meal A/i }).check();
 }
 
-for (const width of [320, 390, 768, 1023]) {
+for (const width of [320, 390, 430, 768, 1023]) {
   test(`mobile Configure remains usable at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 760 });
     await seedDraft(page);
