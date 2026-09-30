@@ -94,6 +94,99 @@ describe('TourDetailPageView core states', () => {
     expect(onRetry).toHaveBeenCalledTimes(1);
   });
 
+  it('starts with no selected style and mirrors Honeymoon restrictions', () => {
+    const tour = findTourDetailPreview('demo-honeymoon-product-a');
+
+    if (tour === null) {
+      throw new Error('expected Honeymoon preview fixture');
+    }
+
+    renderView({ status: 'ready', tour });
+
+    const grand = screen.getByRole('radio', { name: /Grand/ });
+    const premium = screen.getByRole('radio', { name: /Premium/ });
+
+    expect(screen.queryByRole('radio', { name: /Classic/ })).not.toBeInTheDocument();
+    expect(grand).not.toBeChecked();
+    expect(premium).not.toBeChecked();
+  });
+
+  it('offers all three approved styles for Golf and updates native radio state', () => {
+    const tour = findTourDetailPreview('demo-golf-product-a');
+
+    if (tour === null) {
+      throw new Error('expected Golf preview fixture');
+    }
+
+    renderView({ status: 'ready', tour });
+
+    const classic = screen.getByRole('radio', { name: /Classic/ });
+    const grand = screen.getByRole('radio', { name: /Grand/ });
+    const premium = screen.getByRole('radio', { name: /Premium/ });
+
+    expect(classic).not.toBeChecked();
+    expect(grand).not.toBeChecked();
+    expect(premium).not.toBeChecked();
+
+    fireEvent.click(grand);
+
+    expect(classic).not.toBeChecked();
+    expect(grand).toBeChecked();
+    expect(premium).not.toBeChecked();
+    expect(grand.closest('[data-selected="true"]')).not.toBeNull();
+  });
+
+  it('mirrors Parents and Trekking Style restrictions in the rendered UI', () => {
+    const parents = findTourDetailPreview('demo-parents-product-a');
+    const trekking = findTourDetailPreview('demo-trekking-product-a');
+
+    if (parents === null || trekking === null) {
+      throw new Error('expected Parents and Trekking preview fixtures');
+    }
+
+    const view = renderView({ status: 'ready', tour: parents });
+
+    expect(screen.getAllByRole('radio')).toHaveLength(2);
+    expect(screen.queryByRole('radio', { name: /Classic/ })).not.toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: /Grand/ })).not.toBeChecked();
+    expect(screen.getByRole('radio', { name: /Premium/ })).not.toBeChecked();
+
+    view.rerender(
+      <MemoryRouter>
+        <TourDetailPageView coreState={{ status: 'ready', tour: trekking }} />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getAllByRole('radio')).toHaveLength(3);
+    expect(screen.getByRole('radio', { name: /Classic/ })).not.toBeChecked();
+    expect(screen.getByRole('radio', { name: /Grand/ })).not.toBeChecked();
+    expect(screen.getByRole('radio', { name: /Premium/ })).not.toBeChecked();
+  });
+
+  it('resets local Style selection when the TourProduct identity changes', () => {
+    const golf = findTourDetailPreview('demo-golf-product-a');
+    const parents = findTourDetailPreview('demo-parents-product-a');
+
+    if (golf === null || parents === null) {
+      throw new Error('expected Tour Detail preview fixtures');
+    }
+
+    const view = renderView({ status: 'ready', tour: golf });
+
+    fireEvent.click(screen.getByRole('radio', { name: /Classic/ }));
+    expect(screen.getByRole('radio', { name: /Classic/ })).toBeChecked();
+
+    view.rerender(
+      <MemoryRouter>
+        <TourDetailPageView coreState={{ status: 'ready', tour: parents }} />
+      </MemoryRouter>,
+    );
+
+    expect(screen.queryByRole('radio', { name: /Classic/ })).not.toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: /Grand/ })).not.toBeChecked();
+    expect(screen.getByRole('radio', { name: /Premium/ })).not.toBeChecked();
+  });
+
   it('keeps Tour content visible when the hero image fails', () => {
     renderView(tourDetailPreviewStates.imageFailure);
 

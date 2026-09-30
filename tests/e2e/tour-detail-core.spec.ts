@@ -31,6 +31,77 @@ test.describe('Tour Detail core editorial', () => {
     await expect(page.getByText('Golf Challenge', { exact: true }).first()).toBeVisible();
   });
 
+  test('mirrors Theme Style restrictions without preselecting a Style', async ({ page }) => {
+    await page.goto('/tours/demo-honeymoon-product-a');
+
+    await expect(page.getByRole('radio')).toHaveCount(2);
+    await expect(page.getByRole('radio', { name: /Classic/ })).toHaveCount(0);
+    await expect(page.getByRole('radio', { name: /Grand/ })).not.toBeChecked();
+    await expect(page.getByRole('radio', { name: /Premium/ })).not.toBeChecked();
+
+    await page.goto('/tours/demo-golf-product-a');
+
+    await expect(page.getByRole('radio')).toHaveCount(3);
+    await expect(page.getByRole('radio', { name: /Classic/ })).not.toBeChecked();
+    await expect(page.getByRole('radio', { name: /Grand/ })).not.toBeChecked();
+    await expect(page.getByRole('radio', { name: /Premium/ })).not.toBeChecked();
+  });
+
+  test('supports native keyboard Style selection and visible focus', async ({ page }) => {
+    await page.goto('/tours/demo-golf-product-a');
+
+    const classic = page.getByRole('radio', { name: /Classic/ });
+    const grand = page.getByRole('radio', { name: /Grand/ });
+
+    await classic.focus();
+    await expect(classic).toBeFocused();
+
+    await page.keyboard.press('Space');
+    await expect(classic).toBeChecked();
+
+    await page.keyboard.press('ArrowRight');
+    await expect(grand).toBeChecked();
+    await expect(classic).not.toBeChecked();
+
+    const focusStyle = await grand.evaluate((element) => {
+      const card = element.closest('[data-selected="true"]');
+
+      if (!(card instanceof HTMLElement)) {
+        return null;
+      }
+
+      const style = getComputedStyle(card);
+
+      return {
+        outlineStyle: style.outlineStyle,
+        outlineWidth: Number.parseFloat(style.outlineWidth),
+      };
+    });
+
+    expect(focusStyle).not.toBeNull();
+    expect(focusStyle?.outlineStyle).not.toBe('none');
+    expect(focusStyle?.outlineWidth ?? 0).toBeGreaterThanOrEqual(2);
+  });
+
+  test('removes OptionCard transition motion when reduced motion is requested', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/tours/demo-golf-product-a');
+
+    const classic = page.getByRole('radio', { name: /Classic/ });
+
+    await classic.click();
+
+    const transitionDuration = await classic.evaluate((element) => {
+      const card = element.closest('[data-selected="true"]');
+
+      return card instanceof HTMLElement ? getComputedStyle(card).transitionDuration : null;
+    });
+
+    expect(transitionDuration).toBe('0s');
+  });
+
   test('renders an invalid TourProduct identity as branded not found', async ({ page }) => {
     await page.goto('/tours/not-a-real-tour-product');
 

@@ -2,6 +2,7 @@ export { IncludedExperienceSection } from '@/features/tour-detail/IncludedExperi
 export { TourDetailHero } from '@/features/tour-detail/TourDetailHero';
 export { TourDetailSkeleton } from '@/features/tour-detail/TourDetailSkeleton';
 export { TourDetailStory } from '@/features/tour-detail/TourDetailStory';
+export { TourStyleSelection } from '@/features/tour-detail/TourStyleSelection';
 export {
   findTourDetailPreview,
   tourDetailPreviewProducts,

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useParams } from 'react-router';
 
 import { routeBuilders, routePaths } from '@/app/router/paths';
@@ -10,6 +11,9 @@ import {
   type TourDetailCoreState,
   TourDetailSkeleton,
   TourDetailStory,
+  TourStyleSelection,
+  type TourDetailModel,
+  type TourDetailStyle,
 } from '@/features/tour-detail';
 import { Button, PageContainer, TextLink } from '@/shared/ui';
 
@@ -65,6 +69,37 @@ function TourDetailStatePage({
   );
 }
 
+function TourDetailReadyView({ tour }: { tour: TourDetailModel }) {
+  const [selectedStyle, setSelectedStyle] = useState<TourDetailStyle | null>(null);
+
+  return (
+    <div className={styles.page}>
+      <TourDetailHero backHref={routeBuilders.toursByTheme(tour.theme)} tour={tour} />
+      <TourDetailStory tour={tour} />
+      <IncludedExperienceSection tour={tour} />
+      <TourStyleSelection
+        availableStyles={tour.availableStyles}
+        onChange={setSelectedStyle}
+        selectedStyle={selectedStyle}
+      />
+
+      <footer className={styles.footer}>
+        <PageContainer className={styles.footerInner ?? ''} variant="wide">
+          <div>
+            <p className={styles.footerBrand}>Mister World</p>
+            <p className={styles.footerNote}>
+              Choose a style now. Schedule and trip configuration come next.
+            </p>
+          </div>
+          <TextLink to={routeBuilders.toursByTheme(tour.theme)}>
+            Back to {tour.themeLabel} journeys
+          </TextLink>
+        </PageContainer>
+      </footer>
+    </div>
+  );
+}
+
 export function TourDetailPageView({ coreState, onRetry }: TourDetailPageViewProps) {
   if (coreState.status === 'loading') {
     return (
@@ -105,27 +140,7 @@ export function TourDetailPageView({ coreState, onRetry }: TourDetailPageViewPro
 
   const { tour } = coreState;
 
-  return (
-    <div className={styles.page}>
-      <TourDetailHero backHref={routeBuilders.toursByTheme(tour.theme)} tour={tour} />
-      <TourDetailStory tour={tour} />
-      <IncludedExperienceSection tour={tour} />
-
-      <footer className={styles.footer}>
-        <PageContainer className={styles.footerInner ?? ''} variant="wide">
-          <div>
-            <p className={styles.footerBrand}>Mister World</p>
-            <p className={styles.footerNote}>
-              Understand the journey first. Style and schedule choices come next.
-            </p>
-          </div>
-          <TextLink to={routeBuilders.toursByTheme(tour.theme)}>
-            Back to {tour.themeLabel} journeys
-          </TextLink>
-        </PageContainer>
-      </footer>
-    </div>
-  );
+  return <TourDetailReadyView key={tour.id} tour={tour} />;
 }
 
 export function TourDetailPage() {
