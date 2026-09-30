@@ -175,9 +175,10 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
       .locator('section[aria-labelledby="tour-title"] [data-revealed]')
       .first();
     await expect(heroReveal).toBeVisible();
-    expect(await heroReveal.evaluate((element) => getComputedStyle(element).transform)).toBe(
-      'none',
+    const heroTransform = await heroReveal.evaluate(
+      (element) => getComputedStyle(element).transform,
     );
+    expect(['none', 'matrix(1, 0, 0, 1, 0, 0)']).toContain(heroTransform);
     expect(
       await heroReveal.evaluate((element) => getComputedStyle(element).transitionDuration),
     ).toBe('0s');
