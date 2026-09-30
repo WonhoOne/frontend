@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import { routeBuilders, routePaths } from '@/app/router/paths';
 import { LoadingState } from '@/app/state';
@@ -18,6 +18,11 @@ import {
   type TourDetailStyle,
   type TourScheduleSectionState,
 } from '@/features/tour-detail';
+import {
+  createConfigureHandoffAction,
+  type ConfigureHandoffIntent,
+  useReservationDraft,
+} from '@/features/reservation';
 import { Button, PageContainer, TextLink } from '@/shared/ui';
 
 import styles from '@/pages/tour-detail/TourDetailPage.module.css';
@@ -27,6 +32,7 @@ interface TourDetailPageViewProps {
   scheduleState?: TourScheduleSectionState;
   onRetry?: () => void;
   onRetrySchedule?: () => void;
+  onConfigure?: (intent: ConfigureHandoffIntent) => void;
 }
 
 const coreErrorCopy: Record<TourDetailCoreErrorReason, { title: string; message: string }> = {
@@ -75,6 +81,7 @@ function TourDetailStatePage({
 }
 
 function TourDetailReadyView({
+  onConfigure,
   onRetrySchedule,
   scheduleState,
   tour,
@@ -82,6 +89,7 @@ function TourDetailReadyView({
   tour: TourDetailModel;
   scheduleState?: TourScheduleSectionState;
   onRetrySchedule?: () => void;
+  onConfigure?: (intent: ConfigureHandoffIntent) => void;
 }) {
   const [selectedStyle, setSelectedStyle] = useState<TourDetailStyle | null>(null);
   const [selectedScheduleKey, setSelectedScheduleKey] = useState<string | null>(null);
@@ -94,6 +102,28 @@ function TourDetailReadyView({
     )
       ? selectedScheduleKey
       : null;
+
+  const canConfigure =
+    selectedStyle !== null && effectiveScheduleKey !== null && onConfigure !== undefined;
+
+  const configureHelp =
+    selectedStyle === null
+      ? 'Choose a tour style before continuing.'
+      : effectiveScheduleKey === null
+        ? 'Choose an available schedule before continuing.'
+        : 'Your selected style and schedule will carry into trip configuration.';
+
+  function handleConfigure() {
+    if (selectedStyle === null || effectiveScheduleKey === null || onConfigure === undefined) {
+      return;
+    }
+
+    onConfigure({
+      tourProductId: tour.id,
+      tourStyle: selectedStyle,
+      tourScheduleId: effectiveScheduleKey,
+    });
+  }
 
   return (
     <div className={styles.page}>
@@ -112,12 +142,31 @@ function TourDetailReadyView({
         selectedScheduleKey={effectiveScheduleKey}
       />
 
+      <section aria-labelledby="tour-configure-title" className={styles.configureAction}>
+        <PageContainer className={styles.configureActionInner ?? ''} variant="wide">
+          <div className={styles.configureCopy}>
+            <p className={styles.eyebrow}>Next step</p>
+            <h2 id="tour-configure-title">Shape the trip around your choices.</h2>
+            <p id="tour-configure-help">{configureHelp}</p>
+          </div>
+          <Button
+            aria-describedby="tour-configure-help"
+            className={styles.configureButton ?? ''}
+            disabled={!canConfigure}
+            onClick={handleConfigure}
+            size="large"
+          >
+            Configure this trip
+          </Button>
+        </PageContainer>
+      </section>
+
       <footer className={styles.footer}>
         <PageContainer className={styles.footerInner ?? ''} variant="wide">
           <div>
             <p className={styles.footerBrand}>Mister World</p>
             <p className={styles.footerNote}>
-              Choose a style now. Schedule and trip configuration come next.
+              Your selected style and schedule stay with you as you configure the trip.
             </p>
           </div>
           <TextLink to={routeBuilders.toursByTheme(tour.theme)}>
@@ -131,6 +180,7 @@ function TourDetailReadyView({
 
 export function TourDetailPageView({
   coreState,
+  onConfigure,
   onRetry,
   onRetrySchedule,
   scheduleState,
@@ -177,6 +227,7 @@ export function TourDetailPageView({
   return (
     <TourDetailReadyView
       key={tour.id}
+      {...(onConfigure !== undefined ? { onConfigure } : {})}
       {...(onRetrySchedule !== undefined ? { onRetrySchedule } : {})}
       {...(scheduleState !== undefined ? { scheduleState } : {})}
       tour={tour}
@@ -185,12 +236,20 @@ export function TourDetailPageView({
 }
 
 export function TourDetailPage() {
+  const navigate = useNavigate();
+  const { dispatch } = useReservationDraft();
   const { tourId } = useParams();
   const tour = tourId === undefined ? null : findTourDetailPreview(tourId);
+
+  function handleConfigure(intent: ConfigureHandoffIntent) {
+    dispatch(createConfigureHandoffAction(intent, Date.now()));
+    void navigate(routeBuilders.configure(intent.tourProductId));
+  }
 
   return (
     <TourDetailPageView
       coreState={tour === null ? { status: 'not-found' } : { status: 'ready', tour }}
+      onConfigure={handleConfigure}
     />
   );
 }
