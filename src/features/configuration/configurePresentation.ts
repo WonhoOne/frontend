@@ -2,6 +2,7 @@ import type { ConfigureFixtureScenario } from '@/features/configuration/configur
 import type {
   ConfigurationCategory,
   OptionGroupModel,
+  PriceDisplayModel,
   TripSummaryModel,
 } from '@/features/configuration/configurationModels';
 import {
@@ -64,11 +65,13 @@ function runtimeSelectionLabel({
 export function buildConfigureTripSummary({
   draft,
   participantRule,
+  price,
   scenario,
   runtimeState = createReadyConfigureRuntimeState(),
 }: {
   draft: ReservationDraftV1;
   participantRule: ParticipantCountRule;
+  price?: PriceDisplayModel;
   scenario: ConfigureFixtureScenario;
   runtimeState?: ConfigureRuntimeState;
 }): TripSummaryModel {
@@ -110,5 +113,6 @@ export function buildConfigureTripSummary({
     invalidSelections: (['hotel', 'transport', 'meal', 'extras'] as const).filter(
       (category) => runtimeState.groups[category].status === 'invalid',
     ),
+    price: price ?? scenario.tripSummary.price,
   };
 }

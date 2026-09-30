@@ -35,5 +35,7 @@ export {
   type ConfigureReadinessIssue,
 } from '@/features/configuration/configureReadiness';
 export { buildConfigureTripSummary } from '@/features/configuration/configurePresentation';
+export { PriceSummary } from '@/features/configuration/PriceSummary';
+export { getCompactPriceLabel } from '@/features/configuration/pricePresentation';
 
 export { MobileTripSummary } from '@/features/configuration/MobileTripSummary';

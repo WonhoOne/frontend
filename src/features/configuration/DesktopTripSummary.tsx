@@ -3,6 +3,7 @@ import type {
   ConfigurationCategory,
   TripSummaryModel,
 } from '@/features/configuration/configurationModels';
+import { PriceSummary } from '@/features/configuration/PriceSummary';
 import { Button } from '@/shared/ui';
 
 import styles from '@/features/configuration/DesktopTripSummary.module.css';
@@ -11,6 +12,7 @@ interface DesktopTripSummaryProps {
   summary: TripSummaryModel;
   readiness: ConfigureReadiness;
   onReview: () => void;
+  onRetryPrice?: () => void;
 }
 
 function SummaryRow({
@@ -37,7 +39,12 @@ function hasInvalidSelection(summary: TripSummaryModel, category: ConfigurationC
   return summary.invalidSelections.includes(category);
 }
 
-export function DesktopTripSummary({ summary, readiness, onReview }: DesktopTripSummaryProps) {
+export function DesktopTripSummary({
+  summary,
+  readiness,
+  onReview,
+  onRetryPrice,
+}: DesktopTripSummaryProps) {
   return (
     <aside aria-label="Current trip configuration" className={styles.summary}>
       <header className={styles.header}>
@@ -76,20 +83,10 @@ export function DesktopTripSummary({ summary, readiness, onReview }: DesktopTrip
         />
       </dl>
 
-      <div className={styles.price}>
-        <span>Price</span>
-        {summary.price.state === 'unavailable' ? (
-          <p>{summary.price.message}</p>
-        ) : summary.price.state === 'known' ? (
-          <strong>{summary.price.totalLabel}</strong>
-        ) : summary.price.state === 'loading' ? (
-          <p>{summary.price.previousTotalLabel ?? 'Loading price…'}</p>
-        ) : summary.price.state === 'recalculating' ? (
-          <p>{summary.price.previousTotalLabel} · Updating…</p>
-        ) : (
-          <p>{summary.price.previousTotalLabel ?? summary.price.message}</p>
-        )}
-      </div>
+      <PriceSummary
+        {...(onRetryPrice === undefined ? {} : { onRetry: onRetryPrice })}
+        price={summary.price}
+      />
 
       <div className={styles.action}>
         <Button

@@ -6,6 +6,8 @@ import type {
   ConfigurationCategory,
   TripSummaryModel,
 } from '@/features/configuration/configurationModels';
+import { PriceSummary } from '@/features/configuration/PriceSummary';
+import { getCompactPriceLabel } from '@/features/configuration/pricePresentation';
 import { BottomSheet, Button } from '@/shared/ui';
 
 import styles from '@/features/configuration/MobileTripSummary.module.css';
@@ -14,6 +16,7 @@ interface MobileTripSummaryProps {
   summary: TripSummaryModel;
   readiness: ConfigureReadiness;
   onReview: () => void;
+  onRetryPrice?: () => void;
 }
 
 function selectionCount(summary: TripSummaryModel) {
@@ -50,21 +53,6 @@ function hasInvalidSelection(summary: TripSummaryModel, category: ConfigurationC
   return summary.invalidSelections.includes(category);
 }
 
-function priceLabel(summary: TripSummaryModel) {
-  switch (summary.price.state) {
-    case 'known':
-      return summary.price.totalLabel;
-    case 'loading':
-      return summary.price.previousTotalLabel ?? 'Price loading';
-    case 'recalculating':
-      return `${summary.price.previousTotalLabel} · Updating`;
-    case 'error':
-      return summary.price.previousTotalLabel ?? 'Price unavailable';
-    case 'unavailable':
-      return 'Price unavailable';
-  }
-}
-
 /**
  * Mobile Configure의 persistent transaction summary.
  *
@@ -73,7 +61,12 @@ function priceLabel(summary: TripSummaryModel) {
  * - BottomSheet open state는 ephemeral UI state이며 ReservationDraft에 저장하지 않는다.
  * - Review 가능 여부는 Desktop과 동일한 ConfigureReadiness를 사용한다.
  */
-export function MobileTripSummary({ summary, readiness, onReview }: MobileTripSummaryProps) {
+export function MobileTripSummary({
+  summary,
+  readiness,
+  onReview,
+  onRetryPrice,
+}: MobileTripSummaryProps) {
   const [isSummaryOpen, setSummaryOpen] = useState(false);
   const count = selectionCount(summary);
 
@@ -90,7 +83,7 @@ export function MobileTripSummary({ summary, readiness, onReview }: MobileTripSu
         <span className={styles.primaryLine}>
           {summary.styleLabel} · {count} {count === 1 ? 'selection' : 'selections'}
         </span>
-        <span className={styles.secondaryLine}>{priceLabel(summary)}</span>
+        <span className={styles.secondaryLine}>{getCompactPriceLabel(summary.price)}</span>
       </button>
 
       <Button
@@ -151,20 +144,10 @@ export function MobileTripSummary({ summary, readiness, onReview }: MobileTripSu
             />
           </dl>
 
-          <div className={styles.price}>
-            <span>Price</span>
-            {summary.price.state === 'unavailable' ? (
-              <p>{summary.price.message}</p>
-            ) : summary.price.state === 'known' ? (
-              <strong>{summary.price.totalLabel}</strong>
-            ) : summary.price.state === 'loading' ? (
-              <p>{summary.price.previousTotalLabel ?? 'Loading price…'}</p>
-            ) : summary.price.state === 'recalculating' ? (
-              <p>{summary.price.previousTotalLabel} · Updating…</p>
-            ) : (
-              <p>{summary.price.previousTotalLabel ?? summary.price.message}</p>
-            )}
-          </div>
+          <PriceSummary
+            {...(onRetryPrice === undefined ? {} : { onRetry: onRetryPrice })}
+            price={summary.price}
+          />
 
           <Button
             className={styles.sheetReviewButton}

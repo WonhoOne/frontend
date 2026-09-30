@@ -7,7 +7,10 @@ import { ParticipantCountField } from '@/features/configuration/ParticipantCount
 import { buildConfigureTripSummary } from '@/features/configuration/configurePresentation';
 import { getConfigureReadiness } from '@/features/configuration/configureReadiness';
 import type { ConfigureFixtureScenario } from '@/features/configuration/configurationFixtures';
-import type { ConfigurationCategory } from '@/features/configuration/configurationModels';
+import type {
+  ConfigurationCategory,
+  PriceDisplayModel,
+} from '@/features/configuration/configurationModels';
 import {
   createReadyConfigureRuntimeState,
   type ConfigureRuntimeState,
@@ -23,8 +26,10 @@ interface ConfigureDesktopProps {
   scenario: ConfigureFixtureScenario;
   tourProductId: string;
   onReview: () => void;
+  price?: PriceDisplayModel;
   runtimeState?: ConfigureRuntimeState;
   onRetryGroup?: (category: ConfigurationCategory) => void;
+  onRetryPrice?: () => void;
   onReturnToTour?: () => void;
   now?: () => number;
 }
@@ -75,8 +80,10 @@ export function ConfigureDesktop({
   scenario,
   tourProductId,
   onReview,
+  price,
   runtimeState = createReadyConfigureRuntimeState(),
   onRetryGroup = () => undefined,
+  onRetryPrice,
   onReturnToTour = () => undefined,
   now = Date.now,
 }: ConfigureDesktopProps) {
@@ -85,6 +92,7 @@ export function ConfigureDesktop({
   const summary = buildConfigureTripSummary({
     draft,
     participantRule,
+    ...(price === undefined ? {} : { price }),
     scenario,
     runtimeState,
   });
@@ -158,10 +166,20 @@ export function ConfigureDesktop({
 
       {isDesktop ? (
         <div className={styles.summaryColumn}>
-          <DesktopTripSummary onReview={onReview} readiness={readiness} summary={summary} />
+          <DesktopTripSummary
+            {...(onRetryPrice === undefined ? {} : { onRetryPrice })}
+            onReview={onReview}
+            readiness={readiness}
+            summary={summary}
+          />
         </div>
       ) : (
-        <MobileTripSummary onReview={onReview} readiness={readiness} summary={summary} />
+        <MobileTripSummary
+          {...(onRetryPrice === undefined ? {} : { onRetryPrice })}
+          onReview={onReview}
+          readiness={readiness}
+          summary={summary}
+        />
       )}
     </div>
   );

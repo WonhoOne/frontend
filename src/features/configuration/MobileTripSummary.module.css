@@ -121,34 +121,13 @@
   font-weight: var(--mw-font-weight-semibold);
 }
 
-.price {
-  display: grid;
-  gap: var(--mw-space-2);
-}
-
-.price > span {
-  color: var(--mw-text-secondary);
-  font-size: var(--mw-font-size-label-md);
-}
-
-.price p,
-.price strong,
-.requirements {
-  margin: 0;
-}
-
-.price p {
-  color: var(--mw-text-secondary);
-  font-size: var(--mw-font-size-body-sm);
-  line-height: var(--mw-line-height-body-sm);
-}
-
 .sheetReviewButton {
   inline-size: 100%;
   min-block-size: 52px;
 }
 
 .requirements {
+  margin: 0;
   color: var(--mw-text-secondary);
   font-size: var(--mw-font-size-label-sm);
   line-height: var(--mw-line-height-label-md);
