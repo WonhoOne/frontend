@@ -24,9 +24,9 @@ function isAppRouteHandle(value: unknown): value is AppRouteHandle {
 /**
  * 공통 route landmark와 Application chrome 선택을 소유한다.
  *
- * CONTRACT: generic chrome은 route metadata로 결정한다. 전체 navigation focus
- * 관리는 PR-02 runtime 범위이며, Foundation은 안정적인 skip target과
- * focus 가능한 main landmark까지만 보장한다.
+ * CONTRACT: generic chrome은 route metadata로 결정한다.
+ * R0는 안정적인 skip target과 focus 가능한 main landmark를 유지한다.
+ * route 전환 focus/scroll 정책은 R1에서 별도로 소유한다.
  */
 export function AppRouteLayout() {
   const matches = useMatches();

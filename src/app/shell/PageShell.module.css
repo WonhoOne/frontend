@@ -1,0 +1,34 @@
+.root {
+  display: grid;
+  gap: var(--mw-space-5);
+  padding-block: var(--mw-space-12);
+}
+
+.heading {
+  display: grid;
+  gap: var(--mw-space-2);
+}
+
+.heading h1,
+.eyebrow {
+  margin: 0;
+}
+
+.heading h1 {
+  color: var(--mw-ink);
+  font-size: var(--mw-font-size-heading-xl);
+  line-height: var(--mw-line-height-heading-xl);
+  letter-spacing: var(--mw-tracking-heading);
+}
+
+.eyebrow {
+  color: var(--mw-accent);
+  font-size: var(--mw-font-size-label-sm);
+  font-weight: var(--mw-font-weight-semibold);
+  letter-spacing: var(--mw-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.content {
+  min-inline-size: 0;
+}

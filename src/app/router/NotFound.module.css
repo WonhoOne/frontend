@@ -1,32 +1,11 @@
-.root {
-  display: grid;
-  gap: var(--mw-space-5);
-  padding-block: var(--mw-space-16);
-}
-
-.root h1,
-.root p {
+.message {
   margin: 0;
-}
-
-.root h1 {
-  font-size: var(--mw-font-size-heading-xl);
-  line-height: var(--mw-line-height-heading-xl);
-  letter-spacing: var(--mw-tracking-heading);
-}
-
-.root > p:last-of-type {
   color: var(--mw-text-secondary);
-}
-
-.eyebrow {
-  color: var(--mw-accent);
-  font-size: var(--mw-font-size-label-md);
-  font-weight: var(--mw-font-weight-semibold);
 }
 
 .actions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--mw-space-5);
+  margin-block-start: var(--mw-space-5);
 }

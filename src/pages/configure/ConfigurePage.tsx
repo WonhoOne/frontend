@@ -1,7 +1,7 @@
 import { useParams } from 'react-router';
 
+import { routePatterns, routeTitles } from '@/app/router/paths';
 import { RoutePlaceholder } from '@/app/router/RoutePlaceholder';
-import { routePatterns } from '@/app/router/paths';
 
 export function ConfigurePage() {
   const { tourId } = useParams();
@@ -10,7 +10,7 @@ export function ConfigurePage() {
     <RoutePlaceholder
       matchedParam={{ label: 'tourId', value: tourId }}
       routeName={routePatterns.configure}
-      screenName="Configure"
+      title={routeTitles.configure}
     />
   );
 }
