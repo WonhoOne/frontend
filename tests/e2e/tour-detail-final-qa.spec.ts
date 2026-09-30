@@ -87,9 +87,9 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
       expect(activeConfigureBox).not.toBeNull();
 
       if (width < 768) {
-        expect(await configureSection.evaluate((element) => getComputedStyle(element).position)).toBe(
-          'sticky',
-        );
+        expect(
+          await configureSection.evaluate((element) => getComputedStyle(element).position),
+        ).toBe('sticky');
         expect(activeConfigureBox?.width ?? 0).toBeGreaterThan((actionBox?.width ?? 0) * 0.9);
 
         const footerLink = page
@@ -110,9 +110,9 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
 
         expect(overlapsFooterLink).toBe(false);
       } else {
-        expect(await configureSection.evaluate((element) => getComputedStyle(element).position)).toBe(
-          'static',
-        );
+        expect(
+          await configureSection.evaluate((element) => getComputedStyle(element).position),
+        ).toBe('static');
         expect(activeConfigureBox?.width ?? 0).toBeLessThan((actionBox?.width ?? 0) * 0.5);
       }
     });
