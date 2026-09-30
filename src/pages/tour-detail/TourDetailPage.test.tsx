@@ -13,6 +13,7 @@ import {
   tourSchedulePreviewStates,
   type TourScheduleSectionState,
 } from '@/features/tour-detail';
+import type { ConfigureHandoffIntent } from '@/features/reservation';
 import { TourDetailPageView } from '@/pages/tour-detail/TourDetailPage';
 
 afterEach(cleanup);
@@ -20,6 +21,7 @@ afterEach(cleanup);
 function renderView(
   coreState: TourDetailCoreState = tourDetailPreviewStates.loading,
   options: {
+    onConfigure?: (intent: ConfigureHandoffIntent) => void;
     onRetry?: () => void;
     onRetrySchedule?: () => void;
     scheduleState?: TourScheduleSectionState;
@@ -29,6 +31,7 @@ function renderView(
     <MemoryRouter>
       <TourDetailPageView
         coreState={coreState}
+        {...(options.onConfigure !== undefined ? { onConfigure: options.onConfigure } : {})}
         {...(options.onRetry !== undefined ? { onRetry: options.onRetry } : {})}
         {...(options.onRetrySchedule !== undefined
           ? { onRetrySchedule: options.onRetrySchedule }
@@ -360,6 +363,89 @@ describe('TourDetailPageView core states', () => {
         .getAllByRole('radio')
         .every((radio) => !radio.matches(':checked')),
     ).toBe(true);
+  });
+
+  it('keeps Configure disabled until both Style and an available Schedule are selected', () => {
+    const tour = findTourDetailPreview('demo-golf-product-a');
+    const onConfigure = vi.fn();
+
+    if (tour === null) {
+      throw new Error('expected Golf preview fixture');
+    }
+
+    renderView({ status: 'ready', tour }, { onConfigure });
+
+    const configure = screen.getByRole('button', { name: 'Configure this trip' });
+
+    expect(configure).toBeDisabled();
+    expect(screen.getByText('Choose a tour style before continuing.')).toBeVisible();
+
+    fireEvent.click(screen.getByRole('radio', { name: /Grand/ }));
+
+    expect(configure).toBeDisabled();
+    expect(screen.getByText('Choose an available schedule before continuing.')).toBeVisible();
+
+    fireEvent.click(screen.getByRole('radio', { name: /Schedule preview A/ }));
+
+    expect(configure).toBeEnabled();
+    expect(
+      screen.getByText('Your selected style and schedule will carry into trip configuration.'),
+    ).toBeVisible();
+    expect(onConfigure).not.toHaveBeenCalled();
+  });
+
+  it('hands the selected TourProduct, Style, and Schedule to the public Configure boundary once', () => {
+    const tour = findTourDetailPreview('demo-golf-product-a');
+    const onConfigure = vi.fn();
+
+    if (tour === null) {
+      throw new Error('expected Golf preview fixture');
+    }
+
+    renderView({ status: 'ready', tour }, { onConfigure });
+
+    fireEvent.click(screen.getByRole('radio', { name: /Premium/ }));
+    fireEvent.click(screen.getByRole('radio', { name: /Schedule preview A/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Configure this trip' }));
+
+    expect(onConfigure).toHaveBeenCalledTimes(1);
+    expect(onConfigure).toHaveBeenCalledWith({
+      tourProductId: 'demo-golf-product-a',
+      tourStyle: 'PREMIUM',
+      tourScheduleId: 'preview-golf_challenge-a',
+    });
+  });
+
+  it('disables Configure again when the selected Schedule becomes unavailable', () => {
+    const tour = findTourDetailPreview('demo-golf-product-a');
+    const onConfigure = vi.fn();
+
+    if (tour === null) {
+      throw new Error('expected Golf preview fixture');
+    }
+
+    const view = renderView({ status: 'ready', tour }, { onConfigure });
+
+    fireEvent.click(screen.getByRole('radio', { name: /Classic/ }));
+    fireEvent.click(screen.getByRole('radio', { name: /Schedule preview A/ }));
+
+    expect(screen.getByRole('button', { name: 'Configure this trip' })).toBeEnabled();
+
+    view.rerender(
+      <MemoryRouter>
+        <TourDetailPageView
+          coreState={{ status: 'ready', tour }}
+          onConfigure={onConfigure}
+          scheduleState={tourSchedulePreviewStates.unavailable}
+        />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByRole('button', { name: 'Configure this trip' })).toBeDisabled();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Configure this trip' }));
+
+    expect(onConfigure).not.toHaveBeenCalled();
   });
 
   it('keeps Tour content visible when the hero image fails', () => {
