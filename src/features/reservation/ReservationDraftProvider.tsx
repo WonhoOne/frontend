@@ -94,9 +94,10 @@ export function ReservationDraftProvider({
     () => ({
       draft,
       dispatch,
+      hydrationStatus: hydration.hydrationStatus,
       persistenceStatus,
     }),
-    [draft, persistenceStatus],
+    [draft, hydration.hydrationStatus, persistenceStatus],
   );
 
   return (

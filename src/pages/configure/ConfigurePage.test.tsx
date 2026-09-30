@@ -76,6 +76,40 @@ describe('ConfigurePage desktop transaction', () => {
     expect(screen.queryByRole('button', { name: 'Review trip' })).not.toBeInTheDocument();
   });
 
+  it('distinguishes corrupt storage from an ordinary missing transaction', () => {
+    const storage = new MemoryStorage();
+    storage.setItem(RESERVATION_DRAFT_STORAGE_KEY, '{not-json');
+
+    renderConfigure(storage);
+
+    expect(screen.getByRole('heading', { name: 'Saved trip could not be restored' })).toBeVisible();
+    expect(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY)).toBeNull();
+  });
+
+  it('preserves a route-mismatched Draft and offers its explicit resume path', () => {
+    const storage = new MemoryStorage();
+    storage.setItem(
+      RESERVATION_DRAFT_STORAGE_KEY,
+      serializeReservationDraft({
+        ...tripContextDraft(),
+        tourProductId: 'tour-saved',
+      }),
+    );
+
+    renderConfigure(storage);
+
+    expect(
+      screen.getByRole('heading', { name: 'This route does not match your saved trip' }),
+    ).toBeVisible();
+    expect(screen.getByRole('link', { name: 'Resume saved trip' })).toHaveAttribute(
+      'href',
+      '/tours/tour-saved/configure',
+    );
+    expect(JSON.parse(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY) ?? '{}')).toMatchObject({
+      tourProductId: 'tour-saved',
+    });
+  });
+
   it('renders the desktop configurator from an existing transaction context', () => {
     const storage = new MemoryStorage();
     storage.setItem(RESERVATION_DRAFT_STORAGE_KEY, serializeReservationDraft(tripContextDraft()));

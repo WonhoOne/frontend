@@ -105,3 +105,20 @@
     gap: var(--mw-space-4);
   }
 }
+
+.recoveryActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mw-space-4);
+}
+
+.persistenceWarning {
+  margin: 0;
+  padding: var(--mw-space-3) var(--mw-space-4);
+  border: var(--mw-border-default);
+  border-radius: var(--mw-radius-sm);
+  background: var(--mw-warning-soft);
+  color: var(--mw-ink-soft);
+  font-size: var(--mw-font-size-body-sm);
+  line-height: var(--mw-line-height-body-sm);
+}

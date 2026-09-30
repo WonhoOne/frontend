@@ -38,3 +38,10 @@ export {
   type ParticipantCountRule,
   type ParticipantCountValidation,
 } from '@/features/reservation/participantCount';
+
+export {
+  getConfigureDraftEntryState,
+  getReviewDraftHandoffState,
+  type ConfigureDraftEntryState,
+  type ReviewDraftHandoffState,
+} from '@/features/reservation/reservationDraftRecovery';

@@ -46,12 +46,13 @@ function restoredDraft(): ReservationDraftV1 {
 }
 
 function DraftProbe() {
-  const { draft, dispatch, persistenceStatus } = useReservationDraft();
+  const { draft, dispatch, hydrationStatus, persistenceStatus } = useReservationDraft();
 
   return (
     <div>
       <output data-testid="product">{draft.tourProductId ?? 'none'}</output>
       <output data-testid="style">{draft.tourStyle ?? 'none'}</output>
+      <output data-testid="hydration">{hydrationStatus}</output>
       <output data-testid="persistence">{persistenceStatus}</output>
       <button
         type="button"
@@ -105,6 +106,7 @@ describe('ReservationDraftProvider', () => {
 
     expect(screen.getByTestId('product')).toHaveTextContent('tour-restored');
     expect(screen.getByTestId('style')).toHaveTextContent('PREMIUM');
+    expect(screen.getByTestId('hydration')).toHaveTextContent('restored');
     expect(screen.getByTestId('persistence')).toHaveTextContent('available');
   });
 
