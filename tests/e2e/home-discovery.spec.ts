@@ -61,6 +61,44 @@ test.describe('Home discovery core', () => {
     await expect(header).toHaveAttribute('data-header-tone', 'overlay');
   });
 
+  test('rapid Theme activation creates one history entry and restores Home scroll context', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto('/');
+
+    const themeLink = page.getByRole('link', { name: 'Explore Golf Challenge theme tours' });
+
+    await themeLink.scrollIntoViewIfNeeded();
+
+    const homeScroll = await page.evaluate(() => window.scrollY);
+
+    expect(homeScroll).toBeGreaterThan(0);
+
+    await themeLink.evaluate((element) => {
+      const dispatchPrimaryClick = () =>
+        element.dispatchEvent(
+          new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            button: 0,
+          }),
+        );
+
+      dispatchPrimaryClick();
+      dispatchPrimaryClick();
+    });
+
+    await expect(page).toHaveURL(/\/tours\?theme=GOLF_CHALLENGE$/);
+
+    await page.goBack();
+
+    await expect(page).toHaveURL(/\/$/);
+    await expect
+      .poll(() => page.evaluate(() => window.scrollY))
+      .toBeGreaterThanOrEqual(Math.max(0, homeScroll - 2));
+  });
+
   test('Home starts with a keyboard-accessible path and a visible hero focus treatment', async ({
     page,
   }) => {

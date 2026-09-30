@@ -1,3 +1,5 @@
+import { useRef, type MouseEvent as ReactMouseEvent } from 'react';
+
 import { ImageReveal } from '@/shared/motion';
 import { ImageFrame, TextLink } from '@/shared/ui';
 
@@ -8,6 +10,17 @@ interface ThemeEditorialCardProps {
   href: string;
   presentation: ThemeDiscoveryPresentation;
   sequence: number;
+}
+
+function isSingleWindowNavigation(event: ReactMouseEvent<HTMLAnchorElement>) {
+  return (
+    event.button === 0 &&
+    !event.defaultPrevented &&
+    !event.metaKey &&
+    !event.ctrlKey &&
+    !event.shiftKey &&
+    !event.altKey
+  );
 }
 
 const themeClassNames: Record<ThemeDiscoveryPresentation['theme'], string> = {
@@ -24,6 +37,8 @@ const themeClassNames: Record<ThemeDiscoveryPresentation['theme'], string> = {
  * 이 Feature는 Theme를 TourProduct id로 변환하거나 Router contract를 소유하지 않는다.
  */
 export function ThemeEditorialCard({ href, presentation, sequence }: ThemeEditorialCardProps) {
+  const navigationRequested = useRef(false);
+
   return (
     <article className={[styles.root, themeClassNames[presentation.theme]].join(' ')}>
       <ImageReveal className={styles.mediaReveal ?? ''}>
@@ -48,6 +63,19 @@ export function ThemeEditorialCard({ href, presentation, sequence }: ThemeEditor
         <TextLink
           aria-label={`Explore ${presentation.title} theme tours`}
           className={styles.action ?? ''}
+          onClick={(event) => {
+            if (!isSingleWindowNavigation(event)) {
+              return;
+            }
+
+            // EDGE CASE: rapid click/tap이 같은 Theme focus route를 history에 중복 push하지 않는다.
+            if (navigationRequested.current) {
+              event.preventDefault();
+              return;
+            }
+
+            navigationRequested.current = true;
+          }}
           to={href}
         >
           Explore

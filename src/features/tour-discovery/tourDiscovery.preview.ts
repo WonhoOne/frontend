@@ -143,4 +143,10 @@ export const tourDiscoveryPreviewStates = {
     products: tourDiscoveryPreviewProducts,
     freshness: 'stale',
   },
+  offline: {
+    status: 'ready',
+    products: tourDiscoveryPreviewProducts,
+    freshness: 'stale',
+    offline: true,
+  },
 } as const satisfies Record<string, TourDiscoveryCollectionState>;

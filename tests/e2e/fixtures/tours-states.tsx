@@ -21,6 +21,7 @@ const fixtureStates = {
   'image-failure': tourDiscoveryPreviewStates.imageFailure,
   refreshing: tourDiscoveryPreviewStates.refreshing,
   stale: tourDiscoveryPreviewStates.stale,
+  offline: tourDiscoveryPreviewStates.offline,
 } as const satisfies Record<string, TourDiscoveryCollectionState>;
 
 function readFixtureState() {

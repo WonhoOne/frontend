@@ -1,7 +1,13 @@
 import { useSearchParams } from 'react-router';
 
 import { routeBuilders, routePaths } from '@/app/router/paths';
-import { EmptyState, LoadingState, RefreshIndicator, SectionError } from '@/app/state';
+import {
+  EmptyState,
+  LoadingState,
+  OfflineBanner,
+  RefreshIndicator,
+  SectionError,
+} from '@/app/state';
 import {
   groupTourProductsByTheme,
   readThemeFromSearchParams,
@@ -101,6 +107,13 @@ function ToursCollectionStateView({
 
   return (
     <div>
+      {collectionState.offline === true ? (
+        <div className={styles.connectivity}>
+          <OfflineBanner>
+            You're offline. Showing saved journeys that may be out of date.
+          </OfflineBanner>
+        </div>
+      ) : null}
       {collectionState.freshness === 'refreshing' ? (
         <div className={styles.freshness}>
           <RefreshIndicator label="Updating journeys" state="refreshing" />

@@ -72,5 +72,6 @@ export type TourDiscoveryCollectionState =
       status: 'ready';
       products: readonly TourProductSummaryModel[];
       freshness?: TourDiscoveryFreshness;
+      offline?: boolean;
       unavailableThemes?: readonly TourTheme[];
     };

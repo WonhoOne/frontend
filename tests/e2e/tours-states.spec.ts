@@ -76,6 +76,17 @@ test.describe('Tours collection states', () => {
     await expect(page.getByRole('link', { name: /tour details$/ })).toHaveCount(5);
   });
 
+  test('offline cached content remains visible with an explicit status', async ({ page }) => {
+    await page.goto(`${fixture}?state=offline`);
+
+    await expect(
+      page
+        .getByRole('status')
+        .filter({ hasText: "You're offline. Showing saved journeys that may be out of date." }),
+    ).toBeVisible();
+    await expect(page.getByRole('link', { name: /tour details$/ })).toHaveCount(5);
+  });
+
   test('an image failure stays local to its Product card', async ({ page }) => {
     await page.goto(`${fixture}?state=image-failure`);
 

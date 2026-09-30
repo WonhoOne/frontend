@@ -24,7 +24,7 @@ function renderToursState(
     onRetryTheme?: (theme: TourTheme) => void;
   } = {},
 ) {
-  render(
+  return render(
     <MemoryRouter initialEntries={['/tours']}>
       <ToursPageView
         collectionState={collectionState}
@@ -191,7 +191,7 @@ describe('ToursPage', () => {
     expect(onRetryTheme).toHaveBeenCalledWith('PARENTS_HEALING');
   });
 
-  it('preserves successful content while refreshing or stale', () => {
+  it('preserves successful content while refreshing, stale, or offline', () => {
     const { unmount } = render(
       <MemoryRouter>
         <ToursPageView
@@ -208,9 +208,20 @@ describe('ToursPage', () => {
 
     unmount();
 
-    renderToursState(tourDiscoveryPreviewStates.stale);
+    const staleView = renderToursState(tourDiscoveryPreviewStates.stale);
 
     expect(screen.getByText('Showing saved journeys while refresh is unavailable')).toBeVisible();
+    expect(
+      screen.getByRole('link', { name: 'View Golf Challenge · Journey 01 tour details' }),
+    ).toBeVisible();
+
+    staleView.unmount();
+
+    renderToursState(tourDiscoveryPreviewStates.offline);
+
+    expect(
+      screen.getByText("You're offline. Showing saved journeys that may be out of date."),
+    ).toBeVisible();
     expect(
       screen.getByRole('link', { name: 'View Golf Challenge · Journey 01 tour details' }),
     ).toBeVisible();

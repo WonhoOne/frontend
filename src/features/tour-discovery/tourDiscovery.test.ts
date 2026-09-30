@@ -46,6 +46,17 @@ describe('tour discovery contract boundary', () => {
     expect(readThemeFromSearchParams(new URLSearchParams())).toBeNull();
   });
 
+  it('keeps preview Product styles inside the approved Theme style boundary', () => {
+    for (const product of tourDiscoveryProductFixtures) {
+      const presentation = themeDiscoveryPresentations.find((item) => item.theme === product.theme);
+
+      expect(presentation).toBeDefined();
+      const allowedStyles = new Set<string>(presentation?.availableStyles ?? []);
+
+      expect(product.availableStyles.every((style) => allowedStyles.has(style))).toBe(true);
+    }
+  });
+
   it('keeps fixture media contract-neutral until local assets are chosen', () => {
     expect(tourDiscoveryProductFixtures.every((product) => product.media.imageSrc === null)).toBe(
       true,
