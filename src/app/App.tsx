@@ -1,27 +1,18 @@
 import { AppErrorBoundary } from '@/app/errors/AppErrorBoundary';
 import { AppProviders } from '@/app/providers/AppProviders';
-import { PageContainer } from '@/shared/ui';
+import { AppRouter } from '@/app/router/AppRouter';
 
 /**
  * Root application composition.
  *
- * LIFECYCLE: The router replaces the bootstrap surface in P7. Keeping the
- * temporary surface here avoids inventing Product screens before route
- * foundation exists.
+ * INVARIANT: Global providers and the Error Boundary wrap the Router. Route
+ * composition itself stays in app/router rather than leaking into App.
  */
 export function App() {
   return (
     <AppErrorBoundary>
       <AppProviders>
-        <a className="skip-link" href="#main-content">
-          Skip to main content
-        </a>
-        <main id="main-content" tabIndex={-1}>
-          <PageContainer>
-            <h1>Mister World</h1>
-            <p>Frontend foundation is running.</p>
-          </PageContainer>
-        </main>
+        <AppRouter />
       </AppProviders>
     </AppErrorBoundary>
   );
