@@ -65,42 +65,51 @@ test.describe('Tour Detail → Configure transaction handoff', () => {
     await expect(page.getByRole('button', { name: 'Review trip' })).toBeDisabled();
 
     await expect
-      .poll(async () =>
-        page.evaluate((key) => {
-          const serialized = window.sessionStorage.getItem(key);
-          return serialized === null ? null : JSON.parse(serialized);
-        }, reservationDraftStorageKey),
+      .poll(() =>
+        page.evaluate(
+          ({ key, productId }) =>
+            window.sessionStorage.getItem(key)?.includes(`"tourProductId":"${productId}"`) ??
+            false,
+          {
+            key: reservationDraftStorageKey,
+            productId: 'demo-golf-product-a',
+          },
+        ),
       )
-      .toMatchObject({
-        schemaVersion: 1,
-        tourProductId: 'demo-golf-product-a',
-        tourScheduleId: 'preview-golf_challenge-a',
-        tourStyle: 'GRAND',
-        participantCount: null,
-        configuration: {
-          hotelSelectionKey: null,
-          transportSelectionKey: null,
-          mealSelectionKey: null,
-          extraSelectionKeys: [],
-        },
-      });
+      .toBe(true);
 
-    const persisted = await page.evaluate((key) => {
-      const serialized = window.sessionStorage.getItem(key);
-      return serialized === null ? null : JSON.parse(serialized);
-    }, reservationDraftStorageKey);
+    const serialized = await page.evaluate(
+      (key) => window.sessionStorage.getItem(key),
+      reservationDraftStorageKey,
+    );
 
-    expect(persisted).not.toBeNull();
+    expect(serialized).not.toBeNull();
+
+    const persisted = JSON.parse(serialized ?? 'null') as unknown;
+
+    expect(persisted).toMatchObject({
+      schemaVersion: 1,
+      tourProductId: 'demo-golf-product-a',
+      tourScheduleId: 'preview-golf_challenge-a',
+      tourStyle: 'GRAND',
+      participantCount: null,
+      configuration: {
+        hotelSelectionKey: null,
+        transportSelectionKey: null,
+        mealSelectionKey: null,
+        extraSelectionKeys: [],
+      },
+    });
     expect(persisted).not.toMatchObject({
       tourProductId: 'tour-old',
       tourScheduleId: 'schedule-old',
       participantCount: 8,
-    });
-    expect(persisted?.configuration).not.toMatchObject({
-      hotelSelectionKey: 'fixture:hotel:b',
-      transportSelectionKey: 'fixture:transport:b',
-      mealSelectionKey: 'fixture:meal:b',
-      extraSelectionKeys: ['fixture:extras:a'],
+      configuration: {
+        hotelSelectionKey: 'fixture:hotel:b',
+        transportSelectionKey: 'fixture:transport:b',
+        mealSelectionKey: 'fixture:meal:b',
+        extraSelectionKeys: ['fixture:extras:a'],
+      },
     });
   });
 });
