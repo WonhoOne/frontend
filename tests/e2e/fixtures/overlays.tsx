@@ -29,6 +29,7 @@ function OverlayFixture() {
         title="E2E dialog"
       >
         <p>Foundation dialog viewport probe.</p>
+        <Button variant="secondary">Dialog action</Button>
       </Dialog>
 
       <BottomSheet
@@ -38,6 +39,7 @@ function OverlayFixture() {
         title="E2E sheet"
       >
         <p>Foundation bottom sheet viewport probe.</p>
+        <Button variant="secondary">Sheet action</Button>
       </BottomSheet>
     </main>
   );

@@ -9,11 +9,11 @@ interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 /**
- * Shared labeled text input.
+ * 공용 label 기반 text input이다.
  *
- * CONTRACT: The component owns label/input/message accessibility wiring only.
- * Credential autocomplete values and Product validation rules remain callers'
- * responsibility until their contracts are approved.
+ * CONTRACT: 이 Component는 label/input/message 접근성 연결만 소유한다.
+ * Credential autocomplete 값과 Product validation rule은 해당 계약이 승인될 때까지
+ * 호출자가 책임진다.
  */
 export function TextField({
   'aria-describedby': ariaDescribedBy,

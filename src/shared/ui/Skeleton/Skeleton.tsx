@@ -12,10 +12,10 @@ export interface SkeletonProps extends Omit<
 }
 
 /**
- * Presentational loading geometry for Feature-owned skeleton compositions.
+ * Feature가 조합하는 skeleton을 위한 presentational loading geometry다.
  *
- * CONTRACT: Loading meaning belongs to the parent section via aria-busy/status
- * text. Individual skeleton shapes stay hidden from assistive technology.
+ * CONTRACT: Loading의 의미는 상위 section의 aria-busy/status text가 소유한다.
+ * 개별 skeleton shape는 assistive technology에서 숨긴다.
  */
 export function Skeleton({ className, variant = 'block', ...rest }: SkeletonProps) {
   const classes = [styles.root, styles[variant], className].filter(Boolean).join(' ');

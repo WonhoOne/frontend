@@ -16,13 +16,13 @@ export interface DialogProps {
 }
 
 /**
- * Project-styled modal dialog backed by Radix focus/portal behavior.
+ * Radix의 focus/portal behavior를 사용하는 프로젝트 공용 modal dialog다.
  *
- * CONTRACT: The wrapper owns generic modal mechanics only. Critical flows may
- * disable Escape/outside dismissal explicitly, but every dialog keeps a
- * visible close control.
+ * CONTRACT: 이 wrapper는 generic modal mechanics만 소유한다.
+ * Critical flow는 Escape/outside dismissal을 명시적으로 막을 수 있지만,
+ * 모든 Dialog에는 항상 보이는 close control이 남아야 한다.
  *
- * INVARIANT: Nested modal focus traps are not a supported Foundation pattern.
+ * INVARIANT: 중첩 modal focus trap은 Foundation 기본 패턴으로 지원하지 않는다.
  */
 export function Dialog({
   children,

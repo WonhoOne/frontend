@@ -10,10 +10,10 @@ interface OptionCardProps
 }
 
 /**
- * Visual shell for selectable native controls.
+ * 선택 가능한 native control을 감싸는 visual shell이다.
  *
- * CONTRACT: Selection semantics stay with the nested/adjacent native input or
- * button. This component only reflects visual state and focus-within.
+ * CONTRACT: Selection semantics는 내부 또는 인접 native input/button이 소유한다.
+ * 이 Component는 visual state와 focus-within만 반영한다.
  */
 export function OptionCard({
   children,

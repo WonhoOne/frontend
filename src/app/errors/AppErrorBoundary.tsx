@@ -9,10 +9,10 @@ const initialState: AppErrorBoundaryState = {
 };
 
 /**
- * Last-resort boundary for unexpected React render/runtime failures.
+ * 예상하지 못한 React render/runtime 실패를 마지막으로 포착한다.
  *
- * CONTRACT: Request failures and expected Product errors are not handled here;
- * those belong to the feature/query state that owns the request.
+ * CONTRACT: 요청 실패나 예상 가능한 Product 오류는 여기서 처리하지 않는다.
+ * 해당 오류는 요청을 소유한 Feature/Query 상태가 처리한다.
  */
 export class AppErrorBoundary extends Component<PropsWithChildren, AppErrorBoundaryState> {
   override state = initialState;

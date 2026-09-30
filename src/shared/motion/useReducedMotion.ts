@@ -25,10 +25,10 @@ function subscribe(onPreferenceChange: () => void) {
 }
 
 /**
- * Subscribes React behavior to the user's reduced-motion preference.
+ * 사용자의 reduced-motion 플랫폼 설정을 React behavior에 연결한다.
  *
- * CONTRACT: This hook exposes only the platform preference. Components decide
- * how to simplify presentation; Product behavior must not branch on it.
+ * CONTRACT: 이 Hook은 플랫폼 preference만 노출한다.
+ * 표현을 어떻게 단순화할지는 Component가 결정하며 Product behavior는 분기하지 않는다.
  */
 export function useReducedMotion() {
   return useSyncExternalStore(subscribe, getSnapshot, () => false);

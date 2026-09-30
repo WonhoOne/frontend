@@ -12,10 +12,10 @@ interface RoutePlaceholderProps {
 }
 
 /**
- * Temporary PR-01 route surface used to verify routing and App Shell wiring.
+ * PR-01에서 routing과 App Shell 연결을 검증하기 위한 임시 route surface다.
  *
- * LIFECYCLE: Product Page PRs replace these placeholders. They must not grow
- * fake Product data or business behavior.
+ * LIFECYCLE: 이후 Product Page PR이 이 placeholder를 대체한다.
+ * 여기에는 가짜 Product data나 business behavior를 추가하지 않는다.
  */
 export function RoutePlaceholder({ matchedParam, routeName, screenName }: RoutePlaceholderProps) {
   return (

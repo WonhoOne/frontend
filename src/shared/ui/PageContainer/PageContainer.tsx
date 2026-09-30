@@ -10,10 +10,10 @@ interface PageContainerProps
 }
 
 /**
- * Centers route content inside the approved responsive page gutters.
+ * 승인된 responsive page gutter 안에서 route content를 중앙 정렬한다.
  *
- * CONTRACT: The variant names describe layout width only. Product/page
- * semantics must not be encoded into this primitive.
+ * CONTRACT: variant 이름은 layout width만 설명한다.
+ * Product/Page semantics를 이 primitive에 인코딩하지 않는다.
  */
 export function PageContainer({
   children,

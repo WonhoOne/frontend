@@ -16,12 +16,12 @@ export interface BottomSheetProps {
 }
 
 /**
- * Bottom-anchored modal surface using the same Radix dialog behavior as Dialog.
+ * Dialog와 동일한 Radix modal behavior를 사용하는 bottom-anchored surface다.
  *
- * CONTRACT: This component changes placement and scrolling only. Focus,
- * dismissal, and accessible modal semantics stay aligned with Dialog.
+ * CONTRACT: 이 Component는 배치와 scrolling만 바꾼다.
+ * focus, dismissal, accessible modal semantics는 Dialog와 동일하게 유지한다.
  *
- * INVARIANT: Nested modal focus traps are not a supported Foundation pattern.
+ * INVARIANT: 중첩 modal focus trap은 Foundation 기본 패턴으로 지원하지 않는다.
  */
 export function BottomSheet({
   children,

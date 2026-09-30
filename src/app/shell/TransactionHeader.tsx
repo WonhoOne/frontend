@@ -11,10 +11,10 @@ interface TransactionHeaderProps {
 }
 
 /**
- * Minimal application chrome for configuration/reservation route surfaces.
+ * Configuration/Reservation route를 위한 최소 application chrome이다.
  *
- * CONTRACT: Feature state and navigation decisions are injected by callers.
- * The header never queries Reservation or Configuration data itself.
+ * CONTRACT: Feature 상태와 navigation 결정은 호출자가 주입한다.
+ * Header 자체가 Reservation 또는 Configuration data를 조회하지 않는다.
  */
 export function TransactionHeader({ backAction, title }: TransactionHeaderProps) {
   return (

@@ -11,10 +11,10 @@ const primaryNavigation = [
 ] as const;
 
 /**
- * Public application navigation chrome.
+ * 공개 애플리케이션의 전역 navigation chrome이다.
  *
- * CONTRACT: The Foundation header exposes navigation only. It does not infer
- * Auth state or query Feature data.
+ * CONTRACT: Foundation Header는 navigation만 제공한다.
+ * Auth 상태를 추론하거나 Feature data를 조회하지 않는다.
  */
 export function GlobalHeader() {
   return (

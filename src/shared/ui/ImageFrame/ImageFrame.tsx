@@ -24,11 +24,11 @@ interface ImageLoadState {
 }
 
 /**
- * Keeps image loading/failure presentation local to the media surface.
+ * 이미지 loading/failure 표현을 media surface 내부에 한정한다.
  *
- * INVARIANT: Image failure alone must not convert the parent data section into
- * an API Error. The caller owns image meaning through an explicit alt string
- * and may provide a Feature-specific fallback when useful.
+ * INVARIANT: 이미지 실패만으로 상위 data section을 API Error로 바꾸지 않는다.
+ * 이미지의 의미는 호출자가 명시적인 alt로 소유하며,
+ * 필요하면 Feature 전용 fallback을 제공할 수 있다.
  */
 export function ImageFrame({
   alt,

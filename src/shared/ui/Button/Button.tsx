@@ -14,10 +14,10 @@ interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'chi
 }
 
 /**
- * Shared native button control.
+ * 공용 native button control이다.
  *
- * CONTRACT: Loading only changes interaction/presentation mechanics. Mutation
- * meaning, retry policy, and Product-specific labels remain caller-owned.
+ * CONTRACT: Loading은 interaction/presentation mechanics만 바꾼다.
+ * Mutation 의미, retry 정책, Product 전용 label은 호출자가 소유한다.
  */
 export function Button({
   'aria-label': ariaLabel,

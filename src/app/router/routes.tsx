@@ -19,10 +19,10 @@ function handle(chrome: AppRouteHandle['chrome'], title: string): AppRouteHandle
 }
 
 /**
- * Customer route SSOT for the Foundation router.
+ * Foundation Router가 사용하는 Customer route 단일 정의 지점이다.
  *
- * CONTRACT: These entries map approved route paths to Page composition only.
- * They do not contain loaders, Backend calls, Auth guards, or Product data.
+ * CONTRACT: 승인된 route path와 Page 조합만 정의한다.
+ * loader, Backend 호출, Auth guard, Product data는 포함하지 않는다.
  */
 export const appRoutes: RouteObject[] = [
   {

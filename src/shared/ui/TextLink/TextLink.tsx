@@ -17,10 +17,11 @@ type ExternalTextLinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'clas
 export type TextLinkProps = InternalTextLinkProps | ExternalTextLinkProps;
 
 /**
- * Shared text navigation control.
+ * 공용 text navigation control이다.
  *
- * CONTRACT: The to prop uses React Router navigation. The href prop uses a
- * real anchor for external/document URLs. Callers choose semantics explicitly.
+ * CONTRACT: to prop은 React Router navigation을 사용하고,
+ * href prop은 external/document URL을 위한 실제 anchor를 사용한다.
+ * 어떤 semantics를 쓸지는 호출자가 명시적으로 선택한다.
  */
 export function TextLink(props: TextLinkProps) {
   if ('href' in props) {
