@@ -107,6 +107,11 @@
   --mw-container-auth: 520px;
   --mw-page-gutter: 20px;
 
+  /* Shared control geometry */
+  --mw-control-min-target: 44px;
+  --mw-control-field-height: 48px;
+  --mw-control-disabled-opacity: 0.56;
+
   /* Radius */
   --mw-radius-xs: 4px;
   --mw-radius-sm: 8px;
