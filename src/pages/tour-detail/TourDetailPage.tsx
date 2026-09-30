@@ -167,7 +167,9 @@ function TourDetailReadyView({
               </div>
               <div>
                 <dt>Style</dt>
-                <dd>{selectedStyle === null ? 'Not selected' : styleSummaryLabel[selectedStyle]}</dd>
+                <dd>
+                  {selectedStyle === null ? 'Not selected' : styleSummaryLabel[selectedStyle]}
+                </dd>
               </div>
               <div>
                 <dt>Schedule</dt>
