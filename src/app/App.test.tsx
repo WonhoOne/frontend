@@ -22,7 +22,9 @@ describe('App Foundation composition', () => {
     render(<App />);
 
     expect(screen.getByRole('main')).toHaveAttribute('id', 'main-content');
-    expect(screen.getByRole('heading', { level: 1, name: 'Home' })).toBeVisible();
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'A journey made for your moment.' }),
+    ).toBeVisible();
   });
 
   it('makes the global QueryClient available through AppProviders', () => {

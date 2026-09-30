@@ -1,0 +1,118 @@
+.page {
+  overflow: clip;
+}
+
+.content {
+  display: grid;
+  gap: var(--mw-space-24);
+  padding-block: var(--mw-space-24);
+}
+
+.intro {
+  display: grid;
+  max-inline-size: 760px;
+  gap: var(--mw-space-4);
+}
+
+.eyebrow,
+.intro h2,
+.intro p,
+.footerBrand,
+.footerNote {
+  margin: 0;
+}
+
+.eyebrow {
+  color: var(--mw-accent);
+  font-size: var(--mw-font-size-label-sm);
+  font-weight: var(--mw-font-weight-semibold);
+  letter-spacing: var(--mw-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.intro h2 {
+  max-inline-size: 14ch;
+  font-family: var(--mw-font-editorial);
+  font-size: var(--mw-font-size-display-lg);
+  font-weight: var(--mw-font-weight-regular);
+  letter-spacing: var(--mw-tracking-editorial);
+  line-height: var(--mw-line-height-display-lg);
+}
+
+.intro p {
+  max-inline-size: 58ch;
+  color: var(--mw-text-secondary);
+  font-size: var(--mw-font-size-body-lg);
+}
+
+.themeGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--mw-space-16);
+}
+
+.footer {
+  border-block-start: var(--mw-border-subtle);
+  background: var(--mw-surface);
+}
+
+.footerInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mw-space-8);
+  padding-block: var(--mw-space-10);
+}
+
+.footerBrand {
+  font-family: var(--mw-font-editorial);
+  font-size: var(--mw-font-size-heading-md);
+}
+
+.footerNote {
+  margin-block-start: var(--mw-space-2);
+  color: var(--mw-text-secondary);
+  font-size: var(--mw-font-size-body-sm);
+}
+
+.footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mw-space-3) var(--mw-space-6);
+}
+
+.footer nav a {
+  color: var(--mw-ink);
+}
+
+.footer nav a:visited {
+  color: var(--mw-ink);
+}
+
+@media (min-width: 768px) {
+  .content {
+    gap: var(--mw-space-32);
+    padding-block: var(--mw-space-32);
+  }
+
+  .themeGrid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--mw-space-16) var(--mw-space-6);
+  }
+
+  .themeGrid > div {
+    display: contents;
+  }
+
+  .footerInner {
+    flex-direction: row;
+    align-items: end;
+    justify-content: space-between;
+  }
+}
+
+@media (min-width: 1280px) {
+  .themeGrid {
+    column-gap: var(--mw-space-10);
+    row-gap: var(--mw-space-24);
+  }
+}

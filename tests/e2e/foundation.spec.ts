@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 const routeCases = [
-  ['/', 'Home'],
+  ['/', 'A journey made for your moment.'],
   ['/tours', 'Tours'],
   ['/tours/e2e-tour-id', 'Tour Detail'],
   ['/tours/e2e-tour-id/configure', 'Configure'],
@@ -49,7 +49,10 @@ test.describe('Foundation routes', () => {
   test('navigation preserves browser back and forward history', async ({ page }) => {
     await page.goto('/');
 
-    await page.getByRole('link', { name: 'Tours' }).click();
+    await page
+      .getByRole('navigation', { name: 'Primary' })
+      .getByRole('link', { name: 'Tours', exact: true })
+      .click();
     await expect(page).toHaveURL(/\/tours$/);
     await expect(page.getByRole('heading', { level: 1, name: 'Tours' })).toBeVisible();
 
@@ -62,7 +65,9 @@ test.describe('Foundation routes', () => {
 
     await page.goBack();
     await expect(page).toHaveURL(/\/$/);
-    await expect(page.getByRole('heading', { level: 1, name: 'Home' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'A journey made for your moment.' }),
+    ).toBeVisible();
 
     await page.goForward();
     await expect(page).toHaveURL(/\/tours$/);
@@ -83,7 +88,8 @@ test.describe('Foundation routes', () => {
     const homeScroll = await page.evaluate(() => window.scrollY);
 
     await page
-      .getByRole('link', { name: 'Tours' })
+      .getByRole('navigation', { name: 'Primary' })
+      .getByRole('link', { name: 'Tours', exact: true })
       .evaluate((element) => (element as HTMLAnchorElement).click());
 
     await expect(page).toHaveURL(/\/tours$/);
@@ -220,7 +226,9 @@ test.describe('Foundation responsive baseline', () => {
 
       expect(viewport.scrollWidth).toBeLessThanOrEqual(viewport.innerWidth);
 
-      const headingBox = await page.getByRole('heading', { level: 1, name: 'Home' }).boundingBox();
+      const headingBox = await page
+        .getByRole('heading', { level: 1, name: 'A journey made for your moment.' })
+        .boundingBox();
 
       expect(headingBox).not.toBeNull();
       expect(headingBox?.x ?? 0).toBeGreaterThan(0);

@@ -1,0 +1,107 @@
+.root {
+  display: grid;
+  gap: var(--mw-space-10);
+  padding: var(--mw-space-12);
+  border-radius: var(--mw-radius-xl);
+  background: var(--mw-ink);
+  color: var(--mw-surface-elevated);
+}
+
+.heading {
+  display: grid;
+  max-inline-size: 720px;
+  gap: var(--mw-space-4);
+}
+
+.eyebrow,
+.heading h2,
+.heading p {
+  margin: 0;
+}
+
+.eyebrow {
+  color: color-mix(in srgb, var(--mw-surface-elevated) 62%, transparent);
+  font-size: var(--mw-font-size-label-sm);
+  font-weight: var(--mw-font-weight-semibold);
+  letter-spacing: var(--mw-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.heading h2 {
+  max-inline-size: 13ch;
+  font-family: var(--mw-font-editorial);
+  font-size: var(--mw-font-size-display-lg);
+  font-weight: var(--mw-font-weight-regular);
+  letter-spacing: var(--mw-tracking-editorial);
+  line-height: var(--mw-line-height-display-lg);
+}
+
+.heading p {
+  max-inline-size: 56ch;
+  color: color-mix(in srgb, var(--mw-surface-elevated) 72%, transparent);
+}
+
+.steps {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.steps li {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  min-block-size: 64px;
+  align-items: center;
+  gap: var(--mw-space-4);
+  border-block-start: 1px solid color-mix(in srgb, var(--mw-surface-elevated) 16%, transparent);
+}
+
+.steps li:last-child {
+  border-block-end: 1px solid color-mix(in srgb, var(--mw-surface-elevated) 16%, transparent);
+}
+
+.steps span {
+  color: color-mix(in srgb, var(--mw-surface-elevated) 52%, transparent);
+  font-family: var(--mw-font-editorial);
+}
+
+.steps strong {
+  font-weight: var(--mw-font-weight-medium);
+}
+
+.action {
+  inline-size: fit-content;
+  gap: var(--mw-space-2);
+  color: var(--mw-surface-elevated);
+  text-decoration-color: color-mix(in srgb, var(--mw-surface-elevated) 38%, transparent);
+}
+
+.action:hover,
+.action:visited {
+  color: var(--mw-surface-elevated);
+}
+
+@media (max-width: 639px) {
+  .root {
+    padding: var(--mw-space-8) var(--mw-space-6);
+  }
+}
+
+@media (min-width: 1024px) {
+  .root {
+    grid-template-columns: minmax(0, 1.1fr) minmax(340px, 0.9fr);
+    column-gap: var(--mw-space-16);
+    padding: var(--mw-space-16);
+  }
+
+  .action {
+    grid-column: 1;
+  }
+
+  .steps {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+}

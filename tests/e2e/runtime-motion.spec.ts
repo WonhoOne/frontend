@@ -13,7 +13,10 @@ test.describe('Route motion runtime', () => {
       await motionSurface.evaluate((element) => getComputedStyle(element).animationName),
     ).toContain('route-entry');
 
-    await page.getByRole('link', { name: 'Tours' }).click();
+    await page
+      .getByRole('navigation', { name: 'Primary' })
+      .getByRole('link', { name: 'Tours', exact: true })
+      .click();
     await expect(page).toHaveURL(/\/tours$/);
     await expect(motionSurface).toHaveAttribute('data-route-motion-direction', 'forward');
     expect(
@@ -65,7 +68,10 @@ test.describe('Route motion runtime', () => {
       'none',
     );
 
-    await page.getByRole('link', { name: 'Tours' }).click();
+    await page
+      .getByRole('navigation', { name: 'Primary' })
+      .getByRole('link', { name: 'Tours', exact: true })
+      .click();
 
     await expect(page).toHaveURL(/\/tours$/);
     await expect(page.getByRole('heading', { level: 1, name: 'Tours' })).toBeVisible();
