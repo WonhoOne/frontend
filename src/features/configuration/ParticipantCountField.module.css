@@ -1,0 +1,11 @@
+.root {
+  display: grid;
+  gap: var(--mw-space-2);
+}
+
+.summary {
+  margin: 0;
+  color: var(--mw-text-secondary);
+  font-size: var(--mw-font-size-body-sm);
+  line-height: var(--mw-line-height-body-sm);
+}

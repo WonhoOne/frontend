@@ -1,0 +1,47 @@
+.root {
+  display: grid;
+  gap: var(--mw-space-2);
+}
+
+.label {
+  color: var(--mw-text-secondary);
+  font-size: var(--mw-font-size-label-md);
+}
+
+.total,
+.message,
+.error {
+  margin: 0;
+}
+
+.total {
+  color: var(--mw-ink);
+  font-size: var(--mw-font-size-heading-sm);
+  line-height: var(--mw-line-height-heading-sm);
+}
+
+.message,
+.error,
+.status {
+  color: var(--mw-text-secondary);
+  font-size: var(--mw-font-size-body-sm);
+  line-height: var(--mw-line-height-body-sm);
+}
+
+.error {
+  color: var(--mw-danger);
+}
+
+.loading {
+  inline-size: min(180px, 100%);
+}
+
+.skeleton {
+  min-block-size: 1.4em;
+}
+
+.valueState {
+  display: grid;
+  justify-items: start;
+  gap: var(--mw-space-2);
+}

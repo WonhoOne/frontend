@@ -1,0 +1,140 @@
+.bar {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: var(--mw-z-sticky);
+  display: flex;
+  align-items: center;
+  gap: var(--mw-space-3);
+  padding: var(--mw-space-3) var(--mw-page-gutter)
+    max(var(--mw-space-3), env(safe-area-inset-bottom));
+  border-block-start: var(--mw-border-subtle);
+  background: var(--mw-surface-elevated);
+  box-shadow: var(--mw-elevation-1);
+}
+
+.summaryTrigger {
+  display: grid;
+  min-block-size: 52px;
+  min-inline-size: 0;
+  flex: 1;
+  align-content: center;
+  gap: var(--mw-space-1);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--mw-ink);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.summaryTrigger:focus-visible {
+  outline: var(--mw-focus-outline);
+  outline-offset: var(--mw-focus-offset);
+  border-radius: var(--mw-radius-sm);
+}
+
+.primaryLine,
+.secondaryLine {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.primaryLine {
+  font-size: var(--mw-font-size-body-sm);
+  font-weight: var(--mw-font-weight-semibold);
+  line-height: var(--mw-line-height-body-sm);
+}
+
+.secondaryLine {
+  color: var(--mw-text-secondary);
+  font-size: var(--mw-font-size-label-sm);
+  line-height: var(--mw-line-height-label-sm);
+}
+
+.reviewButton {
+  min-block-size: 52px;
+  flex: 0 0 auto;
+}
+
+.sheetContent {
+  display: grid;
+  gap: var(--mw-space-6);
+}
+
+.sheetHeader {
+  display: grid;
+  gap: var(--mw-space-1);
+}
+
+.sheetHeader p {
+  margin: 0;
+}
+
+.sheetHeader > p:last-child {
+  color: var(--mw-text-secondary);
+  font-size: var(--mw-font-size-body-sm);
+}
+
+.theme {
+  color: var(--mw-ink);
+  font-size: var(--mw-font-size-heading-sm);
+  font-weight: var(--mw-font-weight-semibold);
+}
+
+.list {
+  display: grid;
+  margin: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(96px, 0.7fr) minmax(0, 1.3fr);
+  gap: var(--mw-space-4);
+  padding-block: var(--mw-space-3);
+  border-block-end: var(--mw-border-subtle);
+}
+
+.row dt,
+.row dd {
+  margin: 0;
+}
+
+.row dt {
+  color: var(--mw-text-secondary);
+  font-size: var(--mw-font-size-label-md);
+}
+
+.row dd {
+  display: grid;
+  gap: var(--mw-space-1);
+  color: var(--mw-ink);
+  font-size: var(--mw-font-size-body-sm);
+  text-align: end;
+}
+
+.warning {
+  color: var(--mw-danger);
+  font-size: var(--mw-font-size-label-sm);
+  font-weight: var(--mw-font-weight-semibold);
+}
+
+.sheetReviewButton {
+  inline-size: 100%;
+  min-block-size: 52px;
+}
+
+.requirements {
+  margin: 0;
+  color: var(--mw-text-secondary);
+  font-size: var(--mw-font-size-label-sm);
+  line-height: var(--mw-line-height-label-md);
+}
+
+@media (min-width: 1024px) {
+  .bar {
+    display: none;
+  }
+}
