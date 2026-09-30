@@ -82,3 +82,20 @@ npm run test:e2e
 ```
 
 `npm run verify` runs typecheck, lint, formatting, unit/component tests, and the production build. The PR-01 Playwright baseline runs Chromium Foundation smoke tests.
+
+
+### Development scenarios
+
+When browser mocking is enabled, a development-only scenario selector is mounted in the app:
+
+```bash
+VITE_ENABLE_MOCKS=true npm run dev
+```
+
+The selected scenario is stored in the URL as `mockScenario`, for example:
+
+```text
+/?mockScenario=network-error
+```
+
+The registry contains scenario identities only. Backend endpoint, DTO, and response payload shapes are added later only when their contracts are approved. Production builds do not include or mount the scenario selector.

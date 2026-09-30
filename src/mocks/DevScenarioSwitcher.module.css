@@ -1,0 +1,30 @@
+.root {
+  position: fixed;
+  inset-inline-end: var(--mw-space-4);
+  inset-block-end: var(--mw-space-4);
+  z-index: var(--mw-z-dropdown);
+  display: grid;
+  gap: var(--mw-space-2);
+  inline-size: min(280px, calc(100vw - (2 * var(--mw-space-4))));
+  padding: var(--mw-space-3);
+  border: var(--mw-border-default);
+  border-radius: var(--mw-radius-md);
+  background: var(--mw-surface-elevated);
+  box-shadow: var(--mw-elevation-2);
+}
+
+.label {
+  color: var(--mw-text-secondary);
+  font-size: var(--mw-font-size-label-sm);
+  font-weight: var(--mw-font-weight-semibold);
+}
+
+.select {
+  min-block-size: var(--mw-control-min-target);
+  inline-size: 100%;
+  padding-inline: var(--mw-space-3);
+  border: var(--mw-border-default);
+  border-radius: var(--mw-radius-sm);
+  background: var(--mw-surface);
+  color: var(--mw-ink);
+}
