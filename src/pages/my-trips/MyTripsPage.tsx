@@ -1,6 +1,6 @@
+import { routePaths, routeTitles } from '@/app/router/paths';
 import { RoutePlaceholder } from '@/app/router/RoutePlaceholder';
-import { routePaths } from '@/app/router/paths';
 
 export function MyTripsPage() {
-  return <RoutePlaceholder routeName={routePaths.myTrips} screenName="My Trips" />;
+  return <RoutePlaceholder routeName={routePaths.myTrips} title={routeTitles.myTrips} />;
 }

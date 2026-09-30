@@ -1,6 +1,6 @@
+import { routePaths, routeTitles } from '@/app/router/paths';
 import { RoutePlaceholder } from '@/app/router/RoutePlaceholder';
-import { routePaths } from '@/app/router/paths';
 
 export function HomePage() {
-  return <RoutePlaceholder routeName={routePaths.home} screenName="Home" />;
+  return <RoutePlaceholder routeName={routePaths.home} title={routeTitles.home} />;
 }

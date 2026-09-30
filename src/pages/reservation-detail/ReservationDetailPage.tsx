@@ -1,7 +1,7 @@
 import { useParams } from 'react-router';
 
+import { routePatterns, routeTitles } from '@/app/router/paths';
 import { RoutePlaceholder } from '@/app/router/RoutePlaceholder';
-import { routePatterns } from '@/app/router/paths';
 
 export function ReservationDetailPage() {
   const { reservationId } = useParams();
@@ -10,7 +10,7 @@ export function ReservationDetailPage() {
     <RoutePlaceholder
       matchedParam={{ label: 'reservationId', value: reservationId }}
       routeName={routePatterns.reservationDetail}
-      screenName="Reservation Detail"
+      title={routeTitles.reservationDetail}
     />
   );
 }

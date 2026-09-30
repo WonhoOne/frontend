@@ -6,21 +6,22 @@ import { cleanup, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { createMemoryRouter, RouterProvider } from 'react-router';
 
+import { routeBuilders, routePaths, routeTitles } from '@/app/router/paths';
 import { appRoutes } from '@/app/router/routes';
 
 afterEach(cleanup);
 
 const routeCases = [
-  ['/', 'Home'],
-  ['/tours', 'Tours'],
-  ['/tours/test-tour-id', 'Tour Detail'],
-  ['/tours/test-tour-id/configure', 'Configure'],
-  ['/reservation/review', 'Reservation Review'],
-  ['/reservation/test-reservation-id/success', 'Reservation Success'],
-  ['/reservations/test-reservation-id', 'Reservation Detail'],
-  ['/login', 'Login'],
-  ['/signup', 'Signup'],
-  ['/my-trips', 'My Trips'],
+  [routePaths.home, routeTitles.home],
+  [routePaths.tours, routeTitles.tours],
+  [routeBuilders.tourDetail('test-tour-id'), routeTitles.tourDetail],
+  [routeBuilders.configure('test-tour-id'), routeTitles.configure],
+  [routePaths.reservationReview, routeTitles.reservationReview],
+  [routeBuilders.reservationSuccess('test-reservation-id'), routeTitles.reservationSuccess],
+  [routeBuilders.reservationDetail('test-reservation-id'), routeTitles.reservationDetail],
+  [routePaths.login, routeTitles.login],
+  [routePaths.signup, routeTitles.signup],
+  [routePaths.myTrips, routeTitles.myTrips],
 ] as const;
 
 function renderRoute(path: string) {
@@ -49,21 +50,21 @@ describe('foundation route table', () => {
   });
 
   it('exposes the matched tourId on the dynamic Tour Detail placeholder', () => {
-    renderRoute('/tours/test-tour-id');
+    renderRoute(routeBuilders.tourDetail('test-tour-id'));
 
     expect(screen.getByText('tourId')).toBeVisible();
     expect(screen.getByText('test-tour-id')).toBeVisible();
   });
 
   it('exposes the matched reservationId on the dynamic Reservation Detail placeholder', () => {
-    renderRoute('/reservations/test-reservation-id');
+    renderRoute(routeBuilders.reservationDetail('test-reservation-id'));
 
     expect(screen.getByText('reservationId')).toBeVisible();
     expect(screen.getByText('test-reservation-id')).toBeVisible();
   });
 
   it('uses GlobalHeader for public routes without interpreting Auth state', () => {
-    renderRoute('/tours');
+    renderRoute(routePaths.tours);
 
     const primaryNavigation = screen.getByRole('navigation', { name: 'Primary' });
 
@@ -77,17 +78,20 @@ describe('foundation route table', () => {
   });
 
   it('uses TransactionHeader for configuration and reservation routes', () => {
-    renderRoute('/reservation/review');
+    renderRoute(routePaths.reservationReview);
 
     expect(screen.queryByRole('navigation', { name: 'Primary' })).not.toBeInTheDocument();
-    expect(screen.getByText('Reservation Review', { selector: 'header p' })).toBeVisible();
+    expect(screen.getByText(routeTitles.reservationReview, { selector: 'header p' })).toBeVisible();
+    expect(
+      screen.getByRole('heading', { level: 1, name: routeTitles.reservationReview }),
+    ).toBeVisible();
     expect(screen.getByRole('link', { name: 'Mister World' })).toHaveAttribute('href', '/');
   });
 
   it('renders the application Not Found route with keyboard-accessible recovery links', () => {
     renderRoute('/unknown-foundation-route');
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Page not found' })).toBeVisible();
+    expect(screen.getByRole('heading', { level: 1, name: routeTitles.notFound })).toBeVisible();
 
     const recovery = screen.getByRole('navigation', { name: 'Not found recovery' });
 

@@ -8,8 +8,8 @@ import '@/app/styles/global.css';
 
 async function bootstrap() {
   if (import.meta.env.DEV && import.meta.env.VITE_ENABLE_MOCKS === 'true') {
-    const { startMocking } = await import('@/mocks/startMocking');
-    await startMocking();
+    const { startDevelopmentRuntime } = await import('@/mocks/startDevelopmentRuntime');
+    await startDevelopmentRuntime();
   }
 
   const rootElement = document.getElementById('root');

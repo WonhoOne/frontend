@@ -1,26 +1,3 @@
-.root {
-  display: grid;
-  gap: var(--mw-space-5);
-  padding-block: var(--mw-space-12);
-}
-
-.root h1 {
-  margin: 0;
-  color: var(--mw-ink);
-  font-size: var(--mw-font-size-heading-xl);
-  line-height: var(--mw-line-height-heading-xl);
-  letter-spacing: var(--mw-tracking-heading);
-}
-
-.eyebrow {
-  margin: 0;
-  color: var(--mw-accent);
-  font-size: var(--mw-font-size-label-sm);
-  font-weight: var(--mw-font-weight-semibold);
-  letter-spacing: var(--mw-tracking-eyebrow);
-  text-transform: uppercase;
-}
-
 .details {
   display: grid;
   gap: var(--mw-space-3);
@@ -45,6 +22,6 @@
 }
 
 .status {
-  margin: 0;
+  margin: var(--mw-space-5) 0 0;
   color: var(--mw-text-secondary);
 }

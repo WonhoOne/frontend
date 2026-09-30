@@ -1,0 +1,59 @@
+.surface {
+  min-inline-size: 0;
+  will-change: opacity, transform;
+}
+
+.surface[data-route-motion-direction='entry'] {
+  animation: route-entry var(--mw-motion-component) var(--mw-ease-enter) both;
+}
+
+.surface[data-route-motion-direction='forward'] {
+  animation: route-forward var(--mw-motion-panel) var(--mw-ease-enter) both;
+}
+
+.surface[data-route-motion-direction='back'] {
+  animation: route-back var(--mw-motion-component) var(--mw-ease-enter) both;
+}
+
+@keyframes route-entry {
+  from {
+    opacity: 0;
+    transform: translateY(var(--mw-space-2));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes route-forward {
+  from {
+    opacity: 0;
+    transform: translateY(var(--mw-space-3));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes route-back {
+  from {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--mw-space-2)));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .surface[data-route-motion-direction] {
+    animation: none;
+    will-change: auto;
+  }
+}

@@ -2,7 +2,7 @@ import type { RouteObject } from 'react-router';
 
 import { AppRouteLayout, type AppRouteHandle } from '@/app/router/AppRouteLayout';
 import { NotFound } from '@/app/router/NotFound';
-import { routePaths, routePatterns } from '@/app/router/paths';
+import { routePaths, routePatterns, routeTitles } from '@/app/router/paths';
 import { ConfigurePage } from '@/pages/configure/ConfigurePage';
 import { HomePage } from '@/pages/home/HomePage';
 import { LoginPage } from '@/pages/login/LoginPage';
@@ -19,7 +19,7 @@ function handle(chrome: AppRouteHandle['chrome'], title: string): AppRouteHandle
 }
 
 /**
- * Foundation Router가 사용하는 Customer route 단일 정의 지점이다.
+ * Customer route table과 route-level chrome metadata의 단일 정의 지점이다.
  *
  * CONTRACT: 승인된 route path와 Page 조합만 정의한다.
  * loader, Backend 호출, Auth guard, Product data는 포함하지 않는다.
@@ -31,57 +31,57 @@ export const appRoutes: RouteObject[] = [
       {
         index: true,
         element: <HomePage />,
-        handle: handle('global', 'Home'),
+        handle: handle('global', routeTitles.home),
       },
       {
         path: routePaths.tours,
         element: <ToursPage />,
-        handle: handle('global', 'Tours'),
+        handle: handle('global', routeTitles.tours),
       },
       {
         path: routePatterns.tourDetail,
         element: <TourDetailPage />,
-        handle: handle('global', 'Tour Detail'),
+        handle: handle('global', routeTitles.tourDetail),
       },
       {
         path: routePatterns.configure,
         element: <ConfigurePage />,
-        handle: handle('transaction', 'Configure'),
+        handle: handle('transaction', routeTitles.configure),
       },
       {
         path: routePaths.reservationReview,
         element: <ReservationReviewPage />,
-        handle: handle('transaction', 'Reservation Review'),
+        handle: handle('transaction', routeTitles.reservationReview),
       },
       {
         path: routePatterns.reservationSuccess,
         element: <ReservationSuccessPage />,
-        handle: handle('transaction', 'Reservation Success'),
+        handle: handle('transaction', routeTitles.reservationSuccess),
       },
       {
         path: routePatterns.reservationDetail,
         element: <ReservationDetailPage />,
-        handle: handle('transaction', 'Reservation Detail'),
+        handle: handle('transaction', routeTitles.reservationDetail),
       },
       {
         path: routePaths.login,
         element: <LoginPage />,
-        handle: handle('global', 'Login'),
+        handle: handle('global', routeTitles.login),
       },
       {
         path: routePaths.signup,
         element: <SignupPage />,
-        handle: handle('global', 'Signup'),
+        handle: handle('global', routeTitles.signup),
       },
       {
         path: routePaths.myTrips,
         element: <MyTripsPage />,
-        handle: handle('global', 'My Trips'),
+        handle: handle('global', routeTitles.myTrips),
       },
       {
         path: '*',
         element: <NotFound />,
-        handle: handle('global', 'Not Found'),
+        handle: handle('global', routeTitles.notFound),
       },
     ],
   },

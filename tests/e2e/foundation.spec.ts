@@ -46,6 +46,87 @@ test.describe('Foundation routes', () => {
     await expect(page.getByText('e2e-reservation-id', { exact: true })).toBeVisible();
   });
 
+  test('navigation preserves browser back and forward history', async ({ page }) => {
+    await page.goto('/');
+
+    await page.getByRole('link', { name: 'Tours' }).click();
+    await expect(page).toHaveURL(/\/tours$/);
+    await expect(page.getByRole('heading', { level: 1, name: 'Tours' })).toBeVisible();
+
+    await page.getByRole('link', { name: 'My Trips' }).click();
+    await expect(page).toHaveURL(/\/my-trips$/);
+
+    await page.goBack();
+    await expect(page).toHaveURL(/\/tours$/);
+    await expect(page.getByRole('heading', { level: 1, name: 'Tours' })).toBeVisible();
+
+    await page.goBack();
+    await expect(page).toHaveURL(/\/$/);
+    await expect(page.getByRole('heading', { level: 1, name: 'Home' })).toBeVisible();
+
+    await page.goForward();
+    await expect(page).toHaveURL(/\/tours$/);
+  });
+
+  test('route runtime resets new scroll and restores history scroll while focusing main', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1024, height: 500 });
+    await page.goto('/');
+
+    await page.evaluate(() => {
+      document.body.style.minHeight = '3200px';
+      window.scrollTo(0, 1200);
+    });
+
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(1100);
+    const homeScroll = await page.evaluate(() => window.scrollY);
+
+    await page
+      .getByRole('link', { name: 'Tours' })
+      .evaluate((element) => (element as HTMLAnchorElement).click());
+
+    await expect(page).toHaveURL(/\/tours$/);
+    await expect(page.locator('#main-content')).toBeFocused();
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThanOrEqual(1);
+
+    await page.evaluate(() => {
+      window.scrollTo(0, 700);
+    });
+
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(650);
+    const toursScroll = await page.evaluate(() => window.scrollY);
+
+    await page
+      .getByRole('link', { name: 'My Trips' })
+      .evaluate((element) => (element as HTMLAnchorElement).click());
+
+    await expect(page).toHaveURL(/\/my-trips$/);
+    await expect(page.locator('#main-content')).toBeFocused();
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThanOrEqual(1);
+
+    await page.goBack();
+    await expect(page).toHaveURL(/\/tours$/);
+    await expect(page.locator('#main-content')).toBeFocused();
+    await expect
+      .poll(() => page.evaluate(() => window.scrollY))
+      .toBeGreaterThanOrEqual(toursScroll - 1);
+
+    await page.goBack();
+    await expect(page).toHaveURL(/\/$/);
+    await expect(page.locator('#main-content')).toBeFocused();
+    await expect
+      .poll(() => page.evaluate(() => window.scrollY))
+      .toBeGreaterThanOrEqual(homeScroll - 1);
+
+    await page.goForward();
+    await expect(page).toHaveURL(/\/tours$/);
+    await expect(page.locator('#main-content')).toBeFocused();
+    await expect
+      .poll(() => page.evaluate(() => window.scrollY))
+      .toBeGreaterThanOrEqual(toursScroll - 1);
+  });
+
   test('unknown route renders application Not Found recovery', async ({ page }) => {
     await page.goto('/not-a-customer-route');
 
