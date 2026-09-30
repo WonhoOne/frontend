@@ -16,7 +16,9 @@
 
 .eyebrow,
 .stateCard h1,
-.stateCard p {
+.stateCard p,
+.configureCopy h2,
+.configureCopy p {
   margin: 0;
 }
 
@@ -49,6 +51,43 @@
   align-items: center;
   gap: var(--mw-space-4);
   margin-block-start: var(--mw-space-2);
+}
+
+.configureAction {
+  border-block-start: var(--mw-border-subtle);
+  background: var(--mw-surface-elevated);
+}
+
+.configureActionInner {
+  display: grid;
+  gap: var(--mw-space-6);
+  padding-block: var(--mw-space-16);
+}
+
+.configureCopy {
+  display: grid;
+  max-inline-size: var(--mw-container-reading);
+  gap: var(--mw-space-3);
+}
+
+.configureCopy h2 {
+  max-inline-size: 16ch;
+  font-family: var(--mw-font-editorial);
+  font-size: var(--mw-font-size-heading-lg);
+  font-weight: var(--mw-font-weight-regular);
+  line-height: var(--mw-line-height-heading-lg);
+  text-wrap: balance;
+}
+
+.configureCopy > p:last-child {
+  max-inline-size: 58ch;
+  color: var(--mw-text-secondary);
+  font-size: var(--mw-font-size-body-md);
+}
+
+.configureButton {
+  inline-size: 100%;
+  min-block-size: 52px;
 }
 
 .footer {
@@ -94,6 +133,18 @@
 @media (min-width: 768px) {
   .statePage {
     padding-block: var(--mw-space-24) var(--mw-space-32);
+  }
+
+  .configureActionInner {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: var(--mw-space-10);
+    padding-block: var(--mw-space-20);
+  }
+
+  .configureButton {
+    inline-size: auto;
+    min-inline-size: 220px;
   }
 
   .footerInner {
