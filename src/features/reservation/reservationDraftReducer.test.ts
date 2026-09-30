@@ -42,6 +42,23 @@ describe('reservationDraftReducer', () => {
     });
   });
 
+  it('begins Configure atomically without leaking participant or configuration intent', () => {
+    const next = reservationDraftReducer(configuredDraft(), {
+      type: 'BEGIN_CONFIGURE',
+      tourProductId: 'tour-b',
+      tourStyle: 'CLASSIC',
+      tourScheduleId: 'schedule-b',
+      updatedAt: 150,
+    });
+
+    expect(next).toEqual({
+      ...createEmptyReservationDraft(150),
+      tourProductId: 'tour-b',
+      tourStyle: 'CLASSIC',
+      tourScheduleId: 'schedule-b',
+    });
+  });
+
   it('starts a new product transaction without leaking the previous product intent', () => {
     const next = reservationDraftReducer(configuredDraft(), {
       type: 'START_DRAFT',

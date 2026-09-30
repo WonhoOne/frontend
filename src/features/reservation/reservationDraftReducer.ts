@@ -8,6 +8,13 @@ import {
 
 export type ReservationDraftAction =
   | {
+      type: 'BEGIN_CONFIGURE';
+      tourProductId: ReservationDraftResourceIdentity;
+      tourStyle: ReservationDraftTourStyle;
+      tourScheduleId: ReservationDraftResourceIdentity;
+      updatedAt: number;
+    }
+  | {
       type: 'START_DRAFT';
       tourProductId: ReservationDraftResourceIdentity;
       updatedAt: number;
@@ -77,6 +84,18 @@ export function reservationDraftReducer(
   action: ReservationDraftAction,
 ): ReservationDraftV1 {
   switch (action.type) {
+    case 'BEGIN_CONFIGURE': {
+      // PUBLIC HANDOFF: Tour Detail에서 선택 완료된 product/style/schedule context를
+      // 하나의 transaction transition으로 시작한다. 이전 상품의 participant/configuration
+      // intent를 섞지 않고 Configure가 요구하는 context만 보존한다.
+      return {
+        ...createEmptyReservationDraft(action.updatedAt),
+        tourProductId: action.tourProductId,
+        tourStyle: action.tourStyle,
+        tourScheduleId: action.tourScheduleId,
+      };
+    }
+
     case 'START_DRAFT': {
       // INVARIANT: 다른 TourProduct의 transaction intent를 새 상품으로 넘기지 않는다.
       // option compatibility 계약 없이 어떤 field만 재사용할지 추측하는 것보다 새 Draft가 안전하다.

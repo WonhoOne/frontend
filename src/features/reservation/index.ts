@@ -45,3 +45,9 @@ export {
   type ConfigureDraftEntryState,
   type ReviewDraftHandoffState,
 } from '@/features/reservation/reservationDraftRecovery';
+
+export {
+  createConfigureHandoffAction,
+  type BeginConfigureAction,
+  type ConfigureHandoffIntent,
+} from '@/features/reservation/configureHandoff';
