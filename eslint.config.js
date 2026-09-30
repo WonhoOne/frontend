@@ -70,6 +70,12 @@ export default tseslint.config(
     },
   },
   {
+    files: ['playwright.config.ts'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
+  {
     files: ['src/shared/**/*.{ts,tsx}'],
     rules: {
       'no-restricted-imports': [

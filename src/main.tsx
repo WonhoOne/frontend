@@ -6,14 +6,23 @@ import '@/app/styles/tokens.css';
 import '@/shared/motion/motion.css';
 import '@/app/styles/global.css';
 
-const rootElement = document.getElementById('root');
+async function bootstrap() {
+  if (import.meta.env.DEV && import.meta.env.VITE_ENABLE_MOCKS === 'true') {
+    const { startMocking } = await import('@/mocks/startMocking');
+    await startMocking();
+  }
 
-if (rootElement === null) {
-  throw new Error('Application root element "#root" is missing.');
+  const rootElement = document.getElementById('root');
+
+  if (rootElement === null) {
+    throw new Error('Application root element "#root" is missing.');
+  }
+
+  createRoot(rootElement).render(
+    <StrictMode>
+      <App />
+    </StrictMode>,
+  );
 }
 
-createRoot(rootElement).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-);
+void bootstrap();
