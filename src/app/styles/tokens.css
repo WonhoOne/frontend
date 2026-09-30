@@ -1,0 +1,184 @@
+:root {
+  /* Foundation colors */
+  --mw-canvas: #f6f3ed;
+  --mw-surface: #fbf9f5;
+  --mw-surface-elevated: #fffdfc;
+  --mw-surface-muted: #eee9e1;
+
+  --mw-ink: #191918;
+  --mw-ink-soft: #34322f;
+  --mw-text-secondary: #6e6961;
+  --mw-text-tertiary: #918a80;
+
+  --mw-border: #ddd7ce;
+  --mw-border-strong: #bdb5a9;
+  --mw-overlay: rgba(15, 14, 12, 0.48);
+  --mw-overlay-strong: rgba(15, 14, 12, 0.68);
+
+  /* Brand accent */
+  --mw-accent: #9b7a4b;
+  --mw-accent-hover: #87673c;
+  --mw-accent-soft: #eee3d2;
+  --mw-accent-faint: #f6efe4;
+  --mw-on-accent: #181512;
+
+  /* Semantic colors */
+  --mw-success: #2f6b50;
+  --mw-success-soft: #e6f0ea;
+  --mw-warning: #9b672f;
+  --mw-warning-soft: #f3e9dc;
+  --mw-danger: #a34b44;
+  --mw-danger-soft: #f6e7e5;
+  --mw-info: #496a7d;
+  --mw-info-soft: #e7eef2;
+
+  /* Theme-local accents. These do not replace the global palette. */
+  --mw-theme-honeymoon: #9a6c68;
+  --mw-theme-parents: #6f7d68;
+  --mw-theme-golf: #365744;
+  --mw-theme-trekking: #596971;
+
+  /* Typography */
+  --mw-font-ui:
+    'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    'Noto Sans KR', sans-serif;
+  --mw-font-editorial: 'Instrument Serif', 'Times New Roman', serif;
+
+  --mw-font-weight-regular: 400;
+  --mw-font-weight-medium: 500;
+  --mw-font-weight-semibold: 600;
+
+  /* Mobile-first type preset */
+  --mw-font-size-display-2xl: 58px;
+  --mw-line-height-display-2xl: 0.98;
+  --mw-font-size-display-xl: 48px;
+  --mw-line-height-display-xl: 1.02;
+  --mw-font-size-display-lg: 40px;
+  --mw-line-height-display-lg: 1.08;
+  --mw-font-size-heading-xl: 32px;
+  --mw-line-height-heading-xl: 1.18;
+  --mw-font-size-heading-lg: 28px;
+  --mw-line-height-heading-lg: 1.22;
+  --mw-font-size-heading-md: 22px;
+  --mw-line-height-heading-md: 1.3;
+  --mw-font-size-heading-sm: 19px;
+  --mw-line-height-heading-sm: 1.35;
+  --mw-font-size-body-lg: 17px;
+  --mw-line-height-body-lg: 1.6;
+  --mw-font-size-body-md: 16px;
+  --mw-line-height-body-md: 1.6;
+  --mw-font-size-body-sm: 14px;
+  --mw-line-height-body-sm: 1.55;
+  --mw-font-size-label-md: 14px;
+  --mw-line-height-label-md: 1.3;
+  --mw-font-size-label-sm: 12px;
+  --mw-line-height-label-sm: 1.3;
+  --mw-font-size-micro: 11px;
+  --mw-line-height-micro: 1.25;
+
+  --mw-tracking-editorial: -0.025em;
+  --mw-tracking-heading: -0.02em;
+  --mw-tracking-body: -0.008em;
+  --mw-tracking-label: 0;
+  --mw-tracking-eyebrow: 0.08em;
+
+  /* Spacing */
+  --mw-space-0: 0;
+  --mw-space-1: 4px;
+  --mw-space-2: 8px;
+  --mw-space-3: 12px;
+  --mw-space-4: 16px;
+  --mw-space-5: 20px;
+  --mw-space-6: 24px;
+  --mw-space-8: 32px;
+  --mw-space-10: 40px;
+  --mw-space-12: 48px;
+  --mw-space-16: 64px;
+  --mw-space-20: 80px;
+  --mw-space-24: 96px;
+  --mw-space-32: 128px;
+  --mw-space-40: 160px;
+
+  /* Container widths and mobile-first page gutter */
+  --mw-container-wide: 1440px;
+  --mw-container-main: 1280px;
+  --mw-container-transaction: 1180px;
+  --mw-container-reading: 760px;
+  --mw-container-auth: 520px;
+  --mw-page-gutter: 20px;
+
+  /* Radius */
+  --mw-radius-xs: 4px;
+  --mw-radius-sm: 8px;
+  --mw-radius-md: 12px;
+  --mw-radius-lg: 18px;
+  --mw-radius-xl: 28px;
+  --mw-radius-pill: 999px;
+
+  /* Borders */
+  --mw-border-subtle: 1px solid #e7e1d8;
+  --mw-border-default: 1px solid var(--mw-border);
+  --mw-border-strong-token: 1px solid var(--mw-border-strong);
+  --mw-border-accent: 1px solid var(--mw-accent);
+  --mw-border-danger: 1px solid var(--mw-danger);
+
+  /* Elevation */
+  --mw-elevation-0: none;
+  --mw-elevation-1: 0 1px 2px rgba(25, 23, 20, 0.05), 0 6px 18px rgba(25, 23, 20, 0.04);
+  --mw-elevation-2: 0 12px 32px rgba(25, 23, 20, 0.1);
+  --mw-elevation-3: 0 24px 64px rgba(25, 23, 20, 0.16);
+
+  /* Z-index */
+  --mw-z-base: 0;
+  --mw-z-raised: 10;
+  --mw-z-sticky: 20;
+  --mw-z-dropdown: 40;
+  --mw-z-header: 50;
+  --mw-z-backdrop: 80;
+  --mw-z-modal: 90;
+  --mw-z-toast: 100;
+
+  /* Focus */
+  --mw-focus-outline: 2px solid var(--mw-accent);
+  --mw-focus-offset: 3px;
+}
+
+/*
+ * Breakpoint constants documented by the design system:
+ * sm 640 / md 768 / lg 1024 / xl 1280 / 2xl 1440.
+ * CSS custom properties cannot be used directly in media query conditions.
+ */
+@media (min-width: 640px) {
+  :root {
+    --mw-page-gutter: 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --mw-page-gutter: 48px;
+
+    --mw-font-size-display-2xl: 96px;
+    --mw-line-height-display-2xl: 0.96;
+    --mw-font-size-display-xl: 72px;
+    --mw-line-height-display-xl: 1;
+    --mw-font-size-display-lg: 56px;
+    --mw-line-height-display-lg: 1.06;
+    --mw-font-size-heading-xl: 40px;
+    --mw-line-height-heading-xl: 1.15;
+    --mw-font-size-heading-lg: 32px;
+    --mw-line-height-heading-lg: 1.2;
+    --mw-font-size-heading-md: 24px;
+    --mw-line-height-heading-md: 1.28;
+    --mw-font-size-heading-sm: 20px;
+    --mw-line-height-heading-sm: 1.35;
+    --mw-font-size-body-lg: 18px;
+    --mw-line-height-body-lg: 1.65;
+  }
+}
+
+@media (min-width: 1440px) {
+  :root {
+    --mw-page-gutter: 64px;
+  }
+}

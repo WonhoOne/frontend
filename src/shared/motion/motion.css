@@ -1,0 +1,43 @@
+:root {
+  --mw-motion-instant: 80ms;
+  --mw-motion-fast: 140ms;
+  --mw-motion-control: 200ms;
+  --mw-motion-component: 280ms;
+  --mw-motion-panel: 360ms;
+  --mw-motion-section: 480ms;
+  --mw-motion-page: 620ms;
+  --mw-motion-cinematic: 820ms;
+
+  --mw-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --mw-ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  --mw-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --mw-ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/*
+ * Reduced motion is a runtime capability, not a visual afterthought.
+ * Long shared transforms are removed by the component that owns them; the
+ * foundation shortens shared timing and prevents repeating CSS animation.
+ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --mw-motion-control: var(--mw-motion-instant);
+    --mw-motion-component: var(--mw-motion-instant);
+    --mw-motion-panel: var(--mw-motion-instant);
+    --mw-motion-section: var(--mw-motion-instant);
+    --mw-motion-page: var(--mw-motion-instant);
+    --mw-motion-cinematic: var(--mw-motion-instant);
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+  }
+}
