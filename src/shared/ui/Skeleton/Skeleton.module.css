@@ -1,0 +1,50 @@
+.root {
+  position: relative;
+  overflow: hidden;
+  background: var(--mw-surface-muted);
+}
+
+.root::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgb(255 255 255 / 34%) 45%,
+    rgb(255 255 255 / 34%) 55%,
+    transparent 100%
+  );
+  content: '';
+  transform: translateX(-100%);
+  animation: skeleton-shimmer 1800ms var(--mw-ease-standard) infinite;
+}
+
+.line {
+  min-block-size: 1em;
+  border-radius: var(--mw-radius-xs);
+}
+
+.block {
+  min-block-size: var(--mw-space-12);
+  border-radius: var(--mw-radius-md);
+}
+
+.circle {
+  aspect-ratio: 1;
+  min-inline-size: var(--mw-space-10);
+  min-block-size: var(--mw-space-10);
+  border-radius: var(--mw-radius-pill);
+}
+
+@keyframes skeleton-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root::after {
+    animation: none;
+    content: none;
+  }
+}
