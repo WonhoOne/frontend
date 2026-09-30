@@ -35,6 +35,12 @@ interface TourDetailPageViewProps {
   onConfigure?: (intent: ConfigureHandoffIntent) => void;
 }
 
+const styleSummaryLabel: Record<TourDetailStyle, string> = {
+  CLASSIC: 'Classic',
+  GRAND: 'Grand',
+  PREMIUM: 'Premium',
+};
+
 const coreErrorCopy: Record<TourDetailCoreErrorReason, { title: string; message: string }> = {
   network: {
     title: "We couldn't load this journey.",
@@ -103,8 +109,15 @@ function TourDetailReadyView({
       ? selectedScheduleKey
       : null;
 
+  const selectedScheduleChoice =
+    resolvedScheduleState.status === 'ready' && effectiveScheduleKey !== null
+      ? (resolvedScheduleState.choices.find(
+          (choice) => choice.selectionKey === effectiveScheduleKey,
+        ) ?? null)
+      : null;
+
   const canConfigure =
-    selectedStyle !== null && effectiveScheduleKey !== null && onConfigure !== undefined;
+    selectedStyle !== null && selectedScheduleChoice !== null && onConfigure !== undefined;
 
   const configureHelp =
     selectedStyle === null
@@ -145,8 +158,22 @@ function TourDetailReadyView({
       <section aria-labelledby="tour-configure-title" className={styles.configureAction}>
         <PageContainer className={styles.configureActionInner ?? ''} variant="wide">
           <div className={styles.configureCopy}>
-            <p className={styles.eyebrow}>Next step</p>
+            <p className={styles.eyebrow}>Selected trip</p>
             <h2 id="tour-configure-title">Shape the trip around your choices.</h2>
+            <dl className={styles.selectionSummary}>
+              <div>
+                <dt>Theme</dt>
+                <dd>{tour.themeLabel}</dd>
+              </div>
+              <div>
+                <dt>Style</dt>
+                <dd>{selectedStyle === null ? 'Not selected' : styleSummaryLabel[selectedStyle]}</dd>
+              </div>
+              <div>
+                <dt>Schedule</dt>
+                <dd>{selectedScheduleChoice?.dateLabel ?? 'Not selected'}</dd>
+              </div>
+            </dl>
             <p id="tour-configure-help">{configureHelp}</p>
           </div>
           <Button
