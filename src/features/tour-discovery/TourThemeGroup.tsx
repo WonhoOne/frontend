@@ -3,6 +3,7 @@ import type {
   ThemeDiscoveryGroupModel,
   TourProductSummaryModel,
 } from '@/features/tour-discovery/tourDiscovery.model';
+import { Button } from '@/shared/ui';
 
 import styles from '@/features/tour-discovery/TourThemeGroup.module.css';
 
@@ -10,6 +11,8 @@ interface TourThemeGroupProps {
   focused: boolean;
   getProductHref: (product: TourProductSummaryModel) => string;
   group: ThemeDiscoveryGroupModel;
+  unavailable?: boolean;
+  onRetryUnavailable?: () => void;
 }
 
 /**
@@ -18,7 +21,13 @@ interface TourThemeGroupProps {
  * CONTRACT: Feature는 App Router를 import하지 않는다.
  * Product href composition은 Page/App boundary가 주입한다.
  */
-export function TourThemeGroup({ focused, getProductHref, group }: TourThemeGroupProps) {
+export function TourThemeGroup({
+  focused,
+  getProductHref,
+  group,
+  onRetryUnavailable,
+  unavailable = false,
+}: TourThemeGroupProps) {
   const { presentation, products } = group;
   const headingId = `theme-${presentation.theme.toLowerCase().replaceAll('_', '-')}`;
 
@@ -52,6 +61,24 @@ export function TourThemeGroup({ focused, getProductHref, group }: TourThemeGrou
             theme={presentation}
           />
         ))}
+
+        {unavailable ? (
+          <div className={styles.unavailable} role="status">
+            <div>
+              <h3>Some {presentation.title} journeys are unavailable.</h3>
+              <p>Other available Themes remain ready to explore.</p>
+            </div>
+            {onRetryUnavailable !== undefined ? (
+              <Button onClick={onRetryUnavailable} variant="secondary">
+                Retry {presentation.title} journeys
+              </Button>
+            ) : null}
+          </div>
+        ) : null}
+
+        {!unavailable && products.length === 0 ? (
+          <p className={styles.noProducts}>No journeys are currently listed for this Theme.</p>
+        ) : null}
       </div>
     </section>
   );

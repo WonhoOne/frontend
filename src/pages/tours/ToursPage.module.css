@@ -12,6 +12,19 @@
   display: grid;
 }
 
+.freshness {
+  display: flex;
+  justify-content: flex-end;
+  margin-block-end: var(--mw-space-4);
+}
+
+.stateActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--mw-space-3);
+}
+
 .footer {
   border-block-start: var(--mw-border-subtle);
   background: var(--mw-surface);

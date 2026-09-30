@@ -1,0 +1,81 @@
+.collection {
+  display: grid;
+}
+
+.group {
+  display: grid;
+  gap: var(--mw-space-8);
+  padding-block: var(--mw-space-12);
+  border-block-start: var(--mw-border-subtle);
+}
+
+.context,
+.cardBody {
+  display: grid;
+  gap: var(--mw-space-3);
+}
+
+.kicker {
+  inline-size: 72px;
+  block-size: 12px;
+}
+
+.heading {
+  inline-size: min(260px, 80%);
+  block-size: 34px;
+}
+
+.copy {
+  inline-size: min(320px, 94%);
+}
+
+.copyShort {
+  inline-size: min(220px, 68%);
+}
+
+.products {
+  min-inline-size: 0;
+}
+
+.card {
+  overflow: hidden;
+  border: var(--mw-border-default);
+  border-radius: var(--mw-radius-xl);
+  background: var(--mw-surface);
+}
+
+.media {
+  aspect-ratio: 4 / 3;
+  min-block-size: 0;
+  border-radius: 0;
+}
+
+.cardBody {
+  padding: var(--mw-space-6);
+}
+
+.cardLabel {
+  inline-size: 34%;
+}
+
+.cardHeading {
+  inline-size: 72%;
+  block-size: 26px;
+}
+
+.cardCopy {
+  inline-size: 88%;
+}
+
+.cardAction {
+  inline-size: 112px;
+  block-size: var(--mw-control-min-target);
+}
+
+@media (min-width: 1024px) {
+  .group {
+    grid-template-columns: minmax(240px, 4fr) minmax(0, 8fr);
+    gap: var(--mw-space-12);
+    padding-block: var(--mw-space-16);
+  }
+}

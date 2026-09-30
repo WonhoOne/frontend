@@ -1,11 +1,15 @@
 export { CustomizationPromise } from '@/features/tour-discovery/CustomizationPromise';
 export { HomeHero } from '@/features/tour-discovery/HomeHero';
 export { TourCollectionCard } from '@/features/tour-discovery/TourCollectionCard';
+export { TourCollectionSkeleton } from '@/features/tour-discovery/TourCollectionSkeleton';
 export {
   groupTourProductsByTheme,
   readThemeFromSearchParams,
 } from '@/features/tour-discovery/tourDiscovery';
-export { tourDiscoveryPreviewProducts } from '@/features/tour-discovery/tourDiscovery.preview';
+export {
+  tourDiscoveryPreviewProducts,
+  tourDiscoveryPreviewStates,
+} from '@/features/tour-discovery/tourDiscovery.preview';
 export {
   TOUR_THEME_ORDER,
   themeDiscoveryPresentations,
@@ -18,6 +22,9 @@ export type {
   DiscoveryMediaModel,
   ThemeDiscoveryGroupModel,
   ThemeDiscoveryPresentation,
+  TourDiscoveryCollectionErrorReason,
+  TourDiscoveryCollectionState,
+  TourDiscoveryFreshness,
   TourProductSummaryModel,
   TourStyle,
   TourTheme,

@@ -1,4 +1,7 @@
-import type { TourProductSummaryModel } from '@/features/tour-discovery/tourDiscovery.model';
+import type {
+  TourDiscoveryCollectionState,
+  TourProductSummaryModel,
+} from '@/features/tour-discovery/tourDiscovery.model';
 
 /**
  * IMP-2 Discovery UI를 위한 Frontend presentation preview catalog다.
@@ -73,3 +76,71 @@ export const tourDiscoveryPreviewProducts = [
     },
   },
 ] as const satisfies readonly TourProductSummaryModel[];
+
+const partialFailureProducts = tourDiscoveryPreviewProducts.filter(
+  (product) => product.theme !== 'PARENTS_HEALING',
+);
+
+const imageFailureProducts = tourDiscoveryPreviewProducts.map((product) =>
+  product.id === 'demo-golf-product-a'
+    ? {
+        ...product,
+        media: {
+          imageSrc: '/__missing-tour-discovery-image__.jpg',
+          imageAlt: 'Golf journey preview',
+          fallbackLabel: 'Golf Challenge visual unavailable',
+        },
+      }
+    : product,
+);
+
+/**
+ * B05 state QA용 Frontend View Model scenarios다.
+ * 실제 network response shape를 흉내 내지 않고 Page가 받을 상태만 표현한다.
+ */
+export const tourDiscoveryPreviewStates = {
+  happy: {
+    status: 'ready',
+    products: tourDiscoveryPreviewProducts,
+    freshness: 'current',
+  },
+  loading: {
+    status: 'loading',
+  },
+  empty: {
+    status: 'empty',
+  },
+  networkError: {
+    status: 'error',
+    reason: 'network',
+  },
+  serverError: {
+    status: 'error',
+    reason: 'server',
+  },
+  fatalMismatch: {
+    status: 'error',
+    reason: 'data-mismatch',
+  },
+  partialFailure: {
+    status: 'ready',
+    products: partialFailureProducts,
+    freshness: 'current',
+    unavailableThemes: ['PARENTS_HEALING'],
+  },
+  imageFailure: {
+    status: 'ready',
+    products: imageFailureProducts,
+    freshness: 'current',
+  },
+  refreshing: {
+    status: 'ready',
+    products: tourDiscoveryPreviewProducts,
+    freshness: 'refreshing',
+  },
+  stale: {
+    status: 'ready',
+    products: tourDiscoveryPreviewProducts,
+    freshness: 'stale',
+  },
+} as const satisfies Record<string, TourDiscoveryCollectionState>;

@@ -1,3 +1,4 @@
+import { useRef, type MouseEvent as ReactMouseEvent } from 'react';
 import { Link } from 'react-router';
 
 import type {
@@ -33,6 +34,17 @@ function formatStyles(styles: readonly TourStyle[]) {
   return styles.map((style) => styleLabels[style]).join(' · ');
 }
 
+function isSingleWindowNavigation(event: ReactMouseEvent<HTMLAnchorElement>) {
+  return (
+    event.button === 0 &&
+    !event.defaultPrevented &&
+    !event.metaKey &&
+    !event.ctrlKey &&
+    !event.shiftKey &&
+    !event.altKey
+  );
+}
+
 /**
  * 실제 detail navigation 단위인 TourProduct 하나를 표현한다.
  *
@@ -42,10 +54,25 @@ function formatStyles(styles: readonly TourStyle[]) {
  * - price/schedule/destination 같은 gated product truth를 표시하지 않는다.
  */
 export function TourCollectionCard({ href, product, theme }: TourCollectionCardProps) {
+  const navigationRequested = useRef(false);
+
   return (
     <Link
       aria-label={`View ${product.name} tour details`}
       className={[styles.root, themeClassNames[product.theme]].join(' ')}
+      onClick={(event) => {
+        if (!isSingleWindowNavigation(event)) {
+          return;
+        }
+
+        // EDGE CASE: double click/tap이 같은 detail route를 history에 두 번 쌓지 않게 한다.
+        if (navigationRequested.current) {
+          event.preventDefault();
+          return;
+        }
+
+        navigationRequested.current = true;
+      }}
       to={href}
     >
       <ImageReveal className={styles.mediaReveal ?? ''}>
