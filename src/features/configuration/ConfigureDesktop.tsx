@@ -8,6 +8,10 @@ import { buildConfigureTripSummary } from '@/features/configuration/configurePre
 import { getConfigureReadiness } from '@/features/configuration/configureReadiness';
 import type { ConfigureFixtureScenario } from '@/features/configuration/configurationFixtures';
 import type { ConfigurationCategory } from '@/features/configuration/configurationModels';
+import {
+  createReadyConfigureRuntimeState,
+  type ConfigureRuntimeState,
+} from '@/features/configuration/configureRuntimeState';
 import { useReservationDraft, type ParticipantCountRule } from '@/features/reservation';
 
 import styles from '@/features/configuration/ConfigureDesktop.module.css';
@@ -19,6 +23,9 @@ interface ConfigureDesktopProps {
   scenario: ConfigureFixtureScenario;
   tourProductId: string;
   onReview: () => void;
+  runtimeState?: ConfigureRuntimeState;
+  onRetryGroup?: (category: ConfigurationCategory) => void;
+  onReturnToTour?: () => void;
   now?: () => number;
 }
 
@@ -68,6 +75,9 @@ export function ConfigureDesktop({
   scenario,
   tourProductId,
   onReview,
+  runtimeState = createReadyConfigureRuntimeState(),
+  onRetryGroup = () => undefined,
+  onReturnToTour = () => undefined,
   now = Date.now,
 }: ConfigureDesktopProps) {
   const { draft, dispatch } = useReservationDraft();
@@ -76,12 +86,14 @@ export function ConfigureDesktop({
     draft,
     participantRule,
     scenario,
+    runtimeState,
   });
   const readiness = getConfigureReadiness({
     draft,
     expectedTourProductId: tourProductId,
     groups: scenario.groups,
     participantRule,
+    runtimeState,
   });
 
   function selectConfiguration(category: ConfigurationCategory, selectionKey: string) {
@@ -105,6 +117,12 @@ export function ConfigureDesktop({
   return (
     <div className={styles.layout}>
       <div className={styles.configuration}>
+        {runtimeState.connectivity === 'offline' ? (
+          <div aria-live="polite" className={styles.offlineBanner} role="status">
+            You are offline. Option availability may be out of date.
+          </div>
+        ) : null}
+
         <section aria-labelledby="participant-heading" className={styles.participants}>
           <header className={styles.participantHeading}>
             <p className={styles.sectionEyebrow}>Travel party</p>
@@ -128,7 +146,10 @@ export function ConfigureDesktop({
           <ConfigurationOptionGroup
             group={group}
             key={group.category}
+            onRetry={() => onRetryGroup(group.category)}
+            onReturnToTour={onReturnToTour}
             onSelect={(selectionKey) => selectConfiguration(group.category, selectionKey)}
+            runtimeState={runtimeState.groups[group.category]}
             selectedKey={selectedKeyForCategory(group.category, draft.configuration)}
             stepNumber={index + 1}
           />

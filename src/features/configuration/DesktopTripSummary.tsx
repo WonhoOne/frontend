@@ -1,5 +1,8 @@
 import type { ConfigureReadiness } from '@/features/configuration/configureReadiness';
-import type { TripSummaryModel } from '@/features/configuration/configurationModels';
+import type {
+  ConfigurationCategory,
+  TripSummaryModel,
+} from '@/features/configuration/configurationModels';
 import { Button } from '@/shared/ui';
 
 import styles from '@/features/configuration/DesktopTripSummary.module.css';
@@ -10,13 +13,28 @@ interface DesktopTripSummaryProps {
   onReview: () => void;
 }
 
-function SummaryRow({ label, value }: { label: string; value: string | null }) {
+function SummaryRow({
+  invalid,
+  label,
+  value,
+}: {
+  invalid?: boolean;
+  label: string;
+  value: string | null;
+}) {
   return (
     <div className={styles.row}>
       <dt>{label}</dt>
-      <dd>{value ?? 'Not selected'}</dd>
+      <dd>
+        <span>{value ?? 'Not selected'}</span>
+        {invalid ? <span className={styles.warning}>Needs another selection</span> : null}
+      </dd>
     </div>
   );
+}
+
+function hasInvalidSelection(summary: TripSummaryModel, category: ConfigurationCategory) {
+  return summary.invalidSelections.includes(category);
 }
 
 export function DesktopTripSummary({ summary, readiness, onReview }: DesktopTripSummaryProps) {
@@ -32,10 +50,23 @@ export function DesktopTripSummary({ summary, readiness, onReview }: DesktopTrip
 
       <dl className={styles.list}>
         <SummaryRow label="Participants" value={summary.participantLabel} />
-        <SummaryRow label="Hotel" value={summary.selections.hotelLabel} />
-        <SummaryRow label="Transport" value={summary.selections.transportLabel} />
-        <SummaryRow label="Meal" value={summary.selections.mealLabel} />
         <SummaryRow
+          invalid={hasInvalidSelection(summary, 'hotel')}
+          label="Hotel"
+          value={summary.selections.hotelLabel}
+        />
+        <SummaryRow
+          invalid={hasInvalidSelection(summary, 'transport')}
+          label="Transport"
+          value={summary.selections.transportLabel}
+        />
+        <SummaryRow
+          invalid={hasInvalidSelection(summary, 'meal')}
+          label="Meal"
+          value={summary.selections.mealLabel}
+        />
+        <SummaryRow
+          invalid={hasInvalidSelection(summary, 'extras')}
           label="Extras"
           value={
             summary.selections.extraLabels.length === 0

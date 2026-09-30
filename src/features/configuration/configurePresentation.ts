@@ -1,3 +1,14 @@
+import type { ConfigureFixtureScenario } from '@/features/configuration/configurationFixtures';
+import type {
+  ConfigurationCategory,
+  OptionGroupModel,
+  TripSummaryModel,
+} from '@/features/configuration/configurationModels';
+import {
+  configurationGroupRetainsData,
+  createReadyConfigureRuntimeState,
+  type ConfigureRuntimeState,
+} from '@/features/configuration/configureRuntimeState';
 import {
   formatParticipantCountSummary,
   validateParticipantCount,
@@ -5,12 +16,6 @@ import {
   type ReservationDraftTourStyle,
   type ReservationDraftV1,
 } from '@/features/reservation';
-import type { ConfigureFixtureScenario } from '@/features/configuration/configurationFixtures';
-import type {
-  ConfigurationCategory,
-  OptionGroupModel,
-  TripSummaryModel,
-} from '@/features/configuration/configurationModels';
 
 function styleLabel(style: ReservationDraftTourStyle | null): string {
   if (style === null) {
@@ -38,14 +43,34 @@ function optionLabel(
   return group?.options.find((option) => option.selectionKey === selectionKey)?.title ?? null;
 }
 
+function runtimeSelectionLabel({
+  category,
+  group,
+  runtimeState,
+  selectionKey,
+}: {
+  category: ConfigurationCategory;
+  group: OptionGroupModel | undefined;
+  runtimeState: ConfigureRuntimeState;
+  selectionKey: string | null;
+}) {
+  if (!configurationGroupRetainsData(runtimeState.groups[category])) {
+    return null;
+  }
+
+  return optionLabel(group, selectionKey);
+}
+
 export function buildConfigureTripSummary({
   draft,
   participantRule,
   scenario,
+  runtimeState = createReadyConfigureRuntimeState(),
 }: {
   draft: ReservationDraftV1;
   participantRule: ParticipantCountRule;
   scenario: ConfigureFixtureScenario;
+  runtimeState?: ConfigureRuntimeState;
 }): TripSummaryModel {
   const participantValidation = validateParticipantCount(participantRule, draft.participantCount);
   const extrasGroup = groupFor(scenario.groups, 'extras');
@@ -57,22 +82,33 @@ export function buildConfigureTripSummary({
       draft.tourScheduleId === null ? 'Schedule required' : scenario.tripSummary.scheduleLabel,
     participantLabel: formatParticipantCountSummary(participantValidation),
     selections: {
-      hotelLabel: optionLabel(
-        groupFor(scenario.groups, 'hotel'),
-        draft.configuration.hotelSelectionKey,
-      ),
-      transportLabel: optionLabel(
-        groupFor(scenario.groups, 'transport'),
-        draft.configuration.transportSelectionKey,
-      ),
-      mealLabel: optionLabel(
-        groupFor(scenario.groups, 'meal'),
-        draft.configuration.mealSelectionKey,
-      ),
-      extraLabels: draft.configuration.extraSelectionKeys.flatMap((selectionKey) => {
-        const label = optionLabel(extrasGroup, selectionKey);
-        return label === null ? [] : [label];
+      hotelLabel: runtimeSelectionLabel({
+        category: 'hotel',
+        group: groupFor(scenario.groups, 'hotel'),
+        runtimeState,
+        selectionKey: draft.configuration.hotelSelectionKey,
       }),
+      transportLabel: runtimeSelectionLabel({
+        category: 'transport',
+        group: groupFor(scenario.groups, 'transport'),
+        runtimeState,
+        selectionKey: draft.configuration.transportSelectionKey,
+      }),
+      mealLabel: runtimeSelectionLabel({
+        category: 'meal',
+        group: groupFor(scenario.groups, 'meal'),
+        runtimeState,
+        selectionKey: draft.configuration.mealSelectionKey,
+      }),
+      extraLabels: configurationGroupRetainsData(runtimeState.groups.extras)
+        ? draft.configuration.extraSelectionKeys.flatMap((selectionKey) => {
+            const label = optionLabel(extrasGroup, selectionKey);
+            return label === null ? [] : [label];
+          })
+        : [],
     },
+    invalidSelections: (['hotel', 'transport', 'meal', 'extras'] as const).filter(
+      (category) => runtimeState.groups[category].status === 'invalid',
+    ),
   };
 }

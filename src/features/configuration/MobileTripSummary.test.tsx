@@ -19,6 +19,7 @@ function summary(): TripSummaryModel {
       mealLabel: null,
       extraLabels: [],
     },
+    invalidSelections: [],
     price: {
       state: 'unavailable',
       message: 'Price is not available in the contract-neutral fixture.',

@@ -108,9 +108,17 @@
 }
 
 .row dd {
+  display: grid;
+  gap: var(--mw-space-1);
   color: var(--mw-ink);
   font-size: var(--mw-font-size-body-sm);
   text-align: end;
+}
+
+.warning {
+  color: var(--mw-danger);
+  font-size: var(--mw-font-size-label-sm);
+  font-weight: var(--mw-font-weight-semibold);
 }
 
 .price {

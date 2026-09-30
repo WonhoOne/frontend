@@ -16,6 +16,13 @@ export {
   type ConfigurationFixtureSelectionKey,
   type ConfigureFixtureScenario,
 } from '@/features/configuration/configurationFixtures';
+export {
+  configurationGroupBlocksReview,
+  configurationGroupRetainsData,
+  createReadyConfigureRuntimeState,
+  type ConfigurationGroupRuntimeState,
+  type ConfigureRuntimeState,
+} from '@/features/configuration/configureRuntimeState';
 
 export { ParticipantCountField } from '@/features/configuration/ParticipantCountField';
 

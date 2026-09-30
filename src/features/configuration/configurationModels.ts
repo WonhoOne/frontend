@@ -76,5 +76,6 @@ export interface TripSummaryModel {
   scheduleLabel: string;
   participantLabel: string | null;
   selections: TripSummarySelectionModel;
+  invalidSelections: readonly ConfigurationCategory[];
   price: PriceDisplayModel;
 }
