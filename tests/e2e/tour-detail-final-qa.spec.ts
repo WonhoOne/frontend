@@ -87,8 +87,32 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
       expect(activeConfigureBox).not.toBeNull();
 
       if (width < 768) {
+        expect(await configureSection.evaluate((element) => getComputedStyle(element).position)).toBe(
+          'sticky',
+        );
         expect(activeConfigureBox?.width ?? 0).toBeGreaterThan((actionBox?.width ?? 0) * 0.9);
+
+        const footerLink = page
+          .locator('footer')
+          .getByRole('link', { name: 'Back to Golf Challenge journeys' });
+        await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+        await expect(footerLink).toBeVisible();
+
+        const stickyBox = await configureSection.boundingBox();
+        const footerLinkBox = await footerLink.boundingBox();
+
+        expect(stickyBox).not.toBeNull();
+        expect(footerLinkBox).not.toBeNull();
+
+        const overlapsFooterLink =
+          (footerLinkBox?.y ?? 0) < (stickyBox?.y ?? 0) + (stickyBox?.height ?? 0) &&
+          (footerLinkBox?.y ?? 0) + (footerLinkBox?.height ?? 0) > (stickyBox?.y ?? 0);
+
+        expect(overlapsFooterLink).toBe(false);
       } else {
+        expect(await configureSection.evaluate((element) => getComputedStyle(element).position)).toBe(
+          'static',
+        );
         expect(activeConfigureBox?.width ?? 0).toBeLessThan((actionBox?.width ?? 0) * 0.5);
       }
     });
