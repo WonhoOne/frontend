@@ -1,0 +1,62 @@
+.root {
+  position: relative;
+  inline-size: 100%;
+  overflow: hidden;
+  background: var(--mw-surface-muted);
+}
+
+.placeholder {
+  position: absolute;
+  inset: 0;
+  background: var(--mw-surface-muted);
+}
+
+.image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: var(--image-frame-object-fit);
+  opacity: 0;
+  transition: opacity var(--mw-motion-component) var(--mw-ease-enter);
+}
+
+.image[data-image-state='loaded'] {
+  opacity: 1;
+}
+
+.fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--mw-surface-muted);
+}
+
+.radiusNone {
+  border-radius: 0;
+}
+
+.radiusSm {
+  border-radius: var(--mw-radius-sm);
+}
+
+.radiusMd {
+  border-radius: var(--mw-radius-md);
+}
+
+.radiusLg {
+  border-radius: var(--mw-radius-lg);
+}
+
+.radiusXl {
+  border-radius: var(--mw-radius-xl);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image {
+    transition: none;
+  }
+}

@@ -1,0 +1,27 @@
+.root {
+  display: inline-flex;
+  min-block-size: var(--mw-control-min-target);
+  align-items: center;
+  color: var(--mw-accent);
+  font-weight: var(--mw-font-weight-medium);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  transition:
+    color var(--mw-motion-control) var(--mw-ease-standard),
+    text-decoration-color var(--mw-motion-control) var(--mw-ease-standard);
+}
+
+.root:hover {
+  color: var(--mw-accent-hover);
+}
+
+.root:visited {
+  color: var(--mw-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+  }
+}

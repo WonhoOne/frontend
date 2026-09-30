@@ -1,0 +1,129 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--mw-z-backdrop);
+  background: var(--mw-overlay);
+}
+
+.content {
+  position: fixed;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  z-index: var(--mw-z-modal);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  inline-size: min(var(--mw-dialog-max-width), calc(100vw - (2 * var(--mw-page-gutter))));
+  max-block-size: calc(100dvh - (2 * var(--mw-page-gutter)));
+  overflow: hidden;
+  border: var(--mw-border-default);
+  border-radius: var(--mw-radius-xl);
+  background: var(--mw-surface-elevated);
+  box-shadow: var(--mw-elevation-3);
+  color: var(--mw-ink);
+  transform: translate(-50%, -50%);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--mw-space-4);
+  padding: var(--mw-space-6) var(--mw-space-6) var(--mw-space-4);
+  border-block-end: var(--mw-border-subtle);
+}
+
+.heading {
+  display: grid;
+  min-inline-size: 0;
+  gap: var(--mw-space-2);
+}
+
+.title {
+  margin: 0;
+  color: var(--mw-ink);
+  font-size: var(--mw-font-size-heading-md);
+  font-weight: var(--mw-font-weight-semibold);
+  line-height: var(--mw-line-height-heading-md);
+  letter-spacing: var(--mw-tracking-heading);
+}
+
+.description {
+  margin: 0;
+  color: var(--mw-text-secondary);
+  font-size: var(--mw-font-size-body-sm);
+  line-height: var(--mw-line-height-body-sm);
+}
+
+.body {
+  min-block-size: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--mw-space-6);
+}
+
+.overlay[data-state='open'] {
+  animation: dialog-overlay-in var(--mw-motion-component) var(--mw-ease-enter);
+}
+
+.overlay[data-state='closed'] {
+  animation: dialog-overlay-out var(--mw-motion-control) var(--mw-ease-exit);
+}
+
+.content[data-state='open'] {
+  animation: dialog-content-in var(--mw-motion-component) var(--mw-ease-enter);
+}
+
+.content[data-state='closed'] {
+  animation: dialog-content-out var(--mw-motion-control) var(--mw-ease-exit);
+}
+
+@keyframes dialog-overlay-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dialog-overlay-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes dialog-content-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + var(--mw-space-2)));
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes dialog-content-out {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + var(--mw-space-2)));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay[data-state],
+  .content[data-state] {
+    animation: none;
+  }
+}
