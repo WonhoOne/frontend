@@ -147,12 +147,16 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/tours/demo-golf-product-a');
 
-    const heroReveal = page.locator('section[aria-labelledby="tour-title"] [data-revealed]').first();
+    const heroReveal = page
+      .locator('section[aria-labelledby="tour-title"] [data-revealed]')
+      .first();
     await expect(heroReveal).toBeVisible();
-    expect(await heroReveal.evaluate((element) => getComputedStyle(element).transform)).toBe('none');
-    expect(await heroReveal.evaluate((element) => getComputedStyle(element).transitionDuration)).toBe(
-      '0s',
+    expect(await heroReveal.evaluate((element) => getComputedStyle(element).transform)).toBe(
+      'none',
     );
+    expect(
+      await heroReveal.evaluate((element) => getComputedStyle(element).transitionDuration),
+    ).toBe('0s');
 
     const grand = page.getByRole('radio', { name: /Grand/ });
     await grand.click();
