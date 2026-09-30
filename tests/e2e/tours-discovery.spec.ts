@@ -70,14 +70,18 @@ test.describe('Tours discovery collection', () => {
 
     await firstGolfProduct.click();
     await expect(page).toHaveURL(/\/tours\/demo-golf-product-a$/);
-    await expect(page.getByText('demo-golf-product-a', { exact: true })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Golf Challenge · Journey 01' }),
+    ).toBeVisible();
 
     await page.goBack();
     await expect(page).toHaveURL(/\/tours\?theme=GOLF_CHALLENGE$/);
 
     await secondGolfProduct.click();
     await expect(page).toHaveURL(/\/tours\/demo-golf-product-b$/);
-    await expect(page.getByText('demo-golf-product-b', { exact: true })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Golf Challenge · Journey 02' }),
+    ).toBeVisible();
   });
 
   test('rapid duplicate activation creates only one TourProduct history entry', async ({
