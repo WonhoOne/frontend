@@ -1,0 +1,35 @@
+.root {
+  display: grid;
+  max-inline-size: var(--mw-container-reading);
+  gap: var(--mw-space-4);
+}
+
+.eyebrow,
+.root h1,
+.supporting {
+  margin: 0;
+}
+
+.eyebrow {
+  color: var(--mw-accent);
+  font-size: var(--mw-font-size-label-sm);
+  font-weight: var(--mw-font-weight-semibold);
+  letter-spacing: var(--mw-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.root h1 {
+  max-inline-size: 12ch;
+  font-family: var(--mw-font-editorial);
+  font-size: var(--mw-font-size-display-xl);
+  font-weight: var(--mw-font-weight-regular);
+  letter-spacing: var(--mw-tracking-editorial);
+  line-height: var(--mw-line-height-display-xl);
+  text-wrap: balance;
+}
+
+.supporting {
+  max-inline-size: 60ch;
+  color: var(--mw-text-secondary);
+  font-size: var(--mw-font-size-body-lg);
+}

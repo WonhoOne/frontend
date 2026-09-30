@@ -13,14 +13,20 @@ test.describe('Route motion runtime', () => {
       await motionSurface.evaluate((element) => getComputedStyle(element).animationName),
     ).toContain('route-entry');
 
-    await page.getByRole('link', { name: 'Tours' }).click();
+    await page
+      .getByRole('navigation', { name: 'Primary' })
+      .getByRole('link', { name: 'Tours', exact: true })
+      .click();
     await expect(page).toHaveURL(/\/tours$/);
     await expect(motionSurface).toHaveAttribute('data-route-motion-direction', 'forward');
     expect(
       await motionSurface.evaluate((element) => getComputedStyle(element).animationName),
     ).toContain('route-forward');
 
-    await page.getByRole('link', { name: 'My Trips' }).click();
+    await page
+      .getByRole('navigation', { name: 'Primary' })
+      .getByRole('link', { name: 'My Trips', exact: true })
+      .click();
     await expect(page).toHaveURL(/\/my-trips$/);
     await expect(motionSurface).toHaveAttribute('data-route-motion-direction', 'forward');
 
@@ -52,7 +58,9 @@ test.describe('Route motion runtime', () => {
     await expect(page).toHaveURL(/\/my-trips$/);
     await expect(page.getByRole('heading', { level: 1, name: 'My Trips' })).toBeVisible();
     await expect(page.locator('[data-route-motion-key]')).toHaveCount(1);
-    await expect(page.getByRole('heading', { level: 1, name: 'Tours' })).toHaveCount(0);
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Four ways to travel differently.' }),
+    ).toHaveCount(0);
   });
 
   test('reduced motion removes route transforms while preserving navigation', async ({ page }) => {
@@ -65,10 +73,15 @@ test.describe('Route motion runtime', () => {
       'none',
     );
 
-    await page.getByRole('link', { name: 'Tours' }).click();
+    await page
+      .getByRole('navigation', { name: 'Primary' })
+      .getByRole('link', { name: 'Tours', exact: true })
+      .click();
 
     await expect(page).toHaveURL(/\/tours$/);
-    await expect(page.getByRole('heading', { level: 1, name: 'Tours' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Four ways to travel differently.' }),
+    ).toBeVisible();
     expect(await motionSurface.evaluate((element) => getComputedStyle(element).animationName)).toBe(
       'none',
     );

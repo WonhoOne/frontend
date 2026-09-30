@@ -13,16 +13,24 @@ import { appRoutes } from '@/app/router/routes';
 afterEach(cleanup);
 
 const routeCases = [
-  [routePaths.home, routeTitles.home],
-  [routePaths.tours, routeTitles.tours],
-  [routeBuilders.tourDetail('test-tour-id'), routeTitles.tourDetail],
-  [routeBuilders.configure('test-tour-id'), routeTitles.configure],
-  [routePaths.reservationReview, routeTitles.reservationReview],
-  [routeBuilders.reservationSuccess('test-reservation-id'), routeTitles.reservationSuccess],
-  [routeBuilders.reservationDetail('test-reservation-id'), routeTitles.reservationDetail],
-  [routePaths.login, routeTitles.login],
-  [routePaths.signup, routeTitles.signup],
-  [routePaths.myTrips, routeTitles.myTrips],
+  [routePaths.home, routeTitles.home, 'A journey made for your moment.'],
+  [routePaths.tours, routeTitles.tours, 'Four ways to travel differently.'],
+  [routeBuilders.tourDetail('test-tour-id'), routeTitles.tourDetail, routeTitles.tourDetail],
+  [routeBuilders.configure('test-tour-id'), routeTitles.configure, routeTitles.configure],
+  [routePaths.reservationReview, routeTitles.reservationReview, routeTitles.reservationReview],
+  [
+    routeBuilders.reservationSuccess('test-reservation-id'),
+    routeTitles.reservationSuccess,
+    routeTitles.reservationSuccess,
+  ],
+  [
+    routeBuilders.reservationDetail('test-reservation-id'),
+    routeTitles.reservationDetail,
+    routeTitles.reservationDetail,
+  ],
+  [routePaths.login, routeTitles.login, routeTitles.login],
+  [routePaths.signup, routeTitles.signup, routeTitles.signup],
+  [routePaths.myTrips, routeTitles.myTrips, routeTitles.myTrips],
 ] as const;
 
 function renderRoute(path: string) {
@@ -38,21 +46,24 @@ function renderRoute(path: string) {
 }
 
 describe('foundation route table', () => {
-  it.each(routeCases)('mounts %s as %s with the route accessibility baseline', (path, title) => {
-    renderRoute(path);
+  it.each(routeCases)(
+    'mounts %s as %s with the route accessibility baseline',
+    (path, _title, accessibleHeading) => {
+      renderRoute(path);
 
-    expect(screen.getByRole('heading', { level: 1, name: title })).toBeVisible();
-    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+      expect(screen.getByRole('heading', { level: 1, name: accessibleHeading })).toBeVisible();
+      expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
 
-    const main = screen.getByRole('main');
+      const main = screen.getByRole('main');
 
-    expect(main).toHaveAttribute('id', 'main-content');
-    expect(main).toHaveAttribute('tabindex', '-1');
-    expect(screen.getByRole('link', { name: 'Skip to main content' })).toHaveAttribute(
-      'href',
-      '#main-content',
-    );
-  });
+      expect(main).toHaveAttribute('id', 'main-content');
+      expect(main).toHaveAttribute('tabindex', '-1');
+      expect(screen.getByRole('link', { name: 'Skip to main content' })).toHaveAttribute(
+        'href',
+        '#main-content',
+      );
+    },
+  );
 
   it('exposes the matched tourId on the dynamic Tour Detail placeholder', () => {
     renderRoute(routeBuilders.tourDetail('test-tour-id'));
