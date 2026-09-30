@@ -18,3 +18,13 @@ export {
 } from '@/features/configuration/configurationFixtures';
 
 export { ParticipantCountField } from '@/features/configuration/ParticipantCountField';
+
+export { ConfigureDesktop } from '@/features/configuration/ConfigureDesktop';
+export { ConfigurationOptionGroup } from '@/features/configuration/ConfigurationOptionGroup';
+export { DesktopTripSummary } from '@/features/configuration/DesktopTripSummary';
+export {
+  getConfigureReadiness,
+  type ConfigureReadiness,
+  type ConfigureReadinessIssue,
+} from '@/features/configuration/configureReadiness';
+export { buildConfigureTripSummary } from '@/features/configuration/configurePresentation';
