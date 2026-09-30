@@ -1,0 +1,32 @@
+.root {
+  min-inline-size: 0;
+  opacity: 0;
+}
+
+.section {
+  transform: translateY(var(--mw-space-6));
+  transition:
+    opacity var(--mw-motion-section) var(--mw-ease-enter),
+    transform var(--mw-motion-section) var(--mw-ease-enter);
+}
+
+.image {
+  overflow: hidden;
+  transform: translateY(var(--mw-space-4));
+  transition:
+    opacity var(--mw-motion-section) var(--mw-ease-enter),
+    transform var(--mw-motion-section) var(--mw-ease-enter);
+}
+
+.root[data-revealed='true'] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

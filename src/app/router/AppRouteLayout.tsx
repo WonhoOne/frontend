@@ -1,5 +1,6 @@
-import { Outlet, useMatches } from 'react-router';
+import { useMatches } from 'react-router';
 
+import { RouteMotionBoundary } from '@/app/router/RouteMotionBoundary';
 import { RouteRuntime } from '@/app/router/RouteRuntime';
 import { GlobalHeader } from '@/app/shell/GlobalHeader';
 import { TransactionHeader } from '@/app/shell/TransactionHeader';
@@ -27,7 +28,8 @@ function isAppRouteHandle(value: unknown): value is AppRouteHandle {
  *
  * CONTRACT: generic chrome은 route metadata로 결정한다.
  * 안정적인 skip target과 focus 가능한 main landmark를 제공하고,
- * route 전환 focus/scroll lifecycle은 RouteRuntime에 위임한다.
+ * route 전환 focus/scroll lifecycle은 RouteRuntime에 위임하고,
+ * route surface motion은 RouteMotionBoundary가 소유한다.
  */
 export function AppRouteLayout() {
   const matches = useMatches();
@@ -51,7 +53,7 @@ export function AppRouteLayout() {
       )}
 
       <main id="main-content" tabIndex={-1}>
-        <Outlet />
+        <RouteMotionBoundary />
       </main>
     </>
   );
