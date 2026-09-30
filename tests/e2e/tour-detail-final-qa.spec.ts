@@ -1,8 +1,8 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator } from '@playwright/test';
 
 const canonicalWidths = [320, 360, 390, 430, 768, 1024, 1280, 1440, 1728];
 
-async function touchSurfaceHeight(locator: import('@playwright/test').Locator) {
+async function touchSurfaceHeight(locator: Locator) {
   return locator.evaluate((element) => {
     const label = element.closest('label');
     return label instanceof HTMLElement ? label.getBoundingClientRect().height : 0;
