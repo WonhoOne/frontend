@@ -34,14 +34,18 @@ test.describe('Tour Detail core editorial', () => {
   test('mirrors Theme Style restrictions without preselecting a Style', async ({ page }) => {
     await page.goto('/tours/demo-honeymoon-product-a');
 
-    await expect(page.getByRole('radio')).toHaveCount(2);
+    const honeymoonStyles = page.getByRole('group', { name: 'Tour style options' });
+
+    await expect(honeymoonStyles.getByRole('radio')).toHaveCount(2);
     await expect(page.getByRole('radio', { name: /Classic/ })).toHaveCount(0);
     await expect(page.getByRole('radio', { name: /Grand/ })).not.toBeChecked();
     await expect(page.getByRole('radio', { name: /Premium/ })).not.toBeChecked();
 
     await page.goto('/tours/demo-golf-product-a');
 
-    await expect(page.getByRole('radio')).toHaveCount(3);
+    const golfStyles = page.getByRole('group', { name: 'Tour style options' });
+
+    await expect(golfStyles.getByRole('radio')).toHaveCount(3);
     await expect(page.getByRole('radio', { name: /Classic/ })).not.toBeChecked();
     await expect(page.getByRole('radio', { name: /Grand/ })).not.toBeChecked();
     await expect(page.getByRole('radio', { name: /Premium/ })).not.toBeChecked();
@@ -100,6 +104,31 @@ test.describe('Tour Detail core editorial', () => {
     });
 
     expect(transitionDuration).toBe('0s');
+  });
+
+  test('selects an available schedule but keeps unavailable schedules disabled', async ({
+    page,
+  }) => {
+    await page.goto('/tours/demo-golf-product-a');
+
+    const available = page.getByRole('radio', { name: /Schedule preview A/ });
+    const unavailable = page.getByRole('radio', { name: /Schedule preview B/ });
+
+    await expect(available).not.toBeChecked();
+    await expect(unavailable).toBeDisabled();
+
+    await available.click();
+
+    await expect(available).toBeChecked();
+    await expect(unavailable).not.toBeChecked();
+  });
+
+  test('renders Honeymoon recruitment presentation from approved wording', async ({ page }) => {
+    await page.goto('/tours/demo-honeymoon-product-a');
+
+    await expect(
+      page.getByText('2 couples/teams required · 1 couple/team = 2 participants'),
+    ).toBeVisible();
   });
 
   test('renders an invalid TourProduct identity as branded not found', async ({ page }) => {

@@ -5,15 +5,18 @@ import { routeBuilders, routePaths } from '@/app/router/paths';
 import { LoadingState } from '@/app/state';
 import {
   findTourDetailPreview,
+  findTourSchedulePreview,
   IncludedExperienceSection,
   TourDetailHero,
   type TourDetailCoreErrorReason,
   type TourDetailCoreState,
   TourDetailSkeleton,
   TourDetailStory,
+  TourScheduleSection,
   TourStyleSelection,
   type TourDetailModel,
   type TourDetailStyle,
+  type TourScheduleSectionState,
 } from '@/features/tour-detail';
 import { Button, PageContainer, TextLink } from '@/shared/ui';
 
@@ -21,7 +24,9 @@ import styles from '@/pages/tour-detail/TourDetailPage.module.css';
 
 interface TourDetailPageViewProps {
   coreState: TourDetailCoreState;
+  scheduleState?: TourScheduleSectionState;
   onRetry?: () => void;
+  onRetrySchedule?: () => void;
 }
 
 const coreErrorCopy: Record<TourDetailCoreErrorReason, { title: string; message: string }> = {
@@ -69,8 +74,26 @@ function TourDetailStatePage({
   );
 }
 
-function TourDetailReadyView({ tour }: { tour: TourDetailModel }) {
+function TourDetailReadyView({
+  onRetrySchedule,
+  scheduleState,
+  tour,
+}: {
+  tour: TourDetailModel;
+  scheduleState?: TourScheduleSectionState;
+  onRetrySchedule?: () => void;
+}) {
   const [selectedStyle, setSelectedStyle] = useState<TourDetailStyle | null>(null);
+  const [selectedScheduleKey, setSelectedScheduleKey] = useState<string | null>(null);
+  const resolvedScheduleState = scheduleState ?? findTourSchedulePreview(tour);
+
+  const effectiveScheduleKey =
+    resolvedScheduleState.status === 'ready' &&
+    resolvedScheduleState.choices.some(
+      (choice) => choice.selectionKey === selectedScheduleKey && choice.isSelectable,
+    )
+      ? selectedScheduleKey
+      : null;
 
   return (
     <div className={styles.page}>
@@ -81,6 +104,12 @@ function TourDetailReadyView({ tour }: { tour: TourDetailModel }) {
         availableStyles={tour.availableStyles}
         onChange={setSelectedStyle}
         selectedStyle={selectedStyle}
+      />
+      <TourScheduleSection
+        onChange={setSelectedScheduleKey}
+        {...(onRetrySchedule !== undefined ? { onRetry: onRetrySchedule } : {})}
+        scheduleState={resolvedScheduleState}
+        selectedScheduleKey={effectiveScheduleKey}
       />
 
       <footer className={styles.footer}>
@@ -100,7 +129,12 @@ function TourDetailReadyView({ tour }: { tour: TourDetailModel }) {
   );
 }
 
-export function TourDetailPageView({ coreState, onRetry }: TourDetailPageViewProps) {
+export function TourDetailPageView({
+  coreState,
+  onRetry,
+  onRetrySchedule,
+  scheduleState,
+}: TourDetailPageViewProps) {
   if (coreState.status === 'loading') {
     return (
       <div className={styles.page}>
@@ -140,7 +174,14 @@ export function TourDetailPageView({ coreState, onRetry }: TourDetailPageViewPro
 
   const { tour } = coreState;
 
-  return <TourDetailReadyView key={tour.id} tour={tour} />;
+  return (
+    <TourDetailReadyView
+      key={tour.id}
+      {...(onRetrySchedule !== undefined ? { onRetrySchedule } : {})}
+      {...(scheduleState !== undefined ? { scheduleState } : {})}
+      tour={tour}
+    />
+  );
 }
 
 export function TourDetailPage() {

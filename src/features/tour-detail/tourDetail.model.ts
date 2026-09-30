@@ -58,6 +58,25 @@ export interface ScheduleChoiceModel {
   isSelectable: boolean;
 }
 
+export type TourScheduleFreshness = 'current' | 'refreshing' | 'stale';
+export type TourScheduleErrorReason = 'network' | 'server' | 'data-mismatch';
+
+export type TourScheduleSectionState =
+  | { status: 'loading' }
+  | { status: 'empty' }
+  | {
+      status: 'error';
+      reason: TourScheduleErrorReason;
+      isRetrying?: boolean;
+    }
+  | {
+      status: 'ready';
+      choices: readonly ScheduleChoiceModel[];
+      freshness?: TourScheduleFreshness;
+      hasPartialError?: boolean;
+      isRetrying?: boolean;
+    };
+
 export type TourDetailCoreErrorReason = 'network' | 'server' | 'data-mismatch';
 
 export type TourDetailCoreState =

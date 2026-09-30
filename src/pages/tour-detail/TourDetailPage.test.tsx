@@ -2,7 +2,7 @@
 
 import '@testing-library/jest-dom/vitest';
 
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router';
 
@@ -10,6 +10,8 @@ import {
   findTourDetailPreview,
   type TourDetailCoreState,
   tourDetailPreviewStates,
+  tourSchedulePreviewStates,
+  type TourScheduleSectionState,
 } from '@/features/tour-detail';
 import { TourDetailPageView } from '@/pages/tour-detail/TourDetailPage';
 
@@ -17,11 +19,22 @@ afterEach(cleanup);
 
 function renderView(
   coreState: TourDetailCoreState = tourDetailPreviewStates.loading,
-  onRetry?: () => void,
+  options: {
+    onRetry?: () => void;
+    onRetrySchedule?: () => void;
+    scheduleState?: TourScheduleSectionState;
+  } = {},
 ) {
   return render(
     <MemoryRouter>
-      <TourDetailPageView coreState={coreState} {...(onRetry !== undefined ? { onRetry } : {})} />
+      <TourDetailPageView
+        coreState={coreState}
+        {...(options.onRetry !== undefined ? { onRetry: options.onRetry } : {})}
+        {...(options.onRetrySchedule !== undefined
+          ? { onRetrySchedule: options.onRetrySchedule }
+          : {})}
+        {...(options.scheduleState !== undefined ? { scheduleState: options.scheduleState } : {})}
+      />
     </MemoryRouter>,
   );
 }
@@ -83,7 +96,7 @@ describe('TourDetailPageView core states', () => {
   it('keeps core errors recoverable without exposing raw Backend messages', () => {
     const onRetry = vi.fn();
 
-    renderView(tourDetailPreviewStates.networkError, onRetry);
+    renderView(tourDetailPreviewStates.networkError, { onRetry });
 
     expect(
       screen.getByRole('heading', { level: 1, name: "We couldn't load this journey." }),
@@ -146,10 +159,12 @@ describe('TourDetailPageView core states', () => {
 
     const view = renderView({ status: 'ready', tour: parents });
 
-    expect(screen.getAllByRole('radio')).toHaveLength(2);
-    expect(screen.queryByRole('radio', { name: /Classic/ })).not.toBeInTheDocument();
-    expect(screen.getByRole('radio', { name: /Grand/ })).not.toBeChecked();
-    expect(screen.getByRole('radio', { name: /Premium/ })).not.toBeChecked();
+    const parentsStyles = within(screen.getByRole('group', { name: 'Tour style options' }));
+
+    expect(parentsStyles.getAllByRole('radio')).toHaveLength(2);
+    expect(parentsStyles.queryByRole('radio', { name: /Classic/ })).not.toBeInTheDocument();
+    expect(parentsStyles.getByRole('radio', { name: /Grand/ })).not.toBeChecked();
+    expect(parentsStyles.getByRole('radio', { name: /Premium/ })).not.toBeChecked();
 
     view.rerender(
       <MemoryRouter>
@@ -157,10 +172,12 @@ describe('TourDetailPageView core states', () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getAllByRole('radio')).toHaveLength(3);
-    expect(screen.getByRole('radio', { name: /Classic/ })).not.toBeChecked();
-    expect(screen.getByRole('radio', { name: /Grand/ })).not.toBeChecked();
-    expect(screen.getByRole('radio', { name: /Premium/ })).not.toBeChecked();
+    const trekkingStyles = within(screen.getByRole('group', { name: 'Tour style options' }));
+
+    expect(trekkingStyles.getAllByRole('radio')).toHaveLength(3);
+    expect(trekkingStyles.getByRole('radio', { name: /Classic/ })).not.toBeChecked();
+    expect(trekkingStyles.getByRole('radio', { name: /Grand/ })).not.toBeChecked();
+    expect(trekkingStyles.getByRole('radio', { name: /Premium/ })).not.toBeChecked();
   });
 
   it('resets local Style selection when the TourProduct identity changes', () => {
@@ -185,6 +202,164 @@ describe('TourDetailPageView core states', () => {
     expect(screen.queryByRole('radio', { name: /Classic/ })).not.toBeInTheDocument();
     expect(screen.getByRole('radio', { name: /Grand/ })).not.toBeChecked();
     expect(screen.getByRole('radio', { name: /Premium/ })).not.toBeChecked();
+  });
+
+  it('keeps core content visible while schedules load independently', () => {
+    const tour = findTourDetailPreview('demo-golf-product-a');
+
+    if (tour === null) {
+      throw new Error('expected Golf preview fixture');
+    }
+
+    renderView({ status: 'ready', tour }, { scheduleState: tourSchedulePreviewStates.loading });
+
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'Golf Challenge · Journey 01' }),
+    ).toBeVisible();
+    expect(screen.getByLabelText('Loading tour schedules')).toHaveAttribute('aria-busy', 'true');
+    expect(screen.getByTestId('tour-schedule-skeleton')).toBeVisible();
+  });
+
+  it('keeps schedule errors local and retries only the schedule section', () => {
+    const tour = findTourDetailPreview('demo-golf-product-a');
+    const onRetrySchedule = vi.fn();
+
+    if (tour === null) {
+      throw new Error('expected Golf preview fixture');
+    }
+
+    renderView(
+      { status: 'ready', tour },
+      {
+        onRetrySchedule,
+        scheduleState: tourSchedulePreviewStates.networkError,
+      },
+    );
+
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'Golf Challenge · Journey 01' }),
+    ).toBeVisible();
+    expect(screen.getByRole('heading', { name: "We couldn't load schedules." })).toBeVisible();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Retry schedules' }));
+
+    expect(onRetrySchedule).toHaveBeenCalledTimes(1);
+  });
+
+  it('preserves schedule choices through partial error, refreshing, and stale states', () => {
+    const tour = findTourDetailPreview('demo-golf-product-a');
+
+    if (tour === null) {
+      throw new Error('expected Golf preview fixture');
+    }
+
+    const view = renderView(
+      { status: 'ready', tour },
+      { scheduleState: tourSchedulePreviewStates.partialError },
+    );
+
+    expect(
+      screen.getByRole('heading', { name: 'Some schedule information is unavailable.' }),
+    ).toBeVisible();
+    expect(
+      within(screen.getByRole('group', { name: 'Tour schedule options' })).getAllByRole('radio'),
+    ).toHaveLength(2);
+
+    view.rerender(
+      <MemoryRouter>
+        <TourDetailPageView
+          coreState={{ status: 'ready', tour }}
+          scheduleState={tourSchedulePreviewStates.refreshing}
+        />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText('Updating schedules')).toBeVisible();
+    expect(
+      within(screen.getByRole('group', { name: 'Tour schedule options' })).getAllByRole('radio'),
+    ).toHaveLength(2);
+
+    view.rerender(
+      <MemoryRouter>
+        <TourDetailPageView
+          coreState={{ status: 'ready', tour }}
+          scheduleState={tourSchedulePreviewStates.stale}
+        />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText('Showing saved schedules while refresh is unavailable')).toBeVisible();
+    expect(
+      within(screen.getByRole('group', { name: 'Tour schedule options' })).getAllByRole('radio'),
+    ).toHaveLength(2);
+  });
+
+  it('renders unavailable schedules as disabled and never preselects a schedule', () => {
+    const tour = findTourDetailPreview('demo-golf-product-a');
+
+    if (tour === null) {
+      throw new Error('expected Golf preview fixture');
+    }
+
+    renderView({ status: 'ready', tour }, { scheduleState: tourSchedulePreviewStates.unavailable });
+
+    const radios = within(
+      screen.getByRole('group', { name: 'Tour schedule options' }),
+    ).getAllByRole('radio');
+
+    expect(radios).toHaveLength(2);
+    expect(radios.every((radio) => !radio.hasAttribute('checked'))).toBe(true);
+    expect(radios.every((radio) => radio.hasAttribute('disabled'))).toBe(true);
+    expect(screen.getByText('No schedule is currently selectable.')).toBeVisible();
+  });
+
+  it('uses Honeymoon recruitment wording without client-side count derivation', () => {
+    const tour = findTourDetailPreview('demo-honeymoon-product-a');
+
+    if (tour === null) {
+      throw new Error('expected Honeymoon preview fixture');
+    }
+
+    renderView({ status: 'ready', tour });
+
+    expect(
+      screen.getByText('2 couples/teams required · 1 couple/team = 2 participants'),
+    ).toBeVisible();
+    expect(screen.queryByText(/currentCount|requiredCount|confirmed/i)).not.toBeInTheDocument();
+  });
+
+  it('selects only available schedule choices and resets selection when they become unavailable', () => {
+    const tour = findTourDetailPreview('demo-golf-product-a');
+
+    if (tour === null) {
+      throw new Error('expected Golf preview fixture');
+    }
+
+    const view = renderView({ status: 'ready', tour });
+
+    const available = screen.getByRole('radio', { name: /Schedule preview A/ });
+    const unavailable = screen.getByRole('radio', { name: /Schedule preview B/ });
+
+    expect(available).not.toBeChecked();
+    expect(unavailable).toBeDisabled();
+
+    fireEvent.click(available);
+    expect(available).toBeChecked();
+
+    view.rerender(
+      <MemoryRouter>
+        <TourDetailPageView
+          coreState={{ status: 'ready', tour }}
+          scheduleState={tourSchedulePreviewStates.unavailable}
+        />
+      </MemoryRouter>,
+    );
+
+    expect(
+      within(screen.getByRole('group', { name: 'Tour schedule options' }))
+        .getAllByRole('radio')
+        .every((radio) => !radio.matches(':checked')),
+    ).toBe(true);
   });
 
   it('keeps Tour content visible when the hero image fails', () => {
