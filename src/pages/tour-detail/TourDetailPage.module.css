@@ -18,7 +18,10 @@
 .stateCard h1,
 .stateCard p,
 .configureCopy h2,
-.configureCopy p {
+.configureCopy p,
+.selectionSummary,
+.selectionSummary dt,
+.selectionSummary dd {
   margin: 0;
 }
 
@@ -77,6 +80,33 @@
   font-weight: var(--mw-font-weight-regular);
   line-height: var(--mw-line-height-heading-lg);
   text-wrap: balance;
+}
+
+.selectionSummary {
+  display: grid;
+  gap: var(--mw-space-3);
+}
+
+.selectionSummary > div {
+  display: grid;
+  grid-template-columns: minmax(72px, auto) minmax(0, 1fr);
+  gap: var(--mw-space-3);
+  align-items: baseline;
+}
+
+.selectionSummary dt {
+  color: var(--mw-text-secondary);
+  font-size: var(--mw-font-size-label-sm);
+  font-weight: var(--mw-font-weight-semibold);
+  letter-spacing: var(--mw-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.selectionSummary dd {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  color: var(--mw-ink);
+  font-size: var(--mw-font-size-body-md);
 }
 
 .configureCopy > p:last-child {
