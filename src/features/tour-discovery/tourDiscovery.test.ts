@@ -17,15 +17,15 @@ describe('tour discovery contract boundary', () => {
     ]);
   });
 
-  it('supports multiple TourProducts inside one Theme instead of assuming 1:1', () => {
+  it('supports one or many TourProducts per Theme instead of assuming 1:1', () => {
     const groups = groupTourProductsByTheme(tourDiscoveryProductFixtures);
-    const golfGroup = groups.find((group) => group.presentation.theme === 'GOLF_CHALLENGE');
 
-    expect(golfGroup?.products).toHaveLength(2);
-    expect(golfGroup?.products.map((product) => product.id)).toEqual([
-      'demo-golf-product-a',
-      'demo-golf-product-b',
-    ]);
+    expect(groups.map((group) => group.products.length)).toEqual([1, 1, 2, 1]);
+    expect(
+      groups
+        .find((group) => group.presentation.theme === 'GOLF_CHALLENGE')
+        ?.products.map((product) => product.id),
+    ).toEqual(['demo-golf-product-a', 'demo-golf-product-b']);
   });
 
   it('preserves a Theme group even when that Theme currently has zero products', () => {

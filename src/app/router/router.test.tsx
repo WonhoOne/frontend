@@ -13,7 +13,7 @@ afterEach(cleanup);
 
 const routeCases = [
   [routePaths.home, routeTitles.home, 'A journey made for your moment.'],
-  [routePaths.tours, routeTitles.tours, routeTitles.tours],
+  [routePaths.tours, routeTitles.tours, 'Four ways to travel differently.'],
   [routeBuilders.tourDetail('test-tour-id'), routeTitles.tourDetail, routeTitles.tourDetail],
   [routeBuilders.configure('test-tour-id'), routeTitles.configure, routeTitles.configure],
   [routePaths.reservationReview, routeTitles.reservationReview, routeTitles.reservationReview],

@@ -2,7 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 
 const routeCases = [
   ['/', 'A journey made for your moment.'],
-  ['/tours', 'Tours'],
+  ['/tours', 'Four ways to travel differently.'],
   ['/tours/e2e-tour-id', 'Tour Detail'],
   ['/tours/e2e-tour-id/configure', 'Configure'],
   ['/reservation/review', 'Reservation Review'],
@@ -54,14 +54,21 @@ test.describe('Foundation routes', () => {
       .getByRole('link', { name: 'Tours', exact: true })
       .click();
     await expect(page).toHaveURL(/\/tours$/);
-    await expect(page.getByRole('heading', { level: 1, name: 'Tours' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Four ways to travel differently.' }),
+    ).toBeVisible();
 
-    await page.getByRole('link', { name: 'My Trips' }).click();
+    await page
+      .getByRole('navigation', { name: 'Primary' })
+      .getByRole('link', { name: 'My Trips', exact: true })
+      .click();
     await expect(page).toHaveURL(/\/my-trips$/);
 
     await page.goBack();
     await expect(page).toHaveURL(/\/tours$/);
-    await expect(page.getByRole('heading', { level: 1, name: 'Tours' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Four ways to travel differently.' }),
+    ).toBeVisible();
 
     await page.goBack();
     await expect(page).toHaveURL(/\/$/);
@@ -104,7 +111,8 @@ test.describe('Foundation routes', () => {
     const toursScroll = await page.evaluate(() => window.scrollY);
 
     await page
-      .getByRole('link', { name: 'My Trips' })
+      .getByRole('navigation', { name: 'Primary' })
+      .getByRole('link', { name: 'My Trips', exact: true })
       .evaluate((element) => (element as HTMLAnchorElement).click());
 
     await expect(page).toHaveURL(/\/my-trips$/);

@@ -1,0 +1,107 @@
+.root {
+  display: grid;
+  gap: var(--mw-space-10);
+  padding: var(--mw-space-10);
+  border-radius: var(--mw-radius-xl);
+  background: var(--mw-ink);
+  color: var(--mw-surface-elevated);
+}
+
+.heading {
+  display: grid;
+  max-inline-size: var(--mw-container-reading);
+  gap: var(--mw-space-4);
+}
+
+.eyebrow,
+.heading h2,
+.heading p {
+  margin: 0;
+}
+
+.eyebrow {
+  color: color-mix(in srgb, var(--mw-surface-elevated) 62%, transparent);
+  font-size: var(--mw-font-size-label-sm);
+  font-weight: var(--mw-font-weight-semibold);
+  letter-spacing: var(--mw-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.heading h2 {
+  max-inline-size: 15ch;
+  font-family: var(--mw-font-editorial);
+  font-size: var(--mw-font-size-display-lg);
+  font-weight: var(--mw-font-weight-regular);
+  letter-spacing: var(--mw-tracking-editorial);
+  line-height: var(--mw-line-height-display-lg);
+  text-wrap: balance;
+}
+
+.heading p {
+  max-inline-size: 58ch;
+  color: color-mix(in srgb, var(--mw-surface-elevated) 72%, transparent);
+}
+
+.grid {
+  display: grid;
+  gap: 0;
+  margin: 0;
+}
+
+.item {
+  display: grid;
+  gap: var(--mw-space-2);
+  padding-block: var(--mw-space-5);
+  border-block-start: 1px solid color-mix(in srgb, var(--mw-surface-elevated) 16%, transparent);
+}
+
+.item:last-child {
+  border-block-end: 1px solid color-mix(in srgb, var(--mw-surface-elevated) 16%, transparent);
+}
+
+.item dt {
+  font-family: var(--mw-font-editorial);
+  font-size: var(--mw-font-size-heading-md);
+}
+
+.item dd {
+  margin: 0;
+  color: color-mix(in srgb, var(--mw-surface-elevated) 84%, transparent);
+}
+
+.item .availability {
+  color: color-mix(in srgb, var(--mw-surface-elevated) 58%, transparent);
+  font-size: var(--mw-font-size-body-sm);
+}
+
+@media (max-width: 639px) {
+  .root {
+    padding: var(--mw-space-8) var(--mw-space-6);
+  }
+}
+
+@media (min-width: 1024px) {
+  .root {
+    padding: var(--mw-space-12);
+  }
+
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .item {
+    padding: 0 var(--mw-space-6);
+    border-block: 0;
+    border-inline-start: 1px solid color-mix(in srgb, var(--mw-surface-elevated) 16%, transparent);
+  }
+
+  .item:first-child {
+    padding-inline-start: 0;
+    border-inline-start: 0;
+  }
+
+  .item:last-child {
+    padding-inline-end: 0;
+    border-block-end: 0;
+  }
+}
