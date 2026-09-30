@@ -16,6 +16,11 @@ jobs:
           node-version: 24.21.0
           cache: npm
       - run: npm ci
+      - name: Confirm transaction E2E is Prettier-clean
+        run: |
+          npx prettier tests/e2e/tour-detail-configure-handoff.spec.ts --write
+          cat tests/e2e/tour-detail-configure-handoff.spec.ts
+          git diff --exit-code -- tests/e2e/tour-detail-configure-handoff.spec.ts
       - run: npm run verify
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
