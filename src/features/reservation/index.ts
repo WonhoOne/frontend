@@ -31,3 +31,10 @@ export {
   reservationDraftReducer,
   type ReservationDraftAction,
 } from '@/features/reservation/reservationDraftReducer';
+
+export {
+  formatParticipantCountSummary,
+  validateParticipantCount,
+  type ParticipantCountRule,
+  type ParticipantCountValidation,
+} from '@/features/reservation/participantCount';

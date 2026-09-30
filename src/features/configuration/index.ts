@@ -16,3 +16,5 @@ export {
   type ConfigurationFixtureSelectionKey,
   type ConfigureFixtureScenario,
 } from '@/features/configuration/configurationFixtures';
+
+export { ParticipantCountField } from '@/features/configuration/ParticipantCountField';
