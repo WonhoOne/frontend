@@ -28,3 +28,5 @@ export {
   type ConfigureReadinessIssue,
 } from '@/features/configuration/configureReadiness';
 export { buildConfigureTripSummary } from '@/features/configuration/configurePresentation';
+
+export { MobileTripSummary } from '@/features/configuration/MobileTripSummary';

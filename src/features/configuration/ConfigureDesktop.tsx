@@ -1,5 +1,8 @@
+import { useSyncExternalStore } from 'react';
+
 import { ConfigurationOptionGroup } from '@/features/configuration/ConfigurationOptionGroup';
 import { DesktopTripSummary } from '@/features/configuration/DesktopTripSummary';
+import { MobileTripSummary } from '@/features/configuration/MobileTripSummary';
 import { ParticipantCountField } from '@/features/configuration/ParticipantCountField';
 import { buildConfigureTripSummary } from '@/features/configuration/configurePresentation';
 import { getConfigureReadiness } from '@/features/configuration/configureReadiness';
@@ -8,6 +11,8 @@ import type { ConfigurationCategory } from '@/features/configuration/configurati
 import { useReservationDraft, type ParticipantCountRule } from '@/features/reservation';
 
 import styles from '@/features/configuration/ConfigureDesktop.module.css';
+
+const DESKTOP_CONFIGURE_QUERY = '(min-width: 1024px)';
 
 interface ConfigureDesktopProps {
   participantRule: ParticipantCountRule;
@@ -33,6 +38,31 @@ function selectedKeyForCategory(
   }
 }
 
+function getDesktopSnapshot() {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+    return true;
+  }
+
+  return window.matchMedia(DESKTOP_CONFIGURE_QUERY).matches;
+}
+
+function subscribeToDesktopBreakpoint(onChange: () => void) {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+    return () => undefined;
+  }
+
+  const mediaQuery = window.matchMedia(DESKTOP_CONFIGURE_QUERY);
+  mediaQuery.addEventListener('change', onChange);
+
+  return () => {
+    mediaQuery.removeEventListener('change', onChange);
+  };
+}
+
+function useDesktopConfigureLayout() {
+  return useSyncExternalStore(subscribeToDesktopBreakpoint, getDesktopSnapshot, () => true);
+}
+
 export function ConfigureDesktop({
   participantRule,
   scenario,
@@ -41,6 +71,7 @@ export function ConfigureDesktop({
   now = Date.now,
 }: ConfigureDesktopProps) {
   const { draft, dispatch } = useReservationDraft();
+  const isDesktop = useDesktopConfigureLayout();
   const summary = buildConfigureTripSummary({
     draft,
     participantRule,
@@ -104,9 +135,13 @@ export function ConfigureDesktop({
         ))}
       </div>
 
-      <div className={styles.summaryColumn}>
-        <DesktopTripSummary onReview={onReview} readiness={readiness} summary={summary} />
-      </div>
+      {isDesktop ? (
+        <div className={styles.summaryColumn}>
+          <DesktopTripSummary onReview={onReview} readiness={readiness} summary={summary} />
+        </div>
+      ) : (
+        <MobileTripSummary onReview={onReview} readiness={readiness} summary={summary} />
+      )}
     </div>
   );
 }

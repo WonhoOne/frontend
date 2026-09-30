@@ -1,0 +1,156 @@
+import { useState } from 'react';
+import { createPortal } from 'react-dom';
+
+import type { ConfigureReadiness } from '@/features/configuration/configureReadiness';
+import type { TripSummaryModel } from '@/features/configuration/configurationModels';
+import { BottomSheet, Button } from '@/shared/ui';
+
+import styles from '@/features/configuration/MobileTripSummary.module.css';
+
+interface MobileTripSummaryProps {
+  summary: TripSummaryModel;
+  readiness: ConfigureReadiness;
+  onReview: () => void;
+}
+
+function selectionCount(summary: TripSummaryModel) {
+  const requiredSelections = [
+    summary.selections.hotelLabel,
+    summary.selections.transportLabel,
+    summary.selections.mealLabel,
+  ].filter((value) => value !== null).length;
+
+  return requiredSelections + summary.selections.extraLabels.length;
+}
+
+function SummaryRow({ label, value }: { label: string; value: string | null }) {
+  return (
+    <div className={styles.row}>
+      <dt>{label}</dt>
+      <dd>{value ?? 'Not selected'}</dd>
+    </div>
+  );
+}
+
+function priceLabel(summary: TripSummaryModel) {
+  switch (summary.price.state) {
+    case 'known':
+      return summary.price.totalLabel;
+    case 'loading':
+      return summary.price.previousTotalLabel ?? 'Price loading';
+    case 'recalculating':
+      return `${summary.price.previousTotalLabel} · Updating`;
+    case 'error':
+      return summary.price.previousTotalLabel ?? 'Price unavailable';
+    case 'unavailable':
+      return 'Price unavailable';
+  }
+}
+
+/**
+ * Mobile Configure의 persistent transaction summary.
+ *
+ * INVARIANT:
+ * - 선택/가격 truth를 자체 계산하지 않고 TripSummaryModel만 표현한다.
+ * - BottomSheet open state는 ephemeral UI state이며 ReservationDraft에 저장하지 않는다.
+ * - Review 가능 여부는 Desktop과 동일한 ConfigureReadiness를 사용한다.
+ */
+export function MobileTripSummary({ summary, readiness, onReview }: MobileTripSummaryProps) {
+  const [isSummaryOpen, setSummaryOpen] = useState(false);
+  const count = selectionCount(summary);
+
+  const summaryBar = (
+    <aside aria-label="Mobile trip summary" className={styles.bar}>
+      <button
+        aria-expanded={isSummaryOpen}
+        aria-haspopup="dialog"
+        aria-label="Open trip summary"
+        className={styles.summaryTrigger}
+        onClick={() => setSummaryOpen(true)}
+        type="button"
+      >
+        <span className={styles.primaryLine}>
+          {summary.styleLabel} · {count} {count === 1 ? 'selection' : 'selections'}
+        </span>
+        <span className={styles.secondaryLine}>{priceLabel(summary)}</span>
+      </button>
+
+      <Button
+        className={styles.reviewButton}
+        disabled={!readiness.isReady}
+        onClick={onReview}
+        size="large"
+      >
+        Review
+      </Button>
+    </aside>
+  );
+
+  return (
+    <>
+      {createPortal(summaryBar, document.body)}
+
+      <BottomSheet
+        closeLabel="Close summary"
+        description="Review your current trip configuration without leaving this page."
+        onOpenChange={setSummaryOpen}
+        open={isSummaryOpen}
+        title="Trip summary"
+      >
+        <div className={styles.sheetContent}>
+          <header className={styles.sheetHeader}>
+            <p className={styles.theme}>{summary.themeLabel}</p>
+            <p>
+              {summary.styleLabel} · {summary.scheduleLabel}
+            </p>
+          </header>
+
+          <dl className={styles.list}>
+            <SummaryRow label="Participants" value={summary.participantLabel} />
+            <SummaryRow label="Hotel" value={summary.selections.hotelLabel} />
+            <SummaryRow label="Transport" value={summary.selections.transportLabel} />
+            <SummaryRow label="Meal" value={summary.selections.mealLabel} />
+            <SummaryRow
+              label="Extras"
+              value={
+                summary.selections.extraLabels.length === 0
+                  ? null
+                  : summary.selections.extraLabels.join(', ')
+              }
+            />
+          </dl>
+
+          <div className={styles.price}>
+            <span>Price</span>
+            {summary.price.state === 'unavailable' ? (
+              <p>{summary.price.message}</p>
+            ) : summary.price.state === 'known' ? (
+              <strong>{summary.price.totalLabel}</strong>
+            ) : summary.price.state === 'loading' ? (
+              <p>{summary.price.previousTotalLabel ?? 'Loading price…'}</p>
+            ) : summary.price.state === 'recalculating' ? (
+              <p>{summary.price.previousTotalLabel} · Updating…</p>
+            ) : (
+              <p>{summary.price.previousTotalLabel ?? summary.price.message}</p>
+            )}
+          </div>
+
+          <Button
+            className={styles.sheetReviewButton}
+            disabled={!readiness.isReady}
+            onClick={onReview}
+            size="large"
+          >
+            Review trip
+          </Button>
+
+          {!readiness.isReady ? (
+            <p className={styles.requirements}>
+              Complete the participant count, Hotel, Transport, and Meal to continue.
+            </p>
+          ) : null}
+        </div>
+      </BottomSheet>
+    </>
+  );
+}

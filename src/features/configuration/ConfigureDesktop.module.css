@@ -1,6 +1,7 @@
 .layout {
   display: grid;
   gap: var(--mw-space-10);
+  padding-block-end: calc(var(--mw-space-24) + env(safe-area-inset-bottom));
 }
 
 .configuration {
@@ -47,6 +48,7 @@
     grid-template-columns: minmax(0, 7fr) minmax(300px, 4fr);
     align-items: start;
     gap: var(--mw-space-16);
+    padding-block-end: 0;
   }
 
   .summaryColumn {
