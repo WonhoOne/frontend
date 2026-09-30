@@ -1,0 +1,114 @@
+.root {
+  display: grid;
+  gap: var(--mw-space-16);
+}
+
+.hero {
+  display: grid;
+  min-block-size: 64svh;
+  align-items: end;
+  background: var(--mw-ink-soft);
+}
+
+.heroCopy {
+  display: grid;
+  gap: var(--mw-space-5);
+  padding-block: var(--mw-space-24) var(--mw-space-16);
+}
+
+.eyebrow {
+  inline-size: min(32%, 180px);
+  block-size: 12px;
+}
+
+.title {
+  inline-size: min(78%, 720px);
+  block-size: clamp(48px, 9vw, 88px);
+}
+
+.summary {
+  inline-size: min(68%, 560px);
+  block-size: 22px;
+}
+
+.story {
+  display: grid;
+  gap: var(--mw-space-8);
+  align-items: center;
+}
+
+.storyCopy {
+  display: grid;
+  gap: var(--mw-space-4);
+}
+
+.storyHeading {
+  inline-size: 62%;
+  block-size: 38px;
+}
+
+.storyLine {
+  inline-size: 94%;
+  block-size: 18px;
+}
+
+.storyLineShort {
+  inline-size: 72%;
+  block-size: 18px;
+}
+
+.storyMedia {
+  inline-size: 100%;
+  aspect-ratio: 4 / 3;
+}
+
+.experiences {
+  display: grid;
+  gap: var(--mw-space-8);
+  padding-block-end: var(--mw-space-20);
+}
+
+.sectionHeading {
+  inline-size: min(58%, 460px);
+  block-size: 38px;
+}
+
+.cards {
+  display: grid;
+  gap: var(--mw-space-8);
+}
+
+.card {
+  display: grid;
+  gap: var(--mw-space-3);
+}
+
+.cardMedia {
+  aspect-ratio: 4 / 3;
+}
+
+.cardTitle {
+  inline-size: 68%;
+  block-size: 24px;
+}
+
+.cardLine {
+  inline-size: 90%;
+  block-size: 16px;
+}
+
+@media (min-width: 768px) {
+  .hero {
+    min-block-size: 72svh;
+  }
+
+  .story {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--mw-space-16);
+  }
+
+  .cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--mw-space-6);
+  }
+}

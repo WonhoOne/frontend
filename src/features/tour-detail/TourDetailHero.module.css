@@ -1,0 +1,130 @@
+.root {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  min-block-size: 64svh;
+  overflow: hidden;
+  align-items: end;
+  background: var(--mw-ink);
+  color: var(--mw-surface-elevated);
+}
+
+.mediaReveal,
+.mediaShell,
+.mediaFrame {
+  position: absolute;
+  inset: 0;
+  min-inline-size: 0;
+}
+
+.mediaShell {
+  background: var(--mw-ink-soft);
+}
+
+.mediaFrame {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.root[data-theme='HONEYMOON_ROMANCE'] .mediaFrame {
+  background:
+    radial-gradient(circle at 76% 24%, rgba(255, 253, 252, 0.42), transparent 26%),
+    color-mix(in srgb, var(--mw-theme-honeymoon) 34%, var(--mw-ink));
+}
+
+.root[data-theme='PARENTS_HEALING'] .mediaFrame {
+  background:
+    radial-gradient(circle at 28% 64%, rgba(255, 253, 252, 0.34), transparent 28%),
+    color-mix(in srgb, var(--mw-theme-parents) 32%, var(--mw-ink));
+}
+
+.root[data-theme='GOLF_CHALLENGE'] .mediaFrame {
+  background:
+    linear-gradient(150deg, transparent 54%, rgba(255, 253, 252, 0.14) 55%, transparent 57%),
+    color-mix(in srgb, var(--mw-theme-golf) 32%, var(--mw-ink));
+}
+
+.root[data-theme='OUTDOOR_TREKKING'] .mediaFrame {
+  background:
+    linear-gradient(140deg, transparent 50%, rgba(255, 253, 252, 0.16) 51%, transparent 53%),
+    color-mix(in srgb, var(--mw-theme-trekking) 32%, var(--mw-ink));
+}
+
+.overlay {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(15, 14, 12, 0.86), rgba(15, 14, 12, 0.34) 60%, transparent),
+    linear-gradient(180deg, rgba(15, 14, 12, 0.08), transparent 42%, rgba(15, 14, 12, 0.58));
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  max-inline-size: var(--mw-container-wide);
+  gap: var(--mw-space-5);
+  padding-block: var(--mw-space-24) var(--mw-space-16);
+}
+
+.eyebrow,
+.summary,
+.content h1 {
+  margin: 0;
+}
+
+.eyebrow {
+  color: color-mix(in srgb, var(--mw-surface-elevated) 78%, transparent);
+  font-size: var(--mw-font-size-label-sm);
+  font-weight: var(--mw-font-weight-semibold);
+  letter-spacing: var(--mw-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.content h1 {
+  max-inline-size: 12ch;
+  font-family: var(--mw-font-editorial);
+  font-size: clamp(3rem, 10vw, var(--mw-font-size-display-xl));
+  font-weight: var(--mw-font-weight-regular);
+  letter-spacing: var(--mw-tracking-editorial);
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+.summary {
+  max-inline-size: 54ch;
+  color: color-mix(in srgb, var(--mw-surface-elevated) 80%, transparent);
+  font-size: var(--mw-font-size-body-lg);
+}
+
+.backLink,
+.backLink:visited {
+  inline-size: fit-content;
+  min-block-size: 44px;
+  margin-block-start: var(--mw-space-2);
+  color: var(--mw-surface-elevated);
+  text-decoration-color: color-mix(in srgb, var(--mw-surface-elevated) 44%, transparent);
+}
+
+.backLink:focus-visible {
+  outline-color: var(--mw-surface-elevated);
+}
+
+.fallback {
+  padding: var(--mw-space-5);
+  color: var(--mw-surface-elevated);
+  background: var(--mw-ink-soft);
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .root {
+    min-block-size: 72svh;
+  }
+
+  .content {
+    padding-block: var(--mw-space-32) var(--mw-space-20);
+  }
+}

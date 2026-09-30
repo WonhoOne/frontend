@@ -3,7 +3,7 @@ import { expect, test, type Page } from '@playwright/test';
 const routeCases = [
   ['/', 'A journey made for your moment.'],
   ['/tours', 'Four ways to travel differently.'],
-  ['/tours/e2e-tour-id', 'Tour Detail'],
+  ['/tours/demo-honeymoon-product-a', 'Honeymoon Romance · Journey 01'],
   ['/tours/e2e-tour-id/configure', 'Configure'],
   ['/reservation/review', 'Reservation Review'],
   ['/reservation/e2e-reservation-id/success', 'Reservation Success'],
@@ -38,9 +38,18 @@ test.describe('Foundation routes', () => {
     });
   }
 
-  test('dynamic route parameters are matched', async ({ page }) => {
+  test('dynamic route parameters resolve Product identity and preserve other route params', async ({
+    page,
+  }) => {
+    await page.goto('/tours/demo-golf-product-b');
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Golf Challenge · Journey 02' }),
+    ).toBeVisible();
+
     await page.goto('/tours/e2e-tour-id');
-    await expect(page.getByText('e2e-tour-id', { exact: true })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 1, name: "This journey couldn't be found." }),
+    ).toBeVisible();
 
     await page.goto('/reservations/e2e-reservation-id');
     await expect(page.getByText('e2e-reservation-id', { exact: true })).toBeVisible();
