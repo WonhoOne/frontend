@@ -12,8 +12,14 @@ describe('routeBuilders', () => {
     expect(routeBuilders.reservationDetail('reservation-01')).toBe('/reservations/reservation-01');
   });
 
-  it('encodes identifiers as a single URL path segment without validating their business shape', () => {
+  it('keeps Theme discovery as collection route state instead of a TourProduct route identity', () => {
+    expect(routeBuilders.toursByTheme('GOLF_CHALLENGE')).toBe('/tours?theme=GOLF_CHALLENGE');
+    expect(routeBuilders.toursByTheme('GOLF_CHALLENGE')).not.toBe('/tours/GOLF_CHALLENGE');
+  });
+
+  it('encodes identifiers and discovery state without validating their business shape', () => {
     expect(routeBuilders.tourDetail('tour / alpha')).toBe('/tours/tour%20%2F%20alpha');
+    expect(routeBuilders.toursByTheme('theme / alpha')).toBe('/tours?theme=theme+%2F+alpha');
     expect(routeBuilders.reservationDetail('reservation / alpha')).toBe(
       '/reservations/reservation%20%2F%20alpha',
     );
