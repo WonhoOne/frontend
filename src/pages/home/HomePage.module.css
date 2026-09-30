@@ -8,6 +8,11 @@
   padding-block: var(--mw-space-24);
 }
 
+.collection {
+  display: grid;
+  gap: var(--mw-space-16);
+}
+
 .intro {
   display: grid;
   max-inline-size: 760px;
@@ -37,6 +42,7 @@
   font-weight: var(--mw-font-weight-regular);
   letter-spacing: var(--mw-tracking-editorial);
   line-height: var(--mw-line-height-display-lg);
+  text-wrap: balance;
 }
 
 .intro p {
@@ -51,6 +57,10 @@
   gap: var(--mw-space-16);
 }
 
+.themeGrid > div {
+  min-inline-size: 0;
+}
+
 .footer {
   border-block-start: var(--mw-border-subtle);
   background: var(--mw-surface);
@@ -60,7 +70,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--mw-space-8);
-  padding-block: var(--mw-space-10);
+  padding-block-start: var(--mw-space-10);
+  padding-block-end: calc(var(--mw-space-10) + env(safe-area-inset-bottom, 0px));
 }
 
 .footerBrand {
@@ -94,13 +105,47 @@
     padding-block: var(--mw-space-32);
   }
 
-  .themeGrid {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: var(--mw-space-16) var(--mw-space-6);
+  .collection {
+    gap: var(--mw-space-24);
   }
 
-  .themeGrid > div {
-    display: contents;
+  .themeGrid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    row-gap: var(--mw-space-24);
+    column-gap: var(--mw-space-6);
+  }
+
+  .honeymoonItem {
+    grid-column: 1 / span 7;
+    grid-row: 1;
+  }
+
+  .parentsItem {
+    grid-column: 9 / span 4;
+    grid-row: 1;
+    align-self: end;
+  }
+
+  .golfItem {
+    grid-column: 6 / span 7;
+    grid-row: 2;
+  }
+
+  .trekkingItem {
+    grid-column: 1 / span 5;
+    grid-row: 3;
+  }
+
+  .themeGrid > div:nth-child(2) {
+    transition-delay: 60ms;
+  }
+
+  .themeGrid > div:nth-child(3) {
+    transition-delay: 120ms;
+  }
+
+  .themeGrid > div:nth-child(4) {
+    transition-delay: 180ms;
   }
 
   .footerInner {
@@ -113,6 +158,12 @@
 @media (min-width: 1280px) {
   .themeGrid {
     column-gap: var(--mw-space-10);
-    row-gap: var(--mw-space-24);
+    row-gap: var(--mw-space-32);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .themeGrid > div {
+    transition-delay: 0ms;
   }
 }

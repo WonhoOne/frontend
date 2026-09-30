@@ -4,6 +4,7 @@ import {
   HomeHero,
   ThemeEditorialCard,
   themeDiscoveryPresentations,
+  type TourTheme,
 } from '@/features/tour-discovery';
 import { SectionReveal } from '@/shared/motion';
 import { PageContainer, TextLink } from '@/shared/ui';
@@ -16,33 +17,45 @@ const footerNavigation = [
   { label: 'Login / Account', to: routePaths.login },
 ] as const;
 
+const themeLayoutClassNames = {
+  HONEYMOON_ROMANCE: styles.honeymoonItem ?? '',
+  PARENTS_HEALING: styles.parentsItem ?? '',
+  GOLF_CHALLENGE: styles.golfItem ?? '',
+  OUTDOOR_TREKKING: styles.trekkingItem ?? '',
+} satisfies Record<TourTheme, string>;
+
 export function HomePage() {
   return (
     <div className={styles.page}>
       <HomeHero toursHref={routePaths.tours} />
 
       <PageContainer className={styles.content ?? ''} variant="wide">
-        <SectionReveal>
-          <section aria-labelledby="theme-collection-title" className={styles.intro}>
-            <p className={styles.eyebrow}>Four ways to travel differently</p>
-            <h2 id="theme-collection-title">Find the journey that feels like yours.</h2>
-            <p>
-              Mister World begins with four distinct travel themes. Each one sets a different
-              rhythm, while leaving room for the details to become your own.
-            </p>
-          </section>
-        </SectionReveal>
+        <section aria-labelledby="theme-collection-title" className={styles.collection}>
+          <SectionReveal>
+            <div className={styles.intro}>
+              <p className={styles.eyebrow}>Four ways to travel differently</p>
+              <h2 id="theme-collection-title">Find the journey that feels like yours.</h2>
+              <p>
+                Mister World begins with four distinct travel themes. Each one sets a different
+                rhythm, while leaving room for the details to become your own.
+              </p>
+            </div>
+          </SectionReveal>
 
-        <section aria-label="Theme tours" className={styles.themeGrid}>
-          {themeDiscoveryPresentations.map((presentation, index) => (
-            <SectionReveal key={presentation.theme}>
-              <ThemeEditorialCard
-                href={routeBuilders.toursByTheme(presentation.theme)}
-                presentation={presentation}
-                sequence={index + 1}
-              />
-            </SectionReveal>
-          ))}
+          <div className={styles.themeGrid}>
+            {themeDiscoveryPresentations.map((presentation, index) => (
+              <SectionReveal
+                className={themeLayoutClassNames[presentation.theme]}
+                key={presentation.theme}
+              >
+                <ThemeEditorialCard
+                  href={routeBuilders.toursByTheme(presentation.theme)}
+                  presentation={presentation}
+                  sequence={index + 1}
+                />
+              </SectionReveal>
+            ))}
+          </div>
         </section>
 
         <SectionReveal>

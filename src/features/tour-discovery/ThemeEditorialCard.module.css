@@ -27,26 +27,34 @@
   place-items: center;
   border: 1px solid color-mix(in srgb, var(--mw-ink) 16%, transparent);
   border-radius: 50%;
-  background: color-mix(in srgb, var(--mw-surface-elevated) 78%, transparent);
+  background: color-mix(in srgb, var(--mw-surface-elevated) 82%, transparent);
   color: var(--mw-ink);
   font-family: var(--mw-font-editorial);
   font-size: var(--mw-font-size-heading-sm);
 }
 
 .honeymoon .mediaShell > div {
-  background: color-mix(in srgb, var(--mw-theme-honeymoon) 22%, var(--mw-surface));
+  background:
+    radial-gradient(circle at 72% 28%, rgba(255, 253, 252, 0.7), transparent 24%),
+    color-mix(in srgb, var(--mw-theme-honeymoon) 22%, var(--mw-surface));
 }
 
 .parents .mediaShell > div {
-  background: color-mix(in srgb, var(--mw-theme-parents) 22%, var(--mw-surface));
+  background:
+    radial-gradient(circle at 28% 72%, rgba(255, 253, 252, 0.62), transparent 26%),
+    color-mix(in srgb, var(--mw-theme-parents) 22%, var(--mw-surface));
 }
 
 .golf .mediaShell > div {
-  background: color-mix(in srgb, var(--mw-theme-golf) 20%, var(--mw-surface));
+  background:
+    linear-gradient(155deg, transparent 54%, rgba(255, 253, 252, 0.45) 55%, transparent 57%),
+    color-mix(in srgb, var(--mw-theme-golf) 20%, var(--mw-surface));
 }
 
 .trekking .mediaShell > div {
-  background: color-mix(in srgb, var(--mw-theme-trekking) 20%, var(--mw-surface));
+  background:
+    linear-gradient(142deg, transparent 48%, rgba(255, 253, 252, 0.42) 49%, transparent 51%),
+    color-mix(in srgb, var(--mw-theme-trekking) 20%, var(--mw-surface));
 }
 
 .honeymoon .mediaShell::before,
@@ -134,31 +142,13 @@
   color: var(--mw-ink);
 }
 
+.arrow {
+  transition: transform var(--mw-motion-control) var(--mw-ease-standard);
+}
+
 @media (min-width: 768px) {
   .root {
     gap: var(--mw-space-6);
-  }
-
-  .honeymoon {
-    grid-column: 1 / span 7;
-    grid-row: 1 / span 2;
-  }
-
-  .parents {
-    grid-column: 9 / span 4;
-    grid-row: 1;
-    align-self: start;
-  }
-
-  .golf {
-    grid-column: 7 / span 6;
-    grid-row: 2;
-    align-self: end;
-  }
-
-  .trekking {
-    grid-column: 1 / span 5;
-    grid-row: 3;
   }
 
   .golf .mediaShell > div {
@@ -179,10 +169,15 @@
   .root:has(.action:hover) .mediaShell {
     transform: scale(1.012);
   }
+
+  .action:hover .arrow {
+    transform: translateX(4px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mediaShell {
+  .mediaShell,
+  .arrow {
     transition: none;
   }
 }

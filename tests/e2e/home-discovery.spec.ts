@@ -41,7 +41,27 @@ test.describe('Home discovery core', () => {
     });
   }
 
-  test('Home starts with a keyboard-accessible skip path and global navigation', async ({
+  test('Home header overlays the hero and becomes solid after the hero threshold', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto('/');
+
+    const header = page.locator('header');
+    const hero = page.locator('[data-home-hero]');
+
+    await expect(header).toHaveAttribute('data-header-tone', 'overlay');
+
+    const heroHeight = await hero.evaluate((element) => element.getBoundingClientRect().height);
+
+    await page.evaluate((distance) => window.scrollTo(0, distance), heroHeight);
+    await expect(header).toHaveAttribute('data-header-tone', 'solid');
+
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect(header).toHaveAttribute('data-header-tone', 'overlay');
+  });
+
+  test('Home starts with a keyboard-accessible path and a visible hero focus treatment', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 390, height: 844 });
@@ -53,13 +73,58 @@ test.describe('Home discovery core', () => {
     await page.keyboard.press('Tab');
     await expect(page.getByRole('link', { name: 'Mister World' })).toBeFocused();
 
+    for (const linkName of ['Tours', 'My Trips', 'Login / Account']) {
+      await page.keyboard.press('Tab');
+      await expect(
+        page.getByRole('navigation', { name: 'Primary' }).getByRole('link', {
+          name: linkName,
+          exact: true,
+        }),
+      ).toBeFocused();
+    }
+
     await page.keyboard.press('Tab');
-    await expect(
-      page.getByRole('navigation', { name: 'Primary' }).getByRole('link', { name: 'Tours' }),
-    ).toBeFocused();
+
+    const heroAction = page.getByRole('link', { name: 'Explore Theme Tours' });
+
+    await expect(heroAction).toBeFocused();
+
+    const focusStyle = await heroAction.evaluate((element) => {
+      const style = getComputedStyle(element);
+
+      return {
+        outlineStyle: style.outlineStyle,
+        outlineWidth: Number.parseFloat(style.outlineWidth),
+      };
+    });
+
+    expect(focusStyle.outlineStyle).not.toBe('none');
+    expect(focusStyle.outlineWidth).toBeGreaterThanOrEqual(2);
   });
 
-  test('Home remains usable with reduced motion requested', async ({ page }) => {
+  test('Home remains usable at the 1280px-at-200%-zoom equivalent', async ({ page }) => {
+    await page.setViewportSize({ width: 640, height: 720 });
+    await page.goto('/');
+
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'A journey made for your moment.' }),
+    ).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Explore Theme Tours' })).toBeVisible();
+
+    const viewport = await page.evaluate(() => ({
+      innerWidth: window.innerWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+    }));
+
+    expect(viewport.scrollWidth).toBeLessThanOrEqual(viewport.innerWidth);
+
+    const headerBox = await page.locator('header').boundingBox();
+
+    expect(headerBox).not.toBeNull();
+    expect(headerBox?.height ?? Number.POSITIVE_INFINITY).toBeLessThanOrEqual(64);
+  });
+
+  test('Home removes cinematic transforms when reduced motion is requested', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/');
 
@@ -70,5 +135,16 @@ test.describe('Home discovery core', () => {
     await expect(
       page.getByRole('link', { name: 'Explore Golf Challenge theme tours' }),
     ).toHaveAttribute('href', '/tours?theme=GOLF_CHALLENGE');
+
+    expect(
+      await page
+        .locator('[data-home-hero-visual]')
+        .evaluate((element) => getComputedStyle(element).animationName),
+    ).toBe('none');
+    expect(
+      await page
+        .locator('[data-home-hero-copy="headline"]')
+        .evaluate((element) => getComputedStyle(element).animationName),
+    ).toBe('none');
   });
 });

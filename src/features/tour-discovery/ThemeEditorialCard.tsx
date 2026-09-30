@@ -51,7 +51,9 @@ export function ThemeEditorialCard({ href, presentation, sequence }: ThemeEditor
           to={href}
         >
           Explore
-          <span aria-hidden="true">→</span>
+          <span aria-hidden="true" className={styles.arrow}>
+            →
+          </span>
         </TextLink>
       </div>
     </article>

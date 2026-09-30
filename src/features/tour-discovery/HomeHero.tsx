@@ -14,22 +14,28 @@ interface HomeHeroProps {
  */
 export function HomeHero({ toursHref }: HomeHeroProps) {
   return (
-    <section aria-labelledby="home-hero-title" className={styles.root}>
-      <div aria-hidden="true" className={styles.visual}>
+    <section aria-labelledby="home-hero-title" className={styles.root} data-home-hero>
+      <div aria-hidden="true" className={styles.visual} data-home-hero-visual>
         <span className={styles.orbit} />
         <span className={styles.horizon} />
       </div>
 
       <div className={styles.content}>
-        <p className={styles.eyebrow}>Mister World · Curated Journeys</p>
-        <h1 id="home-hero-title">
+        <p className={styles.eyebrow} data-home-hero-copy="eyebrow">
+          Mister World · Curated Journeys
+        </p>
+        <h1 data-home-hero-copy="headline" id="home-hero-title">
           A journey made <br />
           for your moment.
         </h1>
-        <p className={styles.supporting}>
+        <p className={styles.supporting} data-home-hero-copy="supporting">
           Four distinct ways to travel, shaped around the people and moments that matter most.
         </p>
-        <TextLink className={styles.primaryAction ?? ''} to={toursHref}>
+        <TextLink
+          className={styles.primaryAction ?? ''}
+          data-home-hero-copy="action"
+          to={toursHref}
+        >
           Explore Theme Tours
           <span aria-hidden="true">↗</span>
         </TextLink>
