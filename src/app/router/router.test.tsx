@@ -6,6 +6,7 @@ import { cleanup, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { createMemoryRouter, RouterProvider } from 'react-router';
 
+import { AppProviders } from '@/app/providers/AppProviders';
 import { routeBuilders, routePaths, routeTitles } from '@/app/router/paths';
 import { appRoutes } from '@/app/router/routes';
 
@@ -41,7 +42,11 @@ function renderRoute(path: string) {
     initialEntries: [path],
   });
 
-  return render(<RouterProvider router={router} />);
+  return render(
+    <AppProviders>
+      <RouterProvider router={router} />
+    </AppProviders>,
+  );
 }
 
 describe('foundation route table', () => {
