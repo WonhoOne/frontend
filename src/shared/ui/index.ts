@@ -1,5 +1,9 @@
+export { BottomSheet } from '@/shared/ui/BottomSheet/BottomSheet';
+export type { BottomSheetProps } from '@/shared/ui/BottomSheet/BottomSheet';
 export { Button } from '@/shared/ui/Button/Button';
 export type { ButtonSize, ButtonVariant } from '@/shared/ui/Button/Button';
+export { Dialog } from '@/shared/ui/Dialog/Dialog';
+export type { DialogProps } from '@/shared/ui/Dialog/Dialog';
 export { Grid } from '@/shared/ui/Grid/Grid';
 export { OptionCard } from '@/shared/ui/OptionCard/OptionCard';
 export { PageContainer } from '@/shared/ui/PageContainer/PageContainer';

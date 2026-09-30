@@ -112,12 +112,17 @@
   --mw-control-field-height: 48px;
   --mw-control-disabled-opacity: 0.56;
 
+  /* Overlay geometry */
+  --mw-dialog-max-width: var(--mw-container-reading);
+  --mw-bottom-sheet-max-height: 88dvh;
+
   /* Radius */
   --mw-radius-xs: 4px;
   --mw-radius-sm: 8px;
   --mw-radius-md: 12px;
   --mw-radius-lg: 18px;
   --mw-radius-xl: 28px;
+  --mw-radius-sheet: 24px;
   --mw-radius-pill: 999px;
 
   /* Borders */
