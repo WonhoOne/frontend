@@ -16,6 +16,11 @@ jobs:
           node-version: 24.21.0
           cache: npm
       - run: npm ci
+      - name: Confirm B10-5 files are Prettier-clean
+        run: |
+          npx prettier src/pages/tour-detail/TourDetailPage.tsx tests/e2e/tour-detail-final-qa.spec.ts --write
+          git diff -- src/pages/tour-detail/TourDetailPage.tsx tests/e2e/tour-detail-final-qa.spec.ts
+          git diff --exit-code -- src/pages/tour-detail/TourDetailPage.tsx tests/e2e/tour-detail-final-qa.spec.ts
       - run: npm run verify
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
