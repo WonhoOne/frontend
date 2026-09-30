@@ -55,7 +55,7 @@ test.describe('Tour Detail → Configure transaction handoff', () => {
     await expect(page.getByRole('heading', { name: 'Build your trip' })).toBeVisible();
     await expect(page.getByText(/Fixture theme · Grand · Fixture schedule/)).toBeVisible();
 
-    await expect(page.getByRole('spinbutton', { name: /participants/i })).toHaveValue(null);
+    await expect(page.getByRole('spinbutton', { name: /participants/i })).toHaveValue('');
     await expect(page.getByRole('radio', { name: /Fixture hotel A/i })).not.toBeChecked();
     await expect(page.getByRole('radio', { name: /Fixture hotel B/i })).not.toBeChecked();
     await expect(page.getByRole('radio', { name: /Fixture transport A/i })).not.toBeChecked();
