@@ -54,7 +54,7 @@ export function LoginPage() {
   }
 
   return (
-    <main className={styles.page}>
+    <div className={styles.page}>
       <PageContainer variant="auth">
         <section aria-labelledby="login-heading" className={styles.surface}>
           <header className={styles.header}>
@@ -114,6 +114,6 @@ export function LoginPage() {
           </p>
         </section>
       </PageContainer>
-    </main>
+    </div>
   );
 }
