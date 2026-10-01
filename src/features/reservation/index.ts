@@ -51,3 +51,30 @@ export {
   type BeginConfigureAction,
   type ConfigureHandoffIntent,
 } from '@/features/reservation/configureHandoff';
+
+export {
+  createReservationIntent,
+  type ReservationCreateIdentityResolver,
+  type ReservationCreateIntentResult,
+} from '@/features/reservation/reservationCreateIntent';
+export type { ReservationDataSource } from '@/features/reservation/reservation.dataSource';
+export {
+  ReservationDataSourceError,
+  type ReservationDataError,
+  type ReservationFieldError,
+} from '@/features/reservation/reservation.error';
+export {
+  type CreateReservationInput,
+  type ReservationConfigurationModel,
+  type ReservationDiscountModel,
+  type ReservationExtraOption,
+  type ReservationHotelOption,
+  type ReservationMealOption,
+  type ReservationModel,
+  type ReservationPriceModel,
+  type ReservationRecruitmentModel,
+  type ReservationRecruitmentUnit,
+  type ReservationTheme,
+  type ReservationTourStyle,
+  type ReservationTransportOption,
+} from '@/features/reservation/reservation.model';
