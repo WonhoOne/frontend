@@ -5,11 +5,6 @@ import { QueryProvider } from '@/app/providers/QueryProvider';
 import { queryClient } from '@/app/providers/queryClient';
 import { AuthError, AuthProvider, MockAuthDataSource, type AuthDataSource } from '@/features/auth';
 import { ReservationDraftProvider } from '@/features/reservation';
-import {
-  MockTravelHistoryDataSource,
-  PostLoginPreviousTripsSurface,
-  type TravelHistoryDataSource,
-} from '@/features/travel-history';
 
 const unavailableAuthDataSource: AuthDataSource = {
   login() {
@@ -39,25 +34,6 @@ function createAuthDataSource(): AuthDataSource {
 
 const authDataSource = createAuthDataSource();
 
-const unavailableTravelHistoryDataSource: TravelHistoryDataSource = {
-  getTravelHistory() {
-    return Promise.reject(new Error('Travel History data source is unavailable.'));
-  },
-};
-
-function createTravelHistoryDataSource(): TravelHistoryDataSource {
-  if (import.meta.env.DEV && import.meta.env.VITE_ENABLE_MOCKS === 'true') {
-    return new MockTravelHistoryDataSource({
-      getTravelHistory() {
-        return Promise.resolve([]);
-      },
-    });
-  }
-
-  return unavailableTravelHistoryDataSource;
-}
-
-const travelHistoryDataSource = createTravelHistoryDataSource();
 
 /**
  * 애플리케이션 전역 Provider 순서를 한 곳에서 드러낸다.
@@ -75,10 +51,7 @@ export function AppProviders({ children }: PropsWithChildren) {
         dataSource={authDataSource}
         onAuthLoss={() => clearPrivateQueryCache(queryClient)}
       >
-        <ReservationDraftProvider>
-          {children}
-          <PostLoginPreviousTripsSurface dataSource={travelHistoryDataSource} />
-        </ReservationDraftProvider>
+        <ReservationDraftProvider>{children}</ReservationDraftProvider>
       </AuthProvider>
     </QueryProvider>
   );
