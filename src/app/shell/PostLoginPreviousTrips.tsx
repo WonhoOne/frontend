@@ -25,7 +25,7 @@ function createTravelHistoryDataSource(): TravelHistoryDataSource {
   return unavailableTravelHistoryDataSource;
 }
 
-const travelHistoryDataSource = createTravelHistoryDataSource();
+export const travelHistoryDataSource = createTravelHistoryDataSource();
 
 export function PostLoginPreviousTrips() {
   const navigate = useNavigate();
