@@ -43,7 +43,7 @@ function dataSource(login: AuthDataSource['login']): AuthDataSource {
 }
 
 async function waitForForm() {
-  await screen.findByRole('heading', { name: 'Welcome back' });
+  await screen.findByRole('heading', { name: 'Login' });
   return screen.findByRole('button', { name: '로그인' });
 }
 
