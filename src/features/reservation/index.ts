@@ -124,3 +124,10 @@ export {
   getReservationNetworkRecovery,
   type ReservationNetworkRecovery,
 } from '@/features/reservation/reservationNetworkSafety';
+
+export { mockReservationDataSource } from '@/features/reservation/mockReservationDataSource';
+export { mockReservationSuccessFixture } from '@/features/reservation/reservationSuccessFixture';
+export {
+  lookupReservation,
+  type ReservationLookupState,
+} from '@/features/reservation/reservationLookup';

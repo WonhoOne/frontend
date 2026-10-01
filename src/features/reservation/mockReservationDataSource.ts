@@ -4,6 +4,7 @@ import type {
   CreateReservationInput,
   ReservationModel,
 } from '@/features/reservation/reservation.model';
+import { mockReservationSuccessFixture } from '@/features/reservation/reservationSuccessFixture';
 
 const MOCK_RESERVATION_ID = 801;
 
@@ -66,7 +67,9 @@ export const mockReservationDataSource: ReservationDataSource = {
   },
 
   async getReservation(reservationId) {
-    const reservation = mockReservationById.get(reservationId);
+    const reservation =
+      mockReservationById.get(reservationId) ??
+      (reservationId === mockReservationSuccessFixture.id ? mockReservationSuccessFixture : undefined);
 
     if (reservation === undefined) {
       throw new ReservationDataSourceError({
