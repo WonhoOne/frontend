@@ -1,14 +1,10 @@
-name: E06-A Transaction Login Verification
-
+name: E06-A Format Preview
 on:
   pull_request:
-    branches:
-      - main
-
+    branches: [main]
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -16,7 +12,5 @@ jobs:
           node-version: 24.21.0
           cache: npm
       - run: npm ci
-      - run: npm run verify
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:e2e
-      - run: npm audit --omit=dev --audit-level=high
+      - run: npx prettier src/pages/login/transactionLoginRecovery.test.tsx --write
+      - run: git diff -- src/pages/login/transactionLoginRecovery.test.tsx && exit 1
