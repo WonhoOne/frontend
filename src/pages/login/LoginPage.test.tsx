@@ -57,10 +57,7 @@ describe('LoginPage', () => {
       'username',
     );
     expect(screen.getByLabelText('비밀번호')).toHaveAttribute('type', 'password');
-    expect(screen.getByLabelText('비밀번호')).toHaveAttribute(
-      'autocomplete',
-      'current-password',
-    );
+    expect(screen.getByLabelText('비밀번호')).toHaveAttribute('autocomplete', 'current-password');
     expect(screen.queryByLabelText(/email|contact/i)).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: '회원가입' })).toHaveAttribute('href', '/signup');
   });
