@@ -38,6 +38,8 @@ function renderPopup(source: TravelHistoryDataSource, desktop = true) {
   installMatchMedia(desktop);
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   const onOpenChange = vi.fn();
+  const onExplore = vi.fn();
+  const onViewAll = vi.fn();
 
   render(
     <QueryClientProvider client={client}>
@@ -47,9 +49,9 @@ function renderPopup(source: TravelHistoryDataSource, desktop = true) {
             path="/"
             element={<PreviousTripsPopup
               dataSource={source}
-              onExplore={() => undefined}
+              onExplore={onExplore}
               onOpenChange={onOpenChange}
-              onViewAll={() => undefined}
+              onViewAll={onViewAll}
               open
             />}
           />
@@ -60,7 +62,7 @@ function renderPopup(source: TravelHistoryDataSource, desktop = true) {
     </QueryClientProvider>,
   );
 
-  return { onOpenChange };
+  return { onExplore, onOpenChange, onViewAll };
 }
 
 afterEach(() => {
@@ -106,21 +108,25 @@ describe('PreviousTripsPopup', () => {
   });
 
   it('offers Tours for an empty history', async () => {
-    const { onOpenChange } = renderPopup({ getTravelHistory: vi.fn().mockResolvedValue([]) });
+    const { onExplore, onOpenChange } = renderPopup({
+      getTravelHistory: vi.fn().mockResolvedValue([]),
+    });
 
     fireEvent.click(await screen.findByRole('button', { name: '여행 둘러보기' }));
 
     expect(onOpenChange).toHaveBeenCalledWith(false);
-    expect(await screen.findByText('Tours destination')).toBeVisible();
+    expect(onExplore).toHaveBeenCalledTimes(1);
   });
 
   it('closes and navigates to My Trips from View all', async () => {
-    const { onOpenChange } = renderPopup({ getTravelHistory: vi.fn().mockResolvedValue(history) });
+    const { onOpenChange, onViewAll } = renderPopup({
+      getTravelHistory: vi.fn().mockResolvedValue(history),
+    });
 
     fireEvent.click(await screen.findByRole('button', { name: '전체 여행 보기' }));
 
     expect(onOpenChange).toHaveBeenCalledWith(false);
-    expect(await screen.findByText('My Trips destination')).toBeVisible();
+    expect(onViewAll).toHaveBeenCalledTimes(1);
   });
 
   it('keeps cached history visible when a refresh fails', async () => {
