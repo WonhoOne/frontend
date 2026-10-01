@@ -78,3 +78,8 @@ export {
   type ReservationTourStyle,
   type ReservationTransportOption,
 } from '@/features/reservation/reservation.model';
+
+export {
+  reservationPrivateQueryKey,
+  reservationQueryKeys,
+} from '@/features/reservation/reservation.queryKeys';
