@@ -34,14 +34,12 @@ afterEach(() => {
 });
 
 describe('ReturnContext security boundary', () => {
-  it.each([
-    '/',
-    '/my-trips',
-    '/reservation/review?from=auth#summary',
-    '/tours/demo/configure',
-  ])('accepts app-owned internal return path %s', (returnTo) => {
-    expect(isSafeInternalReturnTo(returnTo)).toBe(true);
-  });
+  it.each(['/', '/my-trips', '/reservation/review?from=auth#summary', '/tours/demo/configure'])(
+    'accepts app-owned internal return path %s',
+    (returnTo) => {
+      expect(isSafeInternalReturnTo(returnTo)).toBe(true);
+    },
+  );
 
   it.each([
     'https://evil.example/path',
@@ -51,9 +49,12 @@ describe('ReturnContext security boundary', () => {
     'data:text/html,test',
     'reservation/review',
     '',
-  ])('rejects external, executable, protocol-relative, or non-root return target %s', (returnTo) => {
-    expect(isSafeInternalReturnTo(returnTo)).toBe(false);
-  });
+  ])(
+    'rejects external, executable, protocol-relative, or non-root return target %s',
+    (returnTo) => {
+      expect(isSafeInternalReturnTo(returnTo)).toBe(false);
+    },
+  );
 
   it('rejects malformed schema, unsupported intent, incompatible draft version, stale and future data', () => {
     expect(parseReturnContext(context({ schemaVersion: 2 }), NOW)).toBeNull();
