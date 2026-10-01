@@ -48,6 +48,7 @@ export function ReservationReviewPage({
 
     if (result.status === 'auth-interruption') {
       saveReturnContext({
+        createdAt: Date.now(),
         intent: 'resume-reservation-review',
         returnTo: routePaths.reservationReview,
       });
