@@ -79,6 +79,7 @@ describe('ReturnContext security boundary', () => {
           createdAt: NOW,
         },
         window.sessionStorage,
+        NOW,
       ),
     ).toBe(true);
 
@@ -100,6 +101,7 @@ describe('ReturnContext security boundary', () => {
         createdAt: NOW,
       },
       window.sessionStorage,
+      NOW,
     );
 
     clearReturnContext(null);
@@ -145,6 +147,7 @@ describe('ReturnContext security boundary', () => {
           createdAt: NOW,
         },
         throwingStorage,
+        NOW,
       ),
     ).toBe(true);
 
@@ -165,6 +168,7 @@ describe('ReturnContext security boundary', () => {
           createdAt: NOW,
         },
         window.sessionStorage,
+        NOW,
       ),
     ).toBe(false);
     expect(window.sessionStorage.getItem(RETURN_CONTEXT_STORAGE_KEY)).toBeNull();
