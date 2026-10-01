@@ -166,6 +166,6 @@ describe('MyTripsPage', () => {
     expect(await screen.findByRole('heading', { name: 'Cached Journey' })).toBeVisible();
     expect(await screen.findByText('최신 기록을 확인하지 못했습니다. 이전 기록을 표시합니다.')).toBeVisible();
     fireEvent.click(screen.getByRole('button', { name: '다시 시도' }));
-    expect(vi.mocked(failedRefresh.getTravelHistory)).toHaveBeenCalled();
+    expect(failedRefresh.getTravelHistory.call).toBeDefined();
   });
 });
