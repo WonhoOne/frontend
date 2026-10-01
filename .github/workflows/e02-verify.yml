@@ -1,4 +1,4 @@
-name: E10 Previous Trips Popup Verification
+name: E10 Previous Trips Popup Verification Final
 on:
   pull_request:
     branches: [main]
