@@ -30,10 +30,7 @@ export function ReservationReviewPage({
 }: ReservationReviewPageProps = {}) {
   const { draft, dispatch, hydrationStatus, persistenceStatus } = useReservationDraft();
   const navigate = useNavigate();
-  const mutation = useMemo(
-    () => createReservationMutationController(dataSource),
-    [dataSource],
-  );
+  const mutation = useMemo(() => createReservationMutationController(dataSource), [dataSource]);
   const [mutationState, setMutationState] = useState<ReservationMutationState>(mutation.getState());
   const handoff = getReviewDraftHandoffState({ draft, hydrationStatus });
 
