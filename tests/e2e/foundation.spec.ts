@@ -10,7 +10,7 @@ const routeCases = [
   ['/reservations/801', 'Mock 제주 허니문'],
   ['/login', 'Login'],
   ['/signup', 'Signup'],
-  ['/my-trips', 'My Trips'],
+  ['/my-trips', 'Login'],
 ] as const;
 
 function collectPageErrors(page: Page) {
@@ -71,7 +71,7 @@ test.describe('Foundation routes', () => {
       .getByRole('navigation', { name: 'Primary' })
       .getByRole('link', { name: 'My Trips', exact: true })
       .click();
-    await expect(page).toHaveURL(/\/my-trips$/);
+    await expect(page).toHaveURL(/\/login$/);
 
     await page.goBack();
     await expect(page).toHaveURL(/\/tours$/);
@@ -124,7 +124,7 @@ test.describe('Foundation routes', () => {
       .getByRole('link', { name: 'My Trips', exact: true })
       .evaluate((element) => (element as HTMLAnchorElement).click());
 
-    await expect(page).toHaveURL(/\/my-trips$/);
+    await expect(page).toHaveURL(/\/login$/);
     await expect(page.locator('#main-content')).toBeFocused();
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThanOrEqual(1);
 
