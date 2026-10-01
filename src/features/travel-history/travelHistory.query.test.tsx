@@ -1,11 +1,10 @@
 // @vitest-environment jsdom
 
-import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import type { PropsWithChildren } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
-import { clearPrivateQueryCache } from '@/app/providers/privateQueryCache';
 import {
   travelHistoryQueryKey,
   travelHistoryQueryOptions,
@@ -61,7 +60,10 @@ describe('travelHistory query boundary', () => {
 
     expect(getTravelHistory).toHaveBeenCalledTimes(1);
 
-    await act(async () => resolveHistory(firstHistory));
+    await act(() => {
+      resolveHistory(firstHistory);
+      return request;
+    });
 
     await waitFor(() => expect(popup.result.current.data).toBe(firstHistory));
     expect(myTrips.result.current.data).toBe(firstHistory);
@@ -97,7 +99,9 @@ describe('travelHistory query boundary', () => {
     await client.prefetchQuery(travelHistoryQueryOptions(source));
     client.setQueryData(['public-tour'], { id: 'tour-1' });
 
-    clearPrivateQueryCache(client);
+    client.removeQueries({
+      predicate: (query) => query.meta?.privacy === 'private',
+    });
 
     expect(client.getQueryData(travelHistoryQueryKey)).toBeUndefined();
     expect(client.getQueryData(['public-tour'])).toEqual({ id: 'tour-1' });
