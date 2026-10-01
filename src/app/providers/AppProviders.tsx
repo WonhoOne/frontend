@@ -11,11 +11,11 @@ import {
 import { ReservationDraftProvider } from '@/features/reservation';
 
 const authDataSource = new MockAuthDataSource({
-  async login() {
-    throw new AuthError('LOGIN_FAILED');
+  login() {
+    return Promise.reject(new AuthError('LOGIN_FAILED'));
   },
-  async signup() {
-    throw new AuthError('UNKNOWN');
+  signup() {
+    return Promise.reject(new AuthError('UNKNOWN'));
   },
 });
 
