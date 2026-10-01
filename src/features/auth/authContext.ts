@@ -1,11 +1,6 @@
 import { createContext, useContext } from 'react';
 
-import type {
-  AuthState,
-  LoginInput,
-  SignupInput,
-  SignupResult,
-} from '@/features/auth/authTypes';
+import type { AuthState, LoginInput, SignupInput, SignupResult } from '@/features/auth/authTypes';
 
 export interface AuthContextValue {
   state: AuthState;
