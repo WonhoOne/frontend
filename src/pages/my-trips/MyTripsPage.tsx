@@ -24,7 +24,6 @@ function formatPrice(amount: number, currency: string) {
 export function MyTripsPage() {
   const auth = useAuth();
   const navigate = useNavigate();
-  const history = useTravelHistory(travelHistoryDataSource);
 
   useEffect(() => {
     if (auth.state.status !== 'unauthenticated') {
@@ -54,6 +53,13 @@ export function MyTripsPage() {
       </div>
     );
   }
+
+  return <AuthenticatedMyTrips />;
+}
+
+function AuthenticatedMyTrips() {
+  const navigate = useNavigate();
+  const history = useTravelHistory(travelHistoryDataSource);
 
   const trips = history.data ?? [];
 
