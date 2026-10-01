@@ -35,10 +35,7 @@ describe('auth private cache lifecycle', () => {
       signup: vi.fn().mockRejectedValue(new Error('not used')),
     };
     const wrapper = ({ children }: PropsWithChildren) => (
-      <AuthProvider
-        dataSource={dataSource}
-        onAuthLoss={() => clearPrivateQueryCache(queryClient)}
-      >
+      <AuthProvider dataSource={dataSource} onAuthLoss={() => clearPrivateQueryCache(queryClient)}>
         {children}
       </AuthProvider>
     );
