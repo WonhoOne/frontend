@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router';
 
 import { routePaths } from '@/app/router/paths';
-import { AuthError, useAuth } from '@/features/auth';
+import { AuthError, consumeReturnContext, useAuth } from '@/features/auth';
 import { Button, PageContainer, TextField, TextLink } from '@/shared/ui';
 
 import styles from '@/pages/login/LoginPage.module.css';
@@ -43,9 +43,10 @@ export function LoginPage() {
 
     try {
       await auth.login({ loginId, password });
-      // E05 owns ReturnContext recovery. Until then, direct Login uses only the
-      // contract-safe home fallback and never invents transaction restoration.
-      void navigate(routePaths.home, { replace: true });
+      // SECURITY/LIFECYCLE: ReturnContext is consumed only after authentication
+      // succeeds. Navigation recovery never retries the interrupted transaction.
+      const returnContext = consumeReturnContext();
+      void navigate(returnContext?.returnTo ?? routePaths.home, { replace: true });
     } catch (error) {
       setFormError(getLoginErrorMessage(error));
     } finally {
