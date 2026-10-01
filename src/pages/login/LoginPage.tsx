@@ -69,11 +69,7 @@ export function LoginPage() {
               로그인 상태를 확인하고 있습니다.
             </p>
           ) : (
-            <form
-              className={styles.form}
-              noValidate
-              onSubmit={(event) => void handleSubmit(event)}
-            >
+            <form className={styles.form} noValidate onSubmit={(event) => void handleSubmit(event)}>
               <TextField
                 autoComplete="username"
                 disabled={isSubmitting}
