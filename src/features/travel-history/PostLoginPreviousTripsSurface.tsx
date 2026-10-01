@@ -1,36 +1,41 @@
-import { useEffect, useState } from 'react';
-
 import { useAuth } from '@/features/auth';
 import { PreviousTripsPopup } from '@/features/travel-history/PreviousTripsPopup';
 import type { TravelHistoryDataSource } from '@/features/travel-history/TravelHistoryDataSource';
 import {
-  consumePostLoginHistoryIntent,
+  clearPostLoginHistoryIntent,
   usePostLoginHistoryIntent,
 } from '@/features/travel-history/postLoginHistoryIntent';
 
 interface PostLoginPreviousTripsSurfaceProps {
   dataSource: TravelHistoryDataSource;
+  onExplore: () => void;
+  onViewAll: () => void;
 }
 
 export function PostLoginPreviousTripsSurface({
   dataSource,
+  onExplore,
+  onViewAll,
 }: PostLoginPreviousTripsSurfaceProps) {
   const auth = useAuth();
   const intent = usePostLoginHistoryIntent();
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    if (auth.state.status !== 'authenticated' || intent === null) {
-      return;
-    }
-
-    const consumed = consumePostLoginHistoryIntent();
-    setOpen(consumed === 'show-previous-trips');
-  }, [auth.state.status, intent]);
+  const open = auth.state.status === 'authenticated' && intent === 'show-previous-trips';
 
   if (auth.state.status !== 'authenticated') {
     return null;
   }
 
-  return <PreviousTripsPopup dataSource={dataSource} onOpenChange={setOpen} open={open} />;
+  return (
+    <PreviousTripsPopup
+      dataSource={dataSource}
+      onExplore={onExplore}
+      onOpenChange={(nextOpen) => {
+        if (!nextOpen) {
+          clearPostLoginHistoryIntent();
+        }
+      }}
+      onViewAll={onViewAll}
+      open={open}
+    />
+  );
 }
