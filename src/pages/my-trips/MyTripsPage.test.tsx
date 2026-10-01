@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import type { PropsWithChildren } from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -11,46 +11,26 @@ import {
   clearReturnContext,
   consumeReturnContext,
   type AuthDataSource,
-  type LoginResult,
 } from '@/features/auth';
-import { travelHistoryQueryKey, type TravelHistoryItemModel } from '@/features/travel-history';
-import { MyTripsPage } from '@/pages/my-trips/MyTripsPage';
-
-const loginResult: LoginResult = {
-  accessToken: 'test-token',
-  tokenType: 'Bearer',
-  expiresIn: 60,
-  user: { id: 7, role: 'CUSTOMER', name: 'Test Customer' },
-};
+import {
+  travelHistoryQueryKey,
+  type TravelHistoryDataSource,
+  type TravelHistoryItemModel,
+} from '@/features/travel-history';
+import { AuthenticatedMyTrips, MyTripsPage } from '@/pages/my-trips/MyTripsPage';
 
 function authSource(): AuthDataSource {
   return {
-    login: vi.fn().mockResolvedValue(loginResult),
+    login: vi.fn().mockRejectedValue(new Error('not used')),
     signup: vi.fn().mockRejectedValue(new Error('not used')),
   };
 }
 
-function renderPage(queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })) {
-  const wrapper = ({ children }: PropsWithChildren) => (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider dataSource={authSource()}>{children}</AuthProvider>
-    </QueryClientProvider>
-  );
-
-  render(
-    wrapper({
-      children: (
-        <MemoryRouter initialEntries={['/my-trips']}>
-          <Routes>
-            <Route path="/my-trips" element={<MyTripsPage />} />
-            <Route path="/login" element={<p>Login destination</p>} />
-          </Routes>
-        </MemoryRouter>
-      ),
-    }),
-  );
-
-  return queryClient;
+function QueryWrapper({
+  children,
+  queryClient,
+}: PropsWithChildren<{ queryClient: QueryClient }>) {
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }
 
 afterEach(() => {
@@ -60,8 +40,21 @@ afterEach(() => {
 });
 
 describe('MyTripsPage', () => {
-  it('protects direct access with a secure ReturnContext and does not start a private query', async () => {
-    const queryClient = renderPage();
+  it('protects direct access with ReturnContext before starting a private query', async () => {
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+
+    render(
+      <QueryWrapper queryClient={queryClient}>
+        <AuthProvider dataSource={authSource()}>
+          <MemoryRouter initialEntries={['/my-trips']}>
+            <Routes>
+              <Route path="/my-trips" element={<MyTripsPage />} />
+              <Route path="/login" element={<p>Login destination</p>} />
+            </Routes>
+          </MemoryRouter>
+        </AuthProvider>
+      </QueryWrapper>,
+    );
 
     expect(await screen.findByText('Login destination')).toBeVisible();
     expect(queryClient.getQueryState(travelHistoryQueryKey)).toBeUndefined();
@@ -71,7 +64,7 @@ describe('MyTripsPage', () => {
     });
   });
 
-  it('renders backend-ordered cached history without inventing detail navigation', async () => {
+  it('renders the shared history result in the backend-provided order', async () => {
     const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     const trips: readonly TravelHistoryItemModel[] = [
       {
@@ -91,25 +84,64 @@ describe('MyTripsPage', () => {
         price: { amount: 1400000, currency: 'KRW' },
       },
     ];
-    queryClient.setQueryData(travelHistoryQueryKey, trips);
+    const dataSource: TravelHistoryDataSource = {
+      getTravelHistory: vi.fn().mockResolvedValue(trips),
+    };
 
-    const source = authSource();
-    const AuthenticatedHarness = () => (
-      <AuthProvider dataSource={source}>
-        <button
-          onClick={() => void source.login({ loginId: 'x', password: 'y' })}
-          style={{ display: 'none' }}
-        />
-      </AuthProvider>
+    render(
+      <QueryWrapper queryClient={queryClient}>
+        <MemoryRouter>
+          <AuthenticatedMyTrips dataSource={dataSource} />
+        </MemoryRouter>
+      </QueryWrapper>,
     );
-    void AuthenticatedHarness;
 
-    expect(trips.map((trip) => trip.reservationId)).toEqual([22, 11]);
+    const recent = await screen.findByRole('heading', { name: 'Recent Journey' });
+    const older = screen.getByRole('heading', { name: 'Older Journey' });
+    expect(recent.compareDocumentPosition(older) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.queryByRole('link', { name: /Recent Journey|Older Journey/ })).not.toBeInTheDocument();
   });
 
-  it('shows cached history during a failed refresh and offers retry', async () => {
+  it('covers loading, empty, initial error retry, and cached refresh failure', async () => {
     const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-    queryClient.setQueryData(travelHistoryQueryKey, [
+    let rejectRequest: ((reason?: unknown) => void) | undefined;
+    const pendingSource: TravelHistoryDataSource = {
+      getTravelHistory: vi.fn().mockImplementation(
+        () =>
+          new Promise((_, reject) => {
+            rejectRequest = reject;
+          }),
+      ),
+    };
+
+    const { unmount } = render(
+      <QueryWrapper queryClient={queryClient}>
+        <MemoryRouter>
+          <AuthenticatedMyTrips dataSource={pendingSource} />
+        </MemoryRouter>
+      </QueryWrapper>,
+    );
+
+    expect(screen.getByLabelText('여행 기록 불러오는 중')).toHaveAttribute('aria-busy', 'true');
+    rejectRequest?.(new Error('offline'));
+    expect(await screen.findByRole('alert')).toHaveTextContent('여행 기록을 불러오지 못했습니다');
+    expect(screen.getByRole('button', { name: '다시 시도' })).toBeVisible();
+    unmount();
+
+    const emptyClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const emptySource: TravelHistoryDataSource = { getTravelHistory: vi.fn().mockResolvedValue([]) };
+    const empty = render(
+      <QueryWrapper queryClient={emptyClient}>
+        <MemoryRouter>
+          <AuthenticatedMyTrips dataSource={emptySource} />
+        </MemoryRouter>
+      </QueryWrapper>,
+    );
+    expect(await screen.findByText('아직 지난 여행이 없습니다.')).toBeVisible();
+    empty.unmount();
+
+    const cachedClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    cachedClient.setQueryData(travelHistoryQueryKey, [
       {
         reservationId: 22,
         tourProduct: { id: 2, theme: 'HONEYMOON', name: 'Cached Journey' },
@@ -119,7 +151,21 @@ describe('MyTripsPage', () => {
         price: { amount: 2200000, currency: 'KRW' },
       },
     ] satisfies readonly TravelHistoryItemModel[]);
+    const failedRefresh: TravelHistoryDataSource = {
+      getTravelHistory: vi.fn().mockRejectedValue(new Error('offline')),
+    };
 
-    expect(queryClient.getQueryData(travelHistoryQueryKey)).toBeDefined();
+    render(
+      <QueryWrapper queryClient={cachedClient}>
+        <MemoryRouter>
+          <AuthenticatedMyTrips dataSource={failedRefresh} />
+        </MemoryRouter>
+      </QueryWrapper>,
+    );
+
+    expect(await screen.findByRole('heading', { name: 'Cached Journey' })).toBeVisible();
+    expect(await screen.findByText('최신 기록을 확인하지 못했습니다. 이전 기록을 표시합니다.')).toBeVisible();
+    fireEvent.click(screen.getByRole('button', { name: '다시 시도' }));
+    expect(failedRefresh.getTravelHistory).toHaveBeenCalled();
   });
 });
