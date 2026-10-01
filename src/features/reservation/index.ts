@@ -99,3 +99,10 @@ export {
   type ReservationReviewValidationPresentation,
   type ReservationReviewValidationState,
 } from '@/features/reservation/reservationReviewValidation';
+
+export {
+  createReservationMutationController,
+  type ReservationMutationController,
+  type ReservationMutationResult,
+  type ReservationMutationState,
+} from '@/features/reservation/reservationMutation';

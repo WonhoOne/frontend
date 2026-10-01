@@ -9,7 +9,7 @@ export type ReservationDataError =
   | { kind: 'not-found'; code: 'RESERVATION_NOT_FOUND' }
   | { kind: 'conflict'; code: string; fieldErrors: readonly ReservationFieldError[] }
   | { kind: 'validation'; code: string; fieldErrors: readonly ReservationFieldError[] }
-  | { kind: 'network' }
+  | { kind: 'network'; requestMayHaveReachedServer?: boolean }
   | { kind: 'server'; code?: string }
   | { kind: 'unknown' };
 
