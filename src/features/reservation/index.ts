@@ -106,3 +106,8 @@ export {
   type ReservationMutationResult,
   type ReservationMutationState,
 } from '@/features/reservation/reservationMutation';
+
+export {
+  toReservationAuthInterruption,
+  type ReservationAuthInterruption,
+} from '@/features/reservation/reservationAuthInterruption';
