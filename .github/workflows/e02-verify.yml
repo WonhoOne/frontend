@@ -1,4 +1,4 @@
-name: E02 Auth Core Verification
+name: E03 Login Verification
 
 on:
   pull_request:
