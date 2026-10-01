@@ -61,7 +61,9 @@ export function LoginPage() {
             <p className={styles.brand}>Mister World</p>
             <p className={styles.eyebrow}>Account</p>
             <h1 id="login-heading">Login</h1>
-            <p className={styles.supportingCopy}>Welcome back. 로그인하고 여행 준비를 이어가세요.</p>
+            <p className={styles.supportingCopy}>
+              Welcome back. 로그인하고 여행 준비를 이어가세요.
+            </p>
           </header>
 
           {auth.state.status === 'checking' ? (
