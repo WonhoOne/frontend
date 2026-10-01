@@ -66,7 +66,11 @@ function renderSurface(historySource: TravelHistoryDataSource) {
       children: (
         <>
           <Harness />
-          <PostLoginPreviousTripsSurface dataSource={historySource} />
+          <PostLoginPreviousTripsSurface
+            dataSource={historySource}
+            onExplore={() => undefined}
+            onViewAll={() => undefined}
+          />
         </>
       ),
     }),
@@ -83,7 +87,7 @@ describe('PostLoginPreviousTripsSurface', () => {
     renderSurface({ getTravelHistory: vi.fn().mockResolvedValue([]) });
 
     setPostLoginHistoryIntent('show-previous-trips');
-    await act(async () => {
+    act(() => {
       screen.getByRole('button', { name: 'Authenticate' }).click();
     });
 
@@ -95,7 +99,7 @@ describe('PostLoginPreviousTripsSurface', () => {
     renderSurface({ getTravelHistory });
 
     setPostLoginHistoryIntent('suppress');
-    await act(async () => {
+    act(() => {
       screen.getByRole('button', { name: 'Authenticate' }).click();
     });
 
