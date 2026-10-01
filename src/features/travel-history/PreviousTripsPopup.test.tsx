@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -45,7 +45,13 @@ function renderPopup(source: TravelHistoryDataSource, desktop = true) {
         <Routes>
           <Route
             path="/"
-            element={<PreviousTripsPopup dataSource={source} onOpenChange={onOpenChange} open />}
+            element={<PreviousTripsPopup
+              dataSource={source}
+              onExplore={() => undefined}
+              onOpenChange={onOpenChange}
+              onViewAll={() => undefined}
+              open
+            />}
           />
           <Route path="/my-trips" element={<p>My Trips destination</p>} />
           <Route path="/tours" element={<p>Tours destination</p>} />
@@ -62,10 +68,7 @@ afterEach(() => {
 });
 
 describe('PreviousTripsPopup', () => {
-  it.each([
-    [true, 'dialog'],
-    [false, 'dialog'],
-  ])('uses an accessible modal surface for desktop=%s', async (desktop) => {
+  it.each([true, false])('uses an accessible modal surface for desktop=%s', async (desktop) => {
     renderPopup({ getTravelHistory: vi.fn().mockResolvedValue(history) }, desktop);
 
     expect(await screen.findByRole('dialog', { name: 'Your previous trips' })).toBeVisible();
