@@ -1,10 +1,5 @@
 import type { AuthDataSource } from '@/features/auth/AuthDataSource';
-import type {
-  LoginInput,
-  LoginResult,
-  SignupInput,
-  SignupResult,
-} from '@/features/auth/authTypes';
+import type { LoginInput, LoginResult, SignupInput, SignupResult } from '@/features/auth/authTypes';
 
 export interface MockAuthBehavior {
   login(input: LoginInput): Promise<LoginResult>;
