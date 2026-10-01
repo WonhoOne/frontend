@@ -33,7 +33,7 @@ function completeDraft(): ReservationDraftV1 {
   return {
     schemaVersion: 1,
     tourProductId: 'tour-42',
-    tourScheduleId: 'schedule-7',
+    tourScheduleId: 'fixture:schedule:a',
     tourStyle: 'GRAND',
     participantCount: 2,
     configuration: {
@@ -56,20 +56,31 @@ function renderReview(storage: MemoryStorage) {
   );
 }
 
-describe('ReservationReviewPage handoff guard', () => {
-  it('offers a Draft-derived Configure return path without implementing Review submit', () => {
+describe('ReservationReviewPage composition', () => {
+  it('renders a read-only Draft review with explicit change paths', () => {
     const storage = new MemoryStorage();
     storage.setItem(RESERVATION_DRAFT_STORAGE_KEY, serializeReservationDraft(completeDraft()));
 
     renderReview(storage);
 
-    expect(screen.getByRole('heading', { name: 'Reservation Review' })).toBeVisible();
-    expect(screen.getByRole('heading', { name: 'Your trip draft is preserved' })).toBeVisible();
-    expect(screen.getByRole('link', { name: 'Back to configuration' })).toHaveAttribute(
+    expect(screen.getByRole('heading', { level: 1, name: 'Review your trip' })).toBeVisible();
+    expect(screen.getByText('Grand')).toBeVisible();
+    expect(screen.getByText('2 participants')).toBeVisible();
+    expect(screen.getByText('Fixture hotel A')).toBeVisible();
+    expect(screen.getByText('Fixture transport B')).toBeVisible();
+    expect(screen.getByText('Fixture meal A')).toBeVisible();
+    expect(screen.getByRole('link', { name: 'Change configuration' })).toHaveAttribute(
       'href',
       '/tours/tour-42/configure',
     );
-    expect(screen.queryByRole('button', { name: /submit|reserve|apply/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Change style or schedule' })).toHaveAttribute(
+      'href',
+      '/tours/tour-42',
+    );
+    expect(
+      screen.getByText(/Final price and any loyalty discount are confirmed by the server/),
+    ).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Apply for reservation' })).toBeEnabled();
   });
 
   it('recovers safely from a direct Review URL without Draft', () => {
