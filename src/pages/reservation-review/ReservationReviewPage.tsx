@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { routeBuilders, routePaths } from '@/app/router/paths';
+import { saveReturnContext } from '@/features/auth';
 import {
   createConfirmedReservationTransition,
   createReservationIntent,
@@ -37,6 +38,15 @@ export function ReservationReviewPage() {
     setMutationState(mutation.getState());
     const result = await pending;
     setMutationState(mutation.getState());
+
+    if (result.status === 'auth-interruption') {
+      saveReturnContext({
+        intent: 'resume-reservation-review',
+        returnTo: routePaths.reservationReview,
+      });
+      void navigate(routePaths.login);
+      return;
+    }
 
     const transition = createConfirmedReservationTransition(result, Date.now());
     if (transition !== null) {
