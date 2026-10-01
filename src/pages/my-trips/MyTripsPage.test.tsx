@@ -151,9 +151,8 @@ describe('MyTripsPage', () => {
         price: { amount: 2200000, currency: 'KRW' },
       },
     ] satisfies readonly TravelHistoryItemModel[]);
-    const failedRefresh: TravelHistoryDataSource = {
-      getTravelHistory: vi.fn().mockRejectedValue(new Error('offline')),
-    };
+    const getTravelHistory = vi.fn().mockRejectedValue(new Error('offline'));
+    const failedRefresh: TravelHistoryDataSource = { getTravelHistory };
 
     render(
       <QueryWrapper queryClient={cachedClient}>
@@ -166,6 +165,6 @@ describe('MyTripsPage', () => {
     expect(await screen.findByRole('heading', { name: 'Cached Journey' })).toBeVisible();
     expect(await screen.findByText('최신 기록을 확인하지 못했습니다. 이전 기록을 표시합니다.')).toBeVisible();
     fireEvent.click(screen.getByRole('button', { name: '다시 시도' }));
-    expect(failedRefresh.getTravelHistory.call).toBeDefined();
+    expect(getTravelHistory).toHaveBeenCalled();
   });
 });
