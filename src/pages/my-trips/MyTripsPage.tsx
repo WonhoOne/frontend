@@ -58,11 +58,7 @@ export function MyTripsPage() {
   return <AuthenticatedMyTrips dataSource={travelHistoryDataSource} />;
 }
 
-export function AuthenticatedMyTrips({
-  dataSource,
-}: {
-  dataSource: TravelHistoryDataSource;
-}) {
+export function AuthenticatedMyTrips({ dataSource }: { dataSource: TravelHistoryDataSource }) {
   const navigate = useNavigate();
   const history = useTravelHistory(dataSource);
 
