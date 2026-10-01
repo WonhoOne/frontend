@@ -1,6 +1,3 @@
-import { useNavigate } from 'react-router';
-
-import { routePaths } from '@/app/router/paths';
 import type { TravelHistoryDataSource } from '@/features/travel-history/TravelHistoryDataSource';
 import { useDesktopHistorySurface } from '@/features/travel-history/useDesktopHistorySurface';
 import { useTravelHistory } from '@/features/travel-history/travelHistory.query';
@@ -12,6 +9,8 @@ interface PreviousTripsPopupProps {
   dataSource: TravelHistoryDataSource;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onExplore: () => void;
+  onViewAll: () => void;
 }
 
 function formatDateRange(startDate: string, endDate: string) {
@@ -28,9 +27,13 @@ function formatPrice(amount: number, currency: string) {
 
 function HistoryContent({
   dataSource,
+  onExplore,
   onOpenChange,
-}: Pick<PreviousTripsPopupProps, 'dataSource' | 'onOpenChange'>) {
-  const navigate = useNavigate();
+  onViewAll,
+}: Pick<
+  PreviousTripsPopupProps,
+  'dataSource' | 'onExplore' | 'onOpenChange' | 'onViewAll'
+>) {
   const history = useTravelHistory(dataSource);
 
   if (history.isPending) {
@@ -68,7 +71,7 @@ function HistoryContent({
         <Button
           onClick={() => {
             onOpenChange(false);
-            void navigate(routePaths.tours);
+            onExplore();
           }}
         >
           여행 둘러보기
@@ -120,7 +123,7 @@ function HistoryContent({
         className={styles.viewAll}
         onClick={() => {
           onOpenChange(false);
-          void navigate(routePaths.myTrips);
+          onViewAll();
         }}
       >
         전체 여행 보기
@@ -129,7 +132,13 @@ function HistoryContent({
   );
 }
 
-export function PreviousTripsPopup({ dataSource, onOpenChange, open }: PreviousTripsPopupProps) {
+export function PreviousTripsPopup({
+  dataSource,
+  onExplore,
+  onOpenChange,
+  onViewAll,
+  open,
+}: PreviousTripsPopupProps) {
   const desktop = useDesktopHistorySurface();
   const sharedProps = {
     closeLabel: '닫기',
@@ -142,14 +151,24 @@ export function PreviousTripsPopup({ dataSource, onOpenChange, open }: PreviousT
   if (desktop) {
     return (
       <Dialog {...sharedProps}>
-        <HistoryContent dataSource={dataSource} onOpenChange={onOpenChange} />
+        <HistoryContent
+          dataSource={dataSource}
+          onExplore={onExplore}
+          onOpenChange={onOpenChange}
+          onViewAll={onViewAll}
+        />
       </Dialog>
     );
   }
 
   return (
     <BottomSheet {...sharedProps}>
-      <HistoryContent dataSource={dataSource} onOpenChange={onOpenChange} />
+      <HistoryContent
+          dataSource={dataSource}
+          onExplore={onExplore}
+          onOpenChange={onOpenChange}
+          onViewAll={onViewAll}
+        />
     </BottomSheet>
   );
 }
