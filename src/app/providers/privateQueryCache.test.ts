@@ -1,10 +1,7 @@
 import { QueryClient } from '@tanstack/react-query';
 import { describe, expect, it } from 'vitest';
 
-import {
-  clearPrivateQueryCache,
-  PRIVATE_QUERY_META_KEY,
-} from '@/app/providers/privateQueryCache';
+import { clearPrivateQueryCache, PRIVATE_QUERY_META_KEY } from '@/app/providers/privateQueryCache';
 
 describe('clearPrivateQueryCache', () => {
   it('removes private queries while preserving public server state', async () => {
