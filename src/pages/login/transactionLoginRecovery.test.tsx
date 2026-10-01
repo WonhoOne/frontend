@@ -54,10 +54,7 @@ function renderTransactionRecovery(dataSource: AuthDataSource, onSubmit: () => v
         children: (
           <Routes>
             <Route element={<LoginPage />} path="/login" />
-            <Route
-              element={<ReviewBoundary onSubmit={onSubmit} />}
-              path="/reservation/review"
-            />
+            <Route element={<ReviewBoundary onSubmit={onSubmit} />} path="/reservation/review" />
             <Route element={<p>Safe home</p>} path="/" />
           </Routes>
         ),
@@ -120,7 +117,9 @@ describe('transaction login recovery public boundary', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: '로그인' }));
 
-    expect(await screen.findByRole('heading', { name: 'Reservation Review Boundary' })).toBeVisible();
+    expect(
+      await screen.findByRole('heading', { name: 'Reservation Review Boundary' }),
+    ).toBeVisible();
     expect(screen.getByLabelText('tour product')).toHaveTextContent('synthetic-tour');
     expect(reservationSubmit).not.toHaveBeenCalled();
 
