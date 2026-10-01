@@ -10,6 +10,10 @@ export type ReservationLookupState =
   | { status: 'server-error'; previous: ReservationModel | null }
   | { status: 'refreshing'; reservation: ReservationModel };
 
+export function beginReservationRefresh(previous: ReservationModel): ReservationLookupState {
+  return { status: 'refreshing', reservation: previous };
+}
+
 export async function lookupReservation(
   dataSource: Pick<ReservationDataSource, 'getReservation'>,
   reservationId: number,
@@ -25,4 +29,10 @@ export async function lookupReservation(
     }
     return { status: 'server-error', previous };
   }
+}
+
+export function visibleReservationFromLookup(state: ReservationLookupState): ReservationModel | null {
+  if (state.status === 'success' || state.status === 'refreshing') return state.reservation;
+  if (state.status === 'network-error' || state.status === 'server-error') return state.previous;
+  return null;
 }

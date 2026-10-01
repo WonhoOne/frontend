@@ -128,6 +128,13 @@ export {
 export { mockReservationDataSource } from '@/features/reservation/mockReservationDataSource';
 export { mockReservationSuccessFixture } from '@/features/reservation/reservationSuccessFixture';
 export {
+  beginReservationRefresh,
   lookupReservation,
+  visibleReservationFromLookup,
   type ReservationLookupState,
 } from '@/features/reservation/reservationLookup';
+
+export {
+  createConfirmedReservationTransition,
+  type ConfirmedReservationTransition,
+} from '@/features/reservation/reservationSuccessTransition';
