@@ -16,8 +16,6 @@ jobs:
           node-version: 24.21.0
           cache: npm
       - run: npm ci
-      - name: Show Prettier diff
-        run: |
-          npm run format:write
-          git diff -- src/app/providers src/features/auth
-          exit 1
+      - run: npm run verify
+      - run: npm run test:e2e
+      - run: npm audit --omit=dev --audit-level=high
