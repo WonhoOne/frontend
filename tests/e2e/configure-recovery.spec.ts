@@ -44,8 +44,8 @@ test('Configure → Review → browser Back preserves the transaction Draft', as
   await page.getByRole('button', { name: 'Review trip' }).click();
 
   await expect(page).toHaveURL('/reservation/review');
-  await expect(page.getByRole('heading', { name: 'Your trip draft is preserved' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Back to configuration' })).toHaveAttribute(
+  await expect(page.getByRole('heading', { name: 'Review your trip' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Change configuration' })).toHaveAttribute(
     'href',
     '/tours/tour-42/configure',
   );
