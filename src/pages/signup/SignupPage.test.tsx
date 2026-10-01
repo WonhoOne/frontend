@@ -65,7 +65,7 @@ function fillRequiredFields() {
 
 describe('SignupPage', () => {
   it('renders exactly the five v0.2 CUSTOMER signup fields with appropriate semantics', () => {
-    renderSignup(vi.fn().mockResolvedValue(success));
+    renderSignup(dataSource(vi.fn().mockResolvedValue(success)));
 
     const account = screen.getByRole('group', { name: '계정 정보' });
     const profile = screen.getByRole('group', { name: '고객 정보' });
@@ -97,7 +97,7 @@ describe('SignupPage', () => {
   });
 
   it('requires all five fields without inventing format or password constraints', () => {
-    renderSignup(vi.fn().mockResolvedValue(success));
+    renderSignup(dataSource(vi.fn().mockResolvedValue(success)));
 
     const submit = screen.getByRole('button', { name: '회원가입' });
     expect(submit).toBeDisabled();
@@ -182,7 +182,7 @@ describe('SignupPage', () => {
   });
 
   it('offers an accessible path back to Login', () => {
-    renderSignup(vi.fn().mockResolvedValue(success));
+    renderSignup(dataSource(vi.fn().mockResolvedValue(success)));
 
     expect(screen.getByRole('link', { name: '로그인' })).toHaveAttribute('href', '/login');
   });
