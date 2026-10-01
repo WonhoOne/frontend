@@ -25,7 +25,7 @@ const routeCases = [
   [
     routeBuilders.reservationSuccess('801'),
     routeTitles.reservationSuccess,
-    routeTitles.reservationSuccess,
+    'Reservation received',
   ],
   [routeBuilders.reservationDetail('801'), routeTitles.reservationDetail, 'Mock 제주 허니문'],
   [routePaths.login, routeTitles.login, routeTitles.login],
