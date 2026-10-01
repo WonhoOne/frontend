@@ -33,7 +33,7 @@ function completeDraft(): ReservationDraftV1 {
   return {
     schemaVersion: 1,
     tourProductId: 'tour-42',
-    tourScheduleId: 'schedule-7',
+    tourScheduleId: 'fixture:schedule:a',
     tourStyle: 'GRAND',
     participantCount: 2,
     configuration: {
@@ -72,7 +72,7 @@ describe('ReservationReviewPage composition', () => {
     expect(screen.getByRole('link', { name: 'Change configuration' })).toHaveAttribute('href', '/tours/tour-42/configure');
     expect(screen.getByRole('link', { name: 'Change style or schedule' })).toHaveAttribute('href', '/tours/tour-42');
     expect(screen.getByText(/Final price and any loyalty discount are confirmed by the server/)).toBeVisible();
-    expect(screen.queryByRole('button', { name: /submit|reserve|apply/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Apply for reservation' })).toBeEnabled();
   });
 
   it('recovers safely from a direct Review URL without Draft', () => {

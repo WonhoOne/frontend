@@ -138,3 +138,5 @@ export {
   createConfirmedReservationTransition,
   type ConfirmedReservationTransition,
 } from '@/features/reservation/reservationSuccessTransition';
+
+export { mockReservationCreateIdentityResolver } from '@/features/reservation/mockReservationCreateIdentityResolver';
