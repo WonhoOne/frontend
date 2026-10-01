@@ -47,13 +47,15 @@ function renderPopup(source: TravelHistoryDataSource, desktop = true) {
         <Routes>
           <Route
             path="/"
-            element={<PreviousTripsPopup
-              dataSource={source}
-              onExplore={onExplore}
-              onOpenChange={onOpenChange}
-              onViewAll={onViewAll}
-              open
-            />}
+            element={
+              <PreviousTripsPopup
+                dataSource={source}
+                onExplore={onExplore}
+                onOpenChange={onOpenChange}
+                onViewAll={onViewAll}
+                open
+              />
+            }
           />
           <Route path="/my-trips" element={<p>My Trips destination</p>} />
           <Route path="/tours" element={<p>Tours destination</p>} />
