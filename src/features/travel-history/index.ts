@@ -15,10 +15,12 @@ export {
   useTravelHistory,
 } from '@/features/travel-history/travelHistory.query';
 
+export { PostLoginPreviousTripsSurface } from '@/features/travel-history/PostLoginPreviousTripsSurface';
 export { PreviousTripsPopup } from '@/features/travel-history/PreviousTripsPopup';
 export {
   clearPostLoginHistoryIntent,
   consumePostLoginHistoryIntent,
   setPostLoginHistoryIntent,
+  usePostLoginHistoryIntent,
   type PostLoginHistoryIntent,
 } from '@/features/travel-history/postLoginHistoryIntent';
