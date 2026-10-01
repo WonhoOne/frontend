@@ -2,7 +2,13 @@ import { useCallback, useEffect, useMemo, useRef, useState, type PropsWithChildr
 
 import type { AuthDataSource } from '@/features/auth/AuthDataSource';
 import { AuthContext } from '@/features/auth/authContext';
-import type { AuthState, LoginInput, SignupInput, SignupResult } from '@/features/auth/authTypes';
+import {
+  AuthError,
+  type AuthState,
+  type LoginInput,
+  type SignupInput,
+  type SignupResult,
+} from '@/features/auth/authTypes';
 
 interface ActiveSession {
   accessToken: string;
@@ -94,11 +100,30 @@ export function AuthProvider({
     [dataSource],
   );
 
+  const invalidateSession = useCallback(
+    (error: unknown) => {
+      if (
+        state.status !== 'authenticated' ||
+        !(error instanceof AuthError) ||
+        !(error.code === 'INVALID_ACCESS_TOKEN' || error.code === 'ACCESS_TOKEN_EXPIRED')
+      ) {
+        return false;
+      }
+
+      becomeUnauthenticated();
+      return true;
+    },
+    [becomeUnauthenticated, state.status],
+  );
+
   const signOut = useCallback(() => {
     becomeUnauthenticated();
   }, [becomeUnauthenticated]);
 
-  const value = useMemo(() => ({ state, login, signup, signOut }), [login, signOut, signup, state]);
+  const value = useMemo(
+    () => ({ state, login, signup, invalidateSession, signOut }),
+    [invalidateSession, login, signOut, signup, state],
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
