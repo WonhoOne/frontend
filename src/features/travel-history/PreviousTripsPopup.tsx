@@ -152,11 +152,11 @@ export function PreviousTripsPopup({
     return (
       <Dialog {...sharedProps}>
         <HistoryContent
-          dataSource={dataSource}
-          onExplore={onExplore}
-          onOpenChange={onOpenChange}
-          onViewAll={onViewAll}
-        />
+        dataSource={dataSource}
+        onExplore={onExplore}
+        onOpenChange={onOpenChange}
+        onViewAll={onViewAll}
+      />
       </Dialog>
     );
   }
