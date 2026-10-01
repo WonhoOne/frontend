@@ -52,8 +52,10 @@ export function AuthProvider({
   }, []);
 
   useEffect(() => {
-    // E01 intentionally defines no persistent session bootstrap.
-    setState(UNAUTHENTICATED);
+    // E01 has no persistent bootstrap. Keep the explicit checking phase while
+    // completing bootstrap asynchronously instead of cascading state in an effect.
+    const bootstrapId = window.setTimeout(() => setState(UNAUTHENTICATED), 0);
+    return () => window.clearTimeout(bootstrapId);
   }, []);
 
   useEffect(() => {
