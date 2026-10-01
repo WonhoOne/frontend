@@ -56,8 +56,8 @@ describe('LoginPage', () => {
       'autocomplete',
       'username',
     );
-    expect(screen.getByLabelText('비밀번호')).toHaveAttribute('type', 'password');
-    expect(screen.getByLabelText('비밀번호')).toHaveAttribute('autocomplete', 'current-password');
+    expect(screen.getByLabelText(/비밀번호/)).toHaveAttribute('type', 'password');
+    expect(screen.getByLabelText(/비밀번호/)).toHaveAttribute('autocomplete', 'current-password');
     expect(screen.queryByLabelText(/email|contact/i)).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: '회원가입' })).toHaveAttribute('href', '/signup');
   });
@@ -73,7 +73,7 @@ describe('LoginPage', () => {
     });
     expect(submit).toBeDisabled();
 
-    fireEvent.change(screen.getByLabelText('비밀번호'), {
+    fireEvent.change(screen.getByLabelText(/비밀번호/), {
       target: { value: 'secret-input' },
     });
     expect(submit).toBeEnabled();
@@ -94,7 +94,7 @@ describe('LoginPage', () => {
     fireEvent.change(screen.getByRole('textbox', { name: '로그인 ID' }), {
       target: { value: 'customer-01' },
     });
-    fireEvent.change(screen.getByLabelText('비밀번호'), {
+    fireEvent.change(screen.getByLabelText(/비밀번호/), {
       target: { value: 'secret-input' },
     });
     fireEvent.click(submit);
@@ -103,7 +103,7 @@ describe('LoginPage', () => {
     expect(login).toHaveBeenCalledTimes(1);
     expect(screen.getByRole('button', { name: '로그인 중' })).toBeDisabled();
     expect(screen.getByRole('textbox', { name: '로그인 ID' })).toBeDisabled();
-    expect(screen.getByLabelText('비밀번호')).toBeDisabled();
+    expect(screen.getByLabelText(/비밀번호/)).toBeDisabled();
 
     resolveLogin?.(success);
 
@@ -119,7 +119,7 @@ describe('LoginPage', () => {
     fireEvent.change(screen.getByRole('textbox', { name: '로그인 ID' }), {
       target: { value: 'customer-01' },
     });
-    fireEvent.change(screen.getByLabelText('비밀번호'), {
+    fireEvent.change(screen.getByLabelText(/비밀번호/), {
       target: { value: 'secret-input' },
     });
     fireEvent.submit(screen.getByRole('button', { name: '로그인' }).closest('form')!);
@@ -128,7 +128,7 @@ describe('LoginPage', () => {
       '입력한 로그인 정보를 확인해주세요.',
     );
     expect(screen.getByRole('textbox', { name: '로그인 ID' })).toHaveValue('customer-01');
-    expect(screen.getByLabelText('비밀번호')).toHaveValue('secret-input');
+    expect(screen.getByLabelText(/비밀번호/)).toHaveValue('secret-input');
     expect(screen.getByRole('button', { name: '로그인' })).toBeEnabled();
   });
 
@@ -141,7 +141,7 @@ describe('LoginPage', () => {
     fireEvent.change(screen.getByRole('textbox', { name: '로그인 ID' }), {
       target: { value: 'customer-01' },
     });
-    fireEvent.change(screen.getByLabelText('비밀번호'), {
+    fireEvent.change(screen.getByLabelText(/비밀번호/), {
       target: { value: 'secret-input' },
     });
     fireEvent.click(screen.getByRole('button', { name: '로그인' }));
