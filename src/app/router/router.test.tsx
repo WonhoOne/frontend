@@ -22,16 +22,8 @@ const routeCases = [
   ],
   [routeBuilders.configure('test-tour-id'), routeTitles.configure, routeTitles.configure],
   [routePaths.reservationReview, routeTitles.reservationReview, routeTitles.reservationReview],
-  [
-    routeBuilders.reservationSuccess('test-reservation-id'),
-    routeTitles.reservationSuccess,
-    routeTitles.reservationSuccess,
-  ],
-  [
-    routeBuilders.reservationDetail('test-reservation-id'),
-    routeTitles.reservationDetail,
-    routeTitles.reservationDetail,
-  ],
+  [routeBuilders.reservationSuccess('801'), routeTitles.reservationSuccess, 'Reservation received'],
+  [routeBuilders.reservationDetail('801'), routeTitles.reservationDetail, 'Mock 제주 허니문'],
   [routePaths.login, routeTitles.login, routeTitles.login],
   [routePaths.signup, routeTitles.signup, routeTitles.signup],
   [routePaths.myTrips, routeTitles.myTrips, routeTitles.myTrips],
@@ -52,10 +44,12 @@ function renderRoute(path: string) {
 describe('foundation route table', () => {
   it.each(routeCases)(
     'mounts %s as %s with the route accessibility baseline',
-    (path, _title, accessibleHeading) => {
+    async (path, _title, accessibleHeading) => {
       renderRoute(path);
 
-      expect(screen.getByRole('heading', { level: 1, name: accessibleHeading })).toBeVisible();
+      expect(
+        await screen.findByRole('heading', { level: 1, name: accessibleHeading }),
+      ).toBeVisible();
       expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
 
       const main = screen.getByRole('main');
@@ -77,11 +71,22 @@ describe('foundation route table', () => {
     ).toBeVisible();
   });
 
-  it('exposes the matched reservationId on the dynamic Reservation Detail placeholder', () => {
-    renderRoute(routeBuilders.reservationDetail('test-reservation-id'));
+  it('renders Reservation Detail from the private reservation lookup', async () => {
+    renderRoute(routeBuilders.reservationDetail('801'));
 
-    expect(screen.getByText('reservationId')).toBeVisible();
-    expect(screen.getByText('test-reservation-id')).toBeVisible();
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Mock 제주 허니문' }),
+    ).toBeVisible();
+    expect(screen.getByText('Reservation #801')).toBeVisible();
+  });
+
+  it('does not disclose whether an unavailable reservation exists', async () => {
+    renderRoute(routeBuilders.reservationDetail('999999'));
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Reservation not found' }),
+    ).toBeVisible();
+    expect(screen.getByText('This reservation is unavailable or cannot be shown.')).toBeVisible();
   });
 
   it('uses GlobalHeader for public routes without interpreting Auth state', () => {
