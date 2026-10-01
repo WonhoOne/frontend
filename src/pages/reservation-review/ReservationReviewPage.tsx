@@ -14,18 +14,25 @@ import {
   previewReservationReviewResolver,
   presentReservationReviewValidation,
   useReservationDraft,
+  type ReservationDataSource,
   type ReservationMutationState,
 } from '@/features/reservation';
 import { Button, PageContainer, TextLink } from '@/shared/ui';
 
 import styles from '@/pages/reservation-review/ReservationReviewPage.module.css';
 
-export function ReservationReviewPage() {
+interface ReservationReviewPageProps {
+  dataSource?: ReservationDataSource;
+}
+
+export function ReservationReviewPage({
+  dataSource = mockReservationDataSource,
+}: ReservationReviewPageProps = {}) {
   const { draft, dispatch, hydrationStatus, persistenceStatus } = useReservationDraft();
   const navigate = useNavigate();
   const mutation = useMemo(
-    () => createReservationMutationController(mockReservationDataSource),
-    [],
+    () => createReservationMutationController(dataSource),
+    [dataSource],
   );
   const [mutationState, setMutationState] = useState<ReservationMutationState>(mutation.getState());
   const handoff = getReviewDraftHandoffState({ draft, hydrationStatus });
