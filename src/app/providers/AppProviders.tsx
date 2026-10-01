@@ -3,11 +3,7 @@ import type { PropsWithChildren } from 'react';
 import { clearPrivateQueryCache } from '@/app/providers/privateQueryCache';
 import { QueryProvider } from '@/app/providers/QueryProvider';
 import { queryClient } from '@/app/providers/queryClient';
-import {
-  AuthError,
-  AuthProvider,
-  MockAuthDataSource,
-} from '@/features/auth';
+import { AuthError, AuthProvider, MockAuthDataSource } from '@/features/auth';
 import { ReservationDraftProvider } from '@/features/reservation';
 
 const authDataSource = new MockAuthDataSource({
