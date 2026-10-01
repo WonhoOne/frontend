@@ -23,7 +23,7 @@ const routeCases = [
   [routeBuilders.configure('test-tour-id'), routeTitles.configure, routeTitles.configure],
   [routePaths.reservationReview, routeTitles.reservationReview, routeTitles.reservationReview],
   [
-    routeBuilders.reservationSuccess('test-reservation-id'),
+    routeBuilders.reservationSuccess('801'),
     routeTitles.reservationSuccess,
     routeTitles.reservationSuccess,
   ],
@@ -48,10 +48,12 @@ function renderRoute(path: string) {
 describe('foundation route table', () => {
   it.each(routeCases)(
     'mounts %s as %s with the route accessibility baseline',
-    (path, _title, accessibleHeading) => {
+    async (path, _title, accessibleHeading) => {
       renderRoute(path);
 
-      expect(screen.getByRole('heading', { level: 1, name: accessibleHeading })).toBeVisible();
+      expect(
+        await screen.findByRole('heading', { level: 1, name: accessibleHeading }),
+      ).toBeVisible();
       expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
 
       const main = screen.getByRole('main');
