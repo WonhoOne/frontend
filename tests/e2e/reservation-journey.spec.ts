@@ -1,4 +1,7 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+
+const storageKey = 'mister-world:reservation-draft:v1';
+const canonicalWidths = [320, 360, 390, 430, 768, 1024, 1280, 1440, 1728];
 
 const draft = {
   schemaVersion: 1,
@@ -15,9 +18,13 @@ const draft = {
   updatedAt: 1,
 };
 
-async function seedDraft(page: import('@playwright/test').Page) {
+async function seedDraft(page: Page) {
   await page.goto('/');
-  await page.evaluate((value) => sessionStorage.setItem('mister-world:reservation-draft:v1', JSON.stringify(value)), draft);
+  await page.evaluate(({ key, value }) => sessionStorage.setItem(key, JSON.stringify(value)), { key: storageKey, value: draft });
+}
+
+async function expectNoHorizontalOverflow(page: Page) {
+  expect(await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)).toBe(false);
 }
 
 test('J02 Review creates once, clears Draft, survives Success refresh, and opens Detail', async ({ page }) => {
@@ -28,7 +35,7 @@ test('J02 Review creates once, clears Draft, survives Success refresh, and opens
   await submit.dblclick();
   await expect(page).toHaveURL(/\/reservation\/801\/success$/);
   await expect(page.getByRole('heading', { name: 'Reservation received' })).toBeVisible();
-  await expect.poll(() => page.evaluate(() => sessionStorage.getItem('mister-world:reservation-draft:v1'))).toBeNull();
+  await expect.poll(() => page.evaluate((key) => sessionStorage.getItem(key), storageKey)).toBeNull();
 
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Reservation received' })).toBeVisible();
@@ -37,14 +44,30 @@ test('J02 Review creates once, clears Draft, survives Success refresh, and opens
   await expect(page.getByRole('heading', { name: 'Mock 제주 허니문' })).toBeVisible();
 });
 
-test('J10 Review stays inside a 320px viewport', async ({ page }) => {
-  await page.setViewportSize({ width: 320, height: 760 });
+for (const width of canonicalWidths) {
+  test(`Reservation Review, Success, and Detail fit the ${width}px viewport`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await seedDraft(page);
+    await page.goto('/reservation/review');
+    await expect(page.getByRole('heading', { name: 'Review your trip' })).toBeVisible();
+    await expectNoHorizontalOverflow(page);
+
+    await page.goto('/reservation/801/success');
+    await expect(page.getByRole('heading', { name: 'Reservation received' })).toBeVisible();
+    await expectNoHorizontalOverflow(page);
+
+    await page.goto('/reservations/801');
+    await expect(page.getByRole('heading', { name: 'Mock 제주 허니문' })).toBeVisible();
+    await expectNoHorizontalOverflow(page);
+  });
+}
+
+test('Reservation journey remains task-complete at a 200%-zoom equivalent width', async ({ page }) => {
+  await page.setViewportSize({ width: 640, height: 720 });
   await seedDraft(page);
   await page.goto('/reservation/review');
-  await expect(page.getByRole('heading', { name: 'Review your trip' })).toBeVisible();
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
-  expect(overflow).toBe(false);
   await expect(page.getByRole('button', { name: 'Apply for reservation' })).toBeVisible();
+  await expectNoHorizontalOverflow(page);
 });
 
 test('J09 Review primary action is keyboard reachable', async ({ page }) => {
@@ -58,7 +81,7 @@ test('J09 Review primary action is keyboard reachable', async ({ page }) => {
   await expect(submit).toBeFocused();
 });
 
-test('Success and Detail remain readable with reduced motion requested', async ({ page }) => {
+test('Reservation read views remain readable with reduced motion requested', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/reservation/801/success');
   await expect(page.getByRole('heading', { name: 'Reservation received' })).toBeVisible();
