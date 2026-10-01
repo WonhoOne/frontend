@@ -113,8 +113,8 @@ describe('AuthProvider', () => {
     );
     const { result } = renderHook(() => useAuth(), { wrapper });
 
-    await act(async () => {
-      await Promise.resolve();
+    act(() => {
+      vi.advanceTimersByTime(0);
     });
     expect(result.current.state.status).toBe('unauthenticated');
 
