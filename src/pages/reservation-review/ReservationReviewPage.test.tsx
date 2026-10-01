@@ -13,8 +13,8 @@ import {
 import {
   ReservationDraftProvider,
   RESERVATION_DRAFT_STORAGE_KEY,
-  serializeReservationDraft,
   ReservationDataSourceError,
+  serializeReservationDraft,
   type ReservationDataSource,
   type ReservationDraftStorage,
   type ReservationDraftV1,
@@ -177,5 +177,4 @@ describe('ReservationReviewPage composition', () => {
 
     await waitFor(() => expect(createReservation).toHaveBeenCalledTimes(1));
   });
-
 });
