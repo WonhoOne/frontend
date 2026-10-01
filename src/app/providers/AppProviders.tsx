@@ -3,17 +3,41 @@ import type { PropsWithChildren } from 'react';
 import { clearPrivateQueryCache } from '@/app/providers/privateQueryCache';
 import { QueryProvider } from '@/app/providers/QueryProvider';
 import { queryClient } from '@/app/providers/queryClient';
-import { AuthError, AuthProvider, MockAuthDataSource } from '@/features/auth';
+import {
+  AuthError,
+  AuthProvider,
+  MockAuthDataSource,
+  type AuthDataSource,
+} from '@/features/auth';
 import { ReservationDraftProvider } from '@/features/reservation';
 
-const authDataSource = new MockAuthDataSource({
+const unavailableAuthDataSource: AuthDataSource = {
   login() {
-    return Promise.reject(new AuthError('LOGIN_FAILED'));
+    return Promise.reject(new AuthError('UNKNOWN'));
   },
   signup() {
     return Promise.reject(new AuthError('UNKNOWN'));
   },
-});
+};
+
+function createAuthDataSource(): AuthDataSource {
+  // SECURITY: PR-07 is mock-backed, but mock behavior is explicit opt-in and
+  // development-only. Production must not silently authenticate against mocks.
+  if (import.meta.env.DEV && import.meta.env.VITE_ENABLE_MOCKS === 'true') {
+    return new MockAuthDataSource({
+      login() {
+        return Promise.reject(new AuthError('LOGIN_FAILED'));
+      },
+      signup() {
+        return Promise.reject(new AuthError('UNKNOWN'));
+      },
+    });
+  }
+
+  return unavailableAuthDataSource;
+}
+
+const authDataSource = createAuthDataSource();
 
 /**
  * 애플리케이션 전역 Provider 순서를 한 곳에서 드러낸다.
