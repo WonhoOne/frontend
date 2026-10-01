@@ -19,7 +19,6 @@ import {
 } from '@/features/reservation';
 import { LoginPage } from '@/pages/login/LoginPage';
 
-const NOW = 1_800_000_000_000;
 const loginResult: LoginResult = {
   accessToken: 'synthetic-token',
   tokenType: 'Bearer',
@@ -70,6 +69,8 @@ afterEach(() => {
 
 describe('transaction login recovery public boundary', () => {
   it('returns to Review with Draft preserved and never auto-submits after login', async () => {
+    const now = Date.now();
+
     window.sessionStorage.setItem(
       RESERVATION_DRAFT_STORAGE_KEY,
       JSON.stringify({
@@ -84,7 +85,7 @@ describe('transaction login recovery public boundary', () => {
           mealSelectionKey: null,
           extraSelectionKeys: [],
         },
-        updatedAt: NOW,
+        updatedAt: now,
       }),
     );
     expect(
@@ -92,10 +93,10 @@ describe('transaction login recovery public boundary', () => {
         {
           returnTo: '/reservation/review',
           intent: 'resume-reservation-review',
-          createdAt: NOW,
+          createdAt: now,
         },
         window.sessionStorage,
-        NOW,
+        now,
       ),
     ).toBe(true);
 
