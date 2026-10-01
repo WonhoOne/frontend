@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 
 import { routePaths } from '@/app/router/paths';
-import { travelHistoryDataSource } from '@/app/shell/PostLoginPreviousTrips';
+import { travelHistoryDataSource } from '@/app/providers/travelHistoryDataSource';
 import type { TravelHistoryDataSource } from '@/features/travel-history';
 import { saveReturnContext, useAuth } from '@/features/auth';
 import { useTravelHistory } from '@/features/travel-history';
