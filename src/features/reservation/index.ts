@@ -118,3 +118,9 @@ export {
   type ReservationInlineIssue,
   type ReservationSubmitRecovery,
 } from '@/features/reservation/reservationRecovery';
+
+export {
+  createOfflineBeforeSubmitRecovery,
+  getReservationNetworkRecovery,
+  type ReservationNetworkRecovery,
+} from '@/features/reservation/reservationNetworkSafety';
