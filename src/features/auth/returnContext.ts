@@ -92,11 +92,14 @@ export function saveReturnContext(
   storage = resolveReturnContextSessionStorage(),
   now = Date.now(),
 ): boolean {
-  const candidate = parseReturnContext({
-    ...context,
-    schemaVersion: RETURN_CONTEXT_SCHEMA_VERSION,
-    draftSchemaVersion: RESERVATION_DRAFT_SCHEMA_VERSION,
-  }, now);
+  const candidate = parseReturnContext(
+    {
+      ...context,
+      schemaVersion: RETURN_CONTEXT_SCHEMA_VERSION,
+      draftSchemaVersion: RESERVATION_DRAFT_SCHEMA_VERSION,
+    },
+    now,
+  );
 
   if (candidate === null) {
     return false;
