@@ -22,11 +22,7 @@ const routeCases = [
   ],
   [routeBuilders.configure('test-tour-id'), routeTitles.configure, routeTitles.configure],
   [routePaths.reservationReview, routeTitles.reservationReview, routeTitles.reservationReview],
-  [
-    routeBuilders.reservationSuccess('801'),
-    routeTitles.reservationSuccess,
-    'Reservation received',
-  ],
+  [routeBuilders.reservationSuccess('801'), routeTitles.reservationSuccess, 'Reservation received'],
   [routeBuilders.reservationDetail('801'), routeTitles.reservationDetail, 'Mock 제주 허니문'],
   [routePaths.login, routeTitles.login, routeTitles.login],
   [routePaths.signup, routeTitles.signup, routeTitles.signup],
