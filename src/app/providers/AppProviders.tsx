@@ -34,7 +34,6 @@ function createAuthDataSource(): AuthDataSource {
 
 const authDataSource = createAuthDataSource();
 
-
 /**
  * 애플리케이션 전역 Provider 순서를 한 곳에서 드러낸다.
  *
