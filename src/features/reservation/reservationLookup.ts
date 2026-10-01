@@ -31,7 +31,9 @@ export async function lookupReservation(
   }
 }
 
-export function visibleReservationFromLookup(state: ReservationLookupState): ReservationModel | null {
+export function visibleReservationFromLookup(
+  state: ReservationLookupState,
+): ReservationModel | null {
   if (state.status === 'success' || state.status === 'refreshing') return state.reservation;
   if (state.status === 'network-error' || state.status === 'server-error') return state.previous;
   return null;

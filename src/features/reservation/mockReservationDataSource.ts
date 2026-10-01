@@ -69,13 +69,17 @@ export const mockReservationDataSource: ReservationDataSource = {
   getReservation(reservationId) {
     const reservation =
       mockReservationById.get(reservationId) ??
-      (reservationId === mockReservationSuccessFixture.id ? mockReservationSuccessFixture : undefined);
+      (reservationId === mockReservationSuccessFixture.id
+        ? mockReservationSuccessFixture
+        : undefined);
 
     if (reservation === undefined) {
-      return Promise.reject(new ReservationDataSourceError({
-        kind: 'not-found',
-        code: 'RESERVATION_NOT_FOUND',
-      }));
+      return Promise.reject(
+        new ReservationDataSourceError({
+          kind: 'not-found',
+          code: 'RESERVATION_NOT_FOUND',
+        }),
+      );
     }
 
     return Promise.resolve(reservation);

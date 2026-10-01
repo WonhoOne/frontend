@@ -41,7 +41,9 @@ describe('Reservation Review validation state', () => {
       presentReservationReviewValidation({ status: 'offline', previous: { status: 'valid' } }),
     ).toMatchObject({ title: 'You are offline', correctionTarget: null });
 
-    expect(canSubmitReservationReview({ status: 'offline', previous: { status: 'valid' } })).toBe(false);
+    expect(canSubmitReservationReview({ status: 'offline', previous: { status: 'valid' } })).toBe(
+      false,
+    );
   });
 
   it('allows submit eligibility only for a freshly valid state', () => {

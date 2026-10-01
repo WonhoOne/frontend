@@ -82,7 +82,8 @@ export function presentReservationReviewValidation(
     return {
       tone: 'warning',
       title: 'Price changed',
-      message: 'The latest price differs from the value you previously reviewed. Check it again before applying.',
+      message:
+        'The latest price differs from the value you previously reviewed. Check it again before applying.',
       correctionTarget: null,
       requiresReconfirmation: true,
     };
@@ -113,7 +114,8 @@ export function presentReservationReviewValidation(
     'transport-capacity-invalid': {
       tone: 'blocking',
       title: 'Transport capacity needs attention',
-      message: 'The selected transport cannot carry this traveller count. Choose a valid configuration.',
+      message:
+        'The selected transport cannot carry this traveller count. Choose a valid configuration.',
       correctionTarget: 'configure',
     },
   };

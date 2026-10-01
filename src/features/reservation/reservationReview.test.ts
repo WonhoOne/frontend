@@ -9,7 +9,10 @@ import {
 describe('Reservation Review projection', () => {
   it('returns null for an incomplete Draft', () => {
     expect(
-      createReservationReviewModel(createEmptyReservationDraft(1), previewReservationReviewResolver),
+      createReservationReviewModel(
+        createEmptyReservationDraft(1),
+        previewReservationReviewResolver,
+      ),
     ).toBeNull();
   });
 

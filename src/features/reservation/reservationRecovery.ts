@@ -1,13 +1,10 @@
-import { ReservationDataSourceError, type ReservationFieldError } from '@/features/reservation/reservation.error';
+import {
+  ReservationDataSourceError,
+  type ReservationFieldError,
+} from '@/features/reservation/reservation.error';
 
 export type ReservationCorrectionTarget =
-  | 'schedule'
-  | 'participant-count'
-  | 'hotel'
-  | 'transport'
-  | 'meal'
-  | 'extras'
-  | 'configuration';
+  'schedule' | 'participant-count' | 'hotel' | 'transport' | 'meal' | 'extras' | 'configuration';
 
 export interface ReservationInlineIssue {
   target: ReservationCorrectionTarget;

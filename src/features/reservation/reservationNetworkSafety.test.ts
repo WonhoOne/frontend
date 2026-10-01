@@ -17,19 +17,31 @@ describe('Reservation network recovery policy', () => {
   });
 
   it('keeps ordinary network and server failures manual with Draft preserved', () => {
-    const network = new ReservationDataSourceError({ kind: 'network', requestMayHaveReachedServer: false });
+    const network = new ReservationDataSourceError({
+      kind: 'network',
+      requestMayHaveReachedServer: false,
+    });
     const server = new ReservationDataSourceError({ kind: 'server', code: 'INTERNAL_ERROR' });
 
     expect(getReservationNetworkRecovery({ status: 'failure', error: network })).toEqual({
-      kind: 'network-failure', retryPolicy: 'manual', reservationMayExist: false, keepDraft: true,
+      kind: 'network-failure',
+      retryPolicy: 'manual',
+      reservationMayExist: false,
+      keepDraft: true,
     });
     expect(getReservationNetworkRecovery({ status: 'failure', error: server })).toEqual({
-      kind: 'server-failure', retryPolicy: 'manual', reservationMayExist: false, keepDraft: true,
+      kind: 'server-failure',
+      retryPolicy: 'manual',
+      reservationMayExist: false,
+      keepDraft: true,
     });
   });
 
   it('blocks retry when a create may already exist', () => {
-    const error = new ReservationDataSourceError({ kind: 'network', requestMayHaveReachedServer: true });
+    const error = new ReservationDataSourceError({
+      kind: 'network',
+      requestMayHaveReachedServer: true,
+    });
     expect(getReservationNetworkRecovery({ status: 'uncertain', error })).toEqual({
       kind: 'ambiguous-outcome',
       retryPolicy: 'blocked-until-resolved',

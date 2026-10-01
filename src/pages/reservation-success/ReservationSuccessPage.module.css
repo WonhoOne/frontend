@@ -63,4 +63,10 @@
   }
 }
 
-.notice { margin: 0; padding: var(--mw-space-3) var(--mw-space-4); border: var(--mw-border-default); border-radius: var(--mw-radius-sm); color: var(--mw-text-secondary); }
+.notice {
+  margin: 0;
+  padding: var(--mw-space-3) var(--mw-space-4);
+  border: var(--mw-border-default);
+  border-radius: var(--mw-radius-sm);
+  color: var(--mw-text-secondary);
+}

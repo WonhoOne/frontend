@@ -20,14 +20,23 @@ const draft = {
 
 async function seedDraft(page: Page) {
   await page.goto('/');
-  await page.evaluate(({ key, value }) => sessionStorage.setItem(key, JSON.stringify(value)), { key: storageKey, value: draft });
+  await page.evaluate(({ key, value }) => sessionStorage.setItem(key, JSON.stringify(value)), {
+    key: storageKey,
+    value: draft,
+  });
 }
 
 async function expectNoHorizontalOverflow(page: Page) {
-  expect(await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)).toBe(false);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+    ),
+  ).toBe(false);
 }
 
-test('J02 Review creates once, clears Draft, survives Success refresh, and opens Detail', async ({ page }) => {
+test('J02 Review creates once, clears Draft, survives Success refresh, and opens Detail', async ({
+  page,
+}) => {
   await seedDraft(page);
   await page.goto('/reservation/review');
   const submit = page.getByRole('button', { name: 'Apply for reservation' });
@@ -35,7 +44,9 @@ test('J02 Review creates once, clears Draft, survives Success refresh, and opens
   await submit.dblclick();
   await expect(page).toHaveURL(/\/reservation\/801\/success$/);
   await expect(page.getByRole('heading', { name: 'Reservation received' })).toBeVisible();
-  await expect.poll(() => page.evaluate((key) => sessionStorage.getItem(key), storageKey)).toBeNull();
+  await expect
+    .poll(() => page.evaluate((key) => sessionStorage.getItem(key), storageKey))
+    .toBeNull();
 
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Reservation received' })).toBeVisible();
@@ -62,7 +73,9 @@ for (const width of canonicalWidths) {
   });
 }
 
-test('Reservation journey remains task-complete at a 200%-zoom equivalent width', async ({ page }) => {
+test('Reservation journey remains task-complete at a 200%-zoom equivalent width', async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 640, height: 720 });
   await seedDraft(page);
   await page.goto('/reservation/review');

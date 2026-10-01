@@ -23,6 +23,7 @@ export function toReservationAuthInterruption(
   return {
     kind: 'reservation-auth-interruption',
     code: result.code,
-    message: 'Sign in is required before this reservation can be submitted. Your trip is preserved.',
+    message:
+      'Sign in is required before this reservation can be submitted. Your trip is preserved.',
   };
 }

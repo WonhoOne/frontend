@@ -69,9 +69,17 @@ describe('ReservationReviewPage composition', () => {
     expect(screen.getByText('Fixture hotel A')).toBeVisible();
     expect(screen.getByText('Fixture transport B')).toBeVisible();
     expect(screen.getByText('Fixture meal A')).toBeVisible();
-    expect(screen.getByRole('link', { name: 'Change configuration' })).toHaveAttribute('href', '/tours/tour-42/configure');
-    expect(screen.getByRole('link', { name: 'Change style or schedule' })).toHaveAttribute('href', '/tours/tour-42');
-    expect(screen.getByText(/Final price and any loyalty discount are confirmed by the server/)).toBeVisible();
+    expect(screen.getByRole('link', { name: 'Change configuration' })).toHaveAttribute(
+      'href',
+      '/tours/tour-42/configure',
+    );
+    expect(screen.getByRole('link', { name: 'Change style or schedule' })).toHaveAttribute(
+      'href',
+      '/tours/tour-42',
+    );
+    expect(
+      screen.getByText(/Final price and any loyalty discount are confirmed by the server/),
+    ).toBeVisible();
     expect(screen.getByRole('button', { name: 'Apply for reservation' })).toBeEnabled();
   });
 

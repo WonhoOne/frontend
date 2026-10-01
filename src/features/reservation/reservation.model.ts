@@ -1,16 +1,10 @@
 export type ReservationTheme =
-  | 'HONEYMOON_ROMANCE'
-  | 'PARENTS_HEALING'
-  | 'GOLF_CHALLENGE'
-  | 'OUTDOOR_TREKKING';
+  'HONEYMOON_ROMANCE' | 'PARENTS_HEALING' | 'GOLF_CHALLENGE' | 'OUTDOOR_TREKKING';
 
 export type ReservationTourStyle = 'CLASSIC' | 'GRAND' | 'PREMIUM';
 export type ReservationHotelOption = 'HOTEL_3_STAR' | 'HOTEL_4_STAR' | 'HOTEL_5_STAR';
 export type ReservationTransportOption = 'PRIVATE_LUXURY_CAR_2' | 'PREMIUM_VAN_10';
-export type ReservationMealOption =
-  | 'LUNCH_BOX'
-  | 'LOCAL_RESTAURANT'
-  | 'PREMIUM_RESTAURANT';
+export type ReservationMealOption = 'LUNCH_BOX' | 'LOCAL_RESTAURANT' | 'PREMIUM_RESTAURANT';
 export type ReservationExtraOption = 'CHAMPAGNE' | 'COFFEE';
 export type ReservationRecruitmentUnit = 'COUPLE_TEAM' | 'PARTICIPANT';
 
