@@ -69,7 +69,7 @@ describe('MyTripsPage', () => {
     const trips: readonly TravelHistoryItemModel[] = [
       {
         reservationId: 22,
-        tourProduct: { id: 2, theme: 'HONEYMOON', name: 'Recent Journey' },
+        tourProduct: { id: 2, theme: 'HONEYMOON_ROMANCE', name: 'Recent Journey' },
         startDate: '2026-08-10',
         endDate: '2026-08-15',
         style: 'PREMIUM',
@@ -77,10 +77,10 @@ describe('MyTripsPage', () => {
       },
       {
         reservationId: 11,
-        tourProduct: { id: 1, theme: 'GOLF', name: 'Older Journey' },
+        tourProduct: { id: 1, theme: 'GOLF_CHALLENGE', name: 'Older Journey' },
         startDate: '2026-05-01',
         endDate: '2026-05-05',
-        style: 'STANDARD',
+        style: 'CLASSIC',
         price: { amount: 1400000, currency: 'KRW' },
       },
     ];
@@ -144,7 +144,7 @@ describe('MyTripsPage', () => {
     cachedClient.setQueryData(travelHistoryQueryKey, [
       {
         reservationId: 22,
-        tourProduct: { id: 2, theme: 'HONEYMOON', name: 'Cached Journey' },
+        tourProduct: { id: 2, theme: 'HONEYMOON_ROMANCE', name: 'Cached Journey' },
         startDate: '2026-08-10',
         endDate: '2026-08-15',
         style: 'PREMIUM',
