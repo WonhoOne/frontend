@@ -5,12 +5,7 @@ import type { PropsWithChildren } from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
 
-import {
-  AuthError,
-  AuthProvider,
-  type AuthDataSource,
-  type LoginResult,
-} from '@/features/auth';
+import { AuthError, AuthProvider, type AuthDataSource, type LoginResult } from '@/features/auth';
 import { LoginPage } from '@/pages/login/LoginPage';
 
 const success: LoginResult = {
@@ -132,9 +127,9 @@ describe('LoginPage', () => {
     });
     fireEvent.submit(screen.getByRole('button', { name: '로그인' }).closest('form')!);
 
-    expect(
-      await screen.findByRole('alert', { name: '' }),
-    ).toHaveTextContent('입력한 로그인 정보를 확인해주세요.');
+    expect(await screen.findByRole('alert', { name: '' })).toHaveTextContent(
+      '입력한 로그인 정보를 확인해주세요.',
+    );
     expect(screen.getByRole('textbox', { name: '로그인 ID' })).toHaveValue('customer-01');
     expect(screen.getByLabelText('비밀번호')).toHaveValue('secret-input');
     expect(screen.getByRole('button', { name: '로그인' })).toBeEnabled();
