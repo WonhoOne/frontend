@@ -90,3 +90,12 @@ export {
   type ReservationReviewModel,
   type ReservationReviewSelectionResolver,
 } from '@/features/reservation/reservationReview';
+
+export {
+  canSubmitReservationReview,
+  presentReservationReviewValidation,
+  type ReservationReviewBlockingReason,
+  type ReservationReviewSettledValidation,
+  type ReservationReviewValidationPresentation,
+  type ReservationReviewValidationState,
+} from '@/features/reservation/reservationReviewValidation';

@@ -122,3 +122,25 @@
     text-align: start;
   }
 }
+
+.validation {
+  display: grid;
+  gap: var(--mw-space-2);
+  padding: var(--mw-space-4);
+  border: var(--mw-border-default);
+  border-radius: var(--mw-radius-sm);
+}
+
+.validation h2,
+.validation p {
+  margin: 0;
+}
+
+.validation p {
+  color: var(--mw-text-secondary);
+}
+
+.validation[data-tone='warning'],
+.validation[data-tone='blocking'] {
+  background: var(--mw-warning-soft);
+}

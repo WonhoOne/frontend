@@ -3,6 +3,7 @@ import {
   createReservationReviewModel,
   getReviewDraftHandoffState,
   previewReservationReviewResolver,
+  presentReservationReviewValidation,
   useReservationDraft,
 } from '@/features/reservation';
 import { PageContainer, TextLink } from '@/shared/ui';
@@ -17,6 +18,10 @@ export function ReservationReviewPage() {
     const review = createReservationReviewModel(draft, previewReservationReviewResolver);
 
     if (review !== null) {
+      // D03 mock-backed entry validation. D04에서 submit mutation과 연결하기 전까지
+      // Review는 fresh-valid truth를 명시적으로 표시하되 action을 열지 않는다.
+      const validation = presentReservationReviewValidation({ status: 'valid' });
+
       return (
         <PageContainer variant="transaction">
           <div className={styles.page}>
@@ -69,6 +74,16 @@ export function ReservationReviewPage() {
             <section className={styles.section} aria-labelledby="review-price">
               <h2 id="review-price">Price</h2>
               <p className={styles.priceNote}>{review.price.message}</p>
+            </section>
+
+            <section
+              className={styles.validation}
+              aria-labelledby="review-validation"
+              aria-live="polite"
+              data-tone={validation.tone}
+            >
+              <h2 id="review-validation">{validation.title}</h2>
+              <p>{validation.message}</p>
             </section>
 
             <section className={styles.submitPlaceholder} aria-labelledby="review-submit">
