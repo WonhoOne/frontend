@@ -114,7 +114,8 @@ describe('SignupPage', () => {
           resolveSignup = resolve;
         }),
     );
-    const source = dataSource(signup);
+    const login = vi.fn().mockRejectedValue(new AuthError('LOGIN_FAILED'));
+    const source: AuthDataSource = { login, signup };
 
     renderSignup(source);
     fillRequiredFields();
@@ -131,13 +132,13 @@ describe('SignupPage', () => {
       address: 'Seoul address',
       contact: '010-0000-0000',
     });
-    expect(source.login).not.toHaveBeenCalled();
+    expect(login).not.toHaveBeenCalled();
     expect(screen.getByRole('button', { name: '계정 만드는 중' })).toBeDisabled();
 
     resolveSignup?.(success);
 
     expect(await screen.findByText('Login destination')).toBeVisible();
-    expect(source.login).not.toHaveBeenCalled();
+    expect(login).not.toHaveBeenCalled();
   });
 
   it('maps duplicate loginId by stable code and preserves all form input', async () => {
