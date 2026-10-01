@@ -1,8 +1,6 @@
 import type { TravelHistoryDataSource } from '@/features/travel-history';
 
-import {
-  MockTravelHistoryDataSource,
-} from '@/features/travel-history';
+import { MockTravelHistoryDataSource } from '@/features/travel-history';
 
 const unavailableTravelHistoryDataSource: TravelHistoryDataSource = {
   getTravelHistory() {
