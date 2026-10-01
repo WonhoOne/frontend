@@ -111,3 +111,10 @@ export {
   toReservationAuthInterruption,
   type ReservationAuthInterruption,
 } from '@/features/reservation/reservationAuthInterruption';
+
+export {
+  getReservationSubmitRecovery,
+  type ReservationCorrectionTarget,
+  type ReservationInlineIssue,
+  type ReservationSubmitRecovery,
+} from '@/features/reservation/reservationRecovery';
