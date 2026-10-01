@@ -6,8 +6,8 @@ const routeCases = [
   ['/tours/demo-honeymoon-product-a', 'Honeymoon Romance · Journey 01'],
   ['/tours/e2e-tour-id/configure', 'Configure'],
   ['/reservation/review', 'Reservation Review'],
-  ['/reservation/e2e-reservation-id/success', 'Reservation Success'],
-  ['/reservations/e2e-reservation-id', 'Reservation Detail'],
+  ['/reservation/801/success', 'Reservation received'],
+  ['/reservations/801', 'Mock 제주 허니문'],
   ['/login', 'Login'],
   ['/signup', 'Signup'],
   ['/my-trips', 'My Trips'],
@@ -51,8 +51,8 @@ test.describe('Foundation routes', () => {
       page.getByRole('heading', { level: 1, name: "This journey couldn't be found." }),
     ).toBeVisible();
 
-    await page.goto('/reservations/e2e-reservation-id');
-    await expect(page.getByText('e2e-reservation-id', { exact: true })).toBeVisible();
+    await page.goto('/reservations/801');
+    await expect(page.getByText('Reservation #801', { exact: true })).toBeVisible();
   });
 
   test('navigation preserves browser back and forward history', async ({ page }) => {
