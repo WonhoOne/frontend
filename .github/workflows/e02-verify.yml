@@ -1,4 +1,4 @@
-name: E03 Format Preview
+name: E03 Login Verification
 
 on:
   pull_request:
@@ -8,7 +8,7 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -16,5 +16,7 @@ jobs:
           node-version: 24.21.0
           cache: npm
       - run: npm ci
-      - run: npx prettier src/pages/login/LoginPage.tsx src/pages/login/LoginPage.test.tsx --write
-      - run: git diff -- src/pages/login/LoginPage.tsx src/pages/login/LoginPage.test.tsx && exit 1
+      - run: npm run verify
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - run: npm audit --omit=dev --audit-level=high
