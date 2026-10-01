@@ -1,20 +1,8 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type PropsWithChildren,
-} from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type PropsWithChildren } from 'react';
 
 import type { AuthDataSource } from '@/features/auth/AuthDataSource';
 import { AuthContext } from '@/features/auth/authContext';
-import type {
-  AuthState,
-  LoginInput,
-  SignupInput,
-  SignupResult,
-} from '@/features/auth/authTypes';
+import type { AuthState, LoginInput, SignupInput, SignupResult } from '@/features/auth/authTypes';
 
 interface ActiveSession {
   accessToken: string;
@@ -110,10 +98,7 @@ export function AuthProvider({
     becomeUnauthenticated();
   }, [becomeUnauthenticated]);
 
-  const value = useMemo(
-    () => ({ state, login, signup, signOut }),
-    [login, signOut, signup, state],
-  );
+  const value = useMemo(() => ({ state, login, signup, signOut }), [login, signOut, signup, state]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
