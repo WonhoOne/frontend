@@ -3,9 +3,16 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import type { PropsWithChildren } from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { AuthError, AuthProvider, type AuthDataSource, type LoginResult } from '@/features/auth';
+import {
+  AuthError,
+  AuthProvider,
+  clearReturnContext,
+  saveReturnContext,
+  type AuthDataSource,
+  type LoginResult,
+} from '@/features/auth';
 import { LoginPage } from '@/pages/login/LoginPage';
 
 const success: LoginResult = {
@@ -46,6 +53,11 @@ async function waitForForm() {
   await screen.findByRole('heading', { name: 'Login' });
   return screen.findByRole('button', { name: '로그인' });
 }
+
+afterEach(() => {
+  clearReturnContext(null);
+  window.sessionStorage.clear();
+});
 
 describe('LoginPage', () => {
   it('renders only the v0.2 loginId and password credentials with correct semantics', async () => {
@@ -108,6 +120,68 @@ describe('LoginPage', () => {
     resolveLogin?.(success);
 
     expect(await screen.findByText('Home destination')).toBeVisible();
+  });
+
+  it('consumes a valid ReturnContext only after successful login', async () => {
+    const now = Date.now();
+    saveReturnContext(
+      {
+        returnTo: '/my-trips',
+        intent: 'continue-navigation',
+        createdAt: now,
+      },
+      window.sessionStorage,
+      now,
+    );
+
+    const login = vi.fn().mockResolvedValue(success);
+    render(
+      <MemoryRouter initialEntries={['/login']}>
+        <AuthProvider dataSource={dataSource(login)}>
+          <Routes>
+            <Route element={<LoginPage />} path="/login" />
+            <Route element={<p>My Trips destination</p>} path="/my-trips" />
+          </Routes>
+        </AuthProvider>
+      </MemoryRouter>,
+    );
+
+    await waitForForm();
+    fireEvent.change(screen.getByRole('textbox', { name: '로그인 ID' }), {
+      target: { value: 'customer-01' },
+    });
+    fireEvent.change(screen.getByLabelText(/비밀번호/), {
+      target: { value: 'secret-input' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: '로그인' }));
+
+    expect(await screen.findByText('My Trips destination')).toBeVisible();
+  });
+
+  it('does not consume ReturnContext when authentication fails', async () => {
+    const now = Date.now();
+    saveReturnContext(
+      {
+        returnTo: '/my-trips',
+        intent: 'continue-navigation',
+        createdAt: now,
+      },
+      window.sessionStorage,
+      now,
+    );
+
+    renderLogin(dataSource(vi.fn().mockRejectedValue(new AuthError('LOGIN_FAILED'))));
+    await waitForForm();
+    fireEvent.change(screen.getByRole('textbox', { name: '로그인 ID' }), {
+      target: { value: 'customer-01' },
+    });
+    fireEvent.change(screen.getByLabelText(/비밀번호/), {
+      target: { value: 'secret-input' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: '로그인' }));
+
+    expect(await screen.findByRole('alert')).toBeVisible();
+    expect(window.sessionStorage.getItem('mister-world:return-context:v1')).not.toBeNull();
   });
 
   it('maps LOGIN_FAILED by stable code and preserves both inputs for retry', async () => {
