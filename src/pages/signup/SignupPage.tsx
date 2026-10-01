@@ -69,7 +69,7 @@ export function SignupPage() {
           <header className={styles.header}>
             <p className={styles.brand}>Mister World</p>
             <p className={styles.eyebrow}>Account</p>
-            <h1 id="signup-heading">Sign Up</h1>
+            <h1 id="signup-heading">Signup</h1>
             <p className={styles.supportingCopy}>여행을 이어갈 고객 계정을 만들어보세요.</p>
           </header>
 
