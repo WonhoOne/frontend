@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest';
 import {
   canSubmitReservationReview,
   presentReservationReviewValidation,
-  type ReservationReviewBlockingReason,
 } from '@/features/reservation/reservationReviewValidation';
 
 describe('Reservation Review validation state', () => {
@@ -13,7 +12,7 @@ describe('Reservation Review validation state', () => {
     ['participant-invalid', 'configure'],
     ['transport-capacity-invalid', 'configure'],
   ] as const)('keeps %s blocked until explicit correction', (reason, target) => {
-    const state = { status: 'blocking' as const, reason: reason as ReservationReviewBlockingReason };
+    const state = { status: 'blocking' as const, reason };
     expect(canSubmitReservationReview(state)).toBe(false);
     expect(presentReservationReviewValidation(state)).toMatchObject({
       tone: 'blocking',

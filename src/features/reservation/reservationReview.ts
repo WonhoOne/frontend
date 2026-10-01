@@ -54,7 +54,7 @@ export function createReservationReviewModel(
     hotelLabel: resolver.optionLabel(draft.configuration.hotelSelectionKey),
     transportLabel: resolver.optionLabel(draft.configuration.transportSelectionKey),
     mealLabel: resolver.optionLabel(draft.configuration.mealSelectionKey),
-    extraLabels: draft.configuration.extraSelectionKeys.map(resolver.optionLabel),
+    extraLabels: draft.configuration.extraSelectionKeys.map((key) => resolver.optionLabel(key)),
     price: {
       status: 'finalized-on-create',
       message: 'Final price and any loyalty discount are confirmed by the server when you apply.',

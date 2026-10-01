@@ -11,19 +11,20 @@ function formatKrw(value: number) { return new Intl.NumberFormat('ko-KR', { styl
 export function ReservationDetailPage() {
   const { reservationId } = useParams();
   const parsedId = Number(reservationId);
+  const validReservationId = Number.isSafeInteger(parsedId) && parsedId > 0;
   const [state, setState] = useState<ReservationLookupState>({ status: 'loading' });
 
   useEffect(() => {
-    if (!Number.isSafeInteger(parsedId) || parsedId <= 0) { setState({ status: 'not-found' }); return; }
+    if (!validReservationId) return;
     let active = true;
     const previous = visibleReservationFromLookup(state);
     void lookupReservation(mockReservationDataSource, parsedId, previous).then((next) => { if (active) setState(next); });
     return () => { active = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [parsedId]);
+  }, [parsedId, validReservationId]);
 
+  if (!validReservationId || state.status === 'not-found') return <PageContainer variant="reading"><section className={styles.message}><h1>Reservation not found</h1><p>This reservation is unavailable or cannot be shown.</p><TextLink to={routePaths.tours}>Browse tours</TextLink></section></PageContainer>;
   if (state.status === 'loading') return <PageContainer variant="transaction"><section className={styles.page} aria-busy="true" aria-label="Loading reservation details"><Skeleton /><Skeleton /><Skeleton /></section></PageContainer>;
-  if (state.status === 'not-found') return <PageContainer variant="reading"><section className={styles.message}><h1>Reservation not found</h1><p>This reservation is unavailable or cannot be shown.</p><TextLink to={routePaths.tours}>Browse tours</TextLink></section></PageContainer>;
 
   const reservation = visibleReservationFromLookup(state);
   if (reservation === null) return <PageContainer variant="reading"><section className={styles.message}><h1>We could not load this reservation</h1><p>The private reservation snapshot could not be retrieved right now.</p><TextLink to={routePaths.tours}>Browse tours</TextLink></section></PageContainer>;

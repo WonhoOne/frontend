@@ -60,25 +60,25 @@ function buildMockReservation(input: CreateReservationInput): ReservationModel {
  * - price는 Draft가 아니라 create 결과에서 처음 확정된다.
  */
 export const mockReservationDataSource: ReservationDataSource = {
-  async createReservation(input) {
+  createReservation(input) {
     const reservation = buildMockReservation(input);
     mockReservationById.set(reservation.id, reservation);
-    return reservation;
+    return Promise.resolve(reservation);
   },
 
-  async getReservation(reservationId) {
+  getReservation(reservationId) {
     const reservation =
       mockReservationById.get(reservationId) ??
       (reservationId === mockReservationSuccessFixture.id ? mockReservationSuccessFixture : undefined);
 
     if (reservation === undefined) {
-      throw new ReservationDataSourceError({
+      return Promise.reject(new ReservationDataSourceError({
         kind: 'not-found',
         code: 'RESERVATION_NOT_FOUND',
-      });
+      }));
     }
 
-    return reservation;
+    return Promise.resolve(reservation);
   },
 };
 

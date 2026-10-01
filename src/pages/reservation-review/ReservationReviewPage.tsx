@@ -38,7 +38,7 @@ export function ReservationReviewPage() {
     const transition = createConfirmedReservationTransition(result, Date.now());
     if (transition !== null) {
       dispatch(transition.draftAction);
-      navigate(routeBuilders.reservationSuccess(String(transition.reservationId)));
+      void navigate(routeBuilders.reservationSuccess(String(transition.reservationId)));
     }
   }
 

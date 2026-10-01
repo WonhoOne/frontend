@@ -10,7 +10,7 @@ describe('reservation lookup stale preservation', () => {
 
   it('keeps previous truth when refresh fails over the network', async () => {
     const state = await lookupReservation(
-      { getReservation: async () => { throw new ReservationDataSourceError({ kind: 'network', requestMayHaveReachedServer: false }); } },
+      { getReservation: () => Promise.reject(new ReservationDataSourceError({ kind: 'network', requestMayHaveReachedServer: false })) },
       801,
       mockReservationSuccessFixture,
     );
@@ -20,7 +20,7 @@ describe('reservation lookup stale preservation', () => {
 
   it('does not invent stale content for a first-load failure', async () => {
     const state = await lookupReservation(
-      { getReservation: async () => { throw new ReservationDataSourceError({ kind: 'server', code: 'SERVER_ERROR' }); } },
+      { getReservation: () => Promise.reject(new ReservationDataSourceError({ kind: 'server', code: 'SERVER_ERROR' })) },
       801,
     );
     expect(visibleReservationFromLookup(state)).toBeNull();
