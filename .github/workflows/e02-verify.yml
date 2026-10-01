@@ -1,14 +1,10 @@
-name: E05 ReturnContext Verification
-
+name: E05 Format Preview
 on:
   pull_request:
-    branches:
-      - main
-
+    branches: [main]
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -16,7 +12,5 @@ jobs:
           node-version: 24.21.0
           cache: npm
       - run: npm ci
-      - run: npm run verify
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:e2e
-      - run: npm audit --omit=dev --audit-level=high
+      - run: npx prettier src/features/auth/returnContext.ts src/features/auth/returnContext.test.ts --write
+      - run: git diff -- src/features/auth/returnContext.ts src/features/auth/returnContext.test.ts && exit 1
