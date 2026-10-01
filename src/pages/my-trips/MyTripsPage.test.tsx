@@ -26,10 +26,7 @@ function authSource(): AuthDataSource {
   };
 }
 
-function QueryWrapper({
-  children,
-  queryClient,
-}: PropsWithChildren<{ queryClient: QueryClient }>) {
+function QueryWrapper({ children, queryClient }: PropsWithChildren<{ queryClient: QueryClient }>) {
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }
 
@@ -99,7 +96,9 @@ describe('MyTripsPage', () => {
     const recent = await screen.findByRole('heading', { name: 'Recent Journey' });
     const older = screen.getByRole('heading', { name: 'Older Journey' });
     expect(recent.compareDocumentPosition(older) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(screen.queryByRole('link', { name: /Recent Journey|Older Journey/ })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: /Recent Journey|Older Journey/ }),
+    ).not.toBeInTheDocument();
   });
 
   it('covers loading, empty, initial error retry, and cached refresh failure', async () => {
@@ -129,7 +128,9 @@ describe('MyTripsPage', () => {
     unmount();
 
     const emptyClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-    const emptySource: TravelHistoryDataSource = { getTravelHistory: vi.fn().mockResolvedValue([]) };
+    const emptySource: TravelHistoryDataSource = {
+      getTravelHistory: vi.fn().mockResolvedValue([]),
+    };
     const empty = render(
       <QueryWrapper queryClient={emptyClient}>
         <MemoryRouter>
@@ -163,7 +164,9 @@ describe('MyTripsPage', () => {
     );
 
     expect(await screen.findByRole('heading', { name: 'Cached Journey' })).toBeVisible();
-    expect(await screen.findByText('최신 기록을 확인하지 못했습니다. 이전 기록을 표시합니다.')).toBeVisible();
+    expect(
+      await screen.findByText('최신 기록을 확인하지 못했습니다. 이전 기록을 표시합니다.'),
+    ).toBeVisible();
     fireEvent.click(screen.getByRole('button', { name: '다시 시도' }));
     expect(getTravelHistory).toHaveBeenCalled();
   });
