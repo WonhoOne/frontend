@@ -77,7 +77,7 @@ describe('PreviousTripsPopup', () => {
     expect(screen.getByRole('button', { name: '닫기' })).toBeVisible();
   });
 
-  it('shows skeleton geometry while history is loading', async () => {
+  it('shows skeleton geometry while history is loading', () => {
     renderPopup({ getTravelHistory: vi.fn().mockReturnValue(new Promise(() => undefined)) });
 
     expect(screen.getByLabelText('지난 여행 불러오는 중')).toHaveAttribute('aria-busy', 'true');
