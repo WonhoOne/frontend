@@ -22,7 +22,7 @@ function getLoginErrorMessage(error: unknown) {
 }
 
 export function LoginPage() {
-  const { login, state } = useAuth();
+  const auth = useAuth();
   const navigate = useNavigate();
   const [loginId, setLoginId] = useState('');
   const [password, setPassword] = useState('');
@@ -42,7 +42,7 @@ export function LoginPage() {
     setIsSubmitting(true);
 
     try {
-      await login({ loginId, password });
+      await auth.login({ loginId, password });
       // E05 owns ReturnContext recovery. Until then, direct Login uses only the
       // contract-safe home fallback and never invents transaction restoration.
       void navigate(routePaths.home, { replace: true });
@@ -66,12 +66,12 @@ export function LoginPage() {
             </p>
           </header>
 
-          {state.status === 'checking' ? (
+          {auth.state.status === 'checking' ? (
             <p aria-live="polite" className={styles.status}>
               로그인 상태를 확인하고 있습니다.
             </p>
           ) : (
-            <form className={styles.form} noValidate onSubmit={handleSubmit}>
+            <form\n              className={styles.form}\n              noValidate\n              onSubmit={(event) => void handleSubmit(event)}\n            >
               <TextField
                 autoComplete="username"
                 disabled={isSubmitting}
