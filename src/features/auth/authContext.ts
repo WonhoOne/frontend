@@ -6,6 +6,7 @@ export interface AuthContextValue {
   state: AuthState;
   login(input: LoginInput): Promise<void>;
   signup(input: SignupInput): Promise<SignupResult>;
+  invalidateSession(error: unknown): boolean;
   signOut(): void;
 }
 
