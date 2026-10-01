@@ -14,3 +14,11 @@ export {
   travelHistoryQueryOptions,
   useTravelHistory,
 } from '@/features/travel-history/travelHistory.query';
+
+export { PreviousTripsPopup } from '@/features/travel-history/PreviousTripsPopup';
+export {
+  clearPostLoginHistoryIntent,
+  consumePostLoginHistoryIntent,
+  setPostLoginHistoryIntent,
+  type PostLoginHistoryIntent,
+} from '@/features/travel-history/postLoginHistoryIntent';
