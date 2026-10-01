@@ -2,12 +2,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import type { PropsWithChildren } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import {
-  AuthProvider,
-  type AuthDataSource,
-  type LoginResult,
-  useAuth,
-} from '@/features/auth';
+import { AuthProvider, type AuthDataSource, type LoginResult, useAuth } from '@/features/auth';
 
 const loginResult: LoginResult = {
   accessToken: 'synthetic-token',
