@@ -82,12 +82,14 @@ describe('travelHistory query boundary', () => {
 
     await waitFor(() => expect(result.current.data).toBe(firstHistory));
 
+    let refreshResult: Awaited<ReturnType<typeof result.current.refetch>> | undefined;
     await act(async () => {
-      await result.current.refetch();
+      refreshResult = await result.current.refetch();
     });
 
+    expect(refreshResult?.error).toEqual(new Error('synthetic refresh failure'));
     expect(result.current.data).toBe(firstHistory);
-    expect(result.current.isError).toBe(true);
+    expect(client.getQueryData(travelHistoryQueryKey)).toBe(firstHistory);
   });
 
   it('is removed by auth private-cache clearing without touching public data', async () => {
