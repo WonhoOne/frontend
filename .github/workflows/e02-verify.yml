@@ -1,7 +1,7 @@
 name: E08 Travel History Verification
 on:
-  push:
-    branches: [feat/account-history]
+  pull_request:
+    branches: [main]
 jobs:
   verify:
     runs-on: ubuntu-latest
