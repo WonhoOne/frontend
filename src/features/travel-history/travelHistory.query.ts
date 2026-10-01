@@ -5,7 +5,6 @@ import {
   type UseQueryResult,
 } from '@tanstack/react-query';
 
-import { PRIVATE_QUERY_META_KEY } from '@/app/providers/privateQueryCache';
 import type { TravelHistoryDataSource } from '@/features/travel-history/TravelHistoryDataSource';
 import type { TravelHistoryItemModel } from '@/features/travel-history/travelHistory.model';
 
@@ -15,7 +14,7 @@ export function travelHistoryQueryOptions(dataSource: TravelHistoryDataSource) {
   return queryOptions({
     queryKey: travelHistoryQueryKey,
     queryFn: () => dataSource.getTravelHistory(),
-    meta: { privacy: PRIVATE_QUERY_META_KEY },
+    meta: { privacy: 'private' },
     placeholderData: keepPreviousData,
   });
 }
