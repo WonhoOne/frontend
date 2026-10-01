@@ -50,10 +50,7 @@ function Harness({ intent }: { intent: PostLoginHistoryIntent }) {
   );
 }
 
-function renderSurface(
-  historySource: TravelHistoryDataSource,
-  intent: PostLoginHistoryIntent,
-) {
+function renderSurface(historySource: TravelHistoryDataSource, intent: PostLoginHistoryIntent) {
   installDesktopMatchMedia();
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   const authSource: AuthDataSource = {
@@ -92,10 +89,7 @@ afterEach(() => {
 
 describe('PostLoginPreviousTripsSurface', () => {
   it('opens once after a normal successful login intent', async () => {
-    renderSurface(
-      { getTravelHistory: vi.fn().mockResolvedValue([]) },
-      'show-previous-trips',
-    );
+    renderSurface({ getTravelHistory: vi.fn().mockResolvedValue([]) }, 'show-previous-trips');
 
     fireEvent.click(screen.getByRole('button', { name: 'Authenticate' }));
 
