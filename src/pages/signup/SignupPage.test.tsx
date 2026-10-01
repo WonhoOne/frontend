@@ -5,12 +5,7 @@ import type { PropsWithChildren } from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
 
-import {
-  AuthError,
-  AuthProvider,
-  type AuthDataSource,
-  type SignupResult,
-} from '@/features/auth';
+import { AuthError, AuthProvider, type AuthDataSource, type SignupResult } from '@/features/auth';
 import { SignupPage } from '@/pages/signup/SignupPage';
 
 const success: SignupResult = {
