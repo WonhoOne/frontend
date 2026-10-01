@@ -8,3 +8,9 @@ export type {
   TravelHistoryPriceModel,
   TravelHistoryTourProductModel,
 } from '@/features/travel-history/travelHistory.model';
+
+export {
+  travelHistoryQueryKey,
+  travelHistoryQueryOptions,
+  useTravelHistory,
+} from '@/features/travel-history/travelHistory.query';
