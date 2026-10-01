@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 
 import { routePaths } from '@/app/router/paths';
 import { travelHistoryDataSource } from '@/app/shell/PostLoginPreviousTrips';
+import type { TravelHistoryDataSource } from '@/features/travel-history';
 import { saveReturnContext, useAuth } from '@/features/auth';
 import { useTravelHistory } from '@/features/travel-history';
 import { Button, PageContainer, Skeleton } from '@/shared/ui';
@@ -54,12 +55,16 @@ export function MyTripsPage() {
     );
   }
 
-  return <AuthenticatedMyTrips />;
+  return <AuthenticatedMyTrips dataSource={travelHistoryDataSource} />;
 }
 
-function AuthenticatedMyTrips() {
+export function AuthenticatedMyTrips({
+  dataSource,
+}: {
+  dataSource: TravelHistoryDataSource;
+}) {
   const navigate = useNavigate();
-  const history = useTravelHistory(travelHistoryDataSource);
+  const history = useTravelHistory(dataSource);
 
   const trips = history.data ?? [];
 
