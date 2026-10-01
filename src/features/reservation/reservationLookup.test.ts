@@ -20,7 +20,7 @@ describe('reservation lookup stale preservation', () => {
 
   it('does not invent stale content for a first-load failure', async () => {
     const state = await lookupReservation(
-      { getReservation: async () => { throw new ReservationDataSourceError({ kind: 'server', status: 500, code: 'SERVER_ERROR' }); } },
+      { getReservation: async () => { throw new ReservationDataSourceError({ kind: 'server', code: 'SERVER_ERROR' }); } },
       801,
     );
     expect(visibleReservationFromLookup(state)).toBeNull();
