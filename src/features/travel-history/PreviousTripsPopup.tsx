@@ -30,10 +30,7 @@ function HistoryContent({
   onExplore,
   onOpenChange,
   onViewAll,
-}: Pick<
-  PreviousTripsPopupProps,
-  'dataSource' | 'onExplore' | 'onOpenChange' | 'onViewAll'
->) {
+}: Pick<PreviousTripsPopupProps, 'dataSource' | 'onExplore' | 'onOpenChange' | 'onViewAll'>) {
   const history = useTravelHistory(dataSource);
 
   if (history.isPending) {
