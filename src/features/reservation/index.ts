@@ -83,3 +83,10 @@ export {
   reservationPrivateQueryKey,
   reservationQueryKeys,
 } from '@/features/reservation/reservation.queryKeys';
+
+export {
+  createReservationReviewModel,
+  previewReservationReviewResolver,
+  type ReservationReviewModel,
+  type ReservationReviewSelectionResolver,
+} from '@/features/reservation/reservationReview';
