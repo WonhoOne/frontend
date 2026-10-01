@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import type { PropsWithChildren } from 'react';
 import { MemoryRouter } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -11,6 +11,7 @@ import {
   clearPostLoginHistoryIntent,
   PostLoginPreviousTripsSurface,
   setPostLoginHistoryIntent,
+  type PostLoginHistoryIntent,
   type TravelHistoryDataSource,
 } from '@/features/travel-history';
 
@@ -33,19 +34,26 @@ function installDesktopMatchMedia() {
   });
 }
 
-function Harness() {
+function Harness({ intent }: { intent: PostLoginHistoryIntent }) {
   const auth = useAuth();
 
   return (
-    <>
-      <button onClick={() => void auth.login({ loginId: 'synthetic', password: 'input' })}>
-        Authenticate
-      </button>
-    </>
+    <button
+      onClick={() => {
+        void auth.login({ loginId: 'synthetic', password: 'input' }).then(() => {
+          setPostLoginHistoryIntent(intent);
+        });
+      }}
+    >
+      Authenticate
+    </button>
   );
 }
 
-function renderSurface(historySource: TravelHistoryDataSource) {
+function renderSurface(
+  historySource: TravelHistoryDataSource,
+  intent: PostLoginHistoryIntent,
+) {
   installDesktopMatchMedia();
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   const authSource: AuthDataSource = {
@@ -65,7 +73,7 @@ function renderSurface(historySource: TravelHistoryDataSource) {
     wrapper({
       children: (
         <>
-          <Harness />
+          <Harness intent={intent} />
           <PostLoginPreviousTripsSurface
             dataSource={historySource}
             onExplore={() => undefined}
@@ -84,24 +92,21 @@ afterEach(() => {
 
 describe('PostLoginPreviousTripsSurface', () => {
   it('opens once after a normal successful login intent', async () => {
-    renderSurface({ getTravelHistory: vi.fn().mockResolvedValue([]) });
+    renderSurface(
+      { getTravelHistory: vi.fn().mockResolvedValue([]) },
+      'show-previous-trips',
+    );
 
-    setPostLoginHistoryIntent('show-previous-trips');
-    act(() => {
-      screen.getByRole('button', { name: 'Authenticate' }).click();
-    });
+    fireEvent.click(screen.getByRole('button', { name: 'Authenticate' }));
 
     expect(await screen.findByRole('dialog', { name: 'Your previous trips' })).toBeVisible();
   });
 
   it('suppresses the popup for transaction/navigation recovery login', async () => {
     const getTravelHistory = vi.fn().mockResolvedValue([]);
-    renderSurface({ getTravelHistory });
+    renderSurface({ getTravelHistory }, 'suppress');
 
-    setPostLoginHistoryIntent('suppress');
-    act(() => {
-      screen.getByRole('button', { name: 'Authenticate' }).click();
-    });
+    fireEvent.click(screen.getByRole('button', { name: 'Authenticate' }));
 
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
     expect(getTravelHistory).not.toHaveBeenCalled();
