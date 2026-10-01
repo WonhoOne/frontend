@@ -28,9 +28,9 @@ const routeCases = [
     routeTitles.reservationSuccess,
   ],
   [
-    routeBuilders.reservationDetail('test-reservation-id'),
+    routeBuilders.reservationDetail('801'),
     routeTitles.reservationDetail,
-    routeTitles.reservationDetail,
+    'Mock 제주 허니문',
   ],
   [routePaths.login, routeTitles.login, routeTitles.login],
   [routePaths.signup, routeTitles.signup, routeTitles.signup],
@@ -77,11 +77,22 @@ describe('foundation route table', () => {
     ).toBeVisible();
   });
 
-  it('exposes the matched reservationId on the dynamic Reservation Detail placeholder', () => {
-    renderRoute(routeBuilders.reservationDetail('test-reservation-id'));
+  it('renders Reservation Detail from the private reservation lookup', async () => {
+    renderRoute(routeBuilders.reservationDetail('801'));
 
-    expect(screen.getByText('reservationId')).toBeVisible();
-    expect(screen.getByText('test-reservation-id')).toBeVisible();
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Mock 제주 허니문' }),
+    ).toBeVisible();
+    expect(screen.getByText('Reservation #801')).toBeVisible();
+  });
+
+  it('does not disclose whether an unavailable reservation exists', async () => {
+    renderRoute(routeBuilders.reservationDetail('999999'));
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Reservation not found' }),
+    ).toBeVisible();
+    expect(screen.getByText('This reservation is unavailable or cannot be shown.')).toBeVisible();
   });
 
   it('uses GlobalHeader for public routes without interpreting Auth state', () => {
