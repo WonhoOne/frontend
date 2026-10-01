@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 
 import { routePaths } from '@/app/router/paths';
 import { AuthError, consumeReturnContext, useAuth } from '@/features/auth';
+import { setPostLoginHistoryIntent } from '@/features/travel-history';
 import { Button, PageContainer, TextField, TextLink } from '@/shared/ui';
 
 import styles from '@/pages/login/LoginPage.module.css';
@@ -46,6 +47,7 @@ export function LoginPage() {
       // SECURITY/LIFECYCLE: ReturnContext is consumed only after authentication
       // succeeds. Navigation recovery never retries the interrupted transaction.
       const returnContext = consumeReturnContext();
+      setPostLoginHistoryIntent(returnContext === null ? 'show-previous-trips' : 'suppress');
       void navigate(returnContext?.returnTo ?? routePaths.home, { replace: true });
     } catch (error) {
       setFormError(getLoginErrorMessage(error));
