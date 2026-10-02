@@ -64,20 +64,17 @@ describe('GlobalHeader account state', () => {
     expect(screen.queryByRole('link', { name: 'Login / Account' })).not.toBeInTheDocument();
   });
 
-  it(
-    'keeps My Trips as the route-active item when authenticated account points to the archive',
-    async () => {
-      renderHeader('/my-trips');
+  it('keeps My Trips as the route-active item when authenticated account points to the archive', async () => {
+    renderHeader('/my-trips');
 
-      fireEvent.click(screen.getByRole('button', { name: 'Authenticate' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Authenticate' }));
 
-      const myTrips = screen.getByRole('link', { name: 'My Trips' });
-      const account = await screen.findByRole('link', {
-        name: 'Account — Synthetic Customer',
-      });
+    const myTrips = screen.getByRole('link', { name: 'My Trips' });
+    const account = await screen.findByRole('link', {
+      name: 'Account — Synthetic Customer',
+    });
 
-      expect(myTrips).toHaveAttribute('aria-current', 'page');
-      expect(account).not.toHaveAttribute('aria-current');
-    },
-  );
+    expect(myTrips).toHaveAttribute('aria-current', 'page');
+    expect(account).not.toHaveAttribute('aria-current');
+  });
 });
