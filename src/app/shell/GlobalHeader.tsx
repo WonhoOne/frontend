@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { NavLink, useLocation } from 'react-router';
+import { Link, NavLink, useLocation } from 'react-router';
 
 import { routePaths } from '@/app/router/paths';
 import { useAuth } from '@/features/auth';
@@ -83,29 +83,35 @@ export function GlobalHeader() {
             </NavLink>
           ))}
 
-          <NavLink
-            aria-label={
-              auth.state.status === 'authenticated'
-                ? `Account — ${auth.state.user.name}`
-                : 'Login / Account'
-            }
-            className={({ isActive }) =>
-              [
-                styles.link,
-                auth.state.status !== 'authenticated' && isActive ? styles.active : undefined,
-              ]
-                .filter(Boolean)
-                .join(' ')
-            }
-            to={auth.state.status === 'authenticated' ? routePaths.myTrips : routePaths.login}
-          >
-            <span aria-hidden="true" className={styles.fullLabel}>
-              {auth.state.status === 'authenticated' ? auth.state.user.name : 'Login / Account'}
-            </span>
-            <span aria-hidden="true" className={styles.compactLabel}>
-              Account
-            </span>
-          </NavLink>
+          {auth.state.status === 'authenticated' ? (
+            <Link
+              aria-label={`Account — ${auth.state.user.name}`}
+              className={styles.link}
+              to={routePaths.myTrips}
+            >
+              <span aria-hidden="true" className={styles.fullLabel}>
+                {auth.state.user.name}
+              </span>
+              <span aria-hidden="true" className={styles.compactLabel}>
+                Account
+              </span>
+            </Link>
+          ) : (
+            <NavLink
+              aria-label="Login / Account"
+              className={({ isActive }) =>
+                [styles.link, isActive ? styles.active : undefined].filter(Boolean).join(' ')
+              }
+              to={routePaths.login}
+            >
+              <span aria-hidden="true" className={styles.fullLabel}>
+                Login / Account
+              </span>
+              <span aria-hidden="true" className={styles.compactLabel}>
+                Account
+              </span>
+            </NavLink>
+          )}
         </nav>
       </div>
     </header>
