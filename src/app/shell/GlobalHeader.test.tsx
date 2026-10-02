@@ -18,7 +18,10 @@ function LoginHarness() {
   const auth = useAuth();
 
   return (
-    <button onClick={() => void auth.login({ loginId: 'synthetic', password: 'input' })}>
+    <button
+      disabled={auth.state.status !== 'unauthenticated'}
+      onClick={() => void auth.login({ loginId: 'synthetic', password: 'input' })}
+    >
       Authenticate
     </button>
   );
@@ -54,7 +57,9 @@ describe('GlobalHeader account state', () => {
   it('shows the authenticated user summary without inventing an account route', async () => {
     renderHeader();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Authenticate' }));
+    const authenticate = screen.getByRole('button', { name: 'Authenticate' });
+    await waitFor(() => expect(authenticate).toBeEnabled());
+    fireEvent.click(authenticate);
 
     const account = await screen.findByRole('link', {
       name: 'Account — Synthetic Customer',
@@ -67,7 +72,9 @@ describe('GlobalHeader account state', () => {
   it('keeps My Trips as the route-active item when authenticated account points to the archive', async () => {
     renderHeader('/my-trips');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Authenticate' }));
+    const authenticate = screen.getByRole('button', { name: 'Authenticate' });
+    await waitFor(() => expect(authenticate).toBeEnabled());
+    fireEvent.click(authenticate);
 
     const myTrips = screen.getByRole('link', { name: 'My Trips' });
     const account = await screen.findByRole('link', {
