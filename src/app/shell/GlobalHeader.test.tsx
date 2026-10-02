@@ -5,12 +5,7 @@ import { MemoryRouter } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { GlobalHeader } from '@/app/shell/GlobalHeader';
-import {
-  AuthProvider,
-  type AuthDataSource,
-  type LoginResult,
-  useAuth,
-} from '@/features/auth';
+import { AuthProvider, type AuthDataSource, type LoginResult, useAuth } from '@/features/auth';
 
 const loginResult: LoginResult = {
   accessToken: 'synthetic-token',
@@ -53,10 +48,7 @@ describe('GlobalHeader account state', () => {
   it('keeps the unauthenticated account entry on Login', () => {
     renderHeader();
 
-    expect(screen.getByRole('link', { name: 'Login / Account' })).toHaveAttribute(
-      'href',
-      '/login',
-    );
+    expect(screen.getByRole('link', { name: 'Login / Account' })).toHaveAttribute('href', '/login');
   });
 
   it('shows the authenticated user summary without inventing an account route', async () => {
@@ -72,17 +64,20 @@ describe('GlobalHeader account state', () => {
     expect(screen.queryByRole('link', { name: 'Login / Account' })).not.toBeInTheDocument();
   });
 
-  it('keeps My Trips as the route-active item when authenticated account points to the archive', async () => {
-    renderHeader('/my-trips');
+  it(
+    'keeps My Trips as the route-active item when authenticated account points to the archive',
+    async () => {
+      renderHeader('/my-trips');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Authenticate' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Authenticate' }));
 
-    const myTrips = screen.getByRole('link', { name: 'My Trips' });
-    const account = await screen.findByRole('link', {
-      name: 'Account — Synthetic Customer',
-    });
+      const myTrips = screen.getByRole('link', { name: 'My Trips' });
+      const account = await screen.findByRole('link', {
+        name: 'Account — Synthetic Customer',
+      });
 
-    expect(myTrips).toHaveAttribute('aria-current', 'page');
-    expect(account).not.toHaveAttribute('aria-current');
-  });
+      expect(myTrips).toHaveAttribute('aria-current', 'page');
+      expect(account).not.toHaveAttribute('aria-current');
+    },
+  );
 });
