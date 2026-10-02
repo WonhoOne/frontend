@@ -9,6 +9,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AuthProvider, type AuthDataSource, type LoginResult, useAuth } from '@/features/auth';
 import {
   clearPostLoginHistoryIntent,
+  consumePostLoginHistoryIntent,
   PostLoginPreviousTripsSurface,
   setPostLoginHistoryIntent,
   type PostLoginHistoryIntent,
@@ -104,5 +105,6 @@ describe('PostLoginPreviousTripsSurface', () => {
 
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
     expect(getTravelHistory).not.toHaveBeenCalled();
+    expect(consumePostLoginHistoryIntent()).toBeNull();
   });
 });
