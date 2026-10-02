@@ -90,7 +90,12 @@ export function GlobalHeader() {
                 : 'Login / Account'
             }
             className={({ isActive }) =>
-              [styles.link, isActive ? styles.active : undefined].filter(Boolean).join(' ')
+              [
+                styles.link,
+                auth.state.status !== 'authenticated' && isActive ? styles.active : undefined,
+              ]
+                .filter(Boolean)
+                .join(' ')
             }
             to={auth.state.status === 'authenticated' ? routePaths.myTrips : routePaths.login}
           >
