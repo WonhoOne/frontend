@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -60,7 +60,7 @@ describe('GlobalHeader account state', () => {
       name: 'Account — Synthetic Customer',
     });
 
-    expect(account).toHaveAttribute('href', '/my-trips');
+    await waitFor(() => expect(account).toHaveAttribute('href', '/my-trips'));
     expect(screen.queryByRole('link', { name: 'Login / Account' })).not.toBeInTheDocument();
   });
 
