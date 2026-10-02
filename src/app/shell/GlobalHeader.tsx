@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router';
 
 import { routePaths } from '@/app/router/paths';
+import { useAuth } from '@/features/auth';
 
 import styles from '@/app/shell/GlobalHeader.module.css';
 
 const primaryNavigation = [
   { label: 'Tours', compactLabel: 'Tours', to: routePaths.tours },
   { label: 'My Trips', compactLabel: 'Trips', to: routePaths.myTrips },
-  { label: 'Login / Account', compactLabel: 'Account', to: routePaths.login },
 ] as const;
 
 /**
@@ -21,6 +21,7 @@ const primaryNavigation = [
  * hero 하단을 지나면 다른 route와 같은 warm solid chrome으로 복귀한다.
  */
 export function GlobalHeader() {
+  const auth = useAuth();
   const { pathname } = useLocation();
   const isHome = pathname === routePaths.home;
   const [isPastHomeHero, setIsPastHomeHero] = useState(false);
@@ -81,6 +82,25 @@ export function GlobalHeader() {
               </span>
             </NavLink>
           ))}
+
+          <NavLink
+            aria-label={
+              auth.state.status === 'authenticated'
+                ? `Account — ${auth.state.user.name}`
+                : 'Login / Account'
+            }
+            className={({ isActive }) =>
+              [styles.link, isActive ? styles.active : undefined].filter(Boolean).join(' ')
+            }
+            to={auth.state.status === 'authenticated' ? routePaths.myTrips : routePaths.login}
+          >
+            <span aria-hidden="true" className={styles.fullLabel}>
+              {auth.state.status === 'authenticated' ? auth.state.user.name : 'Login / Account'}
+            </span>
+            <span aria-hidden="true" className={styles.compactLabel}>
+              Account
+            </span>
+          </NavLink>
         </nav>
       </div>
     </header>
