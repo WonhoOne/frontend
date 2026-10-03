@@ -13,7 +13,7 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
   for (const width of canonicalWidths) {
     test(`keeps the complete S03 hierarchy usable at ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 1000 });
-      await page.goto('/tours/demo-golf-product-a');
+      await page.goto('/tours/103');
 
       await expect(
         page.getByRole('heading', { level: 1, name: 'Golf Challenge · Journey 01' }),
@@ -120,7 +120,7 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
 
   test('remains task-complete at the 1280px-at-200%-zoom equivalent width', async ({ page }) => {
     await page.setViewportSize({ width: 640, height: 720 });
-    await page.goto('/tours/demo-golf-product-a');
+    await page.goto('/tours/103');
 
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1),
@@ -141,7 +141,7 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
   test('supports the Style → Schedule → Configure task with native keyboard controls', async ({
     page,
   }) => {
-    await page.goto('/tours/demo-golf-product-a');
+    await page.goto('/tours/103');
 
     const classic = page.getByRole('radio', { name: /Classic/ });
     await classic.focus();
@@ -169,7 +169,7 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
     page,
   }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto('/tours/demo-golf-product-a');
+    await page.goto('/tours/103');
 
     const heroReveal = page
       .locator('section[aria-labelledby="tour-title"] [data-revealed]')
