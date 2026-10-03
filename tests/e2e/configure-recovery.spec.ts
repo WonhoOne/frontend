@@ -1,11 +1,11 @@
 import { expect, test, type Page } from '@playwright/test';
 
-const storageKey = 'mister-world:reservation-draft:v1';
+const storageKey = 'mister-world:reservation-draft:v2';
 
 const baseDraft = {
-  schemaVersion: 1,
-  tourProductId: 'tour-42',
-  tourScheduleId: 'schedule-7',
+  schemaVersion: 2,
+  tourProductId: 42,
+  tourScheduleId: 7,
   tourStyle: 'GRAND',
   participantCount: null,
   configuration: {
@@ -111,16 +111,16 @@ test('a route mismatch preserves the saved trip and offers an explicit resume pa
   await page.setViewportSize({ width: 1280, height: 900 });
   await seedDraft(page, {
     ...baseDraft,
-    tourProductId: 'tour-saved',
+    tourProductId: 43,
   });
-  await page.goto('/tours/tour-other/configure');
+  await page.goto('/tours/44/configure');
 
   await expect(
     page.getByRole('heading', { name: 'This route does not match your saved trip' }),
   ).toBeVisible();
   await expect(page.getByRole('link', { name: 'Resume saved trip' })).toHaveAttribute(
     'href',
-    '/tours/tour-saved/configure',
+    '/tours/43/configure',
   );
 
   const storedProduct = await page.evaluate((key) => {
@@ -135,9 +135,9 @@ test('a route mismatch preserves the saved trip and offers an explicit resume pa
     }
 
     const tourProductId = (parsed as Record<string, unknown>).tourProductId;
-    return typeof tourProductId === 'string' ? tourProductId : null;
+    return typeof tourProductId === 'number' ? tourProductId : null;
   }, storageKey);
-  expect(storedProduct).toBe('tour-saved');
+  expect(storedProduct).toBe(43);
 });
 
 test('corrupt sessionStorage is cleared and shown as a calm recovery state', async ({ page }) => {
