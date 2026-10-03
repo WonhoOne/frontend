@@ -2,11 +2,13 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 
 import { routePaths } from '@/app/router/paths';
-import { isBrowserOffline } from '@/features/travel-history/browserConnectivity';
-import { travelHistoryDataSource } from '@/app/providers/travelHistoryDataSource';
-import type { TravelHistoryDataSource } from '@/features/travel-history';
+ import { travelHistoryDataSource } from '@/app/providers/travelHistoryDataSource';
 import { saveReturnContext, useAuth } from '@/features/auth';
-import { useTravelHistory } from '@/features/travel-history';
+import {
+  isBrowserOffline,
+  type TravelHistoryDataSource,
+  useTravelHistory,
+} from '@/features/travel-history';
 import { Button, PageContainer, Skeleton } from '@/shared/ui';
 
 import styles from '@/pages/my-trips/MyTripsPage.module.css';
