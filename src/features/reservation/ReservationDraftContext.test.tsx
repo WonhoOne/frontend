@@ -104,7 +104,7 @@ describe('ReservationDraftProvider', () => {
       </ReservationDraftProvider>,
     );
 
-    expect(screen.getByTestId('product')).toHaveTextContent(42);
+    expect(screen.getByTestId('product')).toHaveTextContent('42');
     expect(screen.getByTestId('style')).toHaveTextContent('PREMIUM');
     expect(screen.getByTestId('hydration')).toHaveTextContent('restored');
     expect(screen.getByTestId('persistence')).toHaveTextContent('available');
@@ -158,7 +158,7 @@ describe('ReservationDraftProvider', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Start' }));
 
-    expect(screen.getByTestId('product')).toHaveTextContent(43);
+    expect(screen.getByTestId('product')).toHaveTextContent('43');
 
     await waitFor(() => {
       expect(screen.getByTestId('persistence')).toHaveTextContent('degraded');
