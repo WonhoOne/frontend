@@ -47,9 +47,15 @@ function responseMetadata(response: Response): BackendResponseMetadata {
 function isJsonContentType(response: Response) {
   const contentType = response.headers.get('content-type');
 
+  if (contentType === null) {
+    return false;
+  }
+
+  const [mediaType = ''] = contentType.split(';');
+
   return (
-    contentType !== null &&
-    /(^|\s|;)application\/(?:[\w.+-]+\+)?json(?:\s*;|$)/i.test(contentType)
+    mediaType === 'application/json' ||
+    (mediaType.startsWith('application/') && mediaType.endsWith('+json'))
   );
 }
 
@@ -122,22 +128,25 @@ export class BackendHttpClient {
     const headers = new Headers(request.headers);
     headers.set('Accept', 'application/json');
 
-    let body: BodyInit | undefined;
+    const requestInit: RequestInit = {
+      method,
+      headers,
+    };
+
     if (request.body !== undefined) {
       headers.set('Content-Type', 'application/json');
-      body = JSON.stringify(request.body);
+      requestInit.body = JSON.stringify(request.body);
+    }
+
+    if (request.signal !== undefined) {
+      requestInit.signal = request.signal;
     }
 
     let response: Response;
     try {
       response = await this.fetchImplementation(
         buildRequestUrl(this.options.baseUrl, request.path),
-        {
-          method,
-          headers,
-          ...(body === undefined ? {} : { body }),
-          ...(request.signal === undefined ? {} : { signal: request.signal }),
-        },
+        requestInit,
       );
     } catch (error) {
       if (isAbortFailure(error, request.signal)) {
