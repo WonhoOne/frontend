@@ -112,7 +112,7 @@ describe('Tour Detail → Configure public handoff boundary', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Continue to Configure' }));
 
     expect(await screen.findByRole('heading', { name: 'Build your trip' })).toBeVisible();
-    expect(router.state.location.pathname).toBe('/tours/tour-42/configure');
+    expect(router.state.location.pathname).toBe('/tours/42/configure');
     expect(screen.getByText(/Fixture theme · Grand · Fixture schedule/)).toBeVisible();
     expect(screen.getByRole('spinbutton', { name: /participants/i })).toHaveValue(null);
     expect(screen.getByRole('radio', { name: /Fixture hotel A/i })).not.toBeChecked();
