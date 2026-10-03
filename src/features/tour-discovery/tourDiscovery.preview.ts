@@ -16,7 +16,7 @@ import type {
  */
 export const tourDiscoveryPreviewProducts = [
   {
-    id: 'demo-honeymoon-product-a',
+    id: 101,
     theme: 'HONEYMOON_ROMANCE',
     name: 'Honeymoon Romance · Journey 01',
     description: 'A curated journey shaped by the Honeymoon Romance theme.',
@@ -28,7 +28,7 @@ export const tourDiscoveryPreviewProducts = [
     },
   },
   {
-    id: 'demo-parents-product-a',
+    id: 102,
     theme: 'PARENTS_HEALING',
     name: 'Parents Healing · Journey 01',
     description: 'A curated journey shaped by the Parents Healing theme.',
@@ -40,7 +40,7 @@ export const tourDiscoveryPreviewProducts = [
     },
   },
   {
-    id: 'demo-golf-product-a',
+    id: 103,
     theme: 'GOLF_CHALLENGE',
     name: 'Golf Challenge · Journey 01',
     description: 'A curated journey shaped by the Golf Challenge theme.',
@@ -52,7 +52,7 @@ export const tourDiscoveryPreviewProducts = [
     },
   },
   {
-    id: 'demo-golf-product-b',
+    id: 104,
     theme: 'GOLF_CHALLENGE',
     name: 'Golf Challenge · Journey 02',
     description: 'A second TourProduct in the same Theme, with its own detail identity.',
@@ -64,7 +64,7 @@ export const tourDiscoveryPreviewProducts = [
     },
   },
   {
-    id: 'demo-trekking-product-a',
+    id: 105,
     theme: 'OUTDOOR_TREKKING',
     name: 'Outdoor Trekking · Journey 01',
     description: 'A curated journey shaped by the Outdoor Trekking theme.',
@@ -82,7 +82,7 @@ const partialFailureProducts = tourDiscoveryPreviewProducts.filter(
 );
 
 const imageFailureProducts = tourDiscoveryPreviewProducts.map((product) =>
-  product.id === 'demo-golf-product-a'
+  product.id === 103
     ? {
         ...product,
         media: {
