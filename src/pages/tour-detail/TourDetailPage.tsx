@@ -23,6 +23,7 @@ import {
   type ConfigureHandoffIntent,
   useReservationDraft,
 } from '@/features/reservation';
+import { parseResourceIdRouteParam } from '@/shared/lib/resourceIdentity';
 import { Button, PageContainer, TextLink } from '@/shared/ui';
 
 import styles from '@/pages/tour-detail/TourDetailPage.module.css';
@@ -98,7 +99,7 @@ function TourDetailReadyView({
   onConfigure?: (intent: ConfigureHandoffIntent) => void;
 }) {
   const [selectedStyle, setSelectedStyle] = useState<TourDetailStyle | null>(null);
-  const [selectedScheduleKey, setSelectedScheduleKey] = useState<string | null>(null);
+  const [selectedScheduleKey, setSelectedScheduleKey] = useState<number | null>(null);
   const resolvedScheduleState = scheduleState ?? findTourSchedulePreview(tour);
 
   const effectiveScheduleKey =
@@ -268,7 +269,8 @@ export function TourDetailPage() {
   const navigate = useNavigate();
   const { dispatch } = useReservationDraft();
   const { tourId } = useParams();
-  const tour = tourId === undefined ? null : findTourDetailPreview(tourId);
+  const resourceId = parseResourceIdRouteParam(tourId);
+  const tour = resourceId === null ? null : findTourDetailPreview(resourceId);
 
   function handleConfigure(intent: ConfigureHandoffIntent) {
     dispatch(createConfigureHandoffAction(intent, Date.now()));
