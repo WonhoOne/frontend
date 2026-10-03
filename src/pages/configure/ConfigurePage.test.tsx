@@ -92,7 +92,7 @@ describe('ConfigurePage desktop transaction', () => {
       RESERVATION_DRAFT_STORAGE_KEY,
       serializeReservationDraft({
         ...tripContextDraft(),
-        tourProductId: 'tour-saved',
+        tourProductId: 43,
       }),
     );
 
@@ -103,10 +103,10 @@ describe('ConfigurePage desktop transaction', () => {
     ).toBeVisible();
     expect(screen.getByRole('link', { name: 'Resume saved trip' })).toHaveAttribute(
       'href',
-      '/tours/tour-saved/configure',
+      '/tours/43/configure',
     );
     expect(JSON.parse(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY) ?? '{}')).toMatchObject({
-      tourProductId: 'tour-saved',
+      tourProductId: 43,
     });
   });
 
