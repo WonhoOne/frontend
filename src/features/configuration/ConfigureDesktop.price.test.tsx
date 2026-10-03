@@ -61,7 +61,7 @@ function renderConfigure(price: PriceDisplayModel, onRetryPrice = vi.fn()) {
         participantRule="general"
         price={price}
         scenario={createContractNeutralConfigureFixture()}
-        tourProductId="tour-42"
+        tourProductId={42}
       />
     </ReservationDraftProvider>,
   );
