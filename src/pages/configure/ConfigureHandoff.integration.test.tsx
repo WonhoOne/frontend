@@ -34,7 +34,7 @@ class MemoryStorage implements ReservationDraftStorage {
 
 function staleDifferentTourDraft(): ReservationDraftV1 {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     tourProductId: 'tour-old',
     tourScheduleId: 'schedule-old',
     tourStyle: 'PREMIUM',
@@ -63,14 +63,14 @@ function PublicTourDetailHandoffProbe() {
         dispatch(
           createConfigureHandoffAction(
             {
-              tourProductId: 'tour-42',
+              tourProductId: 42,
               tourStyle: 'GRAND',
-              tourScheduleId: 'schedule-7',
+              tourScheduleId: 7,
             },
             10,
           ),
         );
-        void navigate(routeBuilders.configure('tour-42'));
+        void navigate(routeBuilders.configure(42));
       }}
       type="button"
     >
@@ -126,9 +126,9 @@ describe('Tour Detail → Configure public handoff boundary', () => {
 
       const restored = JSON.parse(serialized ?? '{}') as unknown;
       expect(restored).toMatchObject({
-        tourProductId: 'tour-42',
+        tourProductId: 42,
         tourStyle: 'GRAND',
-        tourScheduleId: 'schedule-7',
+        tourScheduleId: 7,
         participantCount: null,
         configuration: {
           hotelSelectionKey: null,
