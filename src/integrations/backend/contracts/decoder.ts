@@ -96,7 +96,7 @@ export function expectEnum<const T extends readonly string[]>(
     return mappingFailure(contract, path, 'unknown-enum');
   }
 
-  return decoded as T[number];
+  return decoded;
 }
 
 function isLeapYear(year: number) {
