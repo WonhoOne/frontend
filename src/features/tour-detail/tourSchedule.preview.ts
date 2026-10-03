@@ -15,17 +15,18 @@ function buildRecruitmentSummary(theme: TourDetailTheme) {
 
 function buildScheduleChoices(theme: TourDetailTheme): readonly ScheduleChoiceModel[] {
   const recruitmentSummary = buildRecruitmentSummary(theme);
+  const baseId = { HONEYMOON_ROMANCE: 1100, PARENTS_HEALING: 1200, GOLF_CHALLENGE: 1300, OUTDOOR_TREKKING: 1400 }[theme];
 
   return [
     {
-      selectionKey: `preview-${theme.toLowerCase()}-a`,
+      selectionKey: baseId + 1,
       dateLabel: 'Schedule preview A · Dates supplied by approved schedule data',
       statusLabel: 'Recruiting',
       recruitmentSummary,
       isSelectable: true,
     },
     {
-      selectionKey: `preview-${theme.toLowerCase()}-b`,
+      selectionKey: baseId + 2,
       dateLabel: 'Schedule preview B · Dates supplied by approved schedule data',
       statusLabel: 'Unavailable',
       recruitmentSummary: 'Registration unavailable',
