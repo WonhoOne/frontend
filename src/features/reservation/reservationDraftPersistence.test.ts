@@ -66,7 +66,7 @@ describe('ReservationDraft persistence', () => {
     expect(
       migrateReservationDraft({
         ...draft,
-        schemaVersion: 2,
+        schemaVersion: 3,
       }),
     ).toBeNull();
   });
@@ -112,7 +112,7 @@ describe('ReservationDraft persistence', () => {
       RESERVATION_DRAFT_STORAGE_KEY,
       JSON.stringify({
         ...configuredDraft(),
-        schemaVersion: 2,
+        schemaVersion: 3,
       }),
     );
 
