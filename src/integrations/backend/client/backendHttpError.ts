@@ -10,7 +10,7 @@ export class BackendHttpError extends Error {
 
   constructor(
     readonly response: BackendResponseMetadata,
-    readonly body: unknown | null,
+    readonly body: unknown,
   ) {
     super(`Backend request failed with HTTP ${response.status}.`);
   }

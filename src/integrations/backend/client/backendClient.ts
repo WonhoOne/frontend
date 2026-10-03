@@ -20,7 +20,7 @@ export interface BackendJsonResponse {
   status: number;
   statusText: string;
   headers: Readonly<Record<string, string>>;
-  body: unknown | null;
+  body: unknown;
 }
 
 export interface BackendHttpClientOptions {
@@ -58,7 +58,7 @@ function isAbortFailure(error: unknown, signal: AbortSignal | undefined) {
   return error instanceof DOMException && error.name === 'AbortError';
 }
 
-async function readJsonBody(response: Response): Promise<unknown | null> {
+async function readJsonBody(response: Response): Promise<unknown> {
   if (response.status === 204) {
     return null;
   }
