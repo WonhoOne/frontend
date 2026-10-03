@@ -34,7 +34,7 @@ test.describe('Tour Detail → Configure transaction handoff', () => {
     page,
   }) => {
     await seedStaleTransaction(page);
-    await page.goto('/tours/demo-golf-product-a');
+    await page.goto('/tours/103');
 
     const configure = page.getByRole('button', { name: 'Configure this trip' });
 
