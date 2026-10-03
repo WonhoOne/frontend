@@ -9,7 +9,7 @@ import {
 
 function completeDraft(): ReservationDraftV1 {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     tourProductId: 'tour-a',
     tourScheduleId: 'schedule-a',
     tourStyle: 'GRAND',
