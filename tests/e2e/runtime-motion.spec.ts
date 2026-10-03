@@ -27,7 +27,7 @@ test.describe('Route motion runtime', () => {
       .getByRole('navigation', { name: 'Primary' })
       .getByRole('link', { name: 'My Trips', exact: true })
       .click();
-    await expect(page).toHaveURL(/\/my-trips$/);
+    await expect(page).toHaveURL(/\/login$/);
     await expect(motionSurface).toHaveAttribute('data-route-motion-direction', 'forward');
 
     await page.goBack();
@@ -38,7 +38,7 @@ test.describe('Route motion runtime', () => {
     ).toContain('route-back');
 
     await page.goForward();
-    await expect(page).toHaveURL(/\/my-trips$/);
+    await expect(page).toHaveURL(/\/login$/);
     await expect(motionSurface).toHaveAttribute('data-route-motion-direction', 'forward');
   });
 
@@ -55,8 +55,8 @@ test.describe('Route motion runtime', () => {
       tripsLink?.click();
     });
 
-    await expect(page).toHaveURL(/\/my-trips$/);
-    await expect(page.getByRole('heading', { level: 1, name: 'My Trips' })).toBeVisible();
+    await expect(page).toHaveURL(/\/login$/);
+    await expect(page.getByRole('heading', { level: 1, name: 'Login' })).toBeVisible();
     await expect(page.locator('[data-route-motion-key]')).toHaveCount(1);
     await expect(
       page.getByRole('heading', { level: 1, name: 'Four ways to travel differently.' }),

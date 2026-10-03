@@ -3,6 +3,7 @@ import { useMatches } from 'react-router';
 import { RouteMotionBoundary } from '@/app/router/RouteMotionBoundary';
 import { RouteRuntime } from '@/app/router/RouteRuntime';
 import { GlobalHeader } from '@/app/shell/GlobalHeader';
+import { PostLoginPreviousTrips } from '@/app/shell/PostLoginPreviousTrips';
 import { TransactionHeader } from '@/app/shell/TransactionHeader';
 
 export interface AppRouteHandle {
@@ -51,6 +52,8 @@ export function AppRouteLayout() {
       ) : (
         <GlobalHeader />
       )}
+
+      <PostLoginPreviousTrips />
 
       <main id="main-content" tabIndex={-1}>
         <RouteMotionBoundary />

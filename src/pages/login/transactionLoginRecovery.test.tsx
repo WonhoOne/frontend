@@ -109,8 +109,8 @@ describe('transaction login recovery public boundary', () => {
 
     renderTransactionRecovery(dataSource, reservationSubmit);
 
-    await screen.findByRole('heading', { name: 'Login' });
-    fireEvent.change(await screen.findByRole('textbox', { name: '로그인 ID' }), {
+    const loginIdInput = await screen.findByRole('textbox', { name: '로그인 ID' });
+    fireEvent.change(loginIdInput, {
       target: { value: 'synthetic-customer' },
     });
     fireEvent.change(screen.getByLabelText(/비밀번호/), {
@@ -147,8 +147,8 @@ describe('transaction login recovery public boundary', () => {
 
     renderTransactionRecovery(dataSource, vi.fn());
 
-    await screen.findByRole('heading', { name: 'Login' });
-    fireEvent.change(await screen.findByRole('textbox', { name: '로그인 ID' }), {
+    const loginIdInput = await screen.findByRole('textbox', { name: '로그인 ID' });
+    fireEvent.change(loginIdInput, {
       target: { value: 'synthetic-customer' },
     });
     fireEvent.change(screen.getByLabelText(/비밀번호/), {

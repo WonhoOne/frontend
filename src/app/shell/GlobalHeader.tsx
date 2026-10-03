@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
-import { NavLink, useLocation } from 'react-router';
+import { Link, NavLink, useLocation } from 'react-router';
 
 import { routePaths } from '@/app/router/paths';
+import { useAuth } from '@/features/auth';
 
 import styles from '@/app/shell/GlobalHeader.module.css';
 
 const primaryNavigation = [
   { label: 'Tours', compactLabel: 'Tours', to: routePaths.tours },
   { label: 'My Trips', compactLabel: 'Trips', to: routePaths.myTrips },
-  { label: 'Login / Account', compactLabel: 'Account', to: routePaths.login },
 ] as const;
 
 /**
@@ -21,6 +21,7 @@ const primaryNavigation = [
  * hero 하단을 지나면 다른 route와 같은 warm solid chrome으로 복귀한다.
  */
 export function GlobalHeader() {
+  const auth = useAuth();
   const { pathname } = useLocation();
   const isHome = pathname === routePaths.home;
   const [isPastHomeHero, setIsPastHomeHero] = useState(false);
@@ -81,6 +82,36 @@ export function GlobalHeader() {
               </span>
             </NavLink>
           ))}
+
+          {auth.state.status === 'authenticated' ? (
+            <Link
+              aria-label={`Account — ${auth.state.user.name}`}
+              className={styles.link}
+              to={routePaths.myTrips}
+            >
+              <span aria-hidden="true" className={styles.fullLabel}>
+                {auth.state.user.name}
+              </span>
+              <span aria-hidden="true" className={styles.compactLabel}>
+                Account
+              </span>
+            </Link>
+          ) : (
+            <NavLink
+              aria-label="Login / Account"
+              className={({ isActive }) =>
+                [styles.link, isActive ? styles.active : undefined].filter(Boolean).join(' ')
+              }
+              to={routePaths.login}
+            >
+              <span aria-hidden="true" className={styles.fullLabel}>
+                Login / Account
+              </span>
+              <span aria-hidden="true" className={styles.compactLabel}>
+                Account
+              </span>
+            </NavLink>
+          )}
         </nav>
       </div>
     </header>

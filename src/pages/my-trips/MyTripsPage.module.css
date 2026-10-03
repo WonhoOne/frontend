@@ -1,0 +1,138 @@
+.page {
+  min-block-size: 70vh;
+}
+
+.header {
+  display: grid;
+  max-inline-size: 760px;
+  gap: var(--mw-space-4);
+  padding-block: var(--mw-space-20) var(--mw-space-12);
+}
+
+.header h1,
+.header p,
+.sectionHeading h2,
+.sectionHeading p,
+.card h3,
+.theme,
+.state h2,
+.state p,
+.refreshError p {
+  margin: 0;
+}
+
+.header h1 {
+  font-family: var(--mw-font-editorial);
+  font-size: var(--mw-font-size-display-lg);
+  font-weight: var(--mw-font-weight-regular);
+  letter-spacing: var(--mw-tracking-editorial);
+  line-height: var(--mw-line-height-display-lg);
+}
+
+.header > p:last-child,
+.sectionHeading p,
+.state p {
+  color: var(--mw-text-secondary);
+}
+
+.eyebrow,
+.theme {
+  color: var(--mw-accent);
+  font-size: var(--mw-font-size-label-sm);
+  font-weight: var(--mw-font-weight-semibold);
+  letter-spacing: var(--mw-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.history,
+.state {
+  display: grid;
+  gap: var(--mw-space-6);
+  padding-block-end: var(--mw-space-24);
+}
+
+.sectionHeading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--mw-space-3);
+}
+
+.list {
+  display: grid;
+  gap: var(--mw-space-4);
+  margin: 0;
+  padding: 0 0 var(--mw-space-24);
+  list-style: none;
+}
+
+.card,
+.skeletonCard {
+  display: grid;
+  gap: var(--mw-space-5);
+  padding: var(--mw-space-6);
+  border: var(--mw-border-subtle);
+  border-radius: var(--mw-radius-lg);
+  background: var(--mw-surface);
+}
+
+.cardHeading {
+  display: grid;
+  gap: var(--mw-space-2);
+}
+
+.metadata {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--mw-space-4);
+  margin: 0;
+}
+
+.metadata div {
+  display: grid;
+  gap: var(--mw-space-1);
+}
+
+.metadata dt {
+  color: var(--mw-text-secondary);
+  font-size: var(--mw-font-size-label-sm);
+}
+
+.metadata dd {
+  margin: 0;
+}
+
+.refreshError {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mw-space-3);
+  padding: var(--mw-space-4);
+  border: var(--mw-border-subtle);
+  border-radius: var(--mw-radius-md);
+}
+
+.skeletonTitle {
+  inline-size: 55%;
+}
+
+.skeletonLine {
+  inline-size: 82%;
+}
+
+@media (min-width: 768px) {
+  .header {
+    padding-block: var(--mw-space-24) var(--mw-space-16);
+  }
+
+  .metadata {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .card,
+  .skeletonCard {
+    padding: var(--mw-space-8);
+  }
+}

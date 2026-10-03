@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { routeBuilders, routePaths } from '@/app/router/paths';
+import { saveReturnContext } from '@/features/auth';
 import {
   createConfirmedReservationTransition,
   createReservationIntent,
@@ -13,19 +14,23 @@ import {
   previewReservationReviewResolver,
   presentReservationReviewValidation,
   useReservationDraft,
+  type ReservationDataSource,
   type ReservationMutationState,
 } from '@/features/reservation';
 import { Button, PageContainer, TextLink } from '@/shared/ui';
 
 import styles from '@/pages/reservation-review/ReservationReviewPage.module.css';
 
-export function ReservationReviewPage() {
+interface ReservationReviewPageProps {
+  dataSource?: ReservationDataSource;
+}
+
+export function ReservationReviewPage({
+  dataSource = mockReservationDataSource,
+}: ReservationReviewPageProps = {}) {
   const { draft, dispatch, hydrationStatus, persistenceStatus } = useReservationDraft();
   const navigate = useNavigate();
-  const mutation = useMemo(
-    () => createReservationMutationController(mockReservationDataSource),
-    [],
-  );
+  const mutation = useMemo(() => createReservationMutationController(dataSource), [dataSource]);
   const [mutationState, setMutationState] = useState<ReservationMutationState>(mutation.getState());
   const handoff = getReviewDraftHandoffState({ draft, hydrationStatus });
 
@@ -37,6 +42,16 @@ export function ReservationReviewPage() {
     setMutationState(mutation.getState());
     const result = await pending;
     setMutationState(mutation.getState());
+
+    if (result.status === 'auth-interruption') {
+      saveReturnContext({
+        createdAt: Date.now(),
+        intent: 'resume-reservation-review',
+        returnTo: routePaths.reservationReview,
+      });
+      void navigate(routePaths.login);
+      return;
+    }
 
     const transition = createConfirmedReservationTransition(result, Date.now());
     if (transition !== null) {

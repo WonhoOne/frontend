@@ -1,0 +1,104 @@
+.content {
+  display: grid;
+  gap: var(--mw-space-5);
+}
+
+.list {
+  display: grid;
+  gap: var(--mw-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card,
+.skeletonCard {
+  display: grid;
+  gap: var(--mw-space-3);
+  padding: var(--mw-space-4);
+  border: var(--mw-border-subtle);
+  border-radius: var(--mw-radius-lg);
+  background: var(--mw-surface);
+}
+
+.card h3,
+.card p,
+.card dl,
+.card dd {
+  margin: 0;
+}
+
+.theme {
+  color: var(--mw-text-secondary);
+  font-size: var(--mw-font-size-body-sm);
+}
+
+.metadata {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--mw-space-3);
+}
+
+.metadata div {
+  display: grid;
+  gap: var(--mw-space-1);
+}
+
+.metadata dt {
+  color: var(--mw-text-secondary);
+  font-size: var(--mw-font-size-body-sm);
+}
+
+.metadata dd {
+  overflow-wrap: anywhere;
+}
+
+.state {
+  display: grid;
+  gap: var(--mw-space-4);
+}
+
+.state p,
+.refreshing,
+.refreshError p {
+  margin: 0;
+}
+
+.skeletonCard {
+  min-block-size: 8rem;
+}
+
+.skeletonTitle {
+  inline-size: 58%;
+}
+
+.skeletonLine {
+  inline-size: 100%;
+}
+
+.refreshing {
+  color: var(--mw-text-secondary);
+  font-size: var(--mw-font-size-body-sm);
+}
+
+.refreshError {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mw-space-3);
+}
+
+.viewAll {
+  inline-size: 100%;
+}
+
+@media (max-width: 767px) {
+  .metadata {
+    grid-template-columns: 1fr;
+  }
+
+  .refreshError {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
