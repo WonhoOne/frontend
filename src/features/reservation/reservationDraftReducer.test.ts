@@ -27,7 +27,7 @@ function configuredDraft(): ReservationDraftV1 {
 describe('reservationDraftReducer', () => {
   it('creates an explicit empty draft without participant or configuration defaults', () => {
     expect(createEmptyReservationDraft(10)).toEqual({
-      schemaVersion: 1,
+      schemaVersion: 2,
       tourProductId: null,
       tourScheduleId: null,
       tourStyle: null,
