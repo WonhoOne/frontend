@@ -1,9 +1,9 @@
 import { expect, test, type Page } from '@playwright/test';
 
 const draft = {
-  schemaVersion: 1,
-  tourProductId: 'tour-42',
-  tourScheduleId: 'schedule-7',
+  schemaVersion: 2,
+  tourProductId: 42,
+  tourScheduleId: 7,
   tourStyle: 'GRAND',
   participantCount: null,
   configuration: {
@@ -17,7 +17,7 @@ const draft = {
 
 async function seedDraft(page: Page) {
   await page.addInitScript((storedDraft: typeof draft) => {
-    window.sessionStorage.setItem('mister-world:reservation-draft:v1', JSON.stringify(storedDraft));
+    window.sessionStorage.setItem('mister-world:reservation-draft:v2', JSON.stringify(storedDraft));
   }, draft);
 }
 
