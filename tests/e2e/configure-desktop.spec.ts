@@ -25,7 +25,7 @@ for (const width of [1024, 1280]) {
   test(`desktop Configure remains coherent at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await seedDraft(page);
-    await page.goto('/tours/tour-42/configure');
+    await page.goto('/tours/42/configure');
 
     await expect(page.getByRole('heading', { name: 'Build your trip' })).toBeVisible();
 
