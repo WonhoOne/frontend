@@ -1,12 +1,12 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 
-const storageKey = 'mister-world:reservation-draft:v1';
+const storageKey = 'mister-world:reservation-draft:v2';
 const fixture = '/tests/e2e/fixtures/configure-states.html';
 
 const draft = {
-  schemaVersion: 1,
-  tourProductId: 'tour-42',
-  tourScheduleId: 'schedule-7',
+  schemaVersion: 2,
+  tourProductId: 42,
+  tourScheduleId: 7,
   tourStyle: 'GRAND',
   participantCount: null,
   configuration: {
@@ -20,7 +20,7 @@ const draft = {
 
 async function seedDraft(page: Page) {
   await page.addInitScript((value: typeof draft) => {
-    window.sessionStorage.setItem('mister-world:reservation-draft:v1', JSON.stringify(value));
+    window.sessionStorage.setItem('mister-world:reservation-draft:v2', JSON.stringify(value));
   }, draft);
 }
 
