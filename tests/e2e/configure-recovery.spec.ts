@@ -38,7 +38,7 @@ async function completeConfiguration(page: Page) {
 test('Configure → Review → browser Back preserves the transaction Draft', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await seedDraft(page);
-  await page.goto('/tours/tour-42/configure');
+  await page.goto('/tours/42/configure');
   await completeConfiguration(page);
 
   await page.getByRole('button', { name: 'Review trip' }).click();
@@ -47,12 +47,12 @@ test('Configure → Review → browser Back preserves the transaction Draft', as
   await expect(page.getByRole('heading', { name: 'Review your trip' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Change configuration' })).toHaveAttribute(
     'href',
-    '/tours/tour-42/configure',
+    '/tours/42/configure',
   );
 
   await page.goBack();
 
-  await expect(page).toHaveURL('/tours/tour-42/configure');
+  await expect(page).toHaveURL('/tours/42/configure');
   await expect(page.getByRole('radio', { name: /Fixture hotel A/i })).toBeChecked();
   await expect(page.getByRole('radio', { name: /Fixture transport B/i })).toBeChecked();
   await expect(page.getByRole('radio', { name: /Fixture meal A/i })).toBeChecked();
@@ -63,7 +63,7 @@ test('Configure → Review → browser Back preserves the transaction Draft', as
 test('refresh rehydrates the same Configure selections from sessionStorage', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await seedDraft(page);
-  await page.goto('/tours/tour-42/configure');
+  await page.goto('/tours/42/configure');
   await completeConfiguration(page);
 
   await expect
@@ -144,7 +144,7 @@ test('corrupt sessionStorage is cleared and shown as a calm recovery state', asy
   await page.addInitScript((key) => {
     window.sessionStorage.setItem(key, '{not-json');
   }, storageKey);
-  await page.goto('/tours/tour-42/configure');
+  await page.goto('/tours/42/configure');
 
   await expect(
     page.getByRole('heading', { name: 'Saved trip could not be restored' }),
