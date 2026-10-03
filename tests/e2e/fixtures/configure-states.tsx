@@ -117,7 +117,7 @@ function ConfigureStateFixture() {
 
   return (
     <ReservationDraftProvider now={() => 10} storage={storage}>
-      <MemoryRouter initialEntries={['/tours/tour-42/configure']}>
+      <MemoryRouter initialEntries={['/tours/42/configure']}>
         <main>
           <ConfigureDesktop
             onRetryGroup={(category: ConfigurationCategory) => setRetryResult(`group:${category}`)}
