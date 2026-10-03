@@ -11,6 +11,7 @@ export function parseResourceIdRouteParam(value: string | undefined): ResourceId
 }
 
 export function serializeResourceId(value: ResourceId): string {
-  if (!isResourceId(value)) throw new TypeError('Resource identity must be a positive safe integer.');
+  if (!isResourceId(value))
+    throw new TypeError('Resource identity must be a positive safe integer.');
   return String(value);
 }

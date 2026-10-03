@@ -15,7 +15,12 @@ function buildRecruitmentSummary(theme: TourDetailTheme) {
 
 function buildScheduleChoices(theme: TourDetailTheme): readonly ScheduleChoiceModel[] {
   const recruitmentSummary = buildRecruitmentSummary(theme);
-  const baseId = { HONEYMOON_ROMANCE: 1100, PARENTS_HEALING: 1200, GOLF_CHALLENGE: 1300, OUTDOOR_TREKKING: 1400 }[theme];
+  const baseId = {
+    HONEYMOON_ROMANCE: 1100,
+    PARENTS_HEALING: 1200,
+    GOLF_CHALLENGE: 1300,
+    OUTDOOR_TREKKING: 1400,
+  }[theme];
 
   return [
     {
@@ -54,15 +59,6 @@ const readyByTheme = {
   },
 } as const satisfies Record<TourDetailTheme, TourScheduleSectionState>;
 
-/**
- * B09 Schedule/Recruitment presentation fixture.
- *
- * MOCK CONTRACT:
- * - Backend TourSchedule DTO를 흉내 내지 않는다.
- * - preview date label은 실제 여행 날짜를 주장하지 않는다.
- * - recruitment/status/selectability는 이미 결정된 표시용 truth다.
- * - UI가 participant count를 합산해 confirmed 여부를 계산하지 않는다.
- */
 export function findTourSchedulePreview(tour: Pick<TourDetailModel, 'theme'>) {
   return readyByTheme[tour.theme];
 }

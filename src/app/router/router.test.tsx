@@ -15,11 +15,7 @@ afterEach(cleanup);
 const routeCases = [
   [routePaths.home, routeTitles.home, 'A journey made for your moment.'],
   [routePaths.tours, routeTitles.tours, 'Four ways to travel differently.'],
-  [
-    routeBuilders.tourDetail(101),
-    routeTitles.tourDetail,
-    'Honeymoon Romance · Journey 01',
-  ],
+  [routeBuilders.tourDetail(101), routeTitles.tourDetail, 'Honeymoon Romance · Journey 01'],
   [routeBuilders.configure(101), routeTitles.configure, routeTitles.configure],
   [routePaths.reservationReview, routeTitles.reservationReview, routeTitles.reservationReview],
   [routeBuilders.reservationSuccess('801'), routeTitles.reservationSuccess, 'Reservation received'],

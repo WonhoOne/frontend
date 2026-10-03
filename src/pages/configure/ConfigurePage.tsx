@@ -55,10 +55,14 @@ export function ConfigurePage() {
                 <TextLink to={routeBuilders.configure(entryState.savedTourProductId)}>
                   Resume saved trip
                 </TextLink>
-                <TextLink to={routeBuilders.tourDetail(routeTourProductId)}>View this tour</TextLink>
+                <TextLink to={routeBuilders.tourDetail(routeTourProductId)}>
+                  View this tour
+                </TextLink>
               </>
             ) : (
-              <TextLink to={routeBuilders.tourDetail(routeTourProductId)}>Back to tour details</TextLink>
+              <TextLink to={routeBuilders.tourDetail(routeTourProductId)}>
+                Back to tour details
+              </TextLink>
             )}
           </div>
         </section>
@@ -88,7 +92,9 @@ export function ConfigurePage() {
             </p>
           </div>
 
-          <TextLink to={routeBuilders.tourDetail(routeTourProductId)}>Change style/schedule</TextLink>
+          <TextLink to={routeBuilders.tourDetail(routeTourProductId)}>
+            Change style/schedule
+          </TextLink>
         </header>
 
         {persistenceStatus === 'degraded' ? (
