@@ -113,17 +113,10 @@ async function readJsonBody(response: Response): Promise<unknown> {
  * - Authorization/session policy is intentionally deferred to Session F2.
  */
 export class BackendHttpClient {
-  private readonly fetchImplementation: typeof fetch;
-
-  constructor(private readonly options: BackendHttpClientOptions) {
-    this.fetchImplementation = options.fetchImplementation ?? globalThis.fetch;
-
-    if (this.fetchImplementation === undefined) {
-      throw new TypeError('A fetch implementation is required.');
-    }
-  }
+  constructor(private readonly options: BackendHttpClientOptions) {}
 
   async requestJson(request: BackendJsonRequest): Promise<BackendJsonResponse> {
+    const requestUrl = buildRequestUrl(this.options.baseUrl, request.path);
     const method = request.method ?? 'GET';
     const headers = new Headers(request.headers);
     headers.set('Accept', 'application/json');
@@ -144,10 +137,8 @@ export class BackendHttpClient {
 
     let response: Response;
     try {
-      response = await this.fetchImplementation(
-        buildRequestUrl(this.options.baseUrl, request.path),
-        requestInit,
-      );
+      const fetchImplementation = this.options.fetchImplementation ?? globalThis.fetch;
+      response = await fetchImplementation(requestUrl, requestInit);
     } catch (error) {
       if (isAbortFailure(error, request.signal)) {
         throw new BackendRequestAbortedError({ cause: error });
