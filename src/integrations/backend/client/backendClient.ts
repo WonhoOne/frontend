@@ -47,7 +47,10 @@ function responseMetadata(response: Response): BackendResponseMetadata {
 function isJsonContentType(response: Response) {
   const contentType = response.headers.get('content-type');
 
-  return contentType !== null && /(^|\s|;)application\/(?:[\w.+-]+\+)?json(?:\s*;|$)/i.test(contentType);
+  return (
+    contentType !== null &&
+    /(^|\s|;)application\/(?:[\w.+-]+\+)?json(?:\s*;|$)/i.test(contentType)
+  );
 }
 
 function isAbortFailure(error: unknown, signal: AbortSignal | undefined) {
@@ -127,12 +130,15 @@ export class BackendHttpClient {
 
     let response: Response;
     try {
-      response = await this.fetchImplementation(buildRequestUrl(this.options.baseUrl, request.path), {
-        method,
-        headers,
-        ...(body === undefined ? {} : { body }),
-        ...(request.signal === undefined ? {} : { signal: request.signal }),
-      });
+      response = await this.fetchImplementation(
+        buildRequestUrl(this.options.baseUrl, request.path),
+        {
+          method,
+          headers,
+          ...(body === undefined ? {} : { body }),
+          ...(request.signal === undefined ? {} : { signal: request.signal }),
+        },
+      );
     } catch (error) {
       if (isAbortFailure(error, request.signal)) {
         throw new BackendRequestAbortedError({ cause: error });
