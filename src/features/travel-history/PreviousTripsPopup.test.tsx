@@ -1,12 +1,13 @@
 // @vitest-environment jsdom
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   PreviousTripsPopup,
+  travelHistoryQueryKey,
   type TravelHistoryDataSource,
   type TravelHistoryItemModel,
 } from '@/features/travel-history';
@@ -64,10 +65,11 @@ function renderPopup(source: TravelHistoryDataSource, desktop = true) {
     </QueryClientProvider>,
   );
 
-  return { onExplore, onOpenChange, onViewAll };
+  return { client, onExplore, onOpenChange, onViewAll };
 }
 
 afterEach(() => {
+  Object.defineProperty(navigator, 'onLine', { configurable: true, value: true });
   vi.restoreAllMocks();
 });
 
@@ -131,14 +133,23 @@ describe('PreviousTripsPopup', () => {
     expect(onViewAll).toHaveBeenCalledTimes(1);
   });
 
-  it('keeps cached history visible when a refresh fails', async () => {
+  it('keeps cached history visible and distinguishes offline refresh failure', async () => {
     const getTravelHistory = vi
       .fn()
       .mockResolvedValueOnce(history)
-      .mockRejectedValueOnce(new Error('refresh failed'));
-    renderPopup({ getTravelHistory });
+      .mockRejectedValueOnce(new Error('offline'));
+    const { client } = renderPopup({ getTravelHistory });
 
     expect(await screen.findByText('Synthetic Trekking')).toBeVisible();
-    fireEvent.click(screen.getByRole('button', { name: '전체 여행 보기' }));
+    Object.defineProperty(navigator, 'onLine', { configurable: true, value: false });
+
+    await act(async () => {
+      await client.invalidateQueries({ queryKey: travelHistoryQueryKey });
+    });
+
+    expect(screen.getByText('Synthetic Trekking')).toBeVisible();
+    expect(
+      await screen.findByText('오프라인 상태입니다. 저장된 여행 기록을 표시하고 있습니다.'),
+    ).toBeVisible();
   });
 });
