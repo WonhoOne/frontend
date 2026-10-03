@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 
 import { routePaths } from '@/app/router/paths';
- import { travelHistoryDataSource } from '@/app/providers/travelHistoryDataSource';
+import { travelHistoryDataSource } from '@/app/providers/travelHistoryDataSource';
 import { saveReturnContext, useAuth } from '@/features/auth';
 import {
   isBrowserOffline,
