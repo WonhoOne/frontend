@@ -29,10 +29,7 @@ export interface TourScheduleDto {
   recruitment: TourScheduleRecruitmentDto;
 }
 
-function decodeRecruitment(
-  value: unknown,
-  rootPath: string,
-): TourScheduleRecruitmentDto {
+function decodeRecruitment(value: unknown, rootPath: string): TourScheduleRecruitmentDto {
   const contract = 'TourSchedule' as const;
   const record = expectRecord(value, contract, rootPath);
 
@@ -55,11 +52,7 @@ function decodeRecruitment(
 export function decodeTourScheduleDto(value: unknown, rootPath = '$'): TourScheduleDto {
   const contract = 'TourSchedule' as const;
   const record = expectRecord(value, contract, rootPath);
-  const startDate = expectIsoCalendarDate(
-    record.startDate,
-    contract,
-    `${rootPath}.startDate`,
-  );
+  const startDate = expectIsoCalendarDate(record.startDate, contract, `${rootPath}.startDate`);
   const endDate = expectIsoCalendarDate(record.endDate, contract, `${rootPath}.endDate`);
 
   if (startDate > endDate) {

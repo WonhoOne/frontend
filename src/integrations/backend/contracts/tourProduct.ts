@@ -61,11 +61,9 @@ export function decodeTourProductDto(value: unknown, rootPath = '$'): TourProduc
     contract,
     `${rootPath}.availableStyles`,
   );
-  const stylePrices = expectArray(
-    record.stylePrices,
-    contract,
-    `${rootPath}.stylePrices`,
-  ).map((entry, index) => decodeStylePrice(entry, `${rootPath}.stylePrices[${index}]`));
+  const stylePrices = expectArray(record.stylePrices, contract, `${rootPath}.stylePrices`).map(
+    (entry, index) => decodeStylePrice(entry, `${rootPath}.stylePrices[${index}]`),
+  );
 
   const priceStyles = stylePrices.map((price) => price.style);
   const uniquePriceStyles = new Set(priceStyles);
@@ -76,11 +74,7 @@ export function decodeTourProductDto(value: unknown, rootPath = '$'): TourProduc
     uniquePriceStyles.size !== availableStyleSet.size ||
     priceStyles.some((style) => !availableStyleSet.has(style))
   ) {
-    return mappingFailure(
-      contract,
-      `${rootPath}.stylePrices`,
-      'inconsistent-style-prices',
-    );
+    return mappingFailure(contract, `${rootPath}.stylePrices`, 'inconsistent-style-prices');
   }
 
   return {

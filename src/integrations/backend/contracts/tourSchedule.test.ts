@@ -1,9 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import {
-  decodeTourScheduleDto,
-  decodeTourScheduleListDto,
-} from '@/integrations/backend/contracts';
+import { decodeTourScheduleDto, decodeTourScheduleListDto } from '@/integrations/backend/contracts';
 
 const validSchedule = {
   id: 501,
@@ -27,7 +24,12 @@ describe('TourSchedule runtime contract', () => {
   it.each([
     ['invalid id', { ...validSchedule, id: -1 }, '$.id', 'expected-positive-integer'],
     ['invalid tourId', { ...validSchedule, tourId: 0 }, '$.tourId', 'expected-positive-integer'],
-    ['wrong reservable type', { ...validSchedule, reservable: 'true' }, '$.reservable', 'expected-boolean'],
+    [
+      'wrong reservable type',
+      { ...validSchedule, reservable: 'true' },
+      '$.reservable',
+      'expected-boolean',
+    ],
     [
       'unknown recruitment unit',
       { ...validSchedule, recruitment: { ...validSchedule.recruitment, unit: 'PERSON' } },

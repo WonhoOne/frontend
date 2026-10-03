@@ -36,11 +36,7 @@ export function expectArray(
   return value;
 }
 
-export function expectString(
-  value: unknown,
-  contract: BackendContractName,
-  path: string,
-): string {
+export function expectString(value: unknown, contract: BackendContractName, path: string): string {
   if (typeof value !== 'string') {
     return mappingFailure(contract, path, 'expected-string');
   }

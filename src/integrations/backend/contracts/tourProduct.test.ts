@@ -43,7 +43,12 @@ describe('TourProduct runtime contract', () => {
       '$.availableStyles[1]',
       'unknown-enum',
     ],
-    ['wrong description type', { ...validProduct, description: 7 }, '$.description', 'expected-string'],
+    [
+      'wrong description type',
+      { ...validProduct, description: 7 },
+      '$.description',
+      'expected-string',
+    ],
   ] as const)('rejects %s', (_name, payload, path, reason) => {
     expect(() => decodeTourProductDto(payload)).toThrowError(
       expect.objectContaining({ path, reason }),

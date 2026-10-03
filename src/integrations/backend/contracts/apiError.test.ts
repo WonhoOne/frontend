@@ -1,9 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import {
-  ContractMappingError,
-  decodeApiErrorDto,
-} from '@/integrations/backend/contracts';
+import { ContractMappingError, decodeApiErrorDto } from '@/integrations/backend/contracts';
 
 describe('decodeApiErrorDto', () => {
   it('decodes the v0.2 common API error shape', () => {

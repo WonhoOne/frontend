@@ -1,9 +1,5 @@
 export type BackendContractName =
-  | 'ApiError'
-  | 'TourProduct'
-  | 'TourProduct[]'
-  | 'TourSchedule'
-  | 'TourSchedule[]';
+  'ApiError' | 'TourProduct' | 'TourProduct[]' | 'TourSchedule' | 'TourSchedule[]';
 
 export type ContractMappingFailureReason =
   | 'expected-object'
