@@ -42,9 +42,9 @@ class FixtureStorage implements ReservationDraftStorage {
 }
 
 const completeDraft: ReservationDraftV1 = {
-  schemaVersion: 1,
-  tourProductId: 'tour-42',
-  tourScheduleId: 'schedule-7',
+  schemaVersion: 2,
+  tourProductId: 42,
+  tourScheduleId: 7,
   tourStyle: 'GRAND',
   participantCount: 2,
   configuration: {
@@ -127,7 +127,7 @@ function ConfigureStateFixture() {
             {...(price === undefined ? {} : { price })}
             runtimeState={runtimeState}
             scenario={createContractNeutralConfigureFixture()}
-            tourProductId="tour-42"
+            tourProductId={42}
           />
         </main>
         <output data-testid="configure-retry-result">{retryResult}</output>
