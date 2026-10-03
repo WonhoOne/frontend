@@ -50,7 +50,7 @@ function tripContextDraft(): ReservationDraftV1 {
 function renderConfigure(storage: MemoryStorage) {
   return render(
     <ReservationDraftProvider storage={storage} now={() => 10}>
-      <MemoryRouter initialEntries={['/tours/tour-42/configure']}>
+      <MemoryRouter initialEntries={['/tours/42/configure']}>
         <Routes>
           <Route element={<ConfigurePage />} path={routePatterns.configure} />
           <Route element={<h1>Reservation review marker</h1>} path={routePaths.reservationReview} />
@@ -71,7 +71,7 @@ describe('ConfigurePage desktop transaction', () => {
     ).toBeVisible();
     expect(screen.getByRole('link', { name: 'Back to tour details' })).toHaveAttribute(
       'href',
-      '/tours/tour-42',
+      '/tours/42',
     );
     expect(screen.queryByRole('button', { name: 'Review trip' })).not.toBeInTheDocument();
   });
