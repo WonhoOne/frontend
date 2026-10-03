@@ -24,3 +24,5 @@ export {
   usePostLoginHistoryIntent,
   type PostLoginHistoryIntent,
 } from '@/features/travel-history/postLoginHistoryIntent';
+
+export { isBrowserOffline } from '@/features/travel-history/browserConnectivity';
