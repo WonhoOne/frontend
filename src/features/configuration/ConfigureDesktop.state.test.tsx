@@ -63,7 +63,7 @@ function renderConfigure(runtimeState: ConfigureRuntimeState, onRetryGroup = vi.
         participantRule="general"
         runtimeState={runtimeState}
         scenario={createContractNeutralConfigureFixture()}
-        tourProductId="tour-42"
+        tourProductId={42}
       />
     </ReservationDraftProvider>,
   );
