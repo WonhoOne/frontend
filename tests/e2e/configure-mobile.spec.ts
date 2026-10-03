@@ -32,7 +32,7 @@ for (const width of [320, 390, 430, 768, 1023]) {
   test(`mobile Configure remains usable at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 760 });
     await seedDraft(page);
-    await page.goto('/tours/tour-42/configure');
+    await page.goto('/tours/42/configure');
 
     const mobileSummary = page.getByRole('complementary', { name: 'Mobile trip summary' });
     await expect(mobileSummary).toBeVisible();
@@ -103,7 +103,7 @@ for (const width of [320, 390, 430, 768, 1023]) {
 test('1024px uses the Desktop summary instead of duplicate mobile actions', async ({ page }) => {
   await page.setViewportSize({ width: 1024, height: 900 });
   await seedDraft(page);
-  await page.goto('/tours/tour-42/configure');
+  await page.goto('/tours/42/configure');
 
   await expect(
     page.getByRole('complementary', { name: 'Current trip configuration' }),
@@ -115,7 +115,7 @@ test('reduced motion removes the Configure summary sheet animation', async ({ pa
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 390, height: 760 });
   await seedDraft(page);
-  await page.goto('/tours/tour-42/configure');
+  await page.goto('/tours/42/configure');
 
   await page.getByRole('button', { name: 'Open trip summary' }).click();
 
