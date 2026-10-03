@@ -35,8 +35,8 @@ class MemoryStorage implements ReservationDraftStorage {
 function staleDifferentTourDraft(): ReservationDraftV1 {
   return {
     schemaVersion: 2,
-    tourProductId: 'tour-old',
-    tourScheduleId: 'schedule-old',
+    tourProductId: 41,
+    tourScheduleId: 6,
     tourStyle: 'PREMIUM',
     participantCount: 8,
     configuration: {
@@ -99,7 +99,7 @@ describe('Tour Detail → Configure public handoff boundary', () => {
         },
       ],
       {
-        initialEntries: ['/tours/tour-42'],
+        initialEntries: ['/tours/42'],
       },
     );
 
