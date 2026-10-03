@@ -1,19 +1,20 @@
 import type { ReservationDraftHydrationStatus } from '@/features/reservation/reservationDraftPersistence';
 import { hasReservationDraftIntent } from '@/features/reservation/reservationDraftPersistence';
 import type { ReservationDraftV1 } from '@/features/reservation/ReservationDraft';
+import type { ResourceId } from '@/shared/lib/resourceIdentity';
 
 export type ConfigureDraftEntryState =
   | { status: 'ready' }
   | { status: 'missing' }
   | { status: 'discarded' }
   | { status: 'incomplete' }
-  | { status: 'route-mismatch'; savedTourProductId: string };
+  | { status: 'route-mismatch'; savedTourProductId: ResourceId };
 
 export type ReviewDraftHandoffState =
-  | { status: 'ready'; tourProductId: string }
+  | { status: 'ready'; tourProductId: ResourceId }
   | { status: 'missing' }
   | { status: 'discarded' }
-  | { status: 'incomplete'; tourProductId: string | null };
+  | { status: 'incomplete'; tourProductId: ResourceId | null };
 
 function hasConfigureContext(draft: ReservationDraftV1) {
   return draft.tourProductId !== null && draft.tourStyle !== null && draft.tourScheduleId !== null;
@@ -43,7 +44,7 @@ export function getConfigureDraftEntryState({
 }: {
   draft: ReservationDraftV1;
   hydrationStatus: ReservationDraftHydrationStatus;
-  routeTourProductId: string;
+  routeTourProductId: ResourceId;
 }): ConfigureDraftEntryState {
   if (hydrationStatus === 'discarded' && !hasReservationDraftIntent(draft)) {
     return { status: 'discarded' };
