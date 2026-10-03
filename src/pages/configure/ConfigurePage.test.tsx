@@ -32,9 +32,9 @@ class MemoryStorage implements ReservationDraftStorage {
 
 function tripContextDraft(): ReservationDraftV1 {
   return {
-    schemaVersion: 1,
-    tourProductId: 'tour-42',
-    tourScheduleId: 'schedule-7',
+    schemaVersion: 2,
+    tourProductId: 42,
+    tourScheduleId: 7,
     tourStyle: 'GRAND',
     participantCount: null,
     configuration: {
