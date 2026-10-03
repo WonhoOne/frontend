@@ -39,7 +39,7 @@ function TourScheduleStateFixture() {
   }
 
   return (
-    <MemoryRouter initialEntries={['/tours/demo-golf-product-a']}>
+    <MemoryRouter initialEntries={['/tours/103']}>
       <TourDetailPageView
         coreState={{ status: 'ready', tour }}
         onRetrySchedule={() => setRetryResult('schedule-retry')}
