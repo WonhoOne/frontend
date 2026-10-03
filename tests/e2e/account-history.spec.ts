@@ -36,9 +36,9 @@ async function expectNoHorizontalOverflow(page: Page) {
 }
 
 test.describe('Account and Travel History QA hardening', () => {
-  test('auth surfaces reflow without horizontal task overflow at canonical widths', async ({
-    page,
-  }) => {
+  test(
+    'auth surfaces reflow without horizontal task overflow at canonical widths',
+    async ({ page }) => {
     for (const width of [320, 360, 390, 430, 768, 1024, 1280, 1440, 1728]) {
       await page.setViewportSize({ width, height: 900 });
 
@@ -49,12 +49,12 @@ test.describe('Account and Travel History QA hardening', () => {
       await page.goto('/signup');
       await expect(page.getByRole('heading', { level: 1, name: 'Signup' })).toBeVisible();
       await expectNoHorizontalOverflow(page);
-    }
-  });
+    },
+  );
 
-  test('320px direct My Trips access returns safely to Login without starting a visible private surface', async ({
-    page,
-  }) => {
+  test(
+    '320px direct My Trips access returns safely to Login without starting a visible private surface',
+    async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 900 });
     await page.goto('/my-trips');
 
@@ -69,9 +69,12 @@ test.describe('Account and Travel History QA hardening', () => {
     expect(returnContext).not.toBeNull();
     expect(returnContext).toContain('/my-trips');
     expect(returnContext).toContain('continue-navigation');
-  });
+    },
+  );
 
-  test('Login is operable keyboard-only and credentials never enter Web Storage', async ({ page }) => {
+  test(
+    'Login is operable keyboard-only and credentials never enter Web Storage',
+    async ({ page }) => {
     await page.goto('/login');
     await expect(page.getByRole('heading', { level: 1, name: 'Login' })).toBeVisible();
 
@@ -105,5 +108,6 @@ test.describe('Account and Travel History QA hardening', () => {
 
     expect(storageText).not.toContain('keyboard-user');
     expect(storageText).not.toContain('keyboard-password');
-  });
+    },
+  );
 });
