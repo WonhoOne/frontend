@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 
 import { routePaths } from '@/app/router/paths';
+import { isBrowserOffline } from '@/features/travel-history/browserConnectivity';
 import { travelHistoryDataSource } from '@/app/providers/travelHistoryDataSource';
 import type { TravelHistoryDataSource } from '@/features/travel-history';
 import { saveReturnContext, useAuth } from '@/features/auth';
@@ -113,7 +114,11 @@ export function AuthenticatedMyTrips({ dataSource }: { dataSource: TravelHistory
 
             {history.isError ? (
               <div className={styles.refreshError}>
-                <p role="alert">최신 기록을 확인하지 못했습니다. 이전 기록을 표시합니다.</p>
+                <p role="alert">
+                  {isBrowserOffline()
+                    ? '오프라인 상태입니다. 저장된 여행 기록을 표시하고 있습니다.'
+                    : '최신 기록을 확인하지 못했습니다. 이전 기록을 표시합니다.'}
+                </p>
                 <Button onClick={() => void history.refetch()} size="small" variant="quiet">
                   다시 시도
                 </Button>
