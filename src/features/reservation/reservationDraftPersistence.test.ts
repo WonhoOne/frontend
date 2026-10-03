@@ -5,6 +5,7 @@ import {
   hydrateReservationDraft,
   migrateReservationDraft,
   persistReservationDraft,
+  LEGACY_RESERVATION_DRAFT_STORAGE_KEY,
   RESERVATION_DRAFT_SCHEMA_VERSION,
   RESERVATION_DRAFT_STORAGE_KEY,
   serializeReservationDraft,
@@ -31,8 +32,8 @@ class MemoryStorage implements ReservationDraftStorage {
 function configuredDraft(): ReservationDraftV1 {
   return {
     schemaVersion: RESERVATION_DRAFT_SCHEMA_VERSION,
-    tourProductId: 'tour-a',
-    tourScheduleId: 'schedule-a',
+    tourProductId: 101,
+    tourScheduleId: 1001,
     tourStyle: 'GRAND',
     participantCount: 2,
     configuration: {
@@ -66,9 +67,27 @@ describe('ReservationDraft persistence', () => {
     expect(
       migrateReservationDraft({
         ...draft,
-        schemaVersion: 2,
+        schemaVersion: 3,
       }),
     ).toBeNull();
+  });
+
+  it('discards legacy V1 opaque string identities instead of guessing Backend IDs', () => {
+    const storage = new MemoryStorage();
+    storage.setItem(
+      LEGACY_RESERVATION_DRAFT_STORAGE_KEY,
+      JSON.stringify({
+        schemaVersion: 1,
+        tourProductId: '42',
+        tourScheduleId: '301',
+      }),
+    );
+
+    const result = hydrateReservationDraft(storage, 250);
+
+    expect(result.hydrationStatus).toBe('discarded');
+    expect(result.draft).toEqual(createEmptyReservationDraft(250));
+    expect(storage.getItem(LEGACY_RESERVATION_DRAFT_STORAGE_KEY)).toBeNull();
   });
 
   it('drops unknown fields instead of leaking them into restored transaction state', () => {
@@ -112,7 +131,7 @@ describe('ReservationDraft persistence', () => {
       RESERVATION_DRAFT_STORAGE_KEY,
       JSON.stringify({
         ...configuredDraft(),
-        schemaVersion: 2,
+        schemaVersion: 3,
       }),
     );
 

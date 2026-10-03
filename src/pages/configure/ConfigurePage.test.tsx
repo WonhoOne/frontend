@@ -32,9 +32,9 @@ class MemoryStorage implements ReservationDraftStorage {
 
 function tripContextDraft(): ReservationDraftV1 {
   return {
-    schemaVersion: 1,
-    tourProductId: 'tour-42',
-    tourScheduleId: 'schedule-7',
+    schemaVersion: 2,
+    tourProductId: 42,
+    tourScheduleId: 7,
     tourStyle: 'GRAND',
     participantCount: null,
     configuration: {
@@ -50,7 +50,7 @@ function tripContextDraft(): ReservationDraftV1 {
 function renderConfigure(storage: MemoryStorage) {
   return render(
     <ReservationDraftProvider storage={storage} now={() => 10}>
-      <MemoryRouter initialEntries={['/tours/tour-42/configure']}>
+      <MemoryRouter initialEntries={['/tours/42/configure']}>
         <Routes>
           <Route element={<ConfigurePage />} path={routePatterns.configure} />
           <Route element={<h1>Reservation review marker</h1>} path={routePaths.reservationReview} />
@@ -71,7 +71,7 @@ describe('ConfigurePage desktop transaction', () => {
     ).toBeVisible();
     expect(screen.getByRole('link', { name: 'Back to tour details' })).toHaveAttribute(
       'href',
-      '/tours/tour-42',
+      '/tours/42',
     );
     expect(screen.queryByRole('button', { name: 'Review trip' })).not.toBeInTheDocument();
   });
@@ -92,7 +92,7 @@ describe('ConfigurePage desktop transaction', () => {
       RESERVATION_DRAFT_STORAGE_KEY,
       serializeReservationDraft({
         ...tripContextDraft(),
-        tourProductId: 'tour-saved',
+        tourProductId: 43,
       }),
     );
 
@@ -103,10 +103,10 @@ describe('ConfigurePage desktop transaction', () => {
     ).toBeVisible();
     expect(screen.getByRole('link', { name: 'Resume saved trip' })).toHaveAttribute(
       'href',
-      '/tours/tour-saved/configure',
+      '/tours/43/configure',
     );
     expect(JSON.parse(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY) ?? '{}')).toMatchObject({
-      tourProductId: 'tour-saved',
+      tourProductId: 43,
     });
   });
 

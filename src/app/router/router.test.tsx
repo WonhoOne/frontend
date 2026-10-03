@@ -15,12 +15,8 @@ afterEach(cleanup);
 const routeCases = [
   [routePaths.home, routeTitles.home, 'A journey made for your moment.'],
   [routePaths.tours, routeTitles.tours, 'Four ways to travel differently.'],
-  [
-    routeBuilders.tourDetail('demo-honeymoon-product-a'),
-    routeTitles.tourDetail,
-    'Honeymoon Romance · Journey 01',
-  ],
-  [routeBuilders.configure('test-tour-id'), routeTitles.configure, routeTitles.configure],
+  [routeBuilders.tourDetail(101), routeTitles.tourDetail, 'Honeymoon Romance · Journey 01'],
+  [routeBuilders.configure(101), routeTitles.configure, routeTitles.configure],
   [routePaths.reservationReview, routeTitles.reservationReview, routeTitles.reservationReview],
   [routeBuilders.reservationSuccess('801'), routeTitles.reservationSuccess, 'Reservation received'],
   [routeBuilders.reservationDetail('801'), routeTitles.reservationDetail, 'Mock 제주 허니문'],
@@ -64,7 +60,7 @@ describe('foundation route table', () => {
   );
 
   it('renders distinct TourProduct identities through the dynamic Tour Detail route', () => {
-    renderRoute(routeBuilders.tourDetail('demo-golf-product-b'));
+    renderRoute(routeBuilders.tourDetail(104));
 
     expect(
       screen.getByRole('heading', { level: 1, name: 'Golf Challenge · Journey 02' }),

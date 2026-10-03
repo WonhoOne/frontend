@@ -1,3 +1,5 @@
+import { serializeResourceId, type ResourceId } from '@/shared/lib/resourceIdentity';
+
 export const routePaths = {
   home: '/',
   tours: '/tours',
@@ -44,11 +46,11 @@ export const routeBuilders = {
 
     return `${routePaths.tours}?${search.toString()}`;
   },
-  tourDetail(tourId: string) {
-    return `/tours/${encodePathSegment(tourId)}`;
+  tourDetail(tourId: ResourceId) {
+    return `/tours/${serializeResourceId(tourId)}`;
   },
-  configure(tourId: string) {
-    return `/tours/${encodePathSegment(tourId)}/configure`;
+  configure(tourId: ResourceId) {
+    return `/tours/${serializeResourceId(tourId)}/configure`;
   },
   reservationSuccess(reservationId: string) {
     return `/reservation/${encodePathSegment(reservationId)}/success`;

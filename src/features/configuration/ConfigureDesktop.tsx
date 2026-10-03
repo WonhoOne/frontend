@@ -24,7 +24,7 @@ const DESKTOP_CONFIGURE_QUERY = '(min-width: 1024px)';
 interface ConfigureDesktopProps {
   participantRule: ParticipantCountRule;
   scenario: ConfigureFixtureScenario;
-  tourProductId: string;
+  tourProductId: number;
   onReview: () => void;
   price?: PriceDisplayModel;
   runtimeState?: ConfigureRuntimeState;

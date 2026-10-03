@@ -3,8 +3,8 @@ import { expect, test, type Page } from '@playwright/test';
 const routeCases = [
   ['/', 'A journey made for your moment.'],
   ['/tours', 'Four ways to travel differently.'],
-  ['/tours/demo-honeymoon-product-a', 'Honeymoon Romance · Journey 01'],
-  ['/tours/e2e-tour-id/configure', 'Configure'],
+  ['/tours/101', 'Honeymoon Romance · Journey 01'],
+  ['/tours/42/configure', 'Configure'],
   ['/reservation/review', 'Reservation Review'],
   ['/reservation/801/success', 'Reservation received'],
   ['/reservations/801', 'Mock 제주 허니문'],
@@ -41,7 +41,7 @@ test.describe('Foundation routes', () => {
   test('dynamic route parameters resolve Product identity and preserve other route params', async ({
     page,
   }) => {
-    await page.goto('/tours/demo-golf-product-b');
+    await page.goto('/tours/104');
     await expect(
       page.getByRole('heading', { level: 1, name: 'Golf Challenge · Journey 02' }),
     ).toBeVisible();
@@ -306,7 +306,7 @@ test.describe('Foundation responsive baseline', () => {
 
   test('640px reflow remains usable as the 1280px-at-200%-zoom equivalent', async ({ page }) => {
     await page.setViewportSize({ width: 640, height: 720 });
-    await page.goto('/tours/e2e-tour-id/configure');
+    await page.goto('/tours/42/configure');
 
     const viewport = await page.evaluate(() => ({
       innerWidth: window.innerWidth,

@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router';
 import { routeBuilders, routePaths } from '@/app/router/paths';
 import { ConfigureDesktop, createContractNeutralConfigureFixture } from '@/features/configuration';
 import { getConfigureDraftEntryState, useReservationDraft } from '@/features/reservation';
+import { parseResourceIdRouteParam } from '@/shared/lib/resourceIdentity';
 import { PageContainer, TextLink } from '@/shared/ui';
 
 import styles from '@/pages/configure/ConfigurePage.module.css';
@@ -14,14 +15,15 @@ export function ConfigurePage() {
   const { draft, hydrationStatus, persistenceStatus } = useReservationDraft();
   const scenario = useMemo(() => createContractNeutralConfigureFixture(), []);
 
-  if (tourId === undefined) {
+  const routeTourProductId = parseResourceIdRouteParam(tourId);
+  if (routeTourProductId === null) {
     return null;
   }
 
   const entryState = getConfigureDraftEntryState({
     draft,
     hydrationStatus,
-    routeTourProductId: tourId,
+    routeTourProductId,
   });
 
   if (entryState.status !== 'ready') {
@@ -53,10 +55,14 @@ export function ConfigurePage() {
                 <TextLink to={routeBuilders.configure(entryState.savedTourProductId)}>
                   Resume saved trip
                 </TextLink>
-                <TextLink to={routeBuilders.tourDetail(tourId)}>View this tour</TextLink>
+                <TextLink to={routeBuilders.tourDetail(routeTourProductId)}>
+                  View this tour
+                </TextLink>
               </>
             ) : (
-              <TextLink to={routeBuilders.tourDetail(tourId)}>Back to tour details</TextLink>
+              <TextLink to={routeBuilders.tourDetail(routeTourProductId)}>
+                Back to tour details
+              </TextLink>
             )}
           </div>
         </section>
@@ -86,7 +92,9 @@ export function ConfigurePage() {
             </p>
           </div>
 
-          <TextLink to={routeBuilders.tourDetail(tourId)}>Change style/schedule</TextLink>
+          <TextLink to={routeBuilders.tourDetail(routeTourProductId)}>
+            Change style/schedule
+          </TextLink>
         </header>
 
         {persistenceStatus === 'degraded' ? (
@@ -98,14 +106,14 @@ export function ConfigurePage() {
 
         <ConfigureDesktop
           onReturnToTour={() => {
-            void navigate(routeBuilders.tourDetail(tourId));
+            void navigate(routeBuilders.tourDetail(routeTourProductId));
           }}
           onReview={() => {
             void navigate(routePaths.reservationReview);
           }}
           participantRule="general"
           scenario={scenario}
-          tourProductId={tourId}
+          tourProductId={routeTourProductId}
         />
       </div>
     </PageContainer>

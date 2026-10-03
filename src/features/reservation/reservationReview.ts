@@ -1,13 +1,14 @@
 import type { ReservationDraftV1 } from '@/features/reservation/ReservationDraft';
+import type { ResourceId } from '@/shared/lib/resourceIdentity';
 
 export interface ReservationReviewSelectionResolver {
-  tourProductLabel(tourProductId: string): string;
-  scheduleLabel(scheduleId: string): string;
+  tourProductLabel(tourProductId: ResourceId): string;
+  scheduleLabel(scheduleId: ResourceId): string;
   optionLabel(selectionKey: string): string;
 }
 
 export interface ReservationReviewModel {
-  tourProductId: string;
+  tourProductId: ResourceId;
   tourProductLabel: string;
   styleLabel: string;
   scheduleLabel: string;
@@ -67,7 +68,7 @@ export function createReservationReviewModel(
  * canonical Backend option ID라고 주장하지 않는다.
  */
 export const previewReservationReviewResolver: ReservationReviewSelectionResolver = {
-  tourProductLabel: (id) => (id.startsWith('demo-') ? 'Selected journey' : 'Selected tour'),
+  tourProductLabel: () => 'Selected tour',
   scheduleLabel: () => 'Selected schedule',
   optionLabel: (key) => {
     const labels: Record<string, string> = {

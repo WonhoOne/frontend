@@ -1,3 +1,5 @@
+import type { ResourceId } from '@/shared/lib/resourceIdentity';
+
 export type TourDetailTheme =
   'HONEYMOON_ROMANCE' | 'PARENTS_HEALING' | 'GOLF_CHALLENGE' | 'OUTDOOR_TREKKING';
 
@@ -29,7 +31,7 @@ export interface TourDetailModel {
    * CONTRACT: This identifies a TourProduct, never a Theme.
    * Preview values do not claim a Backend ID type or format.
    */
-  id: string;
+  id: ResourceId;
   theme: TourDetailTheme;
   themeLabel: string;
   name: string;
@@ -51,7 +53,7 @@ export interface TourDetailModel {
  * - UI가 raw reservation count를 이용해 confirmed 여부를 재계산하지 않는다.
  */
 export interface ScheduleChoiceModel {
-  selectionKey: string;
+  selectionKey: ResourceId;
   dateLabel: string;
   statusLabel: string;
   recruitmentSummary: string;

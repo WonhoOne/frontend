@@ -32,14 +32,14 @@ function readFixtureState() {
 
 function TourScheduleStateFixture() {
   const [retryResult, setRetryResult] = useState('idle');
-  const tour = findTourDetailPreview('demo-golf-product-a');
+  const tour = findTourDetailPreview(103);
 
   if (tour === null) {
     throw new Error('Tour Detail schedule fixture requires the Golf preview TourProduct.');
   }
 
   return (
-    <MemoryRouter initialEntries={['/tours/demo-golf-product-a']}>
+    <MemoryRouter initialEntries={['/tours/103']}>
       <TourDetailPageView
         coreState={{ status: 'ready', tour }}
         onRetrySchedule={() => setRetryResult('schedule-retry')}

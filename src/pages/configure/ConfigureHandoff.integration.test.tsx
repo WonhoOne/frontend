@@ -34,9 +34,9 @@ class MemoryStorage implements ReservationDraftStorage {
 
 function staleDifferentTourDraft(): ReservationDraftV1 {
   return {
-    schemaVersion: 1,
-    tourProductId: 'tour-old',
-    tourScheduleId: 'schedule-old',
+    schemaVersion: 2,
+    tourProductId: 41,
+    tourScheduleId: 6,
     tourStyle: 'PREMIUM',
     participantCount: 8,
     configuration: {
@@ -63,14 +63,14 @@ function PublicTourDetailHandoffProbe() {
         dispatch(
           createConfigureHandoffAction(
             {
-              tourProductId: 'tour-42',
+              tourProductId: 42,
               tourStyle: 'GRAND',
-              tourScheduleId: 'schedule-7',
+              tourScheduleId: 7,
             },
             10,
           ),
         );
-        void navigate(routeBuilders.configure('tour-42'));
+        void navigate(routeBuilders.configure(42));
       }}
       type="button"
     >
@@ -99,7 +99,7 @@ describe('Tour Detail → Configure public handoff boundary', () => {
         },
       ],
       {
-        initialEntries: ['/tours/tour-42'],
+        initialEntries: ['/tours/42'],
       },
     );
 
@@ -112,7 +112,7 @@ describe('Tour Detail → Configure public handoff boundary', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Continue to Configure' }));
 
     expect(await screen.findByRole('heading', { name: 'Build your trip' })).toBeVisible();
-    expect(router.state.location.pathname).toBe('/tours/tour-42/configure');
+    expect(router.state.location.pathname).toBe('/tours/42/configure');
     expect(screen.getByText(/Fixture theme · Grand · Fixture schedule/)).toBeVisible();
     expect(screen.getByRole('spinbutton', { name: /participants/i })).toHaveValue(null);
     expect(screen.getByRole('radio', { name: /Fixture hotel A/i })).not.toBeChecked();
@@ -126,9 +126,9 @@ describe('Tour Detail → Configure public handoff boundary', () => {
 
       const restored = JSON.parse(serialized ?? '{}') as unknown;
       expect(restored).toMatchObject({
-        tourProductId: 'tour-42',
+        tourProductId: 42,
         tourStyle: 'GRAND',
-        tourScheduleId: 'schedule-7',
+        tourScheduleId: 7,
         participantCount: null,
         configuration: {
           hotelSelectionKey: null,
