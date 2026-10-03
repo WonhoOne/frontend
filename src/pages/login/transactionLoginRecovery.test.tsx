@@ -74,9 +74,9 @@ describe('transaction login recovery public boundary', () => {
     window.sessionStorage.setItem(
       RESERVATION_DRAFT_STORAGE_KEY,
       JSON.stringify({
-        schemaVersion: 1,
-        tourProductId: 'synthetic-tour',
-        tourScheduleId: 'synthetic-schedule',
+        schemaVersion: 2,
+        tourProductId: 42,
+        tourScheduleId: 7,
         tourStyle: 'CLASSIC',
         participantCount: 2,
         configuration: {
@@ -121,7 +121,7 @@ describe('transaction login recovery public boundary', () => {
     expect(
       await screen.findByRole('heading', { name: 'Reservation Review Boundary' }),
     ).toBeVisible();
-    expect(screen.getByLabelText('tour product')).toHaveTextContent('synthetic-tour');
+    expect(screen.getByLabelText('tour product')).toHaveTextContent('42');
     expect(reservationSubmit).not.toHaveBeenCalled();
 
     fireEvent.click(screen.getByRole('button', { name: 'Confirm reservation' }));
