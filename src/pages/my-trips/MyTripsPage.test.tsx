@@ -33,6 +33,7 @@ function QueryWrapper({ children, queryClient }: PropsWithChildren<{ queryClient
 afterEach(() => {
   clearReturnContext();
   window.sessionStorage.clear();
+  Object.defineProperty(navigator, 'onLine', { configurable: true, value: true });
   vi.restoreAllMocks();
 });
 
@@ -152,6 +153,7 @@ describe('MyTripsPage', () => {
         price: { amount: 2200000, currency: 'KRW' },
       },
     ] satisfies readonly TravelHistoryItemModel[]);
+    Object.defineProperty(navigator, 'onLine', { configurable: true, value: false });
     const getTravelHistory = vi.fn().mockRejectedValue(new Error('offline'));
     const failedRefresh: TravelHistoryDataSource = { getTravelHistory };
 
@@ -165,7 +167,7 @@ describe('MyTripsPage', () => {
 
     expect(await screen.findByRole('heading', { name: 'Cached Journey' })).toBeVisible();
     expect(
-      await screen.findByText('최신 기록을 확인하지 못했습니다. 이전 기록을 표시합니다.'),
+      await screen.findByText('오프라인 상태입니다. 저장된 여행 기록을 표시하고 있습니다.'),
     ).toBeVisible();
     fireEvent.click(screen.getByRole('button', { name: '다시 시도' }));
     expect(getTravelHistory).toHaveBeenCalled();
