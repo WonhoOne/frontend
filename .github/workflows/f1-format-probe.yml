@@ -14,8 +14,11 @@ jobs:
           node-version: 24.21.0
           cache: npm
       - run: npm ci
-      - name: Print Prettier diff
+      - name: Print formatted contract files
         run: |
           npx prettier --write src/integrations/backend/contracts
-          git diff -- src/integrations/backend/contracts
+          for file in             src/integrations/backend/contracts/apiError.test.ts             src/integrations/backend/contracts/contractMappingError.ts             src/integrations/backend/contracts/decoder.ts             src/integrations/backend/contracts/tourProduct.test.ts             src/integrations/backend/contracts/tourProduct.ts             src/integrations/backend/contracts/tourSchedule.test.ts             src/integrations/backend/contracts/tourSchedule.ts; do
+            echo "===== $file ====="
+            cat "$file"
+          done
           exit 1
