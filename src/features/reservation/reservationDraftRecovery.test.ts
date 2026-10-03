@@ -10,8 +10,8 @@ import {
 function completeDraft(): ReservationDraftV1 {
   return {
     schemaVersion: 2,
-    tourProductId: 'tour-a',
-    tourScheduleId: 'schedule-a',
+    tourProductId: 101,
+    tourScheduleId: 1001,
     tourStyle: 'GRAND',
     participantCount: 2,
     configuration: {
@@ -32,7 +32,7 @@ describe('ReservationDraft route recovery', () => {
       getConfigureDraftEntryState({
         draft: empty,
         hydrationStatus: 'empty',
-        routeTourProductId: 'tour-a',
+        routeTourProductId: 101,
       }),
     ).toEqual({ status: 'missing' });
 
@@ -40,7 +40,7 @@ describe('ReservationDraft route recovery', () => {
       getConfigureDraftEntryState({
         draft: empty,
         hydrationStatus: 'discarded',
-        routeTourProductId: 'tour-a',
+        routeTourProductId: 101,
       }),
     ).toEqual({ status: 'discarded' });
   });
@@ -50,11 +50,11 @@ describe('ReservationDraft route recovery', () => {
       getConfigureDraftEntryState({
         draft: completeDraft(),
         hydrationStatus: 'restored',
-        routeTourProductId: 'tour-b',
+        routeTourProductId: 102,
       }),
     ).toEqual({
       status: 'route-mismatch',
-      savedTourProductId: 'tour-a',
+      savedTourProductId: 101,
     });
   });
 
@@ -66,7 +66,7 @@ describe('ReservationDraft route recovery', () => {
           tourScheduleId: null,
         },
         hydrationStatus: 'restored',
-        routeTourProductId: 'tour-a',
+        routeTourProductId: 101,
       }),
     ).toEqual({ status: 'incomplete' });
   });
@@ -85,7 +85,7 @@ describe('ReservationDraft route recovery', () => {
       }),
     ).toEqual({
       status: 'incomplete',
-      tourProductId: 'tour-a',
+      tourProductId: 101,
     });
 
     expect(
@@ -95,7 +95,7 @@ describe('ReservationDraft route recovery', () => {
       }),
     ).toEqual({
       status: 'ready',
-      tourProductId: 'tour-a',
+      tourProductId: 101,
     });
   });
 });
