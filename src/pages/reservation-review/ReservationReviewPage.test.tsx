@@ -84,11 +84,11 @@ describe('ReservationReviewPage composition', () => {
     expect(screen.getByText('Fixture meal A')).toBeVisible();
     expect(screen.getByRole('link', { name: 'Change configuration' })).toHaveAttribute(
       'href',
-      '/tours/tour-42/configure',
+      '/tours/42/configure',
     );
     expect(screen.getByRole('link', { name: 'Change style or schedule' })).toHaveAttribute(
       'href',
-      '/tours/tour-42',
+      '/tours/42',
     );
     expect(
       screen.getByText(/Final price and any loyalty discount are confirmed by the server/),
@@ -131,7 +131,7 @@ describe('ReservationReviewPage composition', () => {
     expect(screen.getByRole('heading', { name: 'Finish configuring your trip' })).toBeVisible();
     expect(screen.getByRole('link', { name: 'Back to configuration' })).toHaveAttribute(
       'href',
-      '/tours/tour-42/configure',
+      '/tours/42/configure',
     );
   });
   it('connects the public 401 seam to Login without clearing or resubmitting the Draft', async () => {
