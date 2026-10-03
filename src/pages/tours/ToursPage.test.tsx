@@ -80,10 +80,10 @@ describe('ToursPage', () => {
 
     expect(
       screen.getByRole('link', { name: 'View Golf Challenge · Journey 01 tour details' }),
-    ).toHaveAttribute('href', '/tours/demo-golf-product-a');
+    ).toHaveAttribute('href', '/tours/103');
     expect(
       screen.getByRole('link', { name: 'View Golf Challenge · Journey 02 tour details' }),
-    ).toHaveAttribute('href', '/tours/demo-golf-product-b');
+    ).toHaveAttribute('href', '/tours/104');
   });
 
   it('never uses a Theme value itself as a TourProduct detail route', () => {
@@ -235,6 +235,6 @@ describe('ToursPage', () => {
     expect(screen.getByText('Golf Challenge visual unavailable')).toBeVisible();
     expect(
       screen.getByRole('link', { name: 'View Golf Challenge · Journey 01 tour details' }),
-    ).toHaveAttribute('href', '/tours/demo-golf-product-a');
+    ).toHaveAttribute('href', '/tours/103');
   });
 });
