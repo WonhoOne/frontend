@@ -4,7 +4,7 @@ test.describe('Tour Detail core editorial', () => {
   test('renders a direct TourProduct URL without requiring Discovery navigation state', async ({
     page,
   }) => {
-    await page.goto('/tours/demo-honeymoon-product-a');
+    await page.goto('/tours/101');
 
     await expect(
       page.getByRole('heading', { level: 1, name: 'Honeymoon Romance · Journey 01' }),
@@ -19,12 +19,12 @@ test.describe('Tour Detail core editorial', () => {
   });
 
   test('keeps two Golf TourProducts as distinct detail routes', async ({ page }) => {
-    await page.goto('/tours/demo-golf-product-a');
+    await page.goto('/tours/103');
     await expect(
       page.getByRole('heading', { level: 1, name: 'Golf Challenge · Journey 01' }),
     ).toBeVisible();
 
-    await page.goto('/tours/demo-golf-product-b');
+    await page.goto('/tours/104');
     await expect(
       page.getByRole('heading', { level: 1, name: 'Golf Challenge · Journey 02' }),
     ).toBeVisible();
@@ -32,7 +32,7 @@ test.describe('Tour Detail core editorial', () => {
   });
 
   test('mirrors Theme Style restrictions without preselecting a Style', async ({ page }) => {
-    await page.goto('/tours/demo-honeymoon-product-a');
+    await page.goto('/tours/101');
 
     const honeymoonStyles = page.getByRole('group', { name: 'Tour style options' });
 
@@ -41,7 +41,7 @@ test.describe('Tour Detail core editorial', () => {
     await expect(page.getByRole('radio', { name: /Grand/ })).not.toBeChecked();
     await expect(page.getByRole('radio', { name: /Premium/ })).not.toBeChecked();
 
-    await page.goto('/tours/demo-golf-product-a');
+    await page.goto('/tours/103');
 
     const golfStyles = page.getByRole('group', { name: 'Tour style options' });
 
@@ -52,7 +52,7 @@ test.describe('Tour Detail core editorial', () => {
   });
 
   test('supports native keyboard Style selection and visible focus', async ({ page }) => {
-    await page.goto('/tours/demo-golf-product-a');
+    await page.goto('/tours/103');
 
     const classic = page.getByRole('radio', { name: /Classic/ });
     const grand = page.getByRole('radio', { name: /Grand/ });
@@ -91,7 +91,7 @@ test.describe('Tour Detail core editorial', () => {
     page,
   }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto('/tours/demo-golf-product-a');
+    await page.goto('/tours/103');
 
     const classic = page.getByRole('radio', { name: /Classic/ });
 
@@ -109,7 +109,7 @@ test.describe('Tour Detail core editorial', () => {
   test('selects an available schedule but keeps unavailable schedules disabled', async ({
     page,
   }) => {
-    await page.goto('/tours/demo-golf-product-a');
+    await page.goto('/tours/103');
 
     const available = page.getByRole('radio', { name: /Schedule preview A/ });
     const unavailable = page.getByRole('radio', { name: /Schedule preview B/ });
@@ -124,7 +124,7 @@ test.describe('Tour Detail core editorial', () => {
   });
 
   test('renders Honeymoon recruitment presentation from approved wording', async ({ page }) => {
-    await page.goto('/tours/demo-honeymoon-product-a');
+    await page.goto('/tours/101');
 
     await expect(
       page.getByText('2 couples/teams required · 1 couple/team = 2 participants'),
@@ -148,7 +148,7 @@ test.describe('Tour Detail core editorial', () => {
       page,
     }) => {
       await page.setViewportSize({ width, height: 900 });
-      await page.goto('/tours/demo-golf-product-a');
+      await page.goto('/tours/103');
 
       await expect(
         page.getByRole('heading', { level: 1, name: 'Golf Challenge · Journey 01' }),
