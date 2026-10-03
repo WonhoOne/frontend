@@ -1,0 +1,21 @@
+name: F1 Format Probe
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  format-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.21.0
+          cache: npm
+      - run: npm ci
+      - name: Print Prettier diff
+        run: |
+          npx prettier --write src/integrations/backend/contracts
+          git diff -- src/integrations/backend/contracts
+          exit 1
