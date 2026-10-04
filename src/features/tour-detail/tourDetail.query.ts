@@ -2,7 +2,11 @@ import { queryOptions, useQuery } from '@tanstack/react-query';
 
 import type { TourDetailDataSource } from '@/features/tour-detail/TourDetailDataSource';
 import { TourDetailPresentationError } from '@/features/tour-detail/tourDetail.adapter';
-import type { TourDetailCoreErrorReason, TourDetailCoreState } from '@/features/tour-detail/tourDetail.model';
+import type {
+  TourDetailCoreErrorReason,
+  TourDetailCoreState,
+  TourDetailModel,
+} from '@/features/tour-detail/tourDetail.model';
 import {
   BackendHttpError,
   BackendMalformedResponseError,
@@ -65,7 +69,7 @@ export function useTourDetail(dataSource: TourDetailDataSource, tourId: Resource
 }
 
 export interface TourDetailQuerySnapshot {
-  data: TourDetailCoreState extends { status: 'ready'; tour: infer T } ? T | undefined : never;
+  data: TourDetailModel | undefined;
   error: unknown;
   isError: boolean;
   isFetching: boolean;
