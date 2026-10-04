@@ -21,6 +21,10 @@ export const tourDiscoveryPreviewProducts = [
     name: 'Honeymoon Romance · Journey 01',
     description: 'A curated journey shaped by the Honeymoon Romance theme.',
     availableStyles: ['GRAND', 'PREMIUM'],
+    stylePrices: [
+      { style: 'GRAND', amount: 1800000, currency: 'KRW' },
+      { style: 'PREMIUM', amount: 2400000, currency: 'KRW' },
+    ],
     media: {
       imageSrc: null,
       imageAlt: '',
@@ -33,6 +37,10 @@ export const tourDiscoveryPreviewProducts = [
     name: 'Parents Healing · Journey 01',
     description: 'A curated journey shaped by the Parents Healing theme.',
     availableStyles: ['GRAND', 'PREMIUM'],
+    stylePrices: [
+      { style: 'GRAND', amount: 1600000, currency: 'KRW' },
+      { style: 'PREMIUM', amount: 2200000, currency: 'KRW' },
+    ],
     media: {
       imageSrc: null,
       imageAlt: '',
@@ -45,6 +53,11 @@ export const tourDiscoveryPreviewProducts = [
     name: 'Golf Challenge · Journey 01',
     description: 'A curated journey shaped by the Golf Challenge theme.',
     availableStyles: ['CLASSIC', 'GRAND', 'PREMIUM'],
+    stylePrices: [
+      { style: 'CLASSIC', amount: 1200000, currency: 'KRW' },
+      { style: 'GRAND', amount: 1800000, currency: 'KRW' },
+      { style: 'PREMIUM', amount: 2500000, currency: 'KRW' },
+    ],
     media: {
       imageSrc: null,
       imageAlt: '',
@@ -57,6 +70,11 @@ export const tourDiscoveryPreviewProducts = [
     name: 'Golf Challenge · Journey 02',
     description: 'A second TourProduct in the same Theme, with its own detail identity.',
     availableStyles: ['CLASSIC', 'GRAND', 'PREMIUM'],
+    stylePrices: [
+      { style: 'CLASSIC', amount: 1300000, currency: 'KRW' },
+      { style: 'GRAND', amount: 1900000, currency: 'KRW' },
+      { style: 'PREMIUM', amount: 2600000, currency: 'KRW' },
+    ],
     media: {
       imageSrc: null,
       imageAlt: '',
@@ -69,6 +87,11 @@ export const tourDiscoveryPreviewProducts = [
     name: 'Outdoor Trekking · Journey 01',
     description: 'A curated journey shaped by the Outdoor Trekking theme.',
     availableStyles: ['CLASSIC', 'GRAND', 'PREMIUM'],
+    stylePrices: [
+      { style: 'CLASSIC', amount: 1100000, currency: 'KRW' },
+      { style: 'GRAND', amount: 1700000, currency: 'KRW' },
+      { style: 'PREMIUM', amount: 2300000, currency: 'KRW' },
+    ],
     media: {
       imageSrc: null,
       imageAlt: '',
