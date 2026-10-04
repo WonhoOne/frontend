@@ -42,7 +42,8 @@ const tourProducts = [
     id: 104,
     theme: 'GOLF_CHALLENGE',
     name: 'Golf Challenge · Journey 02',
-    description: 'A second TourProduct in the same Theme, with its own detail identity.',
+    description:
+      'A second TourProduct in the same Theme, with its own detail identity.',
     availableStyles: ['CLASSIC', 'GRAND', 'PREMIUM'],
     stylePrices: [
       { style: 'CLASSIC', amount: 1300000, currency: 'KRW' },
@@ -72,12 +73,16 @@ const server = createServer((request, response) => {
   }
 
   if (request.method === 'GET' && request.url === '/api/v1/tours') {
-    response.writeHead(200, { 'content-type': 'application/json; charset=utf-8' });
+    response.writeHead(200, {
+      'content-type': 'application/json; charset=utf-8',
+    });
     response.end(JSON.stringify(tourProducts));
     return;
   }
 
-  response.writeHead(404, { 'content-type': 'application/json; charset=utf-8' });
+  response.writeHead(404, {
+    'content-type': 'application/json; charset=utf-8',
+  });
   response.end(JSON.stringify({ code: 'NOT_FOUND' }));
 });
 
