@@ -83,9 +83,3 @@ const server = createServer((request, response) => {
 
 server.listen(port, host);
 
-function closeServer() {
-  server.close(() => process.exit(0));
-}
-
-process.on('SIGINT', closeServer);
-process.on('SIGTERM', closeServer);
