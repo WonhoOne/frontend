@@ -6,6 +6,7 @@ import {
   toTourDetailCoreState,
   tourDetailQueryOptions,
   type TourDetailDataSource,
+  type TourDetailModel,
 } from '@/features/tour-detail';
 import { BackendHttpError, BackendNetworkError } from '@/integrations/backend/client/backendHttpError';
 import { ContractMappingError } from '@/integrations/backend/contracts';
@@ -13,23 +14,24 @@ import { ContractMappingError } from '@/integrations/backend/contracts';
 describe('Tour Detail query boundary', () => {
   it('forwards TanStack Query AbortSignal independently to the detail DataSource', async () => {
     let receivedSignal: AbortSignal | undefined;
+    const tour: TourDetailModel = {
+      id: 103,
+      theme: 'GOLF_CHALLENGE',
+      themeLabel: 'Golf Challenge',
+      name: 'Golf',
+      summary: 'Golf',
+      storyTitle: 'Story',
+      storyBody: 'Body',
+      heroMedia: { imageSrc: null, imageAlt: '', fallbackLabel: 'Hero' },
+      storyMedia: { imageSrc: null, imageAlt: '', fallbackLabel: 'Story' },
+      includedExperiences: [],
+      availableStyles: ['CLASSIC'],
+      stylePrices: [{ style: 'CLASSIC', amount: 1000, currency: 'KRW' }],
+    };
     const source: TourDetailDataSource = {
       getTourProduct: vi.fn((_, options) => {
         receivedSignal = options?.signal;
-        return Promise.resolve({
-          id: 103,
-          theme: 'GOLF_CHALLENGE',
-          themeLabel: 'Golf Challenge',
-          name: 'Golf',
-          summary: 'Golf',
-          storyTitle: 'Story',
-          storyBody: 'Body',
-          heroMedia: { imageSrc: null, imageAlt: '', fallbackLabel: 'Hero' },
-          storyMedia: { imageSrc: null, imageAlt: '', fallbackLabel: 'Story' },
-          includedExperiences: [],
-          availableStyles: ['CLASSIC'],
-          stylePrices: [{ style: 'CLASSIC', amount: 1000, currency: 'KRW' }],
-        });
+        return Promise.resolve(tour);
       }),
     };
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
