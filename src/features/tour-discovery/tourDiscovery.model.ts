@@ -20,12 +20,19 @@ export interface ThemeDiscoveryPresentation {
   media: DiscoveryMediaModel;
 }
 
+export interface TourStylePriceModel {
+  style: TourStyle;
+  amount: number;
+  currency: 'KRW';
+}
+
 export interface TourProductSummaryModel {
   id: ResourceId;
   theme: TourTheme;
   name: string;
   description: string;
   availableStyles: readonly TourStyle[];
+  stylePrices: readonly TourStylePriceModel[];
   media: DiscoveryMediaModel;
 }
 
