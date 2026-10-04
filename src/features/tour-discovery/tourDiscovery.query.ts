@@ -1,4 +1,4 @@
-import { queryOptions, useQuery, type UseQueryResult } from '@tanstack/react-query';
+import { queryOptions, useQuery } from '@tanstack/react-query';
 
 import type { TourDiscoveryDataSource } from '@/features/tour-discovery/TourDiscoveryDataSource';
 import { TourProductPresentationError } from '@/features/tour-discovery/tourProduct.adapter';
@@ -58,15 +58,13 @@ export function tourDiscoveryQueryOptions(dataSource: TourDiscoveryDataSource) {
   });
 }
 
-export function useTourDiscovery(
-  dataSource: TourDiscoveryDataSource,
-): UseQueryResult<readonly TourProductSummaryModel[], Error> {
+export function useTourDiscovery(dataSource: TourDiscoveryDataSource) {
   return useQuery(tourDiscoveryQueryOptions(dataSource));
 }
 
 export interface TourDiscoveryQuerySnapshot {
   data: readonly TourProductSummaryModel[] | undefined;
-  error: Error | null;
+  error: unknown;
   isError: boolean;
   isFetching: boolean;
   isPending: boolean;
