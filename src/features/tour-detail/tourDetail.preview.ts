@@ -1,9 +1,7 @@
 import { createTourDetailMedia as media, themeDetailPresentations } from '@/features/tour-detail/tourDetailPresentations';
 import type {
-  IncludedExperienceModel,
   TourDetailCoreState,
   TourDetailModel,
-  TourDetailStyle,
   TourDetailTheme,
 } from '@/features/tour-detail/tourDetail.model';
 
