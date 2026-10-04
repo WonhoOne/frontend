@@ -46,7 +46,7 @@ test.describe('Tour Detail → Configure transaction handoff', () => {
     await page.getByRole('radio', { name: /Grand/ }).click();
     await expect(configure).toBeDisabled();
 
-    await page.getByRole('radio', { name: /Schedule preview A/ }).click();
+    await page.getByRole('radio', { name: /2027-03-10 – 2027-03-14/ }).click();
     await expect(configure).toBeEnabled();
 
     await configure.click();
