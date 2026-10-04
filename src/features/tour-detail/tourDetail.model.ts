@@ -24,6 +24,12 @@ export interface IncludedExperienceModel {
   media: TourDetailMediaModel;
 }
 
+export interface TourDetailStylePriceModel {
+  style: TourDetailStyle;
+  amount: number;
+  currency: 'KRW';
+}
+
 export interface TourDetailModel {
   /**
    * Frontend-facing TourProduct identity.
@@ -42,6 +48,7 @@ export interface TourDetailModel {
   storyMedia: TourDetailMediaModel;
   includedExperiences: readonly IncludedExperienceModel[];
   availableStyles: readonly TourDetailStyle[];
+  stylePrices: readonly TourDetailStylePriceModel[];
 }
 
 /**
