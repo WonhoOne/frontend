@@ -1,0 +1,21 @@
+name: F1 E2E API Format Probe
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  format-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.21.0
+          cache: npm
+      - run: npm ci
+      - name: Print formatted E2E public API server
+        run: |
+          npx prettier --write tests/e2e/support/public-api-server.mjs
+          cat tests/e2e/support/public-api-server.mjs
+          exit 1
