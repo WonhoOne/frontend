@@ -13,11 +13,12 @@ import { ContractMappingError } from '@/integrations/backend/contracts';
 describe('Tour Schedule query boundary', () => {
   it('forwards a separate TanStack Query AbortSignal to the schedule DataSource', async () => {
     let receivedSignal: AbortSignal | undefined;
+    const getTourSchedules: TourScheduleDataSource['getTourSchedules'] = (_, options) => {
+      receivedSignal = options?.signal;
+      return Promise.resolve([]);
+    };
     const source: TourScheduleDataSource = {
-      getTourSchedules: vi.fn((_, options) => {
-        receivedSignal = options?.signal;
-        return Promise.resolve([]);
-      }),
+      getTourSchedules: vi.fn(getTourSchedules),
     };
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
 
