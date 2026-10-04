@@ -44,16 +44,10 @@ describe('tour discovery query boundary', () => {
       shouldRetryTourDiscovery(0, new ContractMappingError('TourProduct[]', '$', 'expected-array')),
     ).toBe(false);
     expect(
-      shouldRetryTourDiscovery(
-        0,
-        new BackendMalformedResponseError(metadata, 'invalid-json'),
-      ),
+      shouldRetryTourDiscovery(0, new BackendMalformedResponseError(metadata, 'invalid-json')),
     ).toBe(false);
     expect(
-      shouldRetryTourDiscovery(
-        0,
-        new BackendHttpError({ ...metadata, status: 404 }, null),
-      ),
+      shouldRetryTourDiscovery(0, new BackendHttpError({ ...metadata, status: 404 }, null)),
     ).toBe(false);
     expect(shouldRetryTourDiscovery(0, new BackendNetworkError())).toBe(true);
     expect(shouldRetryTourDiscovery(1, new BackendNetworkError())).toBe(false);
@@ -76,7 +70,9 @@ describe('tour discovery query boundary', () => {
       name: 'Golf',
       description: 'Golf journey',
       availableStyles: ['CLASSIC'] as const,
-      stylePrices: [{ style: 'CLASSIC' as const, amount: 1000, currency: 'KRW' as const }],
+      stylePrices: [
+        { style: 'CLASSIC' as const, amount: 1000, currency: 'KRW' as const },
+      ],
       media: { imageSrc: null, imageAlt: '', fallbackLabel: 'Golf' },
     };
 
