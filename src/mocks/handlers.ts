@@ -1,9 +1,12 @@
-import type { RequestHandler } from 'msw';
+import { http, HttpResponse, type RequestHandler } from 'msw';
 
 /**
- * 공용 mock handler registry다.
+ * Shared development/test mock registry.
  *
- * CONTRACT: Foundation은 Backend DTO나 endpoint를 추측하지 않는다.
- * Product handler는 해당 계약이 승인된 뒤에만 추가한다.
+ * Mock runtime is still gated by DEV + VITE_ENABLE_MOCKS=true in application
+ * bootstrap. The public TourProduct list endpoint is now an approved v0.2
+ * contract, so an empty collection is a valid contract-shaped baseline.
  */
-export const handlers: RequestHandler[] = [];
+export const handlers: RequestHandler[] = [
+  http.get('/api/v1/tours', () => HttpResponse.json([])),
+];
