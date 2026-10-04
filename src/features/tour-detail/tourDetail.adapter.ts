@@ -1,7 +1,9 @@
-import { themeDetailPresentations } from '@/features/tour-detail/tourDetail.preview';
+import {
+  createTourDetailMedia,
+  themeDetailPresentations,
+} from '@/features/tour-detail/tourDetailPresentations';
 import type {
   ScheduleChoiceModel,
-  TourDetailMediaModel,
   TourDetailModel,
   TourDetailTheme,
 } from '@/features/tour-detail/tourDetail.model';
@@ -20,14 +22,6 @@ export class TourDetailPresentationError extends Error {
   }
 }
 
-function media(fallbackLabel: string): TourDetailMediaModel {
-  return {
-    imageSrc: null,
-    imageAlt: '',
-    fallbackLabel,
-  };
-}
-
 export function adaptTourProductDetailDto(dto: TourProductDto): TourDetailModel {
   const presentation = themeDetailPresentations[dto.theme];
 
@@ -43,8 +37,8 @@ export function adaptTourProductDetailDto(dto: TourProductDto): TourDetailModel 
     summary: dto.description,
     storyTitle: presentation.storyTitle,
     storyBody: presentation.storyBody,
-    heroMedia: media(`${presentation.themeLabel} hero visual unavailable`),
-    storyMedia: media(`${presentation.themeLabel} story visual unavailable`),
+    heroMedia: createTourDetailMedia(`${presentation.themeLabel} hero visual unavailable`),
+    storyMedia: createTourDetailMedia(`${presentation.themeLabel} story visual unavailable`),
     includedExperiences: presentation.includedExperiences,
     availableStyles: [...dto.availableStyles],
     stylePrices: dto.stylePrices.map((price) => ({ ...price })),
