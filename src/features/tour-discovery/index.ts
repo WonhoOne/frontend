@@ -1,3 +1,9 @@
+export { BackendTourDiscoveryDataSource } from '@/features/tour-discovery/BackendTourDiscoveryDataSource';
+export { MockTourDiscoveryDataSource } from '@/features/tour-discovery/MockTourDiscoveryDataSource';
+export type {
+  TourDiscoveryDataSource,
+  TourDiscoveryReadOptions,
+} from '@/features/tour-discovery/TourDiscoveryDataSource';
 export { CustomizationPromise } from '@/features/tour-discovery/CustomizationPromise';
 export { HomeHero } from '@/features/tour-discovery/HomeHero';
 export { TourCollectionCard } from '@/features/tour-discovery/TourCollectionCard';
@@ -26,6 +32,20 @@ export type {
   TourDiscoveryCollectionState,
   TourDiscoveryFreshness,
   TourProductSummaryModel,
+  TourStylePriceModel,
   TourStyle,
   TourTheme,
 } from '@/features/tour-discovery/tourDiscovery.model';
+
+export {
+  adaptTourProductDto,
+  TourProductPresentationError,
+} from '@/features/tour-discovery/tourProduct.adapter';
+export {
+  classifyTourDiscoveryError,
+  shouldRetryTourDiscovery,
+  toTourDiscoveryCollectionState,
+  tourDiscoveryQueryKey,
+  tourDiscoveryQueryOptions,
+  useTourDiscovery,
+} from '@/features/tour-discovery/tourDiscovery.query';
