@@ -7,15 +7,15 @@ import { findTourSchedulePreview } from '@/features/tour-detail/tourSchedule.pre
 import type { ResourceId } from '@/shared/lib/resourceIdentity';
 
 export class MockTourScheduleDataSource implements TourScheduleDataSource {
-  async getTourSchedules(tourId: ResourceId, options: TourScheduleReadOptions = {}) {
+  getTourSchedules(tourId: ResourceId, options: TourScheduleReadOptions = {}) {
     if (options.signal?.aborted === true) {
-      throw new DOMException('The operation was aborted.', 'AbortError');
+      return Promise.reject(new DOMException('The operation was aborted.', 'AbortError'));
     }
 
     const tour = findTourDetailPreview(tourId);
-    if (tour === null) return [];
+    if (tour === null) return Promise.resolve([]);
 
     const state = findTourSchedulePreview(tour);
-    return state.status === 'ready' ? state.choices : [];
+    return Promise.resolve(state.status === 'ready' ? state.choices : []);
   }
 }
