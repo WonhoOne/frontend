@@ -60,7 +60,7 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
       expect(configureBox?.height ?? 0).toBeGreaterThanOrEqual(44);
 
       const grand = styleGroup.getByRole('radio', { name: /Grand/ });
-      const schedule = scheduleGroup.getByRole('radio', { name: /Schedule preview A/ });
+      const schedule = scheduleGroup.getByRole('radio', { name: /2027-03-10 – 2027-03-14/ });
       expect(await touchSurfaceHeight(grand)).toBeGreaterThanOrEqual(44);
       expect(await touchSurfaceHeight(schedule)).toBeGreaterThanOrEqual(44);
 
@@ -74,7 +74,7 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
       await expect(configureSection.getByText('Grand', { exact: true })).toBeVisible();
       await expect(
         configureSection.getByText(
-          'Schedule preview A · Dates supplied by approved schedule data',
+          '2027-03-10 – 2027-03-14',
           { exact: true },
         ),
       ).toBeVisible();
@@ -127,7 +127,7 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
     ).toBe(false);
 
     await page.getByRole('radio', { name: /Classic/ }).click();
-    await page.getByRole('radio', { name: /Schedule preview A/ }).click();
+    await page.getByRole('radio', { name: /2027-03-10 – 2027-03-14/ }).click();
 
     const configure = page.getByRole('button', { name: 'Configure this trip' });
     await expect(configure).toBeEnabled();
@@ -149,7 +149,7 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
     await page.keyboard.press('Space');
     await expect(classic).toBeChecked();
 
-    const schedule = page.getByRole('radio', { name: /Schedule preview A/ });
+    const schedule = page.getByRole('radio', { name: /2027-03-10 – 2027-03-14/ });
     await schedule.focus();
     await expect(schedule).toBeFocused();
     await page.keyboard.press('Space');
@@ -193,13 +193,13 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
     });
     expect(selectedStyleMotion).toBe('0s');
 
-    const schedule = page.getByRole('radio', { name: /Schedule preview A/ });
-    const unavailable = page.getByRole('radio', { name: /Schedule preview B/ });
+    const schedule = page.getByRole('radio', { name: /2027-03-10 – 2027-03-14/ });
+    const unavailable = page.getByRole('radio', { name: /2027-04-10 – 2027-04-14/ });
 
     await schedule.click();
     await expect(schedule).toBeChecked();
     await expect(unavailable).toBeDisabled();
-    await expect(page.getByText('Unavailable', { exact: true })).toBeVisible();
+    await expect(page.getByText('Reservation unavailable', { exact: true })).toBeVisible();
 
     const selectedScheduleMotion = await schedule.evaluate((element) => {
       const card = element.closest('[data-selected="true"]');
