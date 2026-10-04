@@ -161,7 +161,7 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
     await expect(configure).toBeFocused();
     await page.keyboard.press('Enter');
 
-    await expect(page).toHaveURL(/\/tours\/demo-golf-product-a\/configure$/);
+    await expect(page).toHaveURL(/\/tours\/103\/configure$/);
     await expect(page.getByRole('heading', { name: 'Build your trip' })).toBeVisible();
   });
 
