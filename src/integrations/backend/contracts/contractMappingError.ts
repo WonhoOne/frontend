@@ -13,7 +13,8 @@ export type ContractMappingFailureReason =
   | 'invalid-date'
   | 'invalid-date-range'
   | 'invalid-money'
-  | 'inconsistent-style-prices';
+  | 'inconsistent-style-prices'
+  | 'resource-identity-mismatch';
 
 /**
  * Indicates that an HTTP response was received but does not satisfy the
