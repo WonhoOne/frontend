@@ -57,9 +57,7 @@ describe('tour discovery query boundary', () => {
     expect(classifyTourDiscoveryError(new BackendNetworkError())).toBe('network');
     expect(classifyTourDiscoveryError(new BackendHttpError(metadata, null))).toBe('server');
     expect(
-      classifyTourDiscoveryError(
-        new ContractMappingError('TourProduct[]', '$', 'expected-array'),
-      ),
+      classifyTourDiscoveryError(new ContractMappingError('TourProduct[]', '$', 'expected-array')),
     ).toBe('data-mismatch');
   });
 
@@ -70,9 +68,7 @@ describe('tour discovery query boundary', () => {
       name: 'Golf',
       description: 'Golf journey',
       availableStyles: ['CLASSIC'] as const,
-      stylePrices: [
-        { style: 'CLASSIC' as const, amount: 1000, currency: 'KRW' as const },
-      ],
+      stylePrices: [{ style: 'CLASSIC' as const, amount: 1000, currency: 'KRW' as const }],
       media: { imageSrc: null, imageAlt: '', fallbackLabel: 'Golf' },
     };
 
