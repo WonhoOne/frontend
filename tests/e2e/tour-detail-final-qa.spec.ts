@@ -78,6 +78,14 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
 
       const actionInner = configureSection.locator(':scope > div').first();
       const actionBox = await actionInner.boundingBox();
+      const actionContentWidth = await actionInner.evaluate((element) => {
+        const style = getComputedStyle(element);
+        return (
+          element.getBoundingClientRect().width -
+          Number.parseFloat(style.paddingLeft) -
+          Number.parseFloat(style.paddingRight)
+        );
+      });
       const activeConfigureBox = await configure.boundingBox();
 
       expect(actionBox).not.toBeNull();
@@ -87,7 +95,7 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
         expect(
           await configureSection.evaluate((element) => getComputedStyle(element).position),
         ).toBe('sticky');
-        expect(activeConfigureBox?.width ?? 0).toBeGreaterThan((actionBox?.width ?? 0) * 0.9);
+        expect(activeConfigureBox?.width ?? 0).toBeGreaterThanOrEqual(actionContentWidth * 0.99);
 
         const footerLink = page
           .locator('footer')
