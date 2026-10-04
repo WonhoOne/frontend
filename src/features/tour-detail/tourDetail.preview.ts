@@ -24,7 +24,7 @@ function media(fallbackLabel: string) {
   } as const;
 }
 
-const themeDetailPresentations = {
+export const themeDetailPresentations = {
   HONEYMOON_ROMANCE: {
     theme: 'HONEYMOON_ROMANCE',
     themeLabel: 'Honeymoon Romance',
@@ -166,6 +166,11 @@ function buildPreviewTour(id: number, theme: TourDetailTheme, name: string): Tou
     storyMedia: media(`${presentation.themeLabel} story visual unavailable`),
     includedExperiences: presentation.includedExperiences,
     availableStyles: presentation.availableStyles,
+    stylePrices: presentation.availableStyles.map((style, index) => ({
+      style,
+      amount: 1000000 + index * 500000,
+      currency: 'KRW' as const,
+    })),
   };
 }
 
