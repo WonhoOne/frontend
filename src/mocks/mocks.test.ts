@@ -5,13 +5,13 @@ import { handlers } from '@/mocks/handlers';
 import { server } from '@/mocks/server';
 
 describe('MSW shared mock boundary', () => {
-  it('registers only the approved public TourProduct collection baseline', async () => {
-    expect(handlers).toHaveLength(1);
+  it('registers the approved public TourProduct and TourSchedule read baselines', async () => {
+    expect(handlers).toHaveLength(3);
 
     const response = await fetch('/api/v1/tours');
 
     expect(response.status).toBe(200);
-    expect(await response.json()).toEqual([]);
+    expect(await response.json()).toHaveLength(3);
   });
 
   it('supports test-local handlers without changing the shared registry', async () => {
@@ -25,6 +25,6 @@ describe('MSW shared mock boundary', () => {
 
     expect(response.status).toBe(200);
     expect(await response.text()).toBe('test-handler-ok');
-    expect(handlers).toHaveLength(1);
+    expect(handlers).toHaveLength(3);
   });
 });
