@@ -15,10 +15,12 @@ export class MockTourDetailDataSource implements TourDetailDataSource {
     const tour = findTourDetailPreview(tourId);
 
     if (tour === null) {
-      return Promise.reject(new BackendHttpError(
-        { status: 404, statusText: 'Not Found', headers: {} },
-        { code: 'TOUR_PRODUCT_NOT_FOUND' },
-      ));
+      return Promise.reject(
+        new BackendHttpError(
+          { status: 404, statusText: 'Not Found', headers: {} },
+          { code: 'TOUR_PRODUCT_NOT_FOUND' },
+        ),
+      );
     }
 
     return Promise.resolve(tour);

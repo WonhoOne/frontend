@@ -53,10 +53,7 @@ export function shouldRetryTourDetail(failureCount: number, error: unknown) {
   return failureCount < 1;
 }
 
-export function tourDetailQueryOptions(
-  dataSource: TourDetailDataSource,
-  tourId: ResourceId,
-) {
+export function tourDetailQueryOptions(dataSource: TourDetailDataSource, tourId: ResourceId) {
   return queryOptions({
     queryKey: tourDetailQueryKey(tourId),
     queryFn: ({ signal }) => dataSource.getTourProduct(tourId, { signal }),

@@ -16,8 +16,6 @@ export class BackendTourScheduleDataSource implements TourScheduleDataSource {
       ...(options.signal === undefined ? {} : { signal: options.signal }),
     });
 
-    return decodeTourScheduleListDto(response.body).map((dto) =>
-      adaptTourScheduleDto(dto, tourId),
-    );
+    return decodeTourScheduleListDto(response.body).map((dto) => adaptTourScheduleDto(dto, tourId));
   }
 }

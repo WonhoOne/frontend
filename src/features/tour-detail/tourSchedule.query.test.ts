@@ -67,11 +67,7 @@ describe('Tour Schedule query boundary', () => {
     expect(
       shouldRetryTourSchedule(
         0,
-        new ContractMappingError(
-          'TourSchedule',
-          '$.tourId',
-          'resource-identity-mismatch',
-        ),
+        new ContractMappingError('TourSchedule', '$.tourId', 'resource-identity-mismatch'),
       ),
     ).toBe(false);
   });

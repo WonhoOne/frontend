@@ -6,8 +6,5 @@ export interface TourDetailReadOptions {
 }
 
 export interface TourDetailDataSource {
-  getTourProduct(
-    tourId: ResourceId,
-    options?: TourDetailReadOptions,
-  ): Promise<TourDetailModel>;
+  getTourProduct(tourId: ResourceId, options?: TourDetailReadOptions): Promise<TourDetailModel>;
 }

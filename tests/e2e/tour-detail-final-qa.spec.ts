@@ -73,10 +73,7 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
       await expect(configureSection.getByText('Golf Challenge', { exact: true })).toBeVisible();
       await expect(configureSection.getByText('Grand', { exact: true })).toBeVisible();
       await expect(
-        configureSection.getByText(
-          '2027-03-10 – 2027-03-14',
-          { exact: true },
-        ),
+        configureSection.getByText('2027-03-10 – 2027-03-14', { exact: true }),
       ).toBeVisible();
 
       const actionInner = configureSection.locator(':scope > div').first();

@@ -5,7 +5,11 @@ import type {
   TourDetailModel,
   TourDetailTheme,
 } from '@/features/tour-detail/tourDetail.model';
-import { ContractMappingError, type TourProductDto, type TourScheduleDto } from '@/integrations/backend/contracts';
+import {
+  ContractMappingError,
+  type TourProductDto,
+  type TourScheduleDto,
+} from '@/integrations/backend/contracts';
 import type { ResourceId } from '@/shared/lib/resourceIdentity';
 
 export class TourDetailPresentationError extends Error {
@@ -56,11 +60,7 @@ export function adaptTourScheduleDto(
   requestedTourId: ResourceId,
 ): ScheduleChoiceModel {
   if (dto.tourId !== requestedTourId) {
-    throw new ContractMappingError(
-      'TourSchedule',
-      '$.tourId',
-      'resource-identity-mismatch',
-    );
+    throw new ContractMappingError('TourSchedule', '$.tourId', 'resource-identity-mismatch');
   }
 
   const unitLabel = recruitmentUnitLabel(dto.recruitment.unit);

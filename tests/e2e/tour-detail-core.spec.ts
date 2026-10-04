@@ -126,9 +126,7 @@ test.describe('Tour Detail core editorial', () => {
   test('renders Honeymoon recruitment presentation from approved wording', async ({ page }) => {
     await page.goto('/tours/101');
 
-    await expect(
-      page.getByText('1 / 2 couples/teams · Not confirmed'),
-    ).toBeVisible();
+    await expect(page.getByText('1 / 2 couples/teams · Not confirmed')).toBeVisible();
   });
 
   test('renders an invalid TourProduct identity as branded not found', async ({ page }) => {

@@ -8,7 +8,10 @@ import {
   type TourDetailDataSource,
   type TourDetailModel,
 } from '@/features/tour-detail';
-import { BackendHttpError, BackendNetworkError } from '@/integrations/backend/client/backendHttpError';
+import {
+  BackendHttpError,
+  BackendNetworkError,
+} from '@/integrations/backend/client/backendHttpError';
 import { ContractMappingError } from '@/integrations/backend/contracts';
 
 describe('Tour Detail query boundary', () => {
@@ -64,10 +67,7 @@ describe('Tour Detail query boundary', () => {
     expect(shouldRetryTourDetail(0, new BackendNetworkError())).toBe(true);
     expect(shouldRetryTourDetail(1, new BackendNetworkError())).toBe(false);
     expect(
-      shouldRetryTourDetail(
-        0,
-        new ContractMappingError('TourProduct', '$.theme', 'unknown-enum'),
-      ),
+      shouldRetryTourDetail(0, new ContractMappingError('TourProduct', '$.theme', 'unknown-enum')),
     ).toBe(false);
   });
 });

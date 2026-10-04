@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
+import { adaptTourProductDetailDto, adaptTourScheduleDto } from '@/features/tour-detail';
 import {
-  adaptTourProductDetailDto,
-  adaptTourScheduleDto,
-} from '@/features/tour-detail';
-import { ContractMappingError, type TourProductDto, type TourScheduleDto } from '@/integrations/backend/contracts';
+  ContractMappingError,
+  type TourProductDto,
+  type TourScheduleDto,
+} from '@/integrations/backend/contracts';
 
 const product: TourProductDto = {
   id: 103,

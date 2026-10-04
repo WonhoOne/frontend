@@ -47,10 +47,7 @@ export function shouldRetryTourSchedule(failureCount: number, error: unknown) {
   return failureCount < 1;
 }
 
-export function tourScheduleQueryOptions(
-  dataSource: TourScheduleDataSource,
-  tourId: ResourceId,
-) {
+export function tourScheduleQueryOptions(dataSource: TourScheduleDataSource, tourId: ResourceId) {
   return queryOptions({
     queryKey: tourScheduleQueryKey(tourId),
     queryFn: ({ signal }) => dataSource.getTourSchedules(tourId, { signal }),
