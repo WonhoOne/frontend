@@ -59,11 +59,11 @@ describe('foundation route table', () => {
     },
   );
 
-  it('renders distinct TourProduct identities through the dynamic Tour Detail route', () => {
+  it('renders distinct TourProduct identities through the dynamic Tour Detail route', async () => {
     renderRoute(routeBuilders.tourDetail(104));
 
     expect(
-      screen.getByRole('heading', { level: 1, name: 'Golf Challenge · Journey 02' }),
+      await screen.findByRole('heading', { level: 1, name: 'Golf Challenge · Journey 02' }),
     ).toBeVisible();
   });
 
