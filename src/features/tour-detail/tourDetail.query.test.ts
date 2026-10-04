@@ -28,11 +28,12 @@ describe('Tour Detail query boundary', () => {
       availableStyles: ['CLASSIC'],
       stylePrices: [{ style: 'CLASSIC', amount: 1000, currency: 'KRW' }],
     };
+    const getTourProduct: TourDetailDataSource['getTourProduct'] = (_, options) => {
+      receivedSignal = options?.signal;
+      return Promise.resolve(tour);
+    };
     const source: TourDetailDataSource = {
-      getTourProduct: vi.fn((_, options) => {
-        receivedSignal = options?.signal;
-        return Promise.resolve(tour);
-      }),
+      getTourProduct: vi.fn(getTourProduct),
     };
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
 
