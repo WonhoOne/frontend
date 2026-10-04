@@ -1,9 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import {
-  adaptTourProductDto,
-  themeDiscoveryPresentations,
-} from '@/features/tour-discovery';
+import { adaptTourProductDto, themeDiscoveryPresentations } from '@/features/tour-discovery';
 import type { TourProductDto } from '@/integrations/backend/contracts';
 
 const dto: TourProductDto = {
