@@ -23,14 +23,20 @@ const metadata = {
 
 describe('tour discovery query boundary', () => {
   it('forwards TanStack Query AbortSignal to the DataSource', async () => {
-    const getTourProducts = vi.fn().mockResolvedValue([]);
+    let receivedSignal: AbortSignal | undefined;
+    const getTourProducts = vi.fn(
+      (options?: Parameters<TourDiscoveryDataSource['getTourProducts']>[0]) => {
+        receivedSignal = options?.signal;
+        return Promise.resolve([]);
+      },
+    );
     const source: TourDiscoveryDataSource = { getTourProducts };
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
 
     await client.fetchQuery(tourDiscoveryQueryOptions(source));
 
     expect(getTourProducts).toHaveBeenCalledTimes(1);
-    expect(getTourProducts.mock.calls[0]?.[0]?.signal).toBeInstanceOf(AbortSignal);
+    expect(receivedSignal).toBeInstanceOf(AbortSignal);
   });
 
   it('does not retry contract, malformed-response, or 4xx failures as transient GET failures', () => {
