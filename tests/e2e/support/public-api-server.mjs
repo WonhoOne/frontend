@@ -65,12 +65,25 @@ const tourProducts = [
   },
 ];
 
+function scheduleBaseIdFor(tourId) {
+  return (
+    {
+      101: 1100,
+      102: 1200,
+      103: 1300,
+      104: 1400,
+      105: 1500,
+    }[tourId] ?? tourId * 10
+  );
+}
+
 function schedulesFor(tourId) {
   const coupleTeam = tourId === 101;
+  const baseId = scheduleBaseIdFor(tourId);
 
   return [
     {
-      id: tourId * 10 + 1,
+      id: baseId + 1,
       tourId,
       startDate: '2027-03-10',
       endDate: '2027-03-14',
@@ -83,7 +96,7 @@ function schedulesFor(tourId) {
       },
     },
     {
-      id: tourId * 10 + 2,
+      id: baseId + 2,
       tourId,
       startDate: '2027-04-10',
       endDate: '2027-04-14',
