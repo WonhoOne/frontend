@@ -1,0 +1,53 @@
+name: F1 Detail Format Probe
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  format-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.21.0
+          cache: npm
+      - run: npm ci
+      - name: Print formatted F1-05 files
+        run: |
+          npx prettier --write \
+            src/features/tour-detail/BackendTourScheduleDataSource.ts \
+            src/features/tour-detail/MockTourDetailDataSource.ts \
+            src/features/tour-detail/tourDetail.adapter.test.ts \
+            src/features/tour-detail/tourDetail.adapter.ts \
+            src/features/tour-detail/tourDetail.query.test.ts \
+            src/features/tour-detail/tourDetail.query.ts \
+            src/features/tour-detail/TourDetailDataSource.ts \
+            src/features/tour-detail/tourSchedule.query.test.ts \
+            src/features/tour-detail/tourSchedule.query.ts \
+            tests/e2e/tour-detail-core.spec.ts \
+            tests/e2e/tour-detail-final-qa.spec.ts
+          echo "===== src/features/tour-detail/BackendTourScheduleDataSource.ts ====="
+          cat "src/features/tour-detail/BackendTourScheduleDataSource.ts"
+          echo "===== src/features/tour-detail/MockTourDetailDataSource.ts ====="
+          cat "src/features/tour-detail/MockTourDetailDataSource.ts"
+          echo "===== src/features/tour-detail/tourDetail.adapter.test.ts ====="
+          cat "src/features/tour-detail/tourDetail.adapter.test.ts"
+          echo "===== src/features/tour-detail/tourDetail.adapter.ts ====="
+          cat "src/features/tour-detail/tourDetail.adapter.ts"
+          echo "===== src/features/tour-detail/tourDetail.query.test.ts ====="
+          cat "src/features/tour-detail/tourDetail.query.test.ts"
+          echo "===== src/features/tour-detail/tourDetail.query.ts ====="
+          cat "src/features/tour-detail/tourDetail.query.ts"
+          echo "===== src/features/tour-detail/TourDetailDataSource.ts ====="
+          cat "src/features/tour-detail/TourDetailDataSource.ts"
+          echo "===== src/features/tour-detail/tourSchedule.query.test.ts ====="
+          cat "src/features/tour-detail/tourSchedule.query.test.ts"
+          echo "===== src/features/tour-detail/tourSchedule.query.ts ====="
+          cat "src/features/tour-detail/tourSchedule.query.ts"
+          echo "===== tests/e2e/tour-detail-core.spec.ts ====="
+          cat "tests/e2e/tour-detail-core.spec.ts"
+          echo "===== tests/e2e/tour-detail-final-qa.spec.ts ====="
+          cat "tests/e2e/tour-detail-final-qa.spec.ts"
+          exit 1
