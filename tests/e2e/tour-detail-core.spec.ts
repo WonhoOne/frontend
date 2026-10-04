@@ -111,8 +111,8 @@ test.describe('Tour Detail core editorial', () => {
   }) => {
     await page.goto('/tours/103');
 
-    const available = page.getByRole('radio', { name: /Schedule preview A/ });
-    const unavailable = page.getByRole('radio', { name: /Schedule preview B/ });
+    const available = page.getByRole('radio', { name: /2027-03-10 – 2027-03-14/ });
+    const unavailable = page.getByRole('radio', { name: /2027-04-10 – 2027-04-14/ });
 
     await expect(available).not.toBeChecked();
     await expect(unavailable).toBeDisabled();
@@ -127,7 +127,7 @@ test.describe('Tour Detail core editorial', () => {
     await page.goto('/tours/101');
 
     await expect(
-      page.getByText('2 couples/teams required · 1 couple/team = 2 participants'),
+      page.getByText('1 / 2 couples/teams · Not confirmed'),
     ).toBeVisible();
   });
 
