@@ -4,9 +4,14 @@ import { describe, expect, it } from 'vitest';
 import { handlers } from '@/mocks/handlers';
 import { server } from '@/mocks/server';
 
-describe('MSW Foundation boundary', () => {
-  it('starts with no guessed Product handlers', () => {
-    expect(handlers).toHaveLength(0);
+describe('MSW shared mock boundary', () => {
+  it('registers only the approved public TourProduct collection baseline', async () => {
+    expect(handlers).toHaveLength(1);
+
+    const response = await fetch('/api/v1/tours');
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual([]);
   });
 
   it('supports test-local handlers without changing the shared registry', async () => {
@@ -20,6 +25,6 @@ describe('MSW Foundation boundary', () => {
 
     expect(response.status).toBe(200);
     expect(await response.text()).toBe('test-handler-ok');
-    expect(handlers).toHaveLength(0);
+    expect(handlers).toHaveLength(1);
   });
 });
