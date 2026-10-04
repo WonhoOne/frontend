@@ -1,4 +1,7 @@
-import { createTourDetailMedia as media, themeDetailPresentations } from '@/features/tour-detail/tourDetailPresentations';
+import {
+  createTourDetailMedia as media,
+  themeDetailPresentations,
+} from '@/features/tour-detail/tourDetailPresentations';
 import type {
   TourDetailCoreState,
   TourDetailModel,
