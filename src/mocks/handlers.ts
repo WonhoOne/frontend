@@ -7,6 +7,4 @@ import { http, HttpResponse, type RequestHandler } from 'msw';
  * bootstrap. The public TourProduct list endpoint is now an approved v0.2
  * contract, so an empty collection is a valid contract-shaped baseline.
  */
-export const handlers: RequestHandler[] = [
-  http.get('/api/v1/tours', () => HttpResponse.json([])),
-];
+export const handlers: RequestHandler[] = [http.get('/api/v1/tours', () => HttpResponse.json([]))];
