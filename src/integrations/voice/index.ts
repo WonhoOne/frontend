@@ -37,3 +37,12 @@ export {
   type SpeechRecognitionListener,
 } from './speechRecognitionAdapter';
 export { createBrowserSpeechRecognitionAdapter } from './browserSpeechRecognitionAdapter';
+export {
+  createVoiceRuntime,
+  type CreateVoiceRuntimeOptions,
+  type VoiceRuntime,
+  type VoiceRuntimeEvent,
+  type VoiceRuntimeListener,
+  type VoiceRuntimeError,
+  type VoiceInterpretationFailure,
+} from './voiceRuntime';
