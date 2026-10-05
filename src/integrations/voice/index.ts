@@ -16,3 +16,8 @@ export {
   type VoiceExtraOption,
 } from './voiceCommand';
 export { decodeVoiceCommand, type VoiceCommandDecodeResult } from './voiceCommandDecoder';
+export { normalizeVoiceTranscript } from './voiceTranscriptNormalizer';
+export {
+  interpretVoiceTranscript,
+  type VoiceInterpretationResult,
+} from './voiceCommandInterpreter';
