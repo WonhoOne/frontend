@@ -1,5 +1,7 @@
 import { type VoiceCommand } from './voiceCommand';
 import { decodeVoiceCommand } from './voiceCommandDecoder';
+import { matchDynamicVoiceCandidates } from './voiceDynamicMatcher';
+import { type VoiceInterpretationContext } from './voiceInterpretationContext';
 import {
   THEME_ALIASES,
   STYLE_ALIASES,
@@ -97,6 +99,27 @@ export function interpretVoiceTranscript(transcript: string): VoiceInterpretatio
 
   if (invalidArgument) return failure(normalized, 'INVALID_ARGUMENT');
   return resolveVoiceCandidates(normalized, candidates);
+}
+
+/** V2를 보존하면서 현재 선택지 후보를 동등하게 합친다. 실행/상태 변경은 없다. */
+export function interpretVoiceTranscriptWithContext(
+  transcript: string,
+  context: VoiceInterpretationContext,
+): VoiceInterpretationResult {
+  const staticResult = interpretVoiceTranscript(transcript);
+  if (
+    !staticResult.ok &&
+    staticResult.error.code !== 'UNRECOGNIZED' &&
+    staticResult.error.code !== 'INVALID_ARGUMENT'
+  ) {
+    return staticResult;
+  }
+  const candidates = matchDynamicVoiceCandidates(staticResult.normalizedTranscript, context);
+  if (staticResult.ok) candidates.push(staticResult.command);
+  // ISO 날짜도 V2의 숫자 구문에 걸릴 수 있다. 유효 동적 후보가 있으면 함께 해소하고,
+  // 없으면 V2의 INVALID_ARGUMENT 등 기존 오류 의미를 그대로 보존한다.
+  if (candidates.length === 0) return staticResult;
+  return resolveVoiceCandidates(staticResult.normalizedTranscript, candidates);
 }
 
 /** 내부 gate: 중복을 canonical 구조로 제거한 뒤 반드시 V1 decoder로 검증한다. */

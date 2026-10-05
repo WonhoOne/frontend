@@ -19,5 +19,11 @@ export { decodeVoiceCommand, type VoiceCommandDecodeResult } from './voiceComman
 export { normalizeVoiceTranscript } from './voiceTranscriptNormalizer';
 export {
   interpretVoiceTranscript,
+  interpretVoiceTranscriptWithContext,
   type VoiceInterpretationResult,
 } from './voiceCommandInterpreter';
+export {
+  type VoiceTourProductChoice,
+  type VoiceTourScheduleChoice,
+  type VoiceInterpretationContext,
+} from './voiceInterpretationContext';
