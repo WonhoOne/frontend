@@ -27,3 +27,13 @@ export {
   type VoiceTourScheduleChoice,
   type VoiceInterpretationContext,
 } from './voiceInterpretationContext';
+export {
+  type SpeechRecognitionAdapter,
+  type SpeechRecognitionStartOptions,
+  type SpeechRecognitionState,
+  type SpeechRecognitionTranscriptEvent,
+  type SpeechRecognitionAdapterError,
+  type SpeechRecognitionAdapterEvent,
+  type SpeechRecognitionListener,
+} from './speechRecognitionAdapter';
+export { createBrowserSpeechRecognitionAdapter } from './browserSpeechRecognitionAdapter';
