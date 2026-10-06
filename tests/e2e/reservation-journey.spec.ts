@@ -1,12 +1,12 @@
 import { expect, test, type Page } from '@playwright/test';
 
-const storageKey = 'mister-world:reservation-draft:v2';
+const storageKey = 'mister-world:reservation-draft:v1';
 const canonicalWidths = [320, 360, 390, 430, 768, 1024, 1280, 1440, 1728];
 
 const draft = {
-  schemaVersion: 2,
-  tourProductId: 42,
-  tourScheduleId: 301,
+  schemaVersion: 1,
+  tourProductId: '103',
+  tourScheduleId: '1301',
   tourStyle: 'GRAND',
   participantCount: 2,
   configuration: {
