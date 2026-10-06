@@ -10,8 +10,8 @@ import {
 function configuredDraft(): ReservationDraftV1 {
   return {
     schemaVersion: RESERVATION_DRAFT_SCHEMA_VERSION,
-    tourProductId: 101,
-    tourScheduleId: 1001,
+    tourProductId: '101',
+    tourScheduleId: '1001',
     tourStyle: 'GRAND',
     participantCount: 2,
     configuration: {
@@ -27,7 +27,7 @@ function configuredDraft(): ReservationDraftV1 {
 describe('reservationDraftReducer', () => {
   it('creates an explicit empty draft without participant or configuration defaults', () => {
     expect(createEmptyReservationDraft(10)).toEqual({
-      schemaVersion: 2,
+      schemaVersion: 1,
       tourProductId: null,
       tourScheduleId: null,
       tourStyle: null,
@@ -45,37 +45,37 @@ describe('reservationDraftReducer', () => {
   it('begins Configure atomically without leaking participant or configuration intent', () => {
     const next = reservationDraftReducer(configuredDraft(), {
       type: 'BEGIN_CONFIGURE',
-      tourProductId: 102,
+      tourProductId: '102',
       tourStyle: 'CLASSIC',
-      tourScheduleId: 1002,
+      tourScheduleId: '1002',
       updatedAt: 150,
     });
 
     expect(next).toEqual({
       ...createEmptyReservationDraft(150),
-      tourProductId: 102,
+      tourProductId: '102',
       tourStyle: 'CLASSIC',
-      tourScheduleId: 1002,
+      tourScheduleId: '1002',
     });
   });
 
   it('starts a new product transaction without leaking the previous product intent', () => {
     const next = reservationDraftReducer(configuredDraft(), {
       type: 'START_DRAFT',
-      tourProductId: 102,
+      tourProductId: '102',
       updatedAt: 200,
     });
 
     expect(next).toEqual({
       ...createEmptyReservationDraft(200),
-      tourProductId: 102,
+      tourProductId: '102',
     });
   });
 
   it('updates product choices through domain-specific actions while preserving unrelated intent', () => {
     const initial = {
       ...createEmptyReservationDraft(1),
-      tourProductId: 101,
+      tourProductId: '101',
     };
 
     const withStyle = reservationDraftReducer(initial, {
@@ -85,7 +85,7 @@ describe('reservationDraftReducer', () => {
     });
     const withSchedule = reservationDraftReducer(withStyle, {
       type: 'SELECT_SCHEDULE',
-      tourScheduleId: 1002,
+      tourScheduleId: '1002',
       updatedAt: 3,
     });
     const withParticipants = reservationDraftReducer(withSchedule, {
@@ -95,9 +95,9 @@ describe('reservationDraftReducer', () => {
     });
 
     expect(withParticipants).toMatchObject({
-      tourProductId: 101,
+      tourProductId: '101',
       tourStyle: 'PREMIUM',
-      tourScheduleId: 1002,
+      tourScheduleId: '1002',
       participantCount: 4,
       updatedAt: 4,
     });
