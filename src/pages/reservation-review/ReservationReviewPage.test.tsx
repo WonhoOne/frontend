@@ -39,8 +39,8 @@ class MemoryStorage implements ReservationDraftStorage {
 
 function completeDraft(): ReservationDraftV1 {
   return {
-    schemaVersion: 2,
-    tourProductId: 42,
+    schemaVersion: 1,
+    tourProductId: '42',
     tourScheduleId: 301,
     tourStyle: 'GRAND',
     participantCount: 2,
