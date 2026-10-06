@@ -66,7 +66,7 @@ export function getConfigureReadiness({
   runtimeState = createReadyConfigureRuntimeState(),
 }: {
   draft: ReservationDraftV1;
-  expectedTourProductId: number;
+  expectedTourProductId: string;
   groups: readonly OptionGroupModel[];
   participantRule: ParticipantCountRule;
   runtimeState?: ConfigureRuntimeState;
