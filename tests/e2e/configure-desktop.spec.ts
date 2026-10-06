@@ -1,9 +1,9 @@
 import { expect, test, type Page } from '@playwright/test';
 
 const draft = {
-  schemaVersion: 2,
-  tourProductId: 42,
-  tourScheduleId: 7,
+  schemaVersion: 1,
+  tourProductId: '103',
+  tourScheduleId: '1301',
   tourStyle: 'GRAND',
   participantCount: null,
   configuration: {
@@ -17,7 +17,7 @@ const draft = {
 
 async function seedDraft(page: Page) {
   await page.addInitScript((storedDraft: typeof draft) => {
-    window.sessionStorage.setItem('mister-world:reservation-draft:v2', JSON.stringify(storedDraft));
+    window.sessionStorage.setItem('mister-world:reservation-draft:v1', JSON.stringify(storedDraft));
   }, draft);
 }
 
@@ -25,7 +25,7 @@ for (const width of [1024, 1280]) {
   test(`desktop Configure remains coherent at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await seedDraft(page);
-    await page.goto('/tours/42/configure');
+    await page.goto('/tours/103/configure');
 
     await expect(page.getByRole('heading', { name: 'Build your trip' })).toBeVisible();
 
