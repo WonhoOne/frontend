@@ -32,7 +32,7 @@ function readFixtureState() {
 
 function TourScheduleStateFixture() {
   const [retryResult, setRetryResult] = useState('idle');
-  const tour = findTourDetailPreview(103);
+  const tour = findTourDetailPreview('103');
 
   if (tour === null) {
     throw new Error('Tour Detail schedule fixture requires the Golf preview TourProduct.');
