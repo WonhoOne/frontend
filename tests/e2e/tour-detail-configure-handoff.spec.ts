@@ -89,8 +89,8 @@ test.describe('Tour Detail → Configure transaction handoff', () => {
 
     expect(persisted).toMatchObject({
       schemaVersion: 1,
-      tourProductId: 103,
-      tourScheduleId: 1301,
+      tourProductId: '103',
+      tourScheduleId: '1301',
       tourStyle: 'GRAND',
       participantCount: null,
       configuration: {
