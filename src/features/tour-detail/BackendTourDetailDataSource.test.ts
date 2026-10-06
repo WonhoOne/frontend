@@ -14,7 +14,7 @@ describe('BackendTourDetailDataSource', () => {
   it('proves HTTP → decode → adapter → detail model and forwards AbortSignal', async () => {
     const fetchImplementation = vi.fn().mockResolvedValue(
       jsonResponse({
-        id: '103',
+        id: 103,
         theme: 'GOLF_CHALLENGE',
         name: 'Backend Golf Journey',
         description: 'Backend-owned product description.',
@@ -40,7 +40,7 @@ describe('BackendTourDetailDataSource', () => {
       expect.objectContaining({ method: 'GET', signal: controller.signal }),
     );
     expect(model).toMatchObject({
-      id: 103,
+      id: '103',
       name: 'Backend Golf Journey',
       summary: 'Backend-owned product description.',
     });
