@@ -1,3 +1,6 @@
+import process from 'node:process';
+import { setTimeout as delay } from 'node:timers/promises';
+
 const baseUrl = (process.env.BACKEND_SMOKE_BASE_URL ?? 'http://127.0.0.1:8080/api/v1').replace(
   /\/$/,
   '',
@@ -42,7 +45,7 @@ function assertSchedule(schedule, expectedTourId) {
 }
 
 async function readJson(path, expectedStatus) {
-  const response = await fetch(`${baseUrl}${path}`);
+  const response = await globalThis.fetch(`${baseUrl}${path}`);
   const contentType = response.headers.get('content-type') ?? '';
   assert(
     contentType.toLowerCase().includes('application/json'),
@@ -64,14 +67,14 @@ async function waitForBackend() {
 
   while (Date.now() < deadline) {
     try {
-      const response = await fetch(`${baseUrl}/tours`);
+      const response = await globalThis.fetch(`${baseUrl}/tours`);
       if (response.status === 200) return;
       lastError = new Error(`Backend returned HTTP ${response.status} while starting.`);
     } catch (error) {
       lastError = error;
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 1_000));
+    await delay(1_000);
   }
 
   throw new Error(`Backend did not become ready within 60s: ${String(lastError)}`);
@@ -103,6 +106,6 @@ if (products.length > 0) {
 const invalidQuery = await readJson('/tour-schedules?tourId=0', 400);
 assertApiError(invalidQuery, 'INVALID_QUERY_PARAMETER');
 
-console.log(
+globalThis.console.log(
   `F1 public Backend smoke passed against ${baseUrl} (products=${products.length}).`,
 );
