@@ -63,7 +63,7 @@ describe('tour discovery query boundary', () => {
 
   it('preserves successful data while a refresh is active or has failed', () => {
     const product = {
-      id: 41,
+      id: '41',
       theme: 'GOLF_CHALLENGE' as const,
       name: 'Golf',
       description: 'Golf journey',
