@@ -16,7 +16,7 @@ describe('BackendTourDiscoveryDataSource', () => {
     const fetchImplementation = vi.fn().mockResolvedValue(
       jsonResponse([
         {
-          id: '41',
+          id: 41,
           theme: 'GOLF_CHALLENGE',
           name: 'Backend Golf Journey',
           description: 'Backend-owned description.',
@@ -47,7 +47,7 @@ describe('BackendTourDiscoveryDataSource', () => {
     );
     expect(products).toHaveLength(1);
     expect(products[0]).toMatchObject({
-      id: 41,
+      id: '41',
       theme: 'GOLF_CHALLENGE',
       name: 'Backend Golf Journey',
       availableStyles: ['CLASSIC', 'GRAND'],
