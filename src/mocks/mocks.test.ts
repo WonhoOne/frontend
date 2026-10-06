@@ -2,6 +2,7 @@ import { HttpResponse, http } from 'msw';
 import { describe, expect, it } from 'vitest';
 
 import { handlers } from '@/mocks/handlers';
+import { publicTourProductDtoFixtures } from '@/mocks/publicReadFixtures';
 import { server } from '@/mocks/server';
 
 describe('MSW shared mock boundary', () => {
@@ -11,7 +12,7 @@ describe('MSW shared mock boundary', () => {
     const response = await fetch('/api/v1/tours');
 
     expect(response.status).toBe(200);
-    expect(await response.json()).toHaveLength(3);
+    expect(await response.json()).toHaveLength(publicTourProductDtoFixtures.length);
   });
 
   it('supports test-local handlers without changing the shared registry', async () => {
