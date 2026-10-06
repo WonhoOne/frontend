@@ -6,7 +6,6 @@ export {
   type ReservationDraftSelectionKey,
   type ReservationDraftTourStyle,
   type ReservationDraftV1,
-  type ReservationDraftV2,
 } from '@/features/reservation/ReservationDraft';
 export {
   ReservationDraftContext,
@@ -20,7 +19,6 @@ export {
   migrateReservationDraft,
   parseReservationDraft,
   persistReservationDraft,
-  LEGACY_RESERVATION_DRAFT_STORAGE_KEY,
   RESERVATION_DRAFT_STORAGE_KEY,
   resolveBrowserSessionStorage,
   serializeReservationDraft,
