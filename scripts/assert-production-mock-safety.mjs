@@ -1,5 +1,6 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { URL } from 'node:url';
 
 const distRoot = new URL('../dist/', import.meta.url);
 const forbidden = [
