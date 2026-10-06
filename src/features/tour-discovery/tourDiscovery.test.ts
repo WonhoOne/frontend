@@ -25,7 +25,7 @@ describe('tour discovery contract boundary', () => {
       groups
         .find((group) => group.presentation.theme === 'GOLF_CHALLENGE')
         ?.products.map((product) => product.id),
-    ).toEqual([103, 104]);
+    ).toEqual(['103', '104']);
   });
 
   it('preserves a Theme group even when that Theme currently has zero products', () => {
