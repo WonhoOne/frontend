@@ -6,14 +6,18 @@ import { cleanup, fireEvent, render, screen, within } from '@testing-library/rea
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router';
 
+import type {
+  TourDetailCoreState,
+  TourScheduleSectionState,
+} from '@/features/tour-detail';
 import {
   findTourDetailPreview,
-  findTourSchedulePreview,
-  type TourDetailCoreState,
   tourDetailPreviewStates,
+} from '@/features/tour-detail/tourDetail.preview';
+import {
+  findTourSchedulePreview,
   tourSchedulePreviewStates,
-  type TourScheduleSectionState,
-} from '@/features/tour-detail';
+} from '@/features/tour-detail/tourSchedule.preview';
 import type { ConfigureHandoffIntent } from '@/features/reservation';
 import { TourDetailPageView } from '@/pages/tour-detail/TourDetailPage';
 
