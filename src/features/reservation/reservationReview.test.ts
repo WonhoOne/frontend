@@ -19,8 +19,8 @@ describe('Reservation Review projection', () => {
   it('projects a complete Draft without inventing pre-create final price', () => {
     const draft = {
       ...createEmptyReservationDraft(1),
-      tourProductId: 42,
-      tourScheduleId: 7,
+      tourProductId: '42',
+      tourScheduleId: '7',
       tourStyle: 'GRAND' as const,
       participantCount: 2,
       configuration: {
