@@ -8,7 +8,6 @@ import {
 import { routeBuilders, routePaths } from '@/app/router/paths';
 import { LoadingState } from '@/app/state';
 import {
-  findTourSchedulePreview,
   toTourDetailCoreState,
   toTourScheduleSectionState,
   IncludedExperienceSection,
@@ -109,7 +108,7 @@ function TourDetailReadyView({
 }) {
   const [selectedStyle, setSelectedStyle] = useState<TourDetailStyle | null>(null);
   const [selectedScheduleKey, setSelectedScheduleKey] = useState<string | null>(null);
-  const resolvedScheduleState = scheduleState ?? findTourSchedulePreview(tour);
+  const resolvedScheduleState: TourScheduleSectionState = scheduleState ?? { status: 'loading' };
 
   const effectiveScheduleKey =
     resolvedScheduleState.status === 'ready' &&
