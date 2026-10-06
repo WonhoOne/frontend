@@ -9,14 +9,14 @@ import type {
 } from '@/features/tour-detail/tourDetail.model';
 
 const previewProductDefinitions = [
-  [101, 'HONEYMOON_ROMANCE', 'Honeymoon Romance · Journey 01'],
-  [102, 'PARENTS_HEALING', 'Parents Healing · Journey 01'],
-  [103, 'GOLF_CHALLENGE', 'Golf Challenge · Journey 01'],
-  [104, 'GOLF_CHALLENGE', 'Golf Challenge · Journey 02'],
-  [105, 'OUTDOOR_TREKKING', 'Outdoor Trekking · Journey 01'],
-] as const satisfies readonly [number, TourDetailTheme, string][];
+  ['101', 'HONEYMOON_ROMANCE', 'Honeymoon Romance · Journey 01'],
+  ['102', 'PARENTS_HEALING', 'Parents Healing · Journey 01'],
+  ['103', 'GOLF_CHALLENGE', 'Golf Challenge · Journey 01'],
+  ['104', 'GOLF_CHALLENGE', 'Golf Challenge · Journey 02'],
+  ['105', 'OUTDOOR_TREKKING', 'Outdoor Trekking · Journey 01'],
+] as const satisfies readonly [string, TourDetailTheme, string][];
 
-function buildPreviewTour(id: number, theme: TourDetailTheme, name: string): TourDetailModel {
+function buildPreviewTour(id: string, theme: TourDetailTheme, name: string): TourDetailModel {
   const presentation = themeDetailPresentations[theme];
 
   return {
@@ -51,12 +51,12 @@ export const tourDetailPreviewProducts = previewProductDefinitions.map(([id, the
   buildPreviewTour(id, theme, name),
 );
 
-export function findTourDetailPreview(tourId: number) {
+export function findTourDetailPreview(tourId: string) {
   return tourDetailPreviewProducts.find((tour) => tour.id === tourId) ?? null;
 }
 
 const imageFailureTour: TourDetailModel = {
-  ...buildPreviewTour(103, 'GOLF_CHALLENGE', 'Golf Challenge · Journey 01'),
+  ...buildPreviewTour('103', 'GOLF_CHALLENGE', 'Golf Challenge · Journey 01'),
   heroMedia: {
     imageSrc: '/__missing-tour-detail-hero__.jpg',
     imageAlt: 'Golf Challenge editorial preview',
