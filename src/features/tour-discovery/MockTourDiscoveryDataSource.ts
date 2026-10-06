@@ -2,16 +2,21 @@ import type {
   TourDiscoveryDataSource,
   TourDiscoveryReadOptions,
 } from '@/features/tour-discovery/TourDiscoveryDataSource';
-import type { TourProductSummaryModel } from '@/features/tour-discovery/tourDiscovery.model';
+import { adaptTourProductDto } from '@/features/tour-discovery/tourProduct.adapter';
+import { BackendRequestAbortedError } from '@/integrations/backend/client/backendHttpError';
+import {
+  PUBLIC_READ_MOCK_ONLY_SENTINEL,
+  publicTourProductDtoFixtures,
+} from '@/mocks/publicReadFixtures';
 
 export class MockTourDiscoveryDataSource implements TourDiscoveryDataSource {
-  constructor(private readonly products: readonly TourProductSummaryModel[]) {}
+  readonly mockRuntimeSentinel = PUBLIC_READ_MOCK_ONLY_SENTINEL;
 
   getTourProducts(options?: TourDiscoveryReadOptions) {
     if (options?.signal?.aborted === true) {
-      return Promise.reject(new DOMException('The operation was aborted.', 'AbortError'));
+      return Promise.reject(new BackendRequestAbortedError());
     }
 
-    return Promise.resolve(this.products);
+    return Promise.resolve(publicTourProductDtoFixtures.map(adaptTourProductDto));
   }
 }
