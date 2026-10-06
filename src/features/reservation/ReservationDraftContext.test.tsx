@@ -59,7 +59,7 @@ function DraftProbe() {
         onClick={() =>
           dispatch({
             type: 'START_DRAFT',
-            tourProductId: 43,
+            tourProductId: '43',
             updatedAt: 100,
           })
         }
@@ -126,7 +126,7 @@ describe('ReservationDraftProvider', () => {
       const serialized = storage.getItem(RESERVATION_DRAFT_STORAGE_KEY);
       expect(serialized).not.toBeNull();
       expect(JSON.parse(serialized ?? '{}')).toMatchObject({
-        tourProductId: 43,
+        tourProductId: '43',
         tourStyle: 'GRAND',
       });
     });
