@@ -1,4 +1,10 @@
 import type { ReservationCreateIdentityResolver } from '@/features/reservation/reservationCreateIntent';
+import { parseBackendResourceIdentity } from '@/shared/lib/resourceIdentity';
+
+const scheduleIds: Record<string, number> = {
+  'fixture:schedule:a': 301,
+  'demo-honeymoon-schedule-a': 301,
+};
 
 const hotelOptions = {
   'fixture:hotel:a': 'HOTEL_4_STAR',
@@ -18,10 +24,11 @@ const extraOptions = {
 } as const;
 
 /**
- * PR-06 mock journey의 configuration fixture key를 v0.2 canonical create input으로 변환한다.
- * fixture key 자체를 Backend ID로 간주하지 않는다.
+ * Real canonical decimal schedule identities are strictly parsed back to
+ * Backend numbers. Explicit DEV fixture identities remain mapped locally.
  */
 export const mockReservationCreateIdentityResolver: ReservationCreateIdentityResolver = {
+  resolveScheduleId: (key) => parseBackendResourceIdentity(key) ?? scheduleIds[key] ?? null,
   resolveHotelOption: (key) => hotelOptions[key as keyof typeof hotelOptions] ?? null,
   resolveTransportOption: (key) => transportOptions[key as keyof typeof transportOptions] ?? null,
   resolveMealOption: (key) => mealOptions[key as keyof typeof mealOptions] ?? null,
