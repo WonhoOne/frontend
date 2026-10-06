@@ -1,14 +1,13 @@
 import type { ReservationDraftV1 } from '@/features/reservation/ReservationDraft';
-import type { ResourceId } from '@/shared/lib/resourceIdentity';
 
 export interface ReservationReviewSelectionResolver {
-  tourProductLabel(tourProductId: ResourceId): string;
-  scheduleLabel(scheduleId: ResourceId): string;
+  tourProductLabel(tourProductId: string): string;
+  scheduleLabel(scheduleId: string): string;
   optionLabel(selectionKey: string): string;
 }
 
 export interface ReservationReviewModel {
-  tourProductId: ResourceId;
+  tourProductId: string;
   tourProductLabel: string;
   styleLabel: string;
   scheduleLabel: string;
