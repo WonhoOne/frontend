@@ -24,7 +24,7 @@ describe('Tour Detail adapters', () => {
     const model = adaptTourProductDetailDto(product);
 
     expect(model).toMatchObject({
-      id: 103,
+      id: '103',
       theme: 'GOLF_CHALLENGE',
       name: 'Backend Golf Journey',
       summary: 'Backend-owned product description.',
@@ -54,7 +54,7 @@ describe('Tour Detail adapters', () => {
     };
 
     expect(adaptTourScheduleDto(dto, 103)).toEqual({
-      selectionKey: 1301,
+      selectionKey: '1301',
       dateLabel: '2027-03-10 – 2027-03-14',
       statusLabel: 'Reservation available',
       recruitmentSummary: '2 / 3 participants · Not confirmed',
