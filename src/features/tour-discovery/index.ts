@@ -13,10 +13,6 @@ export {
   readThemeFromSearchParams,
 } from '@/features/tour-discovery/tourDiscovery';
 export {
-  tourDiscoveryPreviewProducts,
-  tourDiscoveryPreviewStates,
-} from '@/features/tour-discovery/tourDiscovery.preview';
-export {
   TOUR_THEME_ORDER,
   themeDiscoveryPresentations,
 } from '@/features/tour-discovery/themeDiscoveryPresentations';
