@@ -1,12 +1,12 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 
-const storageKey = 'mister-world:reservation-draft:v2';
+const storageKey = 'mister-world:reservation-draft:v1';
 const fixture = '/tests/e2e/fixtures/configure-states.html';
 
 const draft = {
-  schemaVersion: 2,
-  tourProductId: 42,
-  tourScheduleId: 7,
+  schemaVersion: 1,
+  tourProductId: '103',
+  tourScheduleId: '1301',
   tourStyle: 'GRAND',
   participantCount: null,
   configuration: {
@@ -20,7 +20,7 @@ const draft = {
 
 async function seedDraft(page: Page) {
   await page.addInitScript((value: typeof draft) => {
-    window.sessionStorage.setItem('mister-world:reservation-draft:v2', JSON.stringify(value));
+    window.sessionStorage.setItem('mister-world:reservation-draft:v1', JSON.stringify(value));
   }, draft);
 }
 
@@ -39,7 +39,7 @@ async function tabUntilFocused(page: Page, locator: Locator, maxTabs = 30) {
 test('keyboard-only users can complete Configure and enter Review', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await seedDraft(page);
-  await page.goto('/tours/42/configure');
+  await page.goto('/tours/103/configure');
 
   const participantInput = page.getByRole('spinbutton', { name: /participants/i });
   await tabUntilFocused(page, participantInput);
@@ -76,7 +76,7 @@ test('Configure exposes one H1 and named selection groups for screen-reader navi
   page,
 }) => {
   await seedDraft(page);
-  await page.goto('/tours/42/configure');
+  await page.goto('/tours/103/configure');
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
   await expect(page.getByRole('heading', { level: 1, name: 'Configure' })).toBeVisible();
@@ -87,7 +87,7 @@ test('Configure exposes one H1 and named selection groups for screen-reader navi
 
 test('participant validation exposes a programmatic error relationship', async ({ page }) => {
   await seedDraft(page);
-  await page.goto('/tours/42/configure');
+  await page.goto('/tours/103/configure');
 
   const input = page.getByRole('spinbutton', { name: /participants/i });
   await input.fill('0');
@@ -105,7 +105,7 @@ test('rapid option changes keep the latest intent without resetting sibling grou
   page,
 }) => {
   await seedDraft(page);
-  await page.goto('/tours/42/configure');
+  await page.goto('/tours/103/configure');
 
   await page.getByRole('spinbutton', { name: /participants/i }).fill('2');
   await page.getByRole('radio', { name: /Fixture transport A/i }).check();
@@ -153,7 +153,7 @@ test('rapid option changes keep the latest intent without resetting sibling grou
 test('interactive Configure targets remain touch-sized on a 320px viewport', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 720 });
   await seedDraft(page);
-  await page.goto('/tours/42/configure');
+  await page.goto('/tours/103/configure');
 
   const targets = [
     page.getByRole('spinbutton', { name: /participants/i }),
@@ -173,7 +173,7 @@ for (const width of [320, 390, 430, 640, 768, 1024, 1280]) {
   test(`Configure has no horizontal overflow at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 760 });
     await seedDraft(page);
-    await page.goto('/tours/42/configure');
+    await page.goto('/tours/103/configure');
 
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1),
@@ -186,7 +186,7 @@ test('a contracted mobile viewport does not leave the focused participant input 
 }) => {
   await page.setViewportSize({ width: 390, height: 760 });
   await seedDraft(page);
-  await page.goto('/tours/42/configure');
+  await page.goto('/tours/103/configure');
 
   const input = page.getByRole('spinbutton', { name: /participants/i });
   await input.focus();
