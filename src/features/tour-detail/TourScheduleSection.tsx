@@ -10,8 +10,8 @@ import styles from '@/features/tour-detail/TourScheduleSection.module.css';
 
 interface TourScheduleSectionProps {
   scheduleState: TourScheduleSectionState;
-  selectedScheduleKey: number | null;
-  onChange: (selectionKey: number) => void;
+  selectedScheduleKey: string | null;
+  onChange: (selectionKey: string) => void;
   onRetry?: () => void;
 }
 
@@ -51,7 +51,7 @@ function ScheduleChoice({
 }: {
   choice: ScheduleChoiceModel;
   isSelected: boolean;
-  onChange: (selectionKey: number) => void;
+  onChange: (selectionKey: string) => void;
 }) {
   const inputId = `tour-schedule-${choice.selectionKey}`;
 
