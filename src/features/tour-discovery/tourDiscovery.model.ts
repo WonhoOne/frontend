@@ -1,5 +1,3 @@
-import type { ResourceId } from '@/shared/lib/resourceIdentity';
-
 export type TourTheme =
   'HONEYMOON_ROMANCE' | 'PARENTS_HEALING' | 'GOLF_CHALLENGE' | 'OUTDOOR_TREKKING';
 
@@ -27,7 +25,13 @@ export interface TourStylePriceModel {
 }
 
 export interface TourProductSummaryModel {
-  id: ResourceId;
+  /**
+   * Frontend-facing TourProduct identity.
+   *
+   * Real Backend resources use canonical decimal strings. Explicit DEV fixtures
+   * may use opaque strings without claiming a Backend wire identity.
+   */
+  id: string;
   theme: TourTheme;
   name: string;
   description: string;
@@ -47,7 +51,11 @@ export type TourDiscoveryCollectionErrorReason = 'network' | 'server' | 'data-mi
 export type TourDiscoveryCollectionState =
   | { status: 'loading' }
   | { status: 'empty' }
-  | { status: 'error'; reason: TourDiscoveryCollectionErrorReason; isRetrying?: boolean }
+  | {
+      status: 'error';
+      reason: TourDiscoveryCollectionErrorReason;
+      isRetrying?: boolean;
+    }
   | {
       status: 'ready';
       products: readonly TourProductSummaryModel[];
