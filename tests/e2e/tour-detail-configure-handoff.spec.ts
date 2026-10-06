@@ -1,11 +1,11 @@
 import { expect, test, type Page } from '@playwright/test';
 
-const reservationDraftStorageKey = 'mister-world:reservation-draft:v2';
+const reservationDraftStorageKey = 'mister-world:reservation-draft:v1';
 
 const staleDifferentTourDraft = {
-  schemaVersion: 2,
-  tourProductId: 41,
-  tourScheduleId: 6,
+  schemaVersion: 1,
+  tourProductId: '104',
+  tourScheduleId: '1401',
   tourStyle: 'PREMIUM',
   participantCount: 8,
   configuration: {
@@ -53,7 +53,7 @@ test.describe('Tour Detail → Configure transaction handoff', () => {
 
     await expect(page).toHaveURL(/\/tours\/103\/configure$/);
     await expect(page.getByRole('heading', { name: 'Build your trip' })).toBeVisible();
-    await expect(page.getByText(/Fixture theme · Grand · Fixture schedule/)).toBeVisible();
+    await expect(page.getByText(/Golf Challenge · Grand · 2027-03-10 – 2027-03-14/)).toBeVisible();
 
     await expect(page.getByRole('spinbutton', { name: /participants/i })).toHaveValue('');
     await expect(page.getByRole('radio', { name: /Fixture hotel A/i })).not.toBeChecked();
@@ -68,10 +68,11 @@ test.describe('Tour Detail → Configure transaction handoff', () => {
       .poll(() =>
         page.evaluate(
           ({ key, productId }) =>
-            window.sessionStorage.getItem(key)?.includes(`"tourProductId":${productId}`) ?? false,
+            window.sessionStorage.getItem(key)?.includes(`"tourProductId":"${productId}"`) ??
+            false,
           {
             key: reservationDraftStorageKey,
-            productId: 103,
+            productId: '103',
           },
         ),
       )
@@ -87,7 +88,7 @@ test.describe('Tour Detail → Configure transaction handoff', () => {
     const persisted = JSON.parse(serialized ?? 'null') as unknown;
 
     expect(persisted).toMatchObject({
-      schemaVersion: 2,
+      schemaVersion: 1,
       tourProductId: 103,
       tourScheduleId: 1301,
       tourStyle: 'GRAND',
@@ -100,8 +101,8 @@ test.describe('Tour Detail → Configure transaction handoff', () => {
       },
     });
     expect(persisted).not.toMatchObject({
-      tourProductId: 41,
-      tourScheduleId: 6,
+      tourProductId: '104',
+      tourScheduleId: '1401',
       participantCount: 8,
       configuration: {
         hotelSelectionKey: 'fixture:hotel:b',
