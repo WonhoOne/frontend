@@ -15,7 +15,7 @@ import { ToursPage, ToursPageView } from '@/pages/tours/ToursPage';
 
 function renderTours(initialEntry = '/tours') {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  const dataSource = new MockTourDiscoveryDataSource(tourDiscoveryPreviewProducts);
+  const dataSource = new MockTourDiscoveryDataSource();
   client.setQueryData(tourDiscoveryQueryKey, tourDiscoveryPreviewProducts);
 
   return render(
