@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
 import {
@@ -189,18 +188,15 @@ function ResolvedConfigurePage({
     scheduleQuery.data?.find((schedule) => schedule.selectionKey === draft.tourScheduleId)
       ?.dateLabel ?? 'Selected schedule';
 
-  const scenario = useMemo(() => {
-    const base = createContractNeutralConfigureFixture();
-
-    return {
-      ...base,
-      tripSummary: {
-        ...base.tripSummary,
-        themeLabel: product.themeLabel,
-        scheduleLabel: selectedScheduleLabel,
-      },
-    };
-  }, [product.themeLabel, selectedScheduleLabel]);
+  const baseScenario = createContractNeutralConfigureFixture();
+  const scenario = {
+    ...baseScenario,
+    tripSummary: {
+      ...baseScenario.tripSummary,
+      themeLabel: product.themeLabel,
+      scheduleLabel: selectedScheduleLabel,
+    },
+  };
 
   const price = pricePresentation(
     product,
