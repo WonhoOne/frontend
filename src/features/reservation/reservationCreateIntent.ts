@@ -11,6 +11,7 @@ import type {
 } from '@/features/reservation/reservation.model';
 
 export interface ReservationCreateIdentityResolver {
+  resolveScheduleId(selectionIdentity: string): number | null;
   resolveHotelOption(selectionKey: ReservationDraftSelectionKey): ReservationHotelOption | null;
   resolveTransportOption(
     selectionKey: ReservationDraftSelectionKey,
@@ -25,10 +26,8 @@ export type ReservationCreateIntentResult =
   | { status: 'unresolved-selection' };
 
 /**
- * Frontend Draft identity를 Shared v0.2 Reservation create intent로 변환하는 유일한 경계다.
- *
- * Draft V2의 schedule identity는 이미 v0.2 canonical resource ID다.
- * Resolver는 아직 canonical Backend option contract가 없는 configuration selection만 해석한다.
+ * Frontend string transaction identity를 Backend Reservation create identity로
+ * 승격하는 유일한 boundary다. Draft/route identity를 wire number로 간주하지 않는다.
  */
 export function createReservationIntent(
   draft: ReservationDraftV1,
@@ -57,12 +56,14 @@ export function createReservationIntent(
     return { status: 'incomplete-draft' };
   }
 
+  const scheduleId = resolver.resolveScheduleId(tourScheduleId);
   const hotelOption = resolver.resolveHotelOption(hotelSelectionKey);
   const transportOption = resolver.resolveTransportOption(transportSelectionKey);
   const mealOption = resolver.resolveMealOption(mealSelectionKey);
   const extraOptions = extraSelectionKeys.map((key) => resolver.resolveExtraOption(key));
 
   if (
+    scheduleId === null ||
     hotelOption === null ||
     transportOption === null ||
     mealOption === null ||
@@ -74,7 +75,7 @@ export function createReservationIntent(
   return {
     status: 'ready',
     input: {
-      scheduleId: tourScheduleId,
+      scheduleId,
       participantCount,
       configuration: {
         style: tourStyle,
