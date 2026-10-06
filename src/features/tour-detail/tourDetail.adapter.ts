@@ -12,7 +12,10 @@ import {
   type TourProductDto,
   type TourScheduleDto,
 } from '@/integrations/backend/contracts';
-import type { ResourceId } from '@/shared/lib/resourceIdentity';
+import {
+  toCanonicalBackendResourceIdentity,
+  type ResourceId,
+} from '@/shared/lib/resourceIdentity';
 
 export class TourDetailPresentationError extends Error {
   override readonly name = 'TourDetailPresentationError';
@@ -30,7 +33,7 @@ export function adaptTourProductDetailDto(dto: TourProductDto): TourDetailModel 
   }
 
   return {
-    id: dto.id,
+    id: toCanonicalBackendResourceIdentity(dto.id),
     theme: dto.theme,
     themeLabel: presentation.themeLabel,
     name: dto.name,
@@ -60,7 +63,7 @@ export function adaptTourScheduleDto(
   const unitLabel = recruitmentUnitLabel(dto.recruitment.unit);
 
   return {
-    selectionKey: dto.id,
+    selectionKey: toCanonicalBackendResourceIdentity(dto.id),
     dateLabel: `${dto.startDate} – ${dto.endDate}`,
     statusLabel: dto.reservable ? 'Reservation available' : 'Reservation unavailable',
     recruitmentSummary: `${dto.recruitment.currentCount} / ${dto.recruitment.requiredCount} ${unitLabel} · ${dto.recruitment.confirmed ? 'Confirmed' : 'Not confirmed'}`,
