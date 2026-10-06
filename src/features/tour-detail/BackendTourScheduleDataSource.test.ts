@@ -46,7 +46,7 @@ describe('BackendTourScheduleDataSource', () => {
     );
     expect(schedules).toEqual([
       {
-        selectionKey: 1301,
+        selectionKey: '1301',
         dateLabel: '2027-03-10 – 2027-03-14',
         statusLabel: 'Reservation available',
         recruitmentSummary: '2 / 3 participants · Not confirmed',
