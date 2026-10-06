@@ -24,14 +24,14 @@ function buildScheduleChoices(theme: TourDetailTheme): readonly ScheduleChoiceMo
 
   return [
     {
-      selectionKey: baseId + 1,
+      selectionKey: String(baseId + 1),
       dateLabel: 'Schedule preview A · Dates supplied by approved schedule data',
       statusLabel: 'Recruiting',
       recruitmentSummary,
       isSelectable: true,
     },
     {
-      selectionKey: baseId + 2,
+      selectionKey: String(baseId + 2),
       dateLabel: 'Schedule preview B · Dates supplied by approved schedule data',
       statusLabel: 'Unavailable',
       recruitmentSummary: 'Registration unavailable',
