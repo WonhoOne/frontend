@@ -32,9 +32,9 @@ class MemoryStorage implements ReservationDraftStorage {
 
 function tripContextDraft(): ReservationDraftV1 {
   return {
-    schemaVersion: 2,
-    tourProductId: 42,
-    tourScheduleId: 7,
+    schemaVersion: 1,
+    tourProductId: '42',
+    tourScheduleId: '7',
     tourStyle: 'GRAND',
     participantCount: null,
     configuration: {
@@ -92,7 +92,7 @@ describe('ConfigurePage desktop transaction', () => {
       RESERVATION_DRAFT_STORAGE_KEY,
       serializeReservationDraft({
         ...tripContextDraft(),
-        tourProductId: 43,
+        tourProductId: '43',
       }),
     );
 
@@ -106,7 +106,7 @@ describe('ConfigurePage desktop transaction', () => {
       '/tours/43/configure',
     );
     expect(JSON.parse(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY) ?? '{}')).toMatchObject({
-      tourProductId: 43,
+      tourProductId: '43',
     });
   });
 
