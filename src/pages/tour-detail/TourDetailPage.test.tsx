@@ -44,7 +44,7 @@ function renderView(
 
 describe('TourDetailPageView core states', () => {
   it('renders the editorial core for a known TourProduct identity', () => {
-    const tour = findTourDetailPreview(101);
+    const tour = findTourDetailPreview('101');
 
     if (tour === null) {
       throw new Error('expected Honeymoon preview fixture');
@@ -69,8 +69,8 @@ describe('TourDetailPageView core states', () => {
   });
 
   it('keeps two TourProducts in the same Theme as distinct detail identities', () => {
-    const first = findTourDetailPreview(103);
-    const second = findTourDetailPreview(104);
+    const first = findTourDetailPreview('103');
+    const second = findTourDetailPreview('104');
 
     expect(first?.id).not.toBe(second?.id);
     expect(first?.name).toBe('Golf Challenge · Journey 01');
@@ -111,7 +111,7 @@ describe('TourDetailPageView core states', () => {
   });
 
   it('starts with no selected style and mirrors Honeymoon restrictions', () => {
-    const tour = findTourDetailPreview(101);
+    const tour = findTourDetailPreview('101');
 
     if (tour === null) {
       throw new Error('expected Honeymoon preview fixture');
@@ -128,7 +128,7 @@ describe('TourDetailPageView core states', () => {
   });
 
   it('offers all three approved styles for Golf and updates native radio state', () => {
-    const tour = findTourDetailPreview(103);
+    const tour = findTourDetailPreview('103');
 
     if (tour === null) {
       throw new Error('expected Golf preview fixture');
@@ -153,8 +153,8 @@ describe('TourDetailPageView core states', () => {
   });
 
   it('mirrors Parents and Trekking Style restrictions in the rendered UI', () => {
-    const parents = findTourDetailPreview(102);
-    const trekking = findTourDetailPreview(105);
+    const parents = findTourDetailPreview('102');
+    const trekking = findTourDetailPreview('105');
 
     if (parents === null || trekking === null) {
       throw new Error('expected Parents and Trekking preview fixtures');
@@ -184,8 +184,8 @@ describe('TourDetailPageView core states', () => {
   });
 
   it('resets local Style selection when the TourProduct identity changes', () => {
-    const golf = findTourDetailPreview(103);
-    const parents = findTourDetailPreview(102);
+    const golf = findTourDetailPreview('103');
+    const parents = findTourDetailPreview('102');
 
     if (golf === null || parents === null) {
       throw new Error('expected Tour Detail preview fixtures');
@@ -208,7 +208,7 @@ describe('TourDetailPageView core states', () => {
   });
 
   it('keeps core content visible while schedules load independently', () => {
-    const tour = findTourDetailPreview(103);
+    const tour = findTourDetailPreview('103');
 
     if (tour === null) {
       throw new Error('expected Golf preview fixture');
@@ -224,7 +224,7 @@ describe('TourDetailPageView core states', () => {
   });
 
   it('keeps schedule errors local and retries only the schedule section', () => {
-    const tour = findTourDetailPreview(103);
+    const tour = findTourDetailPreview('103');
     const onRetrySchedule = vi.fn();
 
     if (tour === null) {
@@ -250,7 +250,7 @@ describe('TourDetailPageView core states', () => {
   });
 
   it('preserves schedule choices through partial error, refreshing, and stale states', () => {
-    const tour = findTourDetailPreview(103);
+    const tour = findTourDetailPreview('103');
 
     if (tour === null) {
       throw new Error('expected Golf preview fixture');
@@ -298,7 +298,7 @@ describe('TourDetailPageView core states', () => {
   });
 
   it('renders unavailable schedules as disabled and never preselects a schedule', () => {
-    const tour = findTourDetailPreview(103);
+    const tour = findTourDetailPreview('103');
 
     if (tour === null) {
       throw new Error('expected Golf preview fixture');
@@ -317,7 +317,7 @@ describe('TourDetailPageView core states', () => {
   });
 
   it('uses Honeymoon recruitment wording without client-side count derivation', () => {
-    const tour = findTourDetailPreview(101);
+    const tour = findTourDetailPreview('101');
 
     if (tour === null) {
       throw new Error('expected Honeymoon preview fixture');
@@ -332,7 +332,7 @@ describe('TourDetailPageView core states', () => {
   });
 
   it('selects only available schedule choices and resets selection when they become unavailable', () => {
-    const tour = findTourDetailPreview(103);
+    const tour = findTourDetailPreview('103');
 
     if (tour === null) {
       throw new Error('expected Golf preview fixture');
@@ -366,7 +366,7 @@ describe('TourDetailPageView core states', () => {
   });
 
   it('keeps Configure disabled until both Style and an available Schedule are selected', () => {
-    const tour = findTourDetailPreview(103);
+    const tour = findTourDetailPreview('103');
     const onConfigure = vi.fn();
 
     if (tour === null) {
@@ -395,7 +395,7 @@ describe('TourDetailPageView core states', () => {
   });
 
   it('hands the selected TourProduct, Style, and Schedule to the public Configure boundary once', () => {
-    const tour = findTourDetailPreview(103);
+    const tour = findTourDetailPreview('103');
     const onConfigure = vi.fn();
 
     if (tour === null) {
@@ -417,7 +417,7 @@ describe('TourDetailPageView core states', () => {
   });
 
   it('disables Configure again when the selected Schedule becomes unavailable', () => {
-    const tour = findTourDetailPreview(103);
+    const tour = findTourDetailPreview('103');
     const onConfigure = vi.fn();
 
     if (tour === null) {
