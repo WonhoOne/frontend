@@ -132,9 +132,7 @@ describe('ConfigurePage desktop transaction', () => {
     expect(screen.getByRole('heading', { name: 'Meal' })).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Extras' })).toBeVisible();
     expect(screen.getByRole('button', { name: 'Review trip' })).toBeDisabled();
-    expect(
-      screen.getByText(/current Style price comes from TourProduct/i),
-    ).toBeVisible();
+    expect(screen.getByText(/current Style price comes from TourProduct/i)).toBeVisible();
     expect(screen.getByText(/₩1,800,000 per participant/i)).toBeVisible();
   });
 
@@ -144,6 +142,7 @@ describe('ConfigurePage desktop transaction', () => {
 
     renderConfigure(storage);
 
+    await screen.findByRole('heading', { name: 'Build your trip' });
     fireEvent.change(screen.getByRole('spinbutton', { name: /participants/i }), {
       target: { value: '2' },
     });
