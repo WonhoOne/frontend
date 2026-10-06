@@ -108,7 +108,7 @@ function TourDetailReadyView({
   onConfigure?: (intent: ConfigureHandoffIntent) => void;
 }) {
   const [selectedStyle, setSelectedStyle] = useState<TourDetailStyle | null>(null);
-  const [selectedScheduleKey, setSelectedScheduleKey] = useState<number | null>(null);
+  const [selectedScheduleKey, setSelectedScheduleKey] = useState<string | null>(null);
   const resolvedScheduleState = scheduleState ?? findTourSchedulePreview(tour);
 
   const effectiveScheduleKey =
