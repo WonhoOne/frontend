@@ -23,7 +23,7 @@ describe('TourProduct DTO adapter', () => {
     );
 
     expect(model).toMatchObject({
-      id: 41,
+      id: '41',
       theme: 'GOLF_CHALLENGE',
       name: 'Backend Golf Journey',
       description: 'Backend-owned description.',
