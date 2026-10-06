@@ -410,9 +410,9 @@ describe('TourDetailPageView core states', () => {
 
     expect(onConfigure).toHaveBeenCalledTimes(1);
     expect(onConfigure).toHaveBeenCalledWith({
-      tourProductId: 103,
+      tourProductId: '103',
       tourStyle: 'PREMIUM',
-      tourScheduleId: 1301,
+      tourScheduleId: '1301',
     });
   });
 
