@@ -5,12 +5,14 @@ import { describe, expect, it, vi } from 'vitest';
 
 import {
   MockTourDiscoveryDataSource,
-  tourDiscoveryPreviewProducts,
-  tourDiscoveryPreviewStates,
   tourDiscoveryQueryKey,
   type TourDiscoveryCollectionState,
   type TourTheme,
 } from '@/features/tour-discovery';
+import {
+  tourDiscoveryPreviewProducts,
+  tourDiscoveryPreviewStates,
+} from '@/features/tour-discovery/tourDiscovery.preview';
 import { ToursPage, ToursPageView } from '@/pages/tours/ToursPage';
 
 function renderTours(initialEntry = '/tours') {
