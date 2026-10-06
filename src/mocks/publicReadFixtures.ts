@@ -1,7 +1,4 @@
-import type {
-  TourProductDto,
-  TourScheduleDto,
-} from '@/integrations/backend/contracts';
+import type { TourProductDto, TourScheduleDto } from '@/integrations/backend/contracts';
 
 export const PUBLIC_READ_MOCK_ONLY_SENTINEL = '__F1_PUBLIC_READ_MOCK_ONLY__';
 
