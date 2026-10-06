@@ -6,10 +6,7 @@ import { cleanup, fireEvent, render, screen, within } from '@testing-library/rea
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router';
 
-import type {
-  TourDetailCoreState,
-  TourScheduleSectionState,
-} from '@/features/tour-detail';
+import type { TourDetailCoreState, TourScheduleSectionState } from '@/features/tour-detail';
 import {
   findTourDetailPreview,
   tourDetailPreviewStates,
