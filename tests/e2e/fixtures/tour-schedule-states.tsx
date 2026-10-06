@@ -5,11 +5,9 @@ import { MemoryRouter } from 'react-router';
 import '@/app/styles/tokens.css';
 import '@/shared/motion/motion.css';
 import '@/app/styles/global.css';
-import {
-  findTourDetailPreview,
-  tourSchedulePreviewStates,
-  type TourScheduleSectionState,
-} from '@/features/tour-detail';
+import type { TourScheduleSectionState } from '@/features/tour-detail';
+import { findTourDetailPreview } from '@/features/tour-detail/tourDetail.preview';
+import { tourSchedulePreviewStates } from '@/features/tour-detail/tourSchedule.preview';
 import { TourDetailPageView } from '@/pages/tour-detail/TourDetailPage';
 
 const fixtureStates = {
