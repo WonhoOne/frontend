@@ -12,10 +12,7 @@ import {
   type TourProductDto,
   type TourScheduleDto,
 } from '@/integrations/backend/contracts';
-import {
-  toCanonicalBackendResourceIdentity,
-  type ResourceId,
-} from '@/shared/lib/resourceIdentity';
+import { toCanonicalBackendResourceIdentity, type ResourceId } from '@/shared/lib/resourceIdentity';
 
 export class TourDetailPresentationError extends Error {
   override readonly name = 'TourDetailPresentationError';

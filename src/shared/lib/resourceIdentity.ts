@@ -6,9 +6,7 @@ export function isResourceId(value: unknown): value is ResourceId {
   return typeof value === 'number' && Number.isSafeInteger(value) && value > 0;
 }
 
-export function parseBackendResourceIdentity(
-  value: string | undefined,
-): BackendResourceId | null {
+export function parseBackendResourceIdentity(value: string | undefined): BackendResourceId | null {
   if (value === undefined || !/^[1-9]\d*$/.test(value)) return null;
 
   const parsed = Number(value);

@@ -11,11 +11,7 @@ import {
   createContractNeutralConfigureFixture,
   type PriceDisplayModel,
 } from '@/features/configuration';
-import {
-  type TourDetailModel,
-  useTourDetail,
-  useTourSchedules,
-} from '@/features/tour-detail';
+import { type TourDetailModel, useTourDetail, useTourSchedules } from '@/features/tour-detail';
 import { getConfigureDraftEntryState, useReservationDraft } from '@/features/reservation';
 import {
   parseResourceIdRouteParam,
@@ -198,12 +194,7 @@ function ResolvedConfigurePage({
     },
   };
 
-  const price = pricePresentation(
-    product,
-    draft,
-    detailQuery.isFetching,
-    detailQuery.isError,
-  );
+  const price = pricePresentation(product, draft, detailQuery.isFetching, detailQuery.isError);
   const styleLabel =
     draft.tourStyle === null
       ? 'Style required'
