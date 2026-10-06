@@ -4,7 +4,7 @@ import type {
 } from '@/features/tour-detail/TourDetailDataSource';
 import { findTourDetailPreview } from '@/features/tour-detail/tourDetail.preview';
 import { BackendHttpError } from '@/integrations/backend/client/backendHttpError';
-import type { ResourceId } from '@/shared/lib/resourceIdentity';
+import { toCanonicalBackendResourceIdentity, type ResourceId } from '@/shared/lib/resourceIdentity';
 
 export class MockTourDetailDataSource implements TourDetailDataSource {
   getTourProduct(tourId: ResourceId, options: TourDetailReadOptions = {}) {
@@ -12,7 +12,7 @@ export class MockTourDetailDataSource implements TourDetailDataSource {
       return Promise.reject(new DOMException('The operation was aborted.', 'AbortError'));
     }
 
-    const tour = findTourDetailPreview(tourId);
+    const tour = findTourDetailPreview(toCanonicalBackendResourceIdentity(tourId));
 
     if (tour === null) {
       return Promise.reject(
