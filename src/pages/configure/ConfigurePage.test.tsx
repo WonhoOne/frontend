@@ -182,6 +182,7 @@ describe('ConfigurePage desktop transaction', () => {
 
     renderConfigure(storage);
 
+    await screen.findByRole('heading', { name: 'Build your trip' });
     const reviewButton = screen.getByRole('button', { name: 'Review trip' });
 
     fireEvent.change(screen.getByRole('spinbutton', { name: /participants/i }), {
@@ -207,6 +208,7 @@ describe('ConfigurePage desktop transaction', () => {
 
     renderConfigure(storage);
 
+    await screen.findByRole('heading', { name: 'Build your trip' });
     const extrasHeading = screen.getByRole('heading', { name: 'Extras' });
     const extrasSection = extrasHeading.closest('section');
 
