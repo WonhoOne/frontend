@@ -1,10 +1,17 @@
-import type { ResourceId } from '@/shared/lib/resourceIdentity';
+export const RESERVATION_DRAFT_SCHEMA_VERSION = 1 as const;
 
-export const RESERVATION_DRAFT_SCHEMA_VERSION = 2 as const;
+/**
+ * ReservationDraft가 보존하는 Frontend transaction identity다.
+ *
+ * Shared Baseline v0.2에서 Backend REST ID는 positive integer로 닫혔지만,
+ * Draft는 route/persistence/frontend transaction identity를 string으로 유지한다.
+ * Real Backend resource는 canonical decimal string을 사용하고 DEV mock composition은
+ * 명시적인 opaque string identity를 사용할 수 있다.
+ */
+export type ReservationDraftResourceIdentity = string;
 
-/** Canonical Backend resource identity fixed by Shared Baseline v0.2. */
-export type ReservationDraftResourceIdentity = ResourceId;
 export type ReservationDraftTourStyle = 'CLASSIC' | 'GRAND' | 'PREMIUM';
+
 export type ReservationDraftSelectionKey = string;
 
 export interface ReservationDraftConfiguration {
@@ -14,7 +21,7 @@ export interface ReservationDraftConfiguration {
   readonly extraSelectionKeys: readonly ReservationDraftSelectionKey[];
 }
 
-export interface ReservationDraftV2 {
+export interface ReservationDraftV1 {
   schemaVersion: typeof RESERVATION_DRAFT_SCHEMA_VERSION;
   tourProductId: ReservationDraftResourceIdentity | null;
   tourScheduleId: ReservationDraftResourceIdentity | null;
@@ -24,10 +31,7 @@ export interface ReservationDraftV2 {
   updatedAt: number;
 }
 
-/** Compatibility alias; persisted schema is V2. */
-export type ReservationDraftV1 = ReservationDraftV2;
-
-export function createEmptyReservationDraft(updatedAt: number): ReservationDraftV2 {
+export function createEmptyReservationDraft(updatedAt: number): ReservationDraftV1 {
   return {
     schemaVersion: RESERVATION_DRAFT_SCHEMA_VERSION,
     tourProductId: null,
