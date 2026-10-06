@@ -41,7 +41,7 @@ function completeDraft(): ReservationDraftV1 {
   return {
     schemaVersion: 1,
     tourProductId: '42',
-    tourScheduleId: 301,
+    tourScheduleId: '301',
     tourStyle: 'GRAND',
     participantCount: 2,
     configuration: {
