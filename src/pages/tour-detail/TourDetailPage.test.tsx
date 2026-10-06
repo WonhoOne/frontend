@@ -8,6 +8,7 @@ import { MemoryRouter } from 'react-router';
 
 import {
   findTourDetailPreview,
+  findTourSchedulePreview,
   type TourDetailCoreState,
   tourDetailPreviewStates,
   tourSchedulePreviewStates,
@@ -27,6 +28,10 @@ function renderView(
     scheduleState?: TourScheduleSectionState;
   } = {},
 ) {
+  const scheduleState =
+    options.scheduleState ??
+    (coreState.status === 'ready' ? findTourSchedulePreview(coreState.tour) : undefined);
+
   return render(
     <MemoryRouter>
       <TourDetailPageView
@@ -36,7 +41,7 @@ function renderView(
         {...(options.onRetrySchedule !== undefined
           ? { onRetrySchedule: options.onRetrySchedule }
           : {})}
-        {...(options.scheduleState !== undefined ? { scheduleState: options.scheduleState } : {})}
+        {...(scheduleState !== undefined ? { scheduleState } : {})}
       />
     </MemoryRouter>,
   );
