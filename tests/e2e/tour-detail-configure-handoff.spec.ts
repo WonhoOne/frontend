@@ -68,8 +68,7 @@ test.describe('Tour Detail → Configure transaction handoff', () => {
       .poll(() =>
         page.evaluate(
           ({ key, productId }) =>
-            window.sessionStorage.getItem(key)?.includes(`"tourProductId":"${productId}"`) ??
-            false,
+            window.sessionStorage.getItem(key)?.includes(`"tourProductId":"${productId}"`) ?? false,
           {
             key: reservationDraftStorageKey,
             productId: '103',
