@@ -12,9 +12,9 @@ import {
 
 function approvedBoundaryDraft(): ReservationDraftV1 {
   return {
-    schemaVersion: 2,
-    tourProductId: 42,
-    tourScheduleId: 7,
+    schemaVersion: 1,
+    tourProductId: '42',
+    tourScheduleId: '7',
     tourStyle: 'PREMIUM',
     participantCount: 2,
     configuration: {
