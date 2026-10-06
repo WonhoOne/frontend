@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { describe, expect, it } from 'vitest';
@@ -33,8 +34,8 @@ class MemoryStorage implements ReservationDraftStorage {
 function tripContextDraft(): ReservationDraftV1 {
   return {
     schemaVersion: 1,
-    tourProductId: '42',
-    tourScheduleId: '7',
+    tourProductId: '103',
+    tourScheduleId: '1301',
     tourStyle: 'GRAND',
     participantCount: null,
     configuration: {
@@ -48,15 +49,24 @@ function tripContextDraft(): ReservationDraftV1 {
 }
 
 function renderConfigure(storage: MemoryStorage) {
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+
   return render(
-    <ReservationDraftProvider storage={storage} now={() => 10}>
-      <MemoryRouter initialEntries={['/tours/42/configure']}>
-        <Routes>
-          <Route element={<ConfigurePage />} path={routePatterns.configure} />
-          <Route element={<h1>Reservation review marker</h1>} path={routePaths.reservationReview} />
-        </Routes>
-      </MemoryRouter>
-    </ReservationDraftProvider>,
+    <QueryClientProvider client={client}>
+      <ReservationDraftProvider storage={storage} now={() => 10}>
+        <MemoryRouter initialEntries={['/tours/103/configure']}>
+          <Routes>
+            <Route element={<ConfigurePage />} path={routePatterns.configure} />
+            <Route
+              element={<h1>Reservation review marker</h1>}
+              path={routePaths.reservationReview}
+            />
+          </Routes>
+        </MemoryRouter>
+      </ReservationDraftProvider>
+    </QueryClientProvider>,
   );
 }
 
@@ -71,7 +81,7 @@ describe('ConfigurePage desktop transaction', () => {
     ).toBeVisible();
     expect(screen.getByRole('link', { name: 'Back to tour details' })).toHaveAttribute(
       'href',
-      '/tours/42',
+      '/tours/103',
     );
     expect(screen.queryByRole('button', { name: 'Review trip' })).not.toBeInTheDocument();
   });
@@ -92,7 +102,7 @@ describe('ConfigurePage desktop transaction', () => {
       RESERVATION_DRAFT_STORAGE_KEY,
       serializeReservationDraft({
         ...tripContextDraft(),
-        tourProductId: '43',
+        tourProductId: '104',
       }),
     );
 
@@ -103,26 +113,29 @@ describe('ConfigurePage desktop transaction', () => {
     ).toBeVisible();
     expect(screen.getByRole('link', { name: 'Resume saved trip' })).toHaveAttribute(
       'href',
-      '/tours/43/configure',
+      '/tours/104/configure',
     );
     expect(JSON.parse(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY) ?? '{}')).toMatchObject({
-      tourProductId: '43',
+      tourProductId: '104',
     });
   });
 
-  it('renders the desktop configurator from an existing transaction context', () => {
+  it('renders the desktop configurator from an existing transaction context', async () => {
     const storage = new MemoryStorage();
     storage.setItem(RESERVATION_DRAFT_STORAGE_KEY, serializeReservationDraft(tripContextDraft()));
 
     renderConfigure(storage);
 
-    expect(screen.getByRole('heading', { name: 'Build your trip' })).toBeVisible();
+    expect(await screen.findByRole('heading', { name: 'Build your trip' })).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Hotel' })).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Transport' })).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Meal' })).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Extras' })).toBeVisible();
     expect(screen.getByRole('button', { name: 'Review trip' })).toBeDisabled();
-    expect(screen.getByText(/canonical option IDs and live prices are not assumed/i)).toBeVisible();
+    expect(
+      screen.getByText(/current Style price comes from TourProduct/i),
+    ).toBeVisible();
+    expect(screen.getByText(/₩1,800,000 per participant/i)).toBeVisible();
   });
 
   it('keeps unrelated required selections while updating Draft and summary', async () => {
@@ -163,7 +176,7 @@ describe('ConfigurePage desktop transaction', () => {
     });
   });
 
-  it('enables Review only after locally knowable required selections are complete', () => {
+  it('enables Review only after locally knowable required selections are complete', async () => {
     const storage = new MemoryStorage();
     storage.setItem(RESERVATION_DRAFT_STORAGE_KEY, serializeReservationDraft(tripContextDraft()));
 
@@ -188,7 +201,7 @@ describe('ConfigurePage desktop transaction', () => {
     expect(screen.getByRole('heading', { name: 'Reservation review marker' })).toBeVisible();
   });
 
-  it('does not invent Extras interaction before its Shared Contract is approved', () => {
+  it('does not invent Extras interaction before its Shared Contract is approved', async () => {
     const storage = new MemoryStorage();
     storage.setItem(RESERVATION_DRAFT_STORAGE_KEY, serializeReservationDraft(tripContextDraft()));
 
