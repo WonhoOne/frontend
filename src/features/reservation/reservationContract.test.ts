@@ -12,6 +12,7 @@ import {
 import { ReservationDataSourceError } from '@/features/reservation/reservation.error';
 
 const resolver: ReservationCreateIdentityResolver = {
+  resolveScheduleId: (value) => (value === '501' ? 501 : null),
   resolveHotelOption: (value) => (value === 'hotel-grand' ? 'HOTEL_4_STAR' : null),
   resolveTransportOption: (value) =>
     value === 'transport-private' ? 'PRIVATE_LUXURY_CAR_2' : null,
@@ -22,8 +23,8 @@ const resolver: ReservationCreateIdentityResolver = {
 function createCompleteDraft() {
   return {
     ...createEmptyReservationDraft(1),
-    tourProductId: 101,
-    tourScheduleId: 501,
+    tourProductId: '101',
+    tourScheduleId: '501',
     tourStyle: 'GRAND' as const,
     participantCount: 2,
     configuration: {
