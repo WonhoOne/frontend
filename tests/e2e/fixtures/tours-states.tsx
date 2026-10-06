@@ -5,11 +5,11 @@ import { MemoryRouter } from 'react-router';
 import '@/app/styles/tokens.css';
 import '@/shared/motion/motion.css';
 import '@/app/styles/global.css';
-import {
-  tourDiscoveryPreviewStates,
-  type TourDiscoveryCollectionState,
-  type TourTheme,
+import type {
+  TourDiscoveryCollectionState,
+  TourTheme,
 } from '@/features/tour-discovery';
+import { tourDiscoveryPreviewStates } from '@/features/tour-discovery/tourDiscovery.preview';
 import { ToursPageView } from '@/pages/tours/ToursPage';
 
 const fixtureStates = {
