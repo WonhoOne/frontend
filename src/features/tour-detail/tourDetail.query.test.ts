@@ -18,7 +18,7 @@ describe('Tour Detail query boundary', () => {
   it('forwards TanStack Query AbortSignal independently to the detail DataSource', async () => {
     let receivedSignal: AbortSignal | undefined;
     const tour: TourDetailModel = {
-      id: 103,
+      id: '103',
       theme: 'GOLF_CHALLENGE',
       themeLabel: 'Golf Challenge',
       name: 'Golf',
