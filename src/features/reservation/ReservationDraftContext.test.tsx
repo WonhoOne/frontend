@@ -30,9 +30,9 @@ class MemoryStorage implements ReservationDraftStorage {
 
 function restoredDraft(): ReservationDraftV1 {
   return {
-    schemaVersion: 2,
-    tourProductId: 42,
-    tourScheduleId: 7,
+    schemaVersion: 1,
+    tourProductId: '42',
+    tourScheduleId: '7',
     tourStyle: 'PREMIUM',
     participantCount: 4,
     configuration: {
