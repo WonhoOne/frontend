@@ -4,6 +4,7 @@ import type {
   TourTheme,
 } from '@/features/tour-discovery/tourDiscovery.model';
 import type { TourProductDto } from '@/integrations/backend/contracts';
+import { toCanonicalBackendResourceIdentity } from '@/shared/lib/resourceIdentity';
 
 export class TourProductPresentationError extends Error {
   override readonly name = 'TourProductPresentationError';
@@ -25,7 +26,7 @@ function resolveEditorialMedia(theme: TourTheme) {
 
 export function adaptTourProductDto(dto: TourProductDto): TourProductSummaryModel {
   return {
-    id: dto.id,
+    id: toCanonicalBackendResourceIdentity(dto.id),
     theme: dto.theme,
     name: dto.name,
     description: dto.description,
