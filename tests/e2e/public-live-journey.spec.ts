@@ -37,12 +37,15 @@ test('S01 → S04 public live journey stays on the real public-read boundary', a
   await page.getByRole('radio', { name: /2027-03-10 – 2027-03-14/ }).click();
 
   const configure = page.getByRole('button', { name: 'Configure this trip' });
+
   await expect(configure).toBeEnabled();
   await configure.click();
 
   await expect(page).toHaveURL(/\/tours\/103\/configure$/);
   await expect(page.getByRole('heading', { name: 'Build your trip' })).toBeVisible();
-  await expect(page.getByText(/Golf Challenge · Grand · 2027-03-10 – 2027-03-14/)).toBeVisible();
+  await expect(
+    page.getByText(/Golf Challenge · Grand · 2027-03-10 – 2027-03-14/),
+  ).toBeVisible();
   await expect(page.getByText(/₩1,800,000 per participant/)).toBeVisible();
 
   expect([...publicReads]).toEqual(
