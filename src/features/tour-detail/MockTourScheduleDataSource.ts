@@ -2,20 +2,26 @@ import type {
   TourScheduleDataSource,
   TourScheduleReadOptions,
 } from '@/features/tour-detail/TourScheduleDataSource';
-import { findTourDetailPreview } from '@/features/tour-detail/tourDetail.preview';
-import { findTourSchedulePreview } from '@/features/tour-detail/tourSchedule.preview';
-import { toCanonicalBackendResourceIdentity, type ResourceId } from '@/shared/lib/resourceIdentity';
+import { adaptTourScheduleDto } from '@/features/tour-detail/tourDetail.adapter';
+import { BackendRequestAbortedError } from '@/integrations/backend/client/backendHttpError';
+import {
+  getPublicTourScheduleDtoFixtures,
+  PUBLIC_READ_MOCK_ONLY_SENTINEL,
+} from '@/mocks/publicReadFixtures';
+import type { ResourceId } from '@/shared/lib/resourceIdentity';
 
 export class MockTourScheduleDataSource implements TourScheduleDataSource {
+  readonly mockRuntimeSentinel = PUBLIC_READ_MOCK_ONLY_SENTINEL;
+
   getTourSchedules(tourId: ResourceId, options: TourScheduleReadOptions = {}) {
     if (options.signal?.aborted === true) {
-      return Promise.reject(new DOMException('The operation was aborted.', 'AbortError'));
+      return Promise.reject(new BackendRequestAbortedError());
     }
 
-    const tour = findTourDetailPreview(toCanonicalBackendResourceIdentity(tourId));
-    if (tour === null) return Promise.resolve([]);
-
-    const state = findTourSchedulePreview(tour);
-    return Promise.resolve(state.status === 'ready' ? state.choices : []);
+    return Promise.resolve(
+      getPublicTourScheduleDtoFixtures(tourId).map((schedule) =>
+        adaptTourScheduleDto(schedule, tourId),
+      ),
+    );
   }
 }
