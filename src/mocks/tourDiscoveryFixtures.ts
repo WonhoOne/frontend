@@ -4,4 +4,4 @@
  *
  * MOCK CONTRACT: This re-export is not an approved Backend DTO fixture.
  */
-export { tourDiscoveryPreviewProducts as tourDiscoveryProductFixtures } from '@/features/tour-discovery';
+export { tourDiscoveryPreviewProducts as tourDiscoveryProductFixtures } from '@/features/tour-discovery/tourDiscovery.preview';
