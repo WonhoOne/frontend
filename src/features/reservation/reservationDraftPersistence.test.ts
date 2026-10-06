@@ -5,7 +5,6 @@ import {
   hydrateReservationDraft,
   migrateReservationDraft,
   persistReservationDraft,
-  LEGACY_RESERVATION_DRAFT_STORAGE_KEY,
   RESERVATION_DRAFT_SCHEMA_VERSION,
   RESERVATION_DRAFT_STORAGE_KEY,
   serializeReservationDraft,
@@ -32,8 +31,8 @@ class MemoryStorage implements ReservationDraftStorage {
 function configuredDraft(): ReservationDraftV1 {
   return {
     schemaVersion: RESERVATION_DRAFT_SCHEMA_VERSION,
-    tourProductId: 101,
-    tourScheduleId: 1001,
+    tourProductId: '101',
+    tourScheduleId: '1001',
     tourStyle: 'GRAND',
     participantCount: 2,
     configuration: {
@@ -47,7 +46,7 @@ function configuredDraft(): ReservationDraftV1 {
 }
 
 describe('ReservationDraft persistence', () => {
-  it('serializes and restores a valid V1 transaction draft', () => {
+  it('serializes and restores canonical Backend identities as strings', () => {
     const storage = new MemoryStorage();
     const draft = configuredDraft();
 
@@ -60,34 +59,36 @@ describe('ReservationDraft persistence', () => {
     });
   });
 
-  it('keeps an explicit migration boundary for V1 and rejects unknown schema versions', () => {
-    const draft = configuredDraft();
+  it('preserves explicit opaque mock identities without promoting them to wire IDs', () => {
+    const storage = new MemoryStorage();
+    const draft: ReservationDraftV1 = {
+      ...configuredDraft(),
+      tourProductId: 'demo-golf-product-a',
+      tourScheduleId: 'fixture:schedule:a',
+    };
 
-    expect(migrateReservationDraft(draft)).toEqual(draft);
+    storage.setItem(RESERVATION_DRAFT_STORAGE_KEY, serializeReservationDraft(draft));
+
+    expect(hydrateReservationDraft(storage, 999).draft).toEqual(draft);
+  });
+
+  it('rejects numeric resource identity payloads instead of silently migrating schema meaning', () => {
     expect(
       migrateReservationDraft({
-        ...draft,
-        schemaVersion: 3,
+        ...configuredDraft(),
+        tourProductId: 101,
+        tourScheduleId: 1001,
       }),
     ).toBeNull();
   });
 
-  it('discards legacy V1 opaque string identities instead of guessing Backend IDs', () => {
-    const storage = new MemoryStorage();
-    storage.setItem(
-      LEGACY_RESERVATION_DRAFT_STORAGE_KEY,
-      JSON.stringify({
-        schemaVersion: 1,
-        tourProductId: '42',
-        tourScheduleId: '301',
+  it('rejects unknown schema versions', () => {
+    expect(
+      migrateReservationDraft({
+        ...configuredDraft(),
+        schemaVersion: 2,
       }),
-    );
-
-    const result = hydrateReservationDraft(storage, 250);
-
-    expect(result.hydrationStatus).toBe('discarded');
-    expect(result.draft).toEqual(createEmptyReservationDraft(250));
-    expect(storage.getItem(LEGACY_RESERVATION_DRAFT_STORAGE_KEY)).toBeNull();
+    ).toBeNull();
   });
 
   it('drops unknown fields instead of leaking them into restored transaction state', () => {
@@ -115,9 +116,7 @@ describe('ReservationDraft persistence', () => {
     const storage = new MemoryStorage();
     storage.setItem(RESERVATION_DRAFT_STORAGE_KEY, '{not-json');
 
-    const result = hydrateReservationDraft(storage, 200);
-
-    expect(result).toEqual({
+    expect(hydrateReservationDraft(storage, 200)).toEqual({
       draft: createEmptyReservationDraft(200),
       hydrationStatus: 'discarded',
       persistenceStatus: 'available',
@@ -125,24 +124,7 @@ describe('ReservationDraft persistence', () => {
     expect(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY)).toBeNull();
   });
 
-  it('discards an incompatible schema instead of silently parsing it as V1', () => {
-    const storage = new MemoryStorage();
-    storage.setItem(
-      RESERVATION_DRAFT_STORAGE_KEY,
-      JSON.stringify({
-        ...configuredDraft(),
-        schemaVersion: 3,
-      }),
-    );
-
-    const result = hydrateReservationDraft(storage, 300);
-
-    expect(result.hydrationStatus).toBe('discarded');
-    expect(result.draft).toEqual(createEmptyReservationDraft(300));
-    expect(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY)).toBeNull();
-  });
-
-  it('discards a malformed V1 shape', () => {
+  it('discards malformed configuration shape', () => {
     const storage = new MemoryStorage();
     storage.setItem(
       RESERVATION_DRAFT_STORAGE_KEY,
