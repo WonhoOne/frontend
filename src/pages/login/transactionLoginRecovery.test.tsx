@@ -74,9 +74,9 @@ describe('transaction login recovery public boundary', () => {
     window.sessionStorage.setItem(
       RESERVATION_DRAFT_STORAGE_KEY,
       JSON.stringify({
-        schemaVersion: 2,
-        tourProductId: 42,
-        tourScheduleId: 7,
+        schemaVersion: 1,
+        tourProductId: '42',
+        tourScheduleId: '7',
         tourStyle: 'CLASSIC',
         participantCount: 2,
         configuration: {
