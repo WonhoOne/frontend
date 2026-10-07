@@ -37,14 +37,9 @@ export function AuthProvider({
   sessionStore,
 }: AuthProviderProps) {
   const [state, setState] = useState<AuthState>({ status: 'checking' });
-  const ownedSessionStoreRef = useRef<AuthSessionStore | null>(null);
+  const [ownedSessionStore] = useState<AuthSessionStore>(() => new MemoryAuthSessionStore(now));
   const wasAuthenticatedRef = useRef(false);
-
-  if (ownedSessionStoreRef.current === null) {
-    ownedSessionStoreRef.current = new MemoryAuthSessionStore(now);
-  }
-
-  const activeSessionStore = sessionStore ?? ownedSessionStoreRef.current;
+  const activeSessionStore = sessionStore ?? ownedSessionStore;
 
   const becomeUnauthenticated = useCallback(() => {
     activeSessionStore.clear();
@@ -85,17 +80,10 @@ export function AuthProvider({
     const expiresAt = activeSessionStore.getExpiresAt();
 
     if (expiresAt === null) {
-      becomeUnauthenticated();
       return;
     }
 
-    const remainingMs = expiresAt - now();
-
-    if (remainingMs <= 0) {
-      becomeUnauthenticated();
-      return;
-    }
-
+    const remainingMs = Math.max(0, expiresAt - now());
     const timeoutId = window.setTimeout(becomeUnauthenticated, remainingMs);
     return () => window.clearTimeout(timeoutId);
   }, [activeSessionStore, becomeUnauthenticated, now, state.status]);
