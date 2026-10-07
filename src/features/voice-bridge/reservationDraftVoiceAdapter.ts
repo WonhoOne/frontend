@@ -35,24 +35,28 @@ export type ReservationDraftVoiceCapabilities = Pick<
  * 해당 음성 명령을 현재 GUI context에서 사용할 수 없는 것으로 거절한다.
  */
 export interface ReservationDraftVoiceContext {
-  canSelectTourProduct(tourProductId: number): boolean;
-  canSelectStyle(style: VoiceTourStyle): boolean;
-  canSelectSchedule(scheduleId: number): boolean;
-  canSetParticipantCount(participantCount: number): boolean;
-  resolveHotelSelectionKey(hotelOption: VoiceHotelOption): ReservationDraftSelectionKey | null;
-  resolveTransportSelectionKey(
+  canSelectTourProduct: (tourProductId: number) => boolean;
+  canSelectStyle: (style: VoiceTourStyle) => boolean;
+  canSelectSchedule: (scheduleId: number) => boolean;
+  canSetParticipantCount: (participantCount: number) => boolean;
+  resolveHotelSelectionKey: (
+    hotelOption: VoiceHotelOption,
+  ) => ReservationDraftSelectionKey | null;
+  resolveTransportSelectionKey: (
     transportOption: VoiceTransportOption,
-  ): ReservationDraftSelectionKey | null;
-  resolveMealSelectionKey(mealOption: VoiceMealOption): ReservationDraftSelectionKey | null;
-  resolveExtraSelectionKey(extraOption: VoiceExtraOption): ReservationDraftSelectionKey | null;
+  ) => ReservationDraftSelectionKey | null;
+  resolveMealSelectionKey: (mealOption: VoiceMealOption) => ReservationDraftSelectionKey | null;
+  resolveExtraSelectionKey: (
+    extraOption: VoiceExtraOption,
+  ) => ReservationDraftSelectionKey | null;
 }
 
 export interface CreateReservationDraftVoiceAdapterInput {
   /** Always read the latest Draft because Voice delivery can occur after a render/context change. */
-  getDraft(): ReservationDraftV1;
+  getDraft: () => ReservationDraftV1;
   /** Always read the latest GUI selection context for the same reason. */
-  getContext(): ReservationDraftVoiceContext;
-  dispatch(action: ReservationDraftAction): void;
+  getContext: () => ReservationDraftVoiceContext;
+  dispatch: (action: ReservationDraftAction) => void;
   now?: () => number;
 }
 
