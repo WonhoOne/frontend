@@ -30,10 +30,7 @@ export interface TravelHistoryItemDto {
   };
 }
 
-export function decodeTravelHistoryItemDto(
-  value: unknown,
-  rootPath = '$',
-): TravelHistoryItemDto {
+export function decodeTravelHistoryItemDto(value: unknown, rootPath = '$'): TravelHistoryItemDto {
   const contract = 'TravelHistory' as const;
   const record = expectRecord(value, contract, rootPath);
   const tourProduct = expectRecord(record.tourProduct, contract, rootPath + '.tourProduct');
