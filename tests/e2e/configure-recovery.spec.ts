@@ -4,8 +4,8 @@ const storageKey = 'mister-world:reservation-draft:v1';
 
 const baseDraft = {
   schemaVersion: 1,
-  tourProductId: 'tour-42',
-  tourScheduleId: 'schedule-7',
+  tourProductId: '103',
+  tourScheduleId: '1301',
   tourStyle: 'GRAND',
   participantCount: null,
   configuration: {
@@ -38,7 +38,7 @@ async function completeConfiguration(page: Page) {
 test('Configure → Review → browser Back preserves the transaction Draft', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await seedDraft(page);
-  await page.goto('/tours/tour-42/configure');
+  await page.goto('/tours/103/configure');
   await completeConfiguration(page);
 
   await page.getByRole('button', { name: 'Review trip' }).click();
@@ -47,12 +47,12 @@ test('Configure → Review → browser Back preserves the transaction Draft', as
   await expect(page.getByRole('heading', { name: 'Review your trip' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Change configuration' })).toHaveAttribute(
     'href',
-    '/tours/tour-42/configure',
+    '/tours/103/configure',
   );
 
   await page.goBack();
 
-  await expect(page).toHaveURL('/tours/tour-42/configure');
+  await expect(page).toHaveURL('/tours/103/configure');
   await expect(page.getByRole('radio', { name: /Fixture hotel A/i })).toBeChecked();
   await expect(page.getByRole('radio', { name: /Fixture transport B/i })).toBeChecked();
   await expect(page.getByRole('radio', { name: /Fixture meal A/i })).toBeChecked();
@@ -63,7 +63,7 @@ test('Configure → Review → browser Back preserves the transaction Draft', as
 test('refresh rehydrates the same Configure selections from sessionStorage', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await seedDraft(page);
-  await page.goto('/tours/tour-42/configure');
+  await page.goto('/tours/103/configure');
   await completeConfiguration(page);
 
   await expect
@@ -111,16 +111,16 @@ test('a route mismatch preserves the saved trip and offers an explicit resume pa
   await page.setViewportSize({ width: 1280, height: 900 });
   await seedDraft(page, {
     ...baseDraft,
-    tourProductId: 'tour-saved',
+    tourProductId: '104',
   });
-  await page.goto('/tours/tour-other/configure');
+  await page.goto('/tours/105/configure');
 
   await expect(
     page.getByRole('heading', { name: 'This route does not match your saved trip' }),
   ).toBeVisible();
   await expect(page.getByRole('link', { name: 'Resume saved trip' })).toHaveAttribute(
     'href',
-    '/tours/tour-saved/configure',
+    '/tours/104/configure',
   );
 
   const storedProduct = await page.evaluate((key) => {
@@ -137,14 +137,14 @@ test('a route mismatch preserves the saved trip and offers an explicit resume pa
     const tourProductId = (parsed as Record<string, unknown>).tourProductId;
     return typeof tourProductId === 'string' ? tourProductId : null;
   }, storageKey);
-  expect(storedProduct).toBe('tour-saved');
+  expect(storedProduct).toBe('104');
 });
 
 test('corrupt sessionStorage is cleared and shown as a calm recovery state', async ({ page }) => {
   await page.addInitScript((key) => {
     window.sessionStorage.setItem(key, '{not-json');
   }, storageKey);
-  await page.goto('/tours/tour-42/configure');
+  await page.goto('/tours/103/configure');
 
   await expect(
     page.getByRole('heading', { name: 'Saved trip could not be restored' }),

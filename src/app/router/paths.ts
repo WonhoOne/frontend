@@ -32,16 +32,9 @@ function encodePathSegment(value: string) {
   return encodeURIComponent(value);
 }
 
-/**
- * Dynamic Customer route를 일관된 URL로 만든다.
- *
- * CONTRACT: Builder는 identifier나 filter 값의 business 의미를 검증하지 않는다.
- * 호출자가 전달한 값을 URL-safe representation으로 만드는 책임만 가진다.
- */
 export const routeBuilders = {
   toursByTheme(theme: string) {
     const search = new URLSearchParams({ theme });
-
     return `${routePaths.tours}?${search.toString()}`;
   },
   tourDetail(tourId: string) {

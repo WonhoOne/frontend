@@ -16,11 +16,15 @@ import type {
  */
 export const tourDiscoveryPreviewProducts = [
   {
-    id: 'demo-honeymoon-product-a',
+    id: '101',
     theme: 'HONEYMOON_ROMANCE',
     name: 'Honeymoon Romance · Journey 01',
     description: 'A curated journey shaped by the Honeymoon Romance theme.',
     availableStyles: ['GRAND', 'PREMIUM'],
+    stylePrices: [
+      { style: 'GRAND', amount: 1800000, currency: 'KRW' },
+      { style: 'PREMIUM', amount: 2400000, currency: 'KRW' },
+    ],
     media: {
       imageSrc: null,
       imageAlt: '',
@@ -28,11 +32,15 @@ export const tourDiscoveryPreviewProducts = [
     },
   },
   {
-    id: 'demo-parents-product-a',
+    id: '102',
     theme: 'PARENTS_HEALING',
     name: 'Parents Healing · Journey 01',
     description: 'A curated journey shaped by the Parents Healing theme.',
     availableStyles: ['GRAND', 'PREMIUM'],
+    stylePrices: [
+      { style: 'GRAND', amount: 1600000, currency: 'KRW' },
+      { style: 'PREMIUM', amount: 2200000, currency: 'KRW' },
+    ],
     media: {
       imageSrc: null,
       imageAlt: '',
@@ -40,11 +48,16 @@ export const tourDiscoveryPreviewProducts = [
     },
   },
   {
-    id: 'demo-golf-product-a',
+    id: '103',
     theme: 'GOLF_CHALLENGE',
     name: 'Golf Challenge · Journey 01',
     description: 'A curated journey shaped by the Golf Challenge theme.',
     availableStyles: ['CLASSIC', 'GRAND', 'PREMIUM'],
+    stylePrices: [
+      { style: 'CLASSIC', amount: 1200000, currency: 'KRW' },
+      { style: 'GRAND', amount: 1800000, currency: 'KRW' },
+      { style: 'PREMIUM', amount: 2500000, currency: 'KRW' },
+    ],
     media: {
       imageSrc: null,
       imageAlt: '',
@@ -52,11 +65,16 @@ export const tourDiscoveryPreviewProducts = [
     },
   },
   {
-    id: 'demo-golf-product-b',
+    id: '104',
     theme: 'GOLF_CHALLENGE',
     name: 'Golf Challenge · Journey 02',
     description: 'A second TourProduct in the same Theme, with its own detail identity.',
     availableStyles: ['CLASSIC', 'GRAND', 'PREMIUM'],
+    stylePrices: [
+      { style: 'CLASSIC', amount: 1300000, currency: 'KRW' },
+      { style: 'GRAND', amount: 1900000, currency: 'KRW' },
+      { style: 'PREMIUM', amount: 2600000, currency: 'KRW' },
+    ],
     media: {
       imageSrc: null,
       imageAlt: '',
@@ -64,11 +82,16 @@ export const tourDiscoveryPreviewProducts = [
     },
   },
   {
-    id: 'demo-trekking-product-a',
+    id: '105',
     theme: 'OUTDOOR_TREKKING',
     name: 'Outdoor Trekking · Journey 01',
     description: 'A curated journey shaped by the Outdoor Trekking theme.',
     availableStyles: ['CLASSIC', 'GRAND', 'PREMIUM'],
+    stylePrices: [
+      { style: 'CLASSIC', amount: 1100000, currency: 'KRW' },
+      { style: 'GRAND', amount: 1700000, currency: 'KRW' },
+      { style: 'PREMIUM', amount: 2300000, currency: 'KRW' },
+    ],
     media: {
       imageSrc: null,
       imageAlt: '',
@@ -82,7 +105,7 @@ const partialFailureProducts = tourDiscoveryPreviewProducts.filter(
 );
 
 const imageFailureProducts = tourDiscoveryPreviewProducts.map((product) =>
-  product.id === 'demo-golf-product-a'
+  product.id === '103'
     ? {
         ...product,
         media: {

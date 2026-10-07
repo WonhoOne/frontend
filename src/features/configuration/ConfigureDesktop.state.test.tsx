@@ -36,8 +36,8 @@ class MemoryStorage implements ReservationDraftStorage {
 function completeDraft(): ReservationDraftV1 {
   return {
     schemaVersion: 1,
-    tourProductId: 'tour-42',
-    tourScheduleId: 'schedule-7',
+    tourProductId: '42',
+    tourScheduleId: '7',
     tourStyle: 'GRAND',
     participantCount: 2,
     configuration: {
@@ -63,7 +63,7 @@ function renderConfigure(runtimeState: ConfigureRuntimeState, onRetryGroup = vi.
         participantRule="general"
         runtimeState={runtimeState}
         scenario={createContractNeutralConfigureFixture()}
-        tourProductId="tour-42"
+        tourProductId="42"
       />
     </ReservationDraftProvider>,
   );

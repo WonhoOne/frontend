@@ -10,8 +10,8 @@ import { createEmptyReservationDraft, type ReservationDraftV1 } from '@/features
 function readyDraft(): ReservationDraftV1 {
   return {
     ...createEmptyReservationDraft(1),
-    tourProductId: 'tour-a',
-    tourScheduleId: 'schedule-a',
+    tourProductId: '101',
+    tourScheduleId: '1001',
     tourStyle: 'GRAND',
     participantCount: 2,
     configuration: {
@@ -30,7 +30,7 @@ describe('Configure readiness', () => {
     expect(
       getConfigureReadiness({
         draft: createEmptyReservationDraft(1),
-        expectedTourProductId: 'tour-a',
+        expectedTourProductId: '101',
         groups: fixture.groups,
         participantRule: 'general',
       }),
@@ -46,7 +46,7 @@ describe('Configure readiness', () => {
     expect(
       getConfigureReadiness({
         draft: readyDraft(),
-        expectedTourProductId: 'tour-a',
+        expectedTourProductId: '101',
         groups: fixture.groups,
         participantRule: 'general',
       }),
@@ -69,7 +69,7 @@ describe('Configure readiness', () => {
             transportSelectionKey: 'fixture:transport:missing',
           },
         },
-        expectedTourProductId: 'tour-a',
+        expectedTourProductId: '101',
         groups: fixture.groups,
         participantRule: 'general',
       }),
@@ -85,7 +85,7 @@ describe('Configure readiness', () => {
     expect(
       getConfigureReadiness({
         draft: readyDraft(),
-        expectedTourProductId: 'tour-a',
+        expectedTourProductId: '101',
         groups: fixture.groups,
         participantRule: 'general',
       }).issues,
@@ -107,7 +107,7 @@ describe('Configure readiness', () => {
       expect(
         getConfigureReadiness({
           draft: readyDraft(),
-          expectedTourProductId: 'tour-a',
+          expectedTourProductId: '101',
           groups: fixture.groups,
           participantRule: 'general',
           runtimeState,
@@ -129,7 +129,7 @@ describe('Configure readiness', () => {
       expect(
         getConfigureReadiness({
           draft: readyDraft(),
-          expectedTourProductId: 'tour-a',
+          expectedTourProductId: '101',
           groups: fixture.groups,
           participantRule: 'general',
           runtimeState,
@@ -149,7 +149,7 @@ describe('Configure readiness', () => {
     expect(
       getConfigureReadiness({
         draft: readyDraft(),
-        expectedTourProductId: 'tour-a',
+        expectedTourProductId: '101',
         groups: fixture.groups,
         participantRule: 'general',
         runtimeState,

@@ -13,8 +13,8 @@ import {
 function approvedBoundaryDraft(): ReservationDraftV1 {
   return {
     schemaVersion: 1,
-    tourProductId: 'frontend-route-tour-key',
-    tourScheduleId: 'frontend-route-schedule-key',
+    tourProductId: '42',
+    tourScheduleId: '7',
     tourStyle: 'PREMIUM',
     participantCount: 2,
     configuration: {
@@ -49,7 +49,7 @@ describe('Shared Contract convergence gate — approved docs/main v0.1.2', () =>
     expect(validateParticipantCount('honeymoon', 10_000).status).toBe('valid');
   });
 
-  it('keeps Draft resource identity as a frontend route-safe string rather than a wire-ID claim', () => {
+  it('keeps Draft resource identity aligned with v0.2 positive integer IDs', () => {
     expect(parseReservationDraft(approvedBoundaryDraft())).toEqual(approvedBoundaryDraft());
   });
 

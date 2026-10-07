@@ -31,8 +31,8 @@ class MemoryStorage implements ReservationDraftStorage {
 function restoredDraft(): ReservationDraftV1 {
   return {
     schemaVersion: 1,
-    tourProductId: 'tour-restored',
-    tourScheduleId: 'schedule-restored',
+    tourProductId: '42',
+    tourScheduleId: '7',
     tourStyle: 'PREMIUM',
     participantCount: 4,
     configuration: {
@@ -59,7 +59,7 @@ function DraftProbe() {
         onClick={() =>
           dispatch({
             type: 'START_DRAFT',
-            tourProductId: 'tour-new',
+            tourProductId: '43',
             updatedAt: 100,
           })
         }
@@ -104,7 +104,7 @@ describe('ReservationDraftProvider', () => {
       </ReservationDraftProvider>,
     );
 
-    expect(screen.getByTestId('product')).toHaveTextContent('tour-restored');
+    expect(screen.getByTestId('product')).toHaveTextContent('42');
     expect(screen.getByTestId('style')).toHaveTextContent('PREMIUM');
     expect(screen.getByTestId('hydration')).toHaveTextContent('restored');
     expect(screen.getByTestId('persistence')).toHaveTextContent('available');
@@ -126,7 +126,7 @@ describe('ReservationDraftProvider', () => {
       const serialized = storage.getItem(RESERVATION_DRAFT_STORAGE_KEY);
       expect(serialized).not.toBeNull();
       expect(JSON.parse(serialized ?? '{}')).toMatchObject({
-        tourProductId: 'tour-new',
+        tourProductId: '43',
         tourStyle: 'GRAND',
       });
     });
@@ -158,7 +158,7 @@ describe('ReservationDraftProvider', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Start' }));
 
-    expect(screen.getByTestId('product')).toHaveTextContent('tour-new');
+    expect(screen.getByTestId('product')).toHaveTextContent('43');
 
     await waitFor(() => {
       expect(screen.getByTestId('persistence')).toHaveTextContent('degraded');

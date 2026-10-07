@@ -1,27 +1,123 @@
-import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
+import {
+  tourDetailDataSource,
+  tourScheduleDataSource,
+} from '@/app/providers/tourDetailDataSources';
 import { routeBuilders, routePaths } from '@/app/router/paths';
-import { ConfigureDesktop, createContractNeutralConfigureFixture } from '@/features/configuration';
+import {
+  buildPublicConfigurePrice,
+  ConfigureDesktop,
+  createContractNeutralConfigureFixture,
+  type PriceDisplayModel,
+} from '@/features/configuration';
+import { type TourDetailModel, useTourDetail, useTourSchedules } from '@/features/tour-detail';
 import { getConfigureDraftEntryState, useReservationDraft } from '@/features/reservation';
-import { PageContainer, TextLink } from '@/shared/ui';
+import {
+  parseResourceIdRouteParam,
+  toCanonicalBackendResourceIdentity,
+  type ResourceId,
+} from '@/shared/lib/resourceIdentity';
+import { Button, PageContainer, Skeleton, TextLink } from '@/shared/ui';
 
 import styles from '@/pages/configure/ConfigurePage.module.css';
 
-export function ConfigurePage() {
-  const navigate = useNavigate();
-  const { tourId } = useParams();
-  const { draft, hydrationStatus, persistenceStatus } = useReservationDraft();
-  const scenario = useMemo(() => createContractNeutralConfigureFixture(), []);
+function ProductLoadingState() {
+  return (
+    <PageContainer variant="reading">
+      <section aria-busy="true" aria-label="Loading trip configuration" className={styles.recovery}>
+        <p className={styles.eyebrow}>Trip configuration</p>
+        <h1>Configure</h1>
+        <h2>Loading current tour details</h2>
+        <Skeleton variant="line" />
+        <Skeleton variant="line" />
+      </section>
+    </PageContainer>
+  );
+}
 
-  if (tourId === undefined) {
-    return null;
+function ProductErrorState({
+  onRetry,
+  tourProductIdentity,
+}: {
+  onRetry: () => void;
+  tourProductIdentity: string;
+}) {
+  return (
+    <PageContainer variant="reading">
+      <section className={styles.recovery}>
+        <p className={styles.eyebrow}>Trip configuration</p>
+        <h1>Configure</h1>
+        <h2>We couldn't load the current tour details.</h2>
+        <p>
+          Your saved choices are still preserved. Retry the public TourProduct read or return to the
+          tour detail.
+        </p>
+        <div className={styles.recoveryActions}>
+          <Button onClick={onRetry} variant="secondary">
+            Retry tour details
+          </Button>
+          <TextLink to={routeBuilders.tourDetail(tourProductIdentity)}>
+            Back to tour details
+          </TextLink>
+        </div>
+      </section>
+    </PageContainer>
+  );
+}
+
+function pricePresentation(
+  product: TourDetailModel,
+  draft: ReturnType<typeof useReservationDraft>['draft'],
+  isFetching: boolean,
+  isError: boolean,
+): PriceDisplayModel {
+  const current = buildPublicConfigurePrice({
+    participantCount: draft.participantCount,
+    selectedStyle: draft.tourStyle,
+    stylePrices: product.stylePrices,
+  });
+
+  if (current.state !== 'known') {
+    return current;
   }
+
+  if (isError) {
+    return {
+      state: 'error',
+      previousTotalLabel: current.totalLabel,
+      message: 'Could not refresh the current TourProduct price.',
+    };
+  }
+
+  if (isFetching) {
+    return {
+      state: 'recalculating',
+      previousTotalLabel: current.totalLabel,
+    };
+  }
+
+  return current;
+}
+
+interface ResolvedConfigurePageProps {
+  backendTourProductId: ResourceId;
+  tourProductIdentity: string;
+}
+
+function ResolvedConfigurePage({
+  backendTourProductId,
+  tourProductIdentity,
+}: ResolvedConfigurePageProps) {
+  const navigate = useNavigate();
+  const { draft, hydrationStatus, persistenceStatus } = useReservationDraft();
+  const detailQuery = useTourDetail(tourDetailDataSource, backendTourProductId);
+  const scheduleQuery = useTourSchedules(tourScheduleDataSource, backendTourProductId);
 
   const entryState = getConfigureDraftEntryState({
     draft,
     hydrationStatus,
-    routeTourProductId: tourId,
+    routeTourProductId: tourProductIdentity,
   });
 
   if (entryState.status !== 'ready') {
@@ -53,10 +149,14 @@ export function ConfigurePage() {
                 <TextLink to={routeBuilders.configure(entryState.savedTourProductId)}>
                   Resume saved trip
                 </TextLink>
-                <TextLink to={routeBuilders.tourDetail(tourId)}>View this tour</TextLink>
+                <TextLink to={routeBuilders.tourDetail(tourProductIdentity)}>
+                  View this tour
+                </TextLink>
               </>
             ) : (
-              <TextLink to={routeBuilders.tourDetail(tourId)}>Back to tour details</TextLink>
+              <TextLink to={routeBuilders.tourDetail(tourProductIdentity)}>
+                Back to tour details
+              </TextLink>
             )}
           </div>
         </section>
@@ -64,10 +164,42 @@ export function ConfigurePage() {
     );
   }
 
+  if (detailQuery.data === undefined) {
+    if (detailQuery.isError) {
+      return (
+        <ProductErrorState
+          onRetry={() => {
+            void detailQuery.refetch();
+          }}
+          tourProductIdentity={tourProductIdentity}
+        />
+      );
+    }
+
+    return <ProductLoadingState />;
+  }
+
+  const product = detailQuery.data;
+  const selectedScheduleLabel =
+    scheduleQuery.data?.find((schedule) => schedule.selectionKey === draft.tourScheduleId)
+      ?.dateLabel ?? 'Selected schedule';
+
+  const baseScenario = createContractNeutralConfigureFixture();
+  const scenario = {
+    ...baseScenario,
+    tripSummary: {
+      ...baseScenario.tripSummary,
+      themeLabel: product.themeLabel,
+      scheduleLabel: selectedScheduleLabel,
+    },
+  };
+
+  const price = pricePresentation(product, draft, detailQuery.isFetching, detailQuery.isError);
   const styleLabel =
     draft.tourStyle === null
       ? 'Style required'
       : draft.tourStyle.charAt(0) + draft.tourStyle.slice(1).toLowerCase();
+  const participantRule = product.theme === 'HONEYMOON_ROMANCE' ? 'honeymoon' : 'general';
 
   return (
     <PageContainer variant="transaction">
@@ -78,15 +210,17 @@ export function ConfigurePage() {
             <h1>Configure</h1>
             <h2>Build your trip</h2>
             <p className={styles.contextLine}>
-              {scenario.tripSummary.themeLabel} · {styleLabel} ·{' '}
-              {scenario.tripSummary.scheduleLabel}
+              {product.themeLabel} · {styleLabel} · {selectedScheduleLabel}
             </p>
             <p className={styles.fixtureNote}>
-              Development fixture catalog — canonical option IDs and live prices are not assumed.
+              The current Style price comes from TourProduct. Final discount and total are confirmed
+              by Backend when the Reservation is created.
             </p>
           </div>
 
-          <TextLink to={routeBuilders.tourDetail(tourId)}>Change style/schedule</TextLink>
+          <TextLink to={routeBuilders.tourDetail(tourProductIdentity)}>
+            Change style/schedule
+          </TextLink>
         </header>
 
         {persistenceStatus === 'degraded' ? (
@@ -97,17 +231,37 @@ export function ConfigurePage() {
         ) : null}
 
         <ConfigureDesktop
+          onRetryPrice={() => {
+            void detailQuery.refetch();
+          }}
           onReturnToTour={() => {
-            void navigate(routeBuilders.tourDetail(tourId));
+            void navigate(routeBuilders.tourDetail(tourProductIdentity));
           }}
           onReview={() => {
             void navigate(routePaths.reservationReview);
           }}
-          participantRule="general"
+          participantRule={participantRule}
+          price={price}
           scenario={scenario}
-          tourProductId={tourId}
+          tourProductId={tourProductIdentity}
         />
       </div>
     </PageContainer>
+  );
+}
+
+export function ConfigurePage() {
+  const { tourId } = useParams();
+  const backendTourProductId = parseResourceIdRouteParam(tourId);
+
+  if (backendTourProductId === null) {
+    return null;
+  }
+
+  return (
+    <ResolvedConfigurePage
+      backendTourProductId={backendTourProductId}
+      tourProductIdentity={toCanonicalBackendResourceIdentity(backendTourProductId)}
+    />
   );
 }

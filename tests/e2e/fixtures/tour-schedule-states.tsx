@@ -5,11 +5,9 @@ import { MemoryRouter } from 'react-router';
 import '@/app/styles/tokens.css';
 import '@/shared/motion/motion.css';
 import '@/app/styles/global.css';
-import {
-  findTourDetailPreview,
-  tourSchedulePreviewStates,
-  type TourScheduleSectionState,
-} from '@/features/tour-detail';
+import type { TourScheduleSectionState } from '@/features/tour-detail';
+import { findTourDetailPreview } from '@/features/tour-detail/tourDetail.preview';
+import { tourSchedulePreviewStates } from '@/features/tour-detail/tourSchedule.preview';
 import { TourDetailPageView } from '@/pages/tour-detail/TourDetailPage';
 
 const fixtureStates = {
@@ -32,14 +30,14 @@ function readFixtureState() {
 
 function TourScheduleStateFixture() {
   const [retryResult, setRetryResult] = useState('idle');
-  const tour = findTourDetailPreview('demo-golf-product-a');
+  const tour = findTourDetailPreview('103');
 
   if (tour === null) {
     throw new Error('Tour Detail schedule fixture requires the Golf preview TourProduct.');
   }
 
   return (
-    <MemoryRouter initialEntries={['/tours/demo-golf-product-a']}>
+    <MemoryRouter initialEntries={['/tours/103']}>
       <TourDetailPageView
         coreState={{ status: 'ready', tour }}
         onRetrySchedule={() => setRetryResult('schedule-retry')}

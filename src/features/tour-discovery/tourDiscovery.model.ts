@@ -4,12 +4,6 @@ export type TourTheme =
 export type TourStyle = 'CLASSIC' | 'GRAND' | 'PREMIUM';
 
 export interface DiscoveryMediaModel {
-  /**
-   * Frontend-owned editorial asset path.
-   *
-   * null means the UI must render its branded fallback instead of assuming
-   * a Backend image field exists.
-   */
   imageSrc: string | null;
   imageAlt: string;
   fallbackLabel: string;
@@ -24,18 +18,25 @@ export interface ThemeDiscoveryPresentation {
   media: DiscoveryMediaModel;
 }
 
+export interface TourStylePriceModel {
+  style: TourStyle;
+  amount: number;
+  currency: 'KRW';
+}
+
 export interface TourProductSummaryModel {
   /**
-   * Frontend-facing product identity.
+   * Frontend-facing TourProduct identity.
    *
-   * CONTRACT: This is a TourProduct identity, never a Theme value.
-   * Mock fixtures may use explicit demo IDs until an approved DTO adapter exists.
+   * Real Backend resources use canonical decimal strings. Explicit DEV fixtures
+   * may use opaque strings without claiming a Backend wire identity.
    */
   id: string;
   theme: TourTheme;
   name: string;
   description: string;
   availableStyles: readonly TourStyle[];
+  stylePrices: readonly TourStylePriceModel[];
   media: DiscoveryMediaModel;
 }
 
@@ -45,24 +46,11 @@ export interface ThemeDiscoveryGroupModel {
 }
 
 export type TourDiscoveryFreshness = 'current' | 'refreshing' | 'stale';
-
 export type TourDiscoveryCollectionErrorReason = 'network' | 'server' | 'data-mismatch';
 
-/**
- * Tours Collection이 받을 Frontend state boundary다.
- *
- * CONTRACT:
- * - Backend DTO/error payload가 아니다.
- * - success content와 freshness signal을 분리해 refresh 실패 시 기존 content를 보존한다.
- * - unavailableThemes는 부분 실패를 명시하며 product count 0과 혼동하지 않는다.
- */
 export type TourDiscoveryCollectionState =
-  | {
-      status: 'loading';
-    }
-  | {
-      status: 'empty';
-    }
+  | { status: 'loading' }
+  | { status: 'empty' }
   | {
       status: 'error';
       reason: TourDiscoveryCollectionErrorReason;

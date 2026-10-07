@@ -12,7 +12,7 @@ import {
 import { ReservationDataSourceError } from '@/features/reservation/reservation.error';
 
 const resolver: ReservationCreateIdentityResolver = {
-  resolveScheduleId: (value) => (value === 'preview-schedule-a' ? 501 : null),
+  resolveScheduleId: (value) => (value === '501' ? 501 : null),
   resolveHotelOption: (value) => (value === 'hotel-grand' ? 'HOTEL_4_STAR' : null),
   resolveTransportOption: (value) =>
     value === 'transport-private' ? 'PRIVATE_LUXURY_CAR_2' : null,
@@ -23,8 +23,8 @@ const resolver: ReservationCreateIdentityResolver = {
 function createCompleteDraft() {
   return {
     ...createEmptyReservationDraft(1),
-    tourProductId: 'demo-honeymoon-product-a',
-    tourScheduleId: 'preview-schedule-a',
+    tourProductId: '101',
+    tourScheduleId: '501',
     tourStyle: 'GRAND' as const,
     participantCount: 2,
     configuration: {
@@ -75,7 +75,7 @@ describe('Reservation v0.2 contract core', () => {
     });
 
     const unresolved = createCompleteDraft();
-    unresolved.tourScheduleId = 'unknown-schedule';
+    unresolved.configuration.hotelSelectionKey = 'unknown-hotel';
 
     expect(createReservationIntent(unresolved, resolver)).toEqual({
       status: 'unresolved-selection',

@@ -45,9 +45,7 @@ function isTourStyle(value: unknown): value is ReservationDraftTourStyle {
 }
 
 function parseConfiguration(value: unknown): ReservationDraftConfiguration | null {
-  if (!isRecord(value)) {
-    return null;
-  }
+  if (!isRecord(value)) return null;
 
   const { hotelSelectionKey, transportSelectionKey, mealSelectionKey, extraSelectionKeys } = value;
 
@@ -69,9 +67,7 @@ function parseConfiguration(value: unknown): ReservationDraftConfiguration | nul
 }
 
 export function parseReservationDraft(value: unknown): ReservationDraftV1 | null {
-  if (!isRecord(value) || value.schemaVersion !== RESERVATION_DRAFT_SCHEMA_VERSION) {
-    return null;
-  }
+  if (!isRecord(value) || value.schemaVersion !== RESERVATION_DRAFT_SCHEMA_VERSION) return null;
 
   const { tourProductId, tourScheduleId, tourStyle, participantCount, configuration, updatedAt } =
     value;
@@ -94,9 +90,7 @@ export function parseReservationDraft(value: unknown): ReservationDraftV1 | null
   }
 
   const parsedConfiguration = parseConfiguration(configuration);
-  if (parsedConfiguration === null) {
-    return null;
-  }
+  if (parsedConfiguration === null) return null;
 
   return {
     schemaVersion: RESERVATION_DRAFT_SCHEMA_VERSION,
@@ -110,16 +104,7 @@ export function parseReservationDraft(value: unknown): ReservationDraftV1 | null
 }
 
 export function migrateReservationDraft(value: unknown): ReservationDraftV1 | null {
-  if (!isRecord(value)) {
-    return null;
-  }
-
-  switch (value.schemaVersion) {
-    case RESERVATION_DRAFT_SCHEMA_VERSION:
-      return parseReservationDraft(value);
-    default:
-      return null;
-  }
+  return parseReservationDraft(value);
 }
 
 export function serializeReservationDraft(draft: ReservationDraftV1): string {
@@ -142,30 +127,18 @@ export function hydrateReservationDraft(
   const emptyDraft = createEmptyReservationDraft(emptyDraftUpdatedAt);
 
   if (storage === null) {
-    return {
-      draft: emptyDraft,
-      hydrationStatus: 'empty',
-      persistenceStatus: 'degraded',
-    };
+    return { draft: emptyDraft, hydrationStatus: 'empty', persistenceStatus: 'degraded' };
   }
 
   let serializedDraft: string | null;
   try {
     serializedDraft = storage.getItem(RESERVATION_DRAFT_STORAGE_KEY);
   } catch {
-    return {
-      draft: emptyDraft,
-      hydrationStatus: 'empty',
-      persistenceStatus: 'degraded',
-    };
+    return { draft: emptyDraft, hydrationStatus: 'empty', persistenceStatus: 'degraded' };
   }
 
   if (serializedDraft === null) {
-    return {
-      draft: emptyDraft,
-      hydrationStatus: 'empty',
-      persistenceStatus: 'available',
-    };
+    return { draft: emptyDraft, hydrationStatus: 'empty', persistenceStatus: 'available' };
   }
 
   let unknownDraft: unknown;
@@ -188,11 +161,7 @@ export function hydrateReservationDraft(
     };
   }
 
-  return {
-    draft: restoredDraft,
-    hydrationStatus: 'restored',
-    persistenceStatus: 'available',
-  };
+  return { draft: restoredDraft, hydrationStatus: 'restored', persistenceStatus: 'available' };
 }
 
 export function hasReservationDraftIntent(draft: ReservationDraftV1): boolean {
@@ -212,13 +181,8 @@ export function persistReservationDraft(
   storage: ReservationDraftStorage | null,
   draft: ReservationDraftV1,
 ): ReservationDraftPersistenceStatus {
-  if (storage === null) {
-    return 'degraded';
-  }
-
-  if (!hasReservationDraftIntent(draft)) {
-    return removeStoredDraft(storage);
-  }
+  if (storage === null) return 'degraded';
+  if (!hasReservationDraftIntent(draft)) return removeStoredDraft(storage);
 
   try {
     storage.setItem(RESERVATION_DRAFT_STORAGE_KEY, serializeReservationDraft(draft));
@@ -229,9 +193,7 @@ export function persistReservationDraft(
 }
 
 export function resolveBrowserSessionStorage(): ReservationDraftStorage | null {
-  if (typeof window === 'undefined') {
-    return null;
-  }
+  if (typeof window === 'undefined') return null;
 
   try {
     return window.sessionStorage;

@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider, useNavigate } from 'react-router';
 import { describe, expect, it } from 'vitest';
@@ -35,8 +36,8 @@ class MemoryStorage implements ReservationDraftStorage {
 function staleDifferentTourDraft(): ReservationDraftV1 {
   return {
     schemaVersion: 1,
-    tourProductId: 'tour-old',
-    tourScheduleId: 'schedule-old',
+    tourProductId: '41',
+    tourScheduleId: '6',
     tourStyle: 'PREMIUM',
     participantCount: 8,
     configuration: {
@@ -63,14 +64,14 @@ function PublicTourDetailHandoffProbe() {
         dispatch(
           createConfigureHandoffAction(
             {
-              tourProductId: 'tour-42',
+              tourProductId: '103',
               tourStyle: 'GRAND',
-              tourScheduleId: 'schedule-7',
+              tourScheduleId: '1301',
             },
             10,
           ),
         );
-        void navigate(routeBuilders.configure('tour-42'));
+        void navigate(routeBuilders.configure('103'));
       }}
       type="button"
     >
@@ -99,21 +100,29 @@ describe('Tour Detail → Configure public handoff boundary', () => {
         },
       ],
       {
-        initialEntries: ['/tours/tour-42'],
+        initialEntries: ['/tours/103'],
       },
     );
 
+    const client = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+
     render(
-      <ReservationDraftProvider now={() => 10} storage={storage}>
-        <RouterProvider router={router} />
-      </ReservationDraftProvider>,
+      <QueryClientProvider client={client}>
+        <ReservationDraftProvider now={() => 10} storage={storage}>
+          <RouterProvider router={router} />
+        </ReservationDraftProvider>
+      </QueryClientProvider>,
     );
 
     fireEvent.click(screen.getByRole('button', { name: 'Continue to Configure' }));
 
     expect(await screen.findByRole('heading', { name: 'Build your trip' })).toBeVisible();
-    expect(router.state.location.pathname).toBe('/tours/tour-42/configure');
-    expect(screen.getByText(/Fixture theme · Grand · Fixture schedule/)).toBeVisible();
+    expect(router.state.location.pathname).toBe('/tours/103/configure');
+    expect(
+      await screen.findByText(/Golf Challenge · Grand · 2027-03-10 – 2027-03-14/),
+    ).toBeVisible();
     expect(screen.getByRole('spinbutton', { name: /participants/i })).toHaveValue(null);
     expect(screen.getByRole('radio', { name: /Fixture hotel A/i })).not.toBeChecked();
     expect(screen.getByRole('radio', { name: /Fixture transport A/i })).not.toBeChecked();
@@ -126,9 +135,9 @@ describe('Tour Detail → Configure public handoff boundary', () => {
 
       const restored = JSON.parse(serialized ?? '{}') as unknown;
       expect(restored).toMatchObject({
-        tourProductId: 'tour-42',
+        tourProductId: '103',
         tourStyle: 'GRAND',
-        tourScheduleId: 'schedule-7',
+        tourScheduleId: '1301',
         participantCount: null,
         configuration: {
           hotelSelectionKey: null,

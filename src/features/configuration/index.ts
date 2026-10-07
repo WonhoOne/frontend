@@ -39,3 +39,5 @@ export { PriceSummary } from '@/features/configuration/PriceSummary';
 export { getCompactPriceLabel } from '@/features/configuration/pricePresentation';
 
 export { MobileTripSummary } from '@/features/configuration/MobileTripSummary';
+
+export { buildPublicConfigurePrice } from '@/features/configuration/publicConfigurePrice';

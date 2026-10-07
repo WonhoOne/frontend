@@ -13,7 +13,7 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
   for (const width of canonicalWidths) {
     test(`keeps the complete S03 hierarchy usable at ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 1000 });
-      await page.goto('/tours/demo-golf-product-a');
+      await page.goto('/tours/103');
 
       await expect(
         page.getByRole('heading', { level: 1, name: 'Golf Challenge · Journey 01' }),
@@ -60,7 +60,7 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
       expect(configureBox?.height ?? 0).toBeGreaterThanOrEqual(44);
 
       const grand = styleGroup.getByRole('radio', { name: /Grand/ });
-      const schedule = scheduleGroup.getByRole('radio', { name: /Schedule preview A/ });
+      const schedule = scheduleGroup.getByRole('radio', { name: /2027-03-10 – 2027-03-14/ });
       expect(await touchSurfaceHeight(grand)).toBeGreaterThanOrEqual(44);
       expect(await touchSurfaceHeight(schedule)).toBeGreaterThanOrEqual(44);
 
@@ -73,14 +73,19 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
       await expect(configureSection.getByText('Golf Challenge', { exact: true })).toBeVisible();
       await expect(configureSection.getByText('Grand', { exact: true })).toBeVisible();
       await expect(
-        configureSection.getByText(
-          'Schedule preview A · Dates supplied by approved schedule data',
-          { exact: true },
-        ),
+        configureSection.getByText('2027-03-10 – 2027-03-14', { exact: true }),
       ).toBeVisible();
 
       const actionInner = configureSection.locator(':scope > div').first();
       const actionBox = await actionInner.boundingBox();
+      const actionContentWidth = await actionInner.evaluate((element) => {
+        const style = getComputedStyle(element);
+        return (
+          element.getBoundingClientRect().width -
+          Number.parseFloat(style.paddingLeft) -
+          Number.parseFloat(style.paddingRight)
+        );
+      });
       const activeConfigureBox = await configure.boundingBox();
 
       expect(actionBox).not.toBeNull();
@@ -90,7 +95,7 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
         expect(
           await configureSection.evaluate((element) => getComputedStyle(element).position),
         ).toBe('sticky');
-        expect(activeConfigureBox?.width ?? 0).toBeGreaterThan((actionBox?.width ?? 0) * 0.9);
+        expect(activeConfigureBox?.width ?? 0).toBeGreaterThanOrEqual(actionContentWidth * 0.99);
 
         const footerLink = page
           .locator('footer')
@@ -120,14 +125,14 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
 
   test('remains task-complete at the 1280px-at-200%-zoom equivalent width', async ({ page }) => {
     await page.setViewportSize({ width: 640, height: 720 });
-    await page.goto('/tours/demo-golf-product-a');
+    await page.goto('/tours/103');
 
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1),
     ).toBe(false);
 
     await page.getByRole('radio', { name: /Classic/ }).click();
-    await page.getByRole('radio', { name: /Schedule preview A/ }).click();
+    await page.getByRole('radio', { name: /2027-03-10 – 2027-03-14/ }).click();
 
     const configure = page.getByRole('button', { name: 'Configure this trip' });
     await expect(configure).toBeEnabled();
@@ -141,7 +146,7 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
   test('supports the Style → Schedule → Configure task with native keyboard controls', async ({
     page,
   }) => {
-    await page.goto('/tours/demo-golf-product-a');
+    await page.goto('/tours/103');
 
     const classic = page.getByRole('radio', { name: /Classic/ });
     await classic.focus();
@@ -149,7 +154,7 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
     await page.keyboard.press('Space');
     await expect(classic).toBeChecked();
 
-    const schedule = page.getByRole('radio', { name: /Schedule preview A/ });
+    const schedule = page.getByRole('radio', { name: /2027-03-10 – 2027-03-14/ });
     await schedule.focus();
     await expect(schedule).toBeFocused();
     await page.keyboard.press('Space');
@@ -161,7 +166,7 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
     await expect(configure).toBeFocused();
     await page.keyboard.press('Enter');
 
-    await expect(page).toHaveURL(/\/tours\/demo-golf-product-a\/configure$/);
+    await expect(page).toHaveURL(/\/tours\/103\/configure$/);
     await expect(page.getByRole('heading', { name: 'Build your trip' })).toBeVisible();
   });
 
@@ -169,7 +174,7 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
     page,
   }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto('/tours/demo-golf-product-a');
+    await page.goto('/tours/103');
 
     const heroReveal = page
       .locator('section[aria-labelledby="tour-title"] [data-revealed]')
@@ -193,13 +198,13 @@ test.describe('Tour Detail final responsive and accessibility QA', () => {
     });
     expect(selectedStyleMotion).toBe('0s');
 
-    const schedule = page.getByRole('radio', { name: /Schedule preview A/ });
-    const unavailable = page.getByRole('radio', { name: /Schedule preview B/ });
+    const schedule = page.getByRole('radio', { name: /2027-03-10 – 2027-03-14/ });
+    const unavailable = page.getByRole('radio', { name: /2027-04-10 – 2027-04-14/ });
 
     await schedule.click();
     await expect(schedule).toBeChecked();
     await expect(unavailable).toBeDisabled();
-    await expect(page.getByText('Unavailable', { exact: true })).toBeVisible();
+    await expect(page.getByText('Reservation unavailable', { exact: true })).toBeVisible();
 
     const selectedScheduleMotion = await schedule.evaluate((element) => {
       const card = element.closest('[data-selected="true"]');

@@ -26,11 +26,8 @@ export type ReservationCreateIntentResult =
   | { status: 'unresolved-selection' };
 
 /**
- * Frontend Draft identity를 Shared v0.2 Reservation create intent로 변환하는 유일한 경계다.
- *
- * WHY: Draft의 string key를 Backend ID/canonical option이라고 암묵적으로 가정하면
- * PR-05 transaction identity가 wire contract로 굳어 버린다. resolver를 통해서만
- * scheduleId/canonical option으로 승격하고, price/customer/tour/theme은 request에 넣지 않는다.
+ * Frontend string transaction identity를 Backend Reservation create identity로
+ * 승격하는 유일한 boundary다. Draft/route identity를 wire number로 간주하지 않는다.
  */
 export function createReservationIntent(
   draft: ReservationDraftV1,

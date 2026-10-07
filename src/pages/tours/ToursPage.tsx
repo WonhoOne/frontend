@@ -1,5 +1,6 @@
 import { useSearchParams } from 'react-router';
 
+import { tourDiscoveryDataSource } from '@/app/providers/tourDiscoveryDataSource';
 import { routeBuilders, routePaths } from '@/app/router/paths';
 import {
   EmptyState,
@@ -18,7 +19,9 @@ import {
   type TourTheme,
   TourThemeGroup,
   ToursIntro,
-  tourDiscoveryPreviewStates,
+  toTourDiscoveryCollectionState,
+  type TourDiscoveryDataSource,
+  useTourDiscovery,
 } from '@/features/tour-discovery';
 import { SectionReveal } from '@/shared/motion';
 import { Button, PageContainer, TextLink } from '@/shared/ui';
@@ -186,11 +189,23 @@ export function ToursPageView(props: ToursPageViewProps) {
   );
 }
 
-export function ToursPage() {
+export interface ToursPageProps {
+  dataSource?: TourDiscoveryDataSource;
+}
+
+export function ToursPage({ dataSource = tourDiscoveryDataSource }: ToursPageProps) {
   const [searchParams] = useSearchParams();
   const focusedTheme = readThemeFromSearchParams(searchParams);
+  const query = useTourDiscovery(dataSource);
+  const collectionState = toTourDiscoveryCollectionState(query);
 
   return (
-    <ToursPageView collectionState={tourDiscoveryPreviewStates.happy} focusedTheme={focusedTheme} />
+    <ToursPageView
+      collectionState={collectionState}
+      focusedTheme={focusedTheme}
+      onRetry={() => {
+        void query.refetch();
+      }}
+    />
   );
 }

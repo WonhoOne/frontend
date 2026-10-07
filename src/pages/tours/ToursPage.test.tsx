@@ -1,19 +1,31 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
 
 import {
-  tourDiscoveryPreviewStates,
+  MockTourDiscoveryDataSource,
+  tourDiscoveryQueryKey,
   type TourDiscoveryCollectionState,
   type TourTheme,
 } from '@/features/tour-discovery';
+import {
+  tourDiscoveryPreviewProducts,
+  tourDiscoveryPreviewStates,
+} from '@/features/tour-discovery/tourDiscovery.preview';
 import { ToursPage, ToursPageView } from '@/pages/tours/ToursPage';
 
 function renderTours(initialEntry = '/tours') {
-  render(
-    <MemoryRouter initialEntries={[initialEntry]}>
-      <ToursPage />
-    </MemoryRouter>,
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  const dataSource = new MockTourDiscoveryDataSource();
+  client.setQueryData(tourDiscoveryQueryKey, tourDiscoveryPreviewProducts);
+
+  return render(
+    <QueryClientProvider client={client}>
+      <MemoryRouter initialEntries={[initialEntry]}>
+        <ToursPage dataSource={dataSource} />
+      </MemoryRouter>
+    </QueryClientProvider>,
   );
 }
 
@@ -52,11 +64,7 @@ describe('ToursPage', () => {
   });
 
   it('keeps Theme query state local to discovery and only marks the matching Theme', () => {
-    const { container } = render(
-      <MemoryRouter initialEntries={['/tours?theme=GOLF_CHALLENGE']}>
-        <ToursPage />
-      </MemoryRouter>,
-    );
+    const { container } = renderTours('/tours?theme=GOLF_CHALLENGE');
 
     const focused = container.querySelectorAll('[data-focused-theme="true"]');
 
@@ -66,11 +74,7 @@ describe('ToursPage', () => {
   });
 
   it('ignores unknown Theme query values instead of inventing a Theme', () => {
-    const { container } = render(
-      <MemoryRouter initialEntries={['/tours?theme=UNKNOWN_THEME']}>
-        <ToursPage />
-      </MemoryRouter>,
-    );
+    const { container } = renderTours('/tours?theme=UNKNOWN_THEME');
 
     expect(container.querySelectorAll('[data-focused-theme="true"]')).toHaveLength(0);
   });
@@ -80,10 +84,10 @@ describe('ToursPage', () => {
 
     expect(
       screen.getByRole('link', { name: 'View Golf Challenge · Journey 01 tour details' }),
-    ).toHaveAttribute('href', '/tours/demo-golf-product-a');
+    ).toHaveAttribute('href', '/tours/103');
     expect(
       screen.getByRole('link', { name: 'View Golf Challenge · Journey 02 tour details' }),
-    ).toHaveAttribute('href', '/tours/demo-golf-product-b');
+    ).toHaveAttribute('href', '/tours/104');
   });
 
   it('never uses a Theme value itself as a TourProduct detail route', () => {
@@ -235,6 +239,6 @@ describe('ToursPage', () => {
     expect(screen.getByText('Golf Challenge visual unavailable')).toBeVisible();
     expect(
       screen.getByRole('link', { name: 'View Golf Challenge · Journey 01 tour details' }),
-    ).toHaveAttribute('href', '/tours/demo-golf-product-a');
+    ).toHaveAttribute('href', '/tours/103');
   });
 });

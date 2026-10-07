@@ -5,8 +5,8 @@ const canonicalWidths = [320, 360, 390, 430, 768, 1024, 1280, 1440, 1728];
 
 const draft = {
   schemaVersion: 1,
-  tourProductId: 'tour-42',
-  tourScheduleId: 'fixture:schedule:a',
+  tourProductId: '103',
+  tourScheduleId: '1301',
   tourStyle: 'GRAND',
   participantCount: 2,
   configuration: {

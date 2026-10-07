@@ -4,12 +4,6 @@ export type TourDetailTheme =
 export type TourDetailStyle = 'CLASSIC' | 'GRAND' | 'PREMIUM';
 
 export interface TourDetailMediaModel {
-  /**
-   * Frontend presentation media.
-   *
-   * null means the Detail UI must keep its reserved geometry and branded
-   * fallback instead of assuming that an image URL exists in Backend data.
-   */
   imageSrc: string | null;
   imageAlt: string;
   fallbackLabel: string;
@@ -22,12 +16,16 @@ export interface IncludedExperienceModel {
   media: TourDetailMediaModel;
 }
 
+export interface TourDetailStylePriceModel {
+  style: TourDetailStyle;
+  amount: number;
+  currency: 'KRW';
+}
+
 export interface TourDetailModel {
   /**
    * Frontend-facing TourProduct identity.
-   *
-   * CONTRACT: This identifies a TourProduct, never a Theme.
-   * Preview values do not claim a Backend ID type or format.
+   * Real resources are canonical decimal strings; mock identities may be opaque.
    */
   id: string;
   theme: TourDetailTheme;
@@ -40,17 +38,14 @@ export interface TourDetailModel {
   storyMedia: TourDetailMediaModel;
   includedExperiences: readonly IncludedExperienceModel[];
   availableStyles: readonly TourDetailStyle[];
+  stylePrices: readonly TourDetailStylePriceModel[];
 }
 
-/**
- * B09가 소비할 Frontend-facing schedule presentation boundary다.
- *
- * CONTRACT:
- * - Backend TourSchedule DTO shape가 아니다.
- * - date/status/recruitment text는 adapter가 준비해 준 presentation truth를 받는다.
- * - UI가 raw reservation count를 이용해 confirmed 여부를 재계산하지 않는다.
- */
 export interface ScheduleChoiceModel {
+  /**
+   * Frontend-facing TourSchedule identity.
+   * Real resources are canonical decimal strings; mock identities may be opaque.
+   */
   selectionKey: string;
   dateLabel: string;
   statusLabel: string;

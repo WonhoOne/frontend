@@ -65,11 +65,11 @@ test.describe('Tours discovery collection', () => {
       name: 'View Golf Challenge · Journey 02 tour details',
     });
 
-    await expect(firstGolfProduct).toHaveAttribute('href', '/tours/demo-golf-product-a');
-    await expect(secondGolfProduct).toHaveAttribute('href', '/tours/demo-golf-product-b');
+    await expect(firstGolfProduct).toHaveAttribute('href', '/tours/103');
+    await expect(secondGolfProduct).toHaveAttribute('href', '/tours/104');
 
     await firstGolfProduct.click();
-    await expect(page).toHaveURL(/\/tours\/demo-golf-product-a$/);
+    await expect(page).toHaveURL(/\/tours\/103$/);
     await expect(
       page.getByRole('heading', { level: 1, name: 'Golf Challenge · Journey 01' }),
     ).toBeVisible();
@@ -78,7 +78,7 @@ test.describe('Tours discovery collection', () => {
     await expect(page).toHaveURL(/\/tours\?theme=GOLF_CHALLENGE$/);
 
     await secondGolfProduct.click();
-    await expect(page).toHaveURL(/\/tours\/demo-golf-product-b$/);
+    await expect(page).toHaveURL(/\/tours\/104$/);
     await expect(
       page.getByRole('heading', { level: 1, name: 'Golf Challenge · Journey 02' }),
     ).toBeVisible();
@@ -107,7 +107,7 @@ test.describe('Tours discovery collection', () => {
       dispatchPrimaryClick();
     });
 
-    await expect(page).toHaveURL(/\/tours\/demo-golf-product-a$/);
+    await expect(page).toHaveURL(/\/tours\/103$/);
 
     await page.goBack();
 

@@ -19,3 +19,84 @@ jobs:
       - run: npm run test:e2e
       - run: npm run build
       - run: npm audit --omit=dev --audit-level=high
+
+  backend-public-smoke:
+    name: Real Backend public read smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: misterworld
+          MYSQL_USER: misterworld
+          MYSQL_PASSWORD: f1-smoke-test-only-password
+          MYSQL_ROOT_PASSWORD: f1-smoke-test-only-root-password
+          TZ: UTC
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 --silent"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=30
+          --health-start-period=20s
+    env:
+      DB_URL: jdbc:mysql://127.0.0.1:3306/misterworld?useSSL=false&allowPublicKeyRetrieval=true&connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&connectTimeout=5000&socketTimeout=20000
+      DB_USERNAME: misterworld
+      DB_PASSWORD: f1-smoke-test-only-password
+      JWT_SECRET: f1-smoke-test-only-jwt-signing-key-at-least-32-bytes
+      SMS_DELIVERY_ENABLED: 'false'
+      EMPLOYEE_BOOTSTRAP_ENABLED: 'false'
+      DEMO_PROVISIONING_ENABLED: 'false'
+    steps:
+      - name: Check out Frontend smoke harness
+        uses: actions/checkout@v4
+
+      - name: Set up Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.21.0
+
+      - name: Check out approved Backend snapshot
+        uses: actions/checkout@v4
+        with:
+          repository: WonhoOne/backend
+          ref: 597cf92f1baf93211862d4ea5dbfa8a199b808a2
+          path: .f1-backend-smoke
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: .f1-backend-smoke/pom.xml
+
+      - name: Build approved Backend
+        working-directory: .f1-backend-smoke
+        run: |
+          chmod +x mvnw
+          ./mvnw --batch-mode --no-transfer-progress -DskipTests package
+
+      - name: Start real Backend
+        working-directory: .f1-backend-smoke
+        run: |
+          nohup java -jar target/misterworld-0.0.1-SNAPSHOT.jar > /tmp/f1-backend.log 2>&1 &
+          echo $! > /tmp/f1-backend.pid
+
+      - name: Smoke public read contracts
+        env:
+          BACKEND_SMOKE_BASE_URL: http://127.0.0.1:8080/api/v1
+        run: node scripts/smoke-public-backend.mjs
+
+      - name: Print Backend log on failure
+        if: failure()
+        run: cat /tmp/f1-backend.log || true
+
+      - name: Stop Backend
+        if: always()
+        run: |
+          if [ -f /tmp/f1-backend.pid ]; then
+            kill "$(cat /tmp/f1-backend.pid)" || true
+          fi

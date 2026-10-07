@@ -67,7 +67,7 @@ export function createReservationReviewModel(
  * canonical Backend option ID라고 주장하지 않는다.
  */
 export const previewReservationReviewResolver: ReservationReviewSelectionResolver = {
-  tourProductLabel: (id) => (id.startsWith('demo-') ? 'Selected journey' : 'Selected tour'),
+  tourProductLabel: () => 'Selected tour',
   scheduleLabel: () => 'Selected schedule',
   optionLabel: (key) => {
     const labels: Record<string, string> = {

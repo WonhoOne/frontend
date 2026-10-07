@@ -29,13 +29,6 @@ function hasReviewHandoffIntent(draft: ReservationDraftV1) {
   );
 }
 
-/**
- * Configure route가 Draft를 해석하는 recovery-only boundary다.
- *
- * Business validation을 다시 구현하지 않는다. 이 helper는 route identity와
- * 최소 transaction context만 판정하며, option/participant 최종 유효성은
- * Configure readiness와 Backend authority에 남긴다.
- */
 export function getConfigureDraftEntryState({
   draft,
   hydrationStatus,
@@ -54,10 +47,7 @@ export function getConfigureDraftEntryState({
   }
 
   if (draft.tourProductId !== null && draft.tourProductId !== routeTourProductId) {
-    return {
-      status: 'route-mismatch',
-      savedTourProductId: draft.tourProductId,
-    };
+    return { status: 'route-mismatch', savedTourProductId: draft.tourProductId };
   }
 
   if (!hasConfigureContext(draft)) {
@@ -67,12 +57,6 @@ export function getConfigureDraftEntryState({
   return { status: 'ready' };
 }
 
-/**
- * PR-06 Review 구현 전 route handoff guard.
- *
- * Review business validation/submit을 수행하지 않고, 현재 tab의 Draft가
- * locally complete한 handoff shape인지와 Configure 복귀 identity만 제공한다.
- */
 export function getReviewDraftHandoffState({
   draft,
   hydrationStatus,
@@ -89,14 +73,8 @@ export function getReviewDraftHandoffState({
   }
 
   if (!hasReviewHandoffIntent(draft) || draft.tourProductId === null) {
-    return {
-      status: 'incomplete',
-      tourProductId: draft.tourProductId,
-    };
+    return { status: 'incomplete', tourProductId: draft.tourProductId };
   }
 
-  return {
-    status: 'ready',
-    tourProductId: draft.tourProductId,
-  };
+  return { status: 'ready', tourProductId: draft.tourProductId };
 }

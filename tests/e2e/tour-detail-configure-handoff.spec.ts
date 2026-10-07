@@ -4,8 +4,8 @@ const reservationDraftStorageKey = 'mister-world:reservation-draft:v1';
 
 const staleDifferentTourDraft = {
   schemaVersion: 1,
-  tourProductId: 'tour-old',
-  tourScheduleId: 'schedule-old',
+  tourProductId: '104',
+  tourScheduleId: '1401',
   tourStyle: 'PREMIUM',
   participantCount: 8,
   configuration: {
@@ -34,7 +34,7 @@ test.describe('Tour Detail → Configure transaction handoff', () => {
     page,
   }) => {
     await seedStaleTransaction(page);
-    await page.goto('/tours/demo-golf-product-a');
+    await page.goto('/tours/103');
 
     const configure = page.getByRole('button', { name: 'Configure this trip' });
 
@@ -46,14 +46,14 @@ test.describe('Tour Detail → Configure transaction handoff', () => {
     await page.getByRole('radio', { name: /Grand/ }).click();
     await expect(configure).toBeDisabled();
 
-    await page.getByRole('radio', { name: /Schedule preview A/ }).click();
+    await page.getByRole('radio', { name: /2027-03-10 – 2027-03-14/ }).click();
     await expect(configure).toBeEnabled();
 
     await configure.click();
 
-    await expect(page).toHaveURL(/\/tours\/demo-golf-product-a\/configure$/);
+    await expect(page).toHaveURL(/\/tours\/103\/configure$/);
     await expect(page.getByRole('heading', { name: 'Build your trip' })).toBeVisible();
-    await expect(page.getByText(/Fixture theme · Grand · Fixture schedule/)).toBeVisible();
+    await expect(page.getByText(/Golf Challenge · Grand · 2027-03-10 – 2027-03-14/)).toBeVisible();
 
     await expect(page.getByRole('spinbutton', { name: /participants/i })).toHaveValue('');
     await expect(page.getByRole('radio', { name: /Fixture hotel A/i })).not.toBeChecked();
@@ -71,7 +71,7 @@ test.describe('Tour Detail → Configure transaction handoff', () => {
             window.sessionStorage.getItem(key)?.includes(`"tourProductId":"${productId}"`) ?? false,
           {
             key: reservationDraftStorageKey,
-            productId: 'demo-golf-product-a',
+            productId: '103',
           },
         ),
       )
@@ -88,8 +88,8 @@ test.describe('Tour Detail → Configure transaction handoff', () => {
 
     expect(persisted).toMatchObject({
       schemaVersion: 1,
-      tourProductId: 'demo-golf-product-a',
-      tourScheduleId: 'preview-golf_challenge-a',
+      tourProductId: '103',
+      tourScheduleId: '1301',
       tourStyle: 'GRAND',
       participantCount: null,
       configuration: {
@@ -100,8 +100,8 @@ test.describe('Tour Detail → Configure transaction handoff', () => {
       },
     });
     expect(persisted).not.toMatchObject({
-      tourProductId: 'tour-old',
-      tourScheduleId: 'schedule-old',
+      tourProductId: '104',
+      tourScheduleId: '1401',
       participantCount: 8,
       configuration: {
         hotelSelectionKey: 'fixture:hotel:b',

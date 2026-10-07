@@ -1,28 +1,37 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
+import {
+  tourDetailDataSource,
+  tourScheduleDataSource,
+} from '@/app/providers/tourDetailDataSources';
 import { routeBuilders, routePaths } from '@/app/router/paths';
 import { LoadingState } from '@/app/state';
 import {
-  findTourDetailPreview,
-  findTourSchedulePreview,
+  toTourDetailCoreState,
+  toTourScheduleSectionState,
   IncludedExperienceSection,
   TourDetailHero,
   type TourDetailCoreErrorReason,
   type TourDetailCoreState,
+  type TourDetailDataSource,
   TourDetailSkeleton,
   TourDetailStory,
   TourScheduleSection,
   TourStyleSelection,
   type TourDetailModel,
   type TourDetailStyle,
+  type TourScheduleDataSource,
   type TourScheduleSectionState,
+  useTourDetail,
+  useTourSchedules,
 } from '@/features/tour-detail';
 import {
   createConfigureHandoffAction,
   type ConfigureHandoffIntent,
   useReservationDraft,
 } from '@/features/reservation';
+import { parseResourceIdRouteParam } from '@/shared/lib/resourceIdentity';
 import { Button, PageContainer, TextLink } from '@/shared/ui';
 
 import styles from '@/pages/tour-detail/TourDetailPage.module.css';
@@ -99,7 +108,7 @@ function TourDetailReadyView({
 }) {
   const [selectedStyle, setSelectedStyle] = useState<TourDetailStyle | null>(null);
   const [selectedScheduleKey, setSelectedScheduleKey] = useState<string | null>(null);
-  const resolvedScheduleState = scheduleState ?? findTourSchedulePreview(tour);
+  const resolvedScheduleState: TourScheduleSectionState = scheduleState ?? { status: 'loading' };
 
   const effectiveScheduleKey =
     resolvedScheduleState.status === 'ready' &&
@@ -264,11 +273,23 @@ export function TourDetailPageView({
   );
 }
 
-export function TourDetailPage() {
+interface ResolvedTourDetailPageProps {
+  detailDataSource: TourDetailDataSource;
+  resourceId: number;
+  scheduleDataSource: TourScheduleDataSource;
+}
+
+function ResolvedTourDetailPage({
+  detailDataSource,
+  resourceId,
+  scheduleDataSource,
+}: ResolvedTourDetailPageProps) {
   const navigate = useNavigate();
   const { dispatch } = useReservationDraft();
-  const { tourId } = useParams();
-  const tour = tourId === undefined ? null : findTourDetailPreview(tourId);
+  const detailQuery = useTourDetail(detailDataSource, resourceId);
+  const scheduleQuery = useTourSchedules(scheduleDataSource, resourceId);
+  const coreState = toTourDetailCoreState(detailQuery);
+  const scheduleState = toTourScheduleSectionState(scheduleQuery);
 
   function handleConfigure(intent: ConfigureHandoffIntent) {
     dispatch(createConfigureHandoffAction(intent, Date.now()));
@@ -277,8 +298,40 @@ export function TourDetailPage() {
 
   return (
     <TourDetailPageView
-      coreState={tour === null ? { status: 'not-found' } : { status: 'ready', tour }}
+      coreState={coreState}
       onConfigure={handleConfigure}
+      onRetry={() => {
+        void detailQuery.refetch();
+      }}
+      onRetrySchedule={() => {
+        void scheduleQuery.refetch();
+      }}
+      scheduleState={scheduleState}
+    />
+  );
+}
+
+export interface TourDetailPageProps {
+  detailDataSource?: TourDetailDataSource;
+  scheduleDataSource?: TourScheduleDataSource;
+}
+
+export function TourDetailPage({
+  detailDataSource = tourDetailDataSource,
+  scheduleDataSource = tourScheduleDataSource,
+}: TourDetailPageProps) {
+  const { tourId } = useParams();
+  const resourceId = parseResourceIdRouteParam(tourId);
+
+  if (resourceId === null) {
+    return <TourDetailPageView coreState={{ status: 'not-found' }} />;
+  }
+
+  return (
+    <ResolvedTourDetailPage
+      detailDataSource={detailDataSource}
+      resourceId={resourceId}
+      scheduleDataSource={scheduleDataSource}
     />
   );
 }
