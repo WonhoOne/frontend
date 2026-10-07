@@ -11,7 +11,7 @@ function resolveCanonicalOption<const T extends readonly string[]>(
   selectionKey: string,
   allowed: T,
 ): T[number] | null {
-  return allowed.includes(selectionKey as T[number]) ? (selectionKey as T[number]) : null;
+  return allowed.find((option) => option === selectionKey) ?? null;
 }
 
 /**
