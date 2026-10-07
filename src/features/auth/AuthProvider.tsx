@@ -2,10 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type PropsWithChildr
 
 import type { AuthDataSource } from '@/features/auth/AuthDataSource';
 import { AuthContext } from '@/features/auth/authContext';
-import {
-  MemoryAuthSessionStore,
-  type AuthSessionStore,
-} from '@/features/auth/authSession';
+import { MemoryAuthSessionStore, type AuthSessionStore } from '@/features/auth/authSession';
 import {
   AuthError,
   type AuthState,

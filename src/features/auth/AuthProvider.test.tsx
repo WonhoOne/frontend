@@ -71,11 +71,7 @@ describe('AuthProvider', () => {
   it('writes the login token only to the injected memory session bridge', async () => {
     const sessionStore = new MemoryAuthSessionStore(() => 1_000);
     const wrapper = ({ children }: PropsWithChildren) => (
-      <AuthProvider
-        dataSource={createDataSource()}
-        now={() => 1_000}
-        sessionStore={sessionStore}
-      >
+      <AuthProvider dataSource={createDataSource()} now={() => 1_000} sessionStore={sessionStore}>
         {children}
       </AuthProvider>
     );
@@ -149,30 +145,29 @@ describe('AuthProvider', () => {
     expect(result.current.state).toEqual({ status: 'unauthenticated' });
   });
 
-  it.each([
-    'AUTHENTICATION_REQUIRED',
-    'INVALID_ACCESS_TOKEN',
-    'ACCESS_TOKEN_EXPIRED',
-  ] as const)('invalidates an authenticated session on stable token error %s', async (code) => {
-    const onAuthLoss = vi.fn();
-    const wrapper = ({ children }: PropsWithChildren) => (
-      <AuthProvider dataSource={createDataSource()} onAuthLoss={onAuthLoss}>
-        {children}
-      </AuthProvider>
-    );
-    const { result } = renderHook(() => useAuth(), { wrapper });
-    await waitFor(() => expect(result.current.state.status).toBe('unauthenticated'));
-    await act(() => result.current.login({ loginId: 'synthetic', password: 'input-only' }));
+  it.each(['AUTHENTICATION_REQUIRED', 'INVALID_ACCESS_TOKEN', 'ACCESS_TOKEN_EXPIRED'] as const)(
+    'invalidates an authenticated session on stable token error %s',
+    async (code) => {
+      const onAuthLoss = vi.fn();
+      const wrapper = ({ children }: PropsWithChildren) => (
+        <AuthProvider dataSource={createDataSource()} onAuthLoss={onAuthLoss}>
+          {children}
+        </AuthProvider>
+      );
+      const { result } = renderHook(() => useAuth(), { wrapper });
+      await waitFor(() => expect(result.current.state.status).toBe('unauthenticated'));
+      await act(() => result.current.login({ loginId: 'synthetic', password: 'input-only' }));
 
-    let handled = false;
-    act(() => {
-      handled = result.current.invalidateSession(new AuthError(code));
-    });
+      let handled = false;
+      act(() => {
+        handled = result.current.invalidateSession(new AuthError(code));
+      });
 
-    expect(handled).toBe(true);
-    expect(result.current.state).toEqual({ status: 'unauthenticated' });
-    await waitFor(() => expect(onAuthLoss).toHaveBeenCalledTimes(1));
-  });
+      expect(handled).toBe(true);
+      expect(result.current.state).toEqual({ status: 'unauthenticated' });
+      await waitFor(() => expect(onAuthLoss).toHaveBeenCalledTimes(1));
+    },
+  );
 
   it('does not invalidate auth for non-token errors or while already unauthenticated', async () => {
     const onAuthLoss = vi.fn();
