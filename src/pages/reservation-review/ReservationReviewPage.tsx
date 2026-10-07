@@ -1,16 +1,16 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 
+import { reservationDataSource } from '@/app/providers/reservationDataSource';
 import { routeBuilders, routePaths } from '@/app/router/paths';
 import { saveReturnContext } from '@/features/auth';
 import {
+  canonicalReservationCreateIdentityResolver,
   createConfirmedReservationTransition,
   createReservationIntent,
   createReservationMutationController,
   createReservationReviewModel,
   getReviewDraftHandoffState,
-  mockReservationCreateIdentityResolver,
-  mockReservationDataSource,
   previewReservationReviewResolver,
   presentReservationReviewValidation,
   useReservationDraft,
@@ -26,7 +26,7 @@ interface ReservationReviewPageProps {
 }
 
 export function ReservationReviewPage({
-  dataSource = mockReservationDataSource,
+  dataSource = reservationDataSource,
 }: ReservationReviewPageProps = {}) {
   const { draft, dispatch, hydrationStatus, persistenceStatus } = useReservationDraft();
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ export function ReservationReviewPage({
   const handoff = getReviewDraftHandoffState({ draft, hydrationStatus });
 
   async function submitReservation() {
-    const intent = createReservationIntent(draft, mockReservationCreateIdentityResolver);
+    const intent = createReservationIntent(draft, canonicalReservationCreateIdentityResolver);
     if (intent.status !== 'ready') return;
 
     const pending = mutation.submit(intent.input);

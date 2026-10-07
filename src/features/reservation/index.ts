@@ -63,6 +63,7 @@ export {
   toReservationCreateRequestDto,
 } from '@/features/reservation/reservation.adapter';
 export type { ReservationDataSource } from '@/features/reservation/reservation.dataSource';
+export { BackendReservationDataSource } from '@/features/reservation/BackendReservationDataSource';
 export {
   ReservationDataSourceError,
   type ReservationDataError,

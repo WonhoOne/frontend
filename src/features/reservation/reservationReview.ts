@@ -63,8 +63,8 @@ export function createReservationReviewModel(
 }
 
 /**
- * Current PR-05 Configure fixture를 Review에서 사람이 읽을 수 있게 보존하는 preview resolver.
- * canonical Backend option ID라고 주장하지 않는다.
+ * Review presentation resolver for canonical v0.2 option IDs with legacy
+ * fixture labels retained only for explicit DEV/test compatibility.
  */
 export const previewReservationReviewResolver: ReservationReviewSelectionResolver = {
   tourProductLabel: () => 'Selected tour',
@@ -79,6 +79,16 @@ export const previewReservationReviewResolver: ReservationReviewSelectionResolve
       'fixture:meal:b': 'Fixture meal B',
       'fixture:extras:a': 'Fixture extra A',
       'fixture:extras:b': 'Fixture extra B',
+      HOTEL_3_STAR: '3-star hotel',
+      HOTEL_4_STAR: '4-star hotel',
+      HOTEL_5_STAR: '5-star hotel',
+      PRIVATE_LUXURY_CAR_2: 'Private luxury car (2)',
+      PREMIUM_VAN_10: 'Premium van (10)',
+      LUNCH_BOX: 'Lunch box',
+      LOCAL_RESTAURANT: 'Local restaurant',
+      PREMIUM_RESTAURANT: 'Premium restaurant',
+      CHAMPAGNE: 'Champagne',
+      COFFEE: 'Coffee',
     };
     return labels[key] ?? 'Selected option';
   },

@@ -41,10 +41,10 @@ function staleDifferentTourDraft(): ReservationDraftV1 {
     tourStyle: 'PREMIUM',
     participantCount: 8,
     configuration: {
-      hotelSelectionKey: 'fixture:hotel:b',
-      transportSelectionKey: 'fixture:transport:b',
-      mealSelectionKey: 'fixture:meal:b',
-      extraSelectionKeys: ['fixture:extras:a'],
+      hotelSelectionKey: 'HOTEL_5_STAR',
+      transportSelectionKey: 'PREMIUM_VAN_10',
+      mealSelectionKey: 'PREMIUM_RESTAURANT',
+      extraSelectionKeys: ['CHAMPAGNE'],
     },
     updatedAt: 1,
   };
@@ -124,9 +124,9 @@ describe('Tour Detail → Configure public handoff boundary', () => {
       await screen.findByText(/Golf Challenge · Grand · 2027-03-10 – 2027-03-14/),
     ).toBeVisible();
     expect(screen.getByRole('spinbutton', { name: /participants/i })).toHaveValue(null);
-    expect(screen.getByRole('radio', { name: /Fixture hotel A/i })).not.toBeChecked();
-    expect(screen.getByRole('radio', { name: /Fixture transport A/i })).not.toBeChecked();
-    expect(screen.getByRole('radio', { name: /Fixture meal A/i })).not.toBeChecked();
+    expect(screen.getByRole('radio', { name: /4-star hotel/i })).not.toBeChecked();
+    expect(screen.getByRole('radio', { name: /Private luxury car \\(2\\)/i })).not.toBeChecked();
+    expect(screen.getByRole('radio', { name: /Local restaurant/i })).not.toBeChecked();
     expect(screen.getByRole('button', { name: 'Review trip' })).toBeDisabled();
 
     await waitFor(() => {

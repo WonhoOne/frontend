@@ -9,10 +9,10 @@ const staleDifferentTourDraft = {
   tourStyle: 'PREMIUM',
   participantCount: 8,
   configuration: {
-    hotelSelectionKey: 'fixture:hotel:b',
-    transportSelectionKey: 'fixture:transport:b',
-    mealSelectionKey: 'fixture:meal:b',
-    extraSelectionKeys: ['fixture:extras:a'],
+    hotelSelectionKey: 'HOTEL_5_STAR',
+    transportSelectionKey: 'PREMIUM_VAN_10',
+    mealSelectionKey: 'PREMIUM_RESTAURANT',
+    extraSelectionKeys: ['CHAMPAGNE'],
   },
   updatedAt: 1,
 };
@@ -56,12 +56,12 @@ test.describe('Tour Detail → Configure transaction handoff', () => {
     await expect(page.getByText(/Golf Challenge · Grand · 2027-03-10 – 2027-03-14/)).toBeVisible();
 
     await expect(page.getByRole('spinbutton', { name: /participants/i })).toHaveValue('');
-    await expect(page.getByRole('radio', { name: /Fixture hotel A/i })).not.toBeChecked();
-    await expect(page.getByRole('radio', { name: /Fixture hotel B/i })).not.toBeChecked();
-    await expect(page.getByRole('radio', { name: /Fixture transport A/i })).not.toBeChecked();
-    await expect(page.getByRole('radio', { name: /Fixture transport B/i })).not.toBeChecked();
-    await expect(page.getByRole('radio', { name: /Fixture meal A/i })).not.toBeChecked();
-    await expect(page.getByRole('radio', { name: /Fixture meal B/i })).not.toBeChecked();
+    await expect(page.getByRole('radio', { name: /4-star hotel/i })).not.toBeChecked();
+    await expect(page.getByRole('radio', { name: /5-star hotel/i })).not.toBeChecked();
+    await expect(page.getByRole('radio', { name: /Private luxury car \\(2\\)/i })).not.toBeChecked();
+    await expect(page.getByRole('radio', { name: /Premium van \\(10\\)/i })).not.toBeChecked();
+    await expect(page.getByRole('radio', { name: /Local restaurant/i })).not.toBeChecked();
+    await expect(page.getByRole('radio', { name: /Premium restaurant/i })).not.toBeChecked();
     await expect(page.getByRole('button', { name: 'Review trip' })).toBeDisabled();
 
     await expect
@@ -104,10 +104,10 @@ test.describe('Tour Detail → Configure transaction handoff', () => {
       tourScheduleId: '1401',
       participantCount: 8,
       configuration: {
-        hotelSelectionKey: 'fixture:hotel:b',
-        transportSelectionKey: 'fixture:transport:b',
-        mealSelectionKey: 'fixture:meal:b',
-        extraSelectionKeys: ['fixture:extras:a'],
+        hotelSelectionKey: 'HOTEL_5_STAR',
+        transportSelectionKey: 'PREMIUM_VAN_10',
+        mealSelectionKey: 'PREMIUM_RESTAURANT',
+        extraSelectionKeys: ['CHAMPAGNE'],
       },
     });
   });

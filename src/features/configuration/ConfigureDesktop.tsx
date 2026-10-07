@@ -6,7 +6,7 @@ import { MobileTripSummary } from '@/features/configuration/MobileTripSummary';
 import { ParticipantCountField } from '@/features/configuration/ParticipantCountField';
 import { buildConfigureTripSummary } from '@/features/configuration/configurePresentation';
 import { getConfigureReadiness } from '@/features/configuration/configureReadiness';
-import type { ConfigureFixtureScenario } from '@/features/configuration/configurationFixtures';
+import type { ConfigureScenario } from '@/features/configuration/configurationFixtures';
 import type {
   ConfigurationCategory,
   PriceDisplayModel,
@@ -23,7 +23,7 @@ const DESKTOP_CONFIGURE_QUERY = '(min-width: 1024px)';
 
 interface ConfigureDesktopProps {
   participantRule: ParticipantCountRule;
-  scenario: ConfigureFixtureScenario;
+  scenario: ConfigureScenario;
   tourProductId: string;
   onReview: () => void;
   price?: PriceDisplayModel;

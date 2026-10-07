@@ -10,9 +10,9 @@ const draft = {
   tourStyle: 'GRAND',
   participantCount: 2,
   configuration: {
-    hotelSelectionKey: 'fixture:hotel:a',
-    transportSelectionKey: 'fixture:transport:b',
-    mealSelectionKey: 'fixture:meal:a',
+    hotelSelectionKey: 'HOTEL_4_STAR',
+    transportSelectionKey: 'PREMIUM_VAN_10',
+    mealSelectionKey: 'LOCAL_RESTAURANT',
     extraSelectionKeys: [],
   },
   updatedAt: 1,

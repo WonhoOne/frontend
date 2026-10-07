@@ -30,9 +30,9 @@ async function seedDraft(page: Page, draft = baseDraft) {
 
 async function completeConfiguration(page: Page) {
   await page.getByRole('spinbutton', { name: /participants/i }).fill('2');
-  await page.getByRole('radio', { name: /Fixture hotel A/i }).check();
-  await page.getByRole('radio', { name: /Fixture transport B/i }).check();
-  await page.getByRole('radio', { name: /Fixture meal A/i }).check();
+  await page.getByRole('radio', { name: /4-star hotel/i }).check();
+  await page.getByRole('radio', { name: /Premium van \\(10\\)/i }).check();
+  await page.getByRole('radio', { name: /Local restaurant/i }).check();
 }
 
 test('Configure → Review → browser Back preserves the transaction Draft', async ({ page }) => {
@@ -53,9 +53,9 @@ test('Configure → Review → browser Back preserves the transaction Draft', as
   await page.goBack();
 
   await expect(page).toHaveURL('/tours/103/configure');
-  await expect(page.getByRole('radio', { name: /Fixture hotel A/i })).toBeChecked();
-  await expect(page.getByRole('radio', { name: /Fixture transport B/i })).toBeChecked();
-  await expect(page.getByRole('radio', { name: /Fixture meal A/i })).toBeChecked();
+  await expect(page.getByRole('radio', { name: /4-star hotel/i })).toBeChecked();
+  await expect(page.getByRole('radio', { name: /Premium van \\(10\\)/i })).toBeChecked();
+  await expect(page.getByRole('radio', { name: /Local restaurant/i })).toBeChecked();
   await expect(page.getByRole('spinbutton', { name: /participants/i })).toHaveValue('2');
   await expect(page.getByRole('button', { name: 'Review trip' })).toBeEnabled();
 });
@@ -89,18 +89,18 @@ test('refresh rehydrates the same Configure selections from sessionStorage', asy
     .toMatchObject({
       participantCount: 2,
       configuration: {
-        hotelSelectionKey: 'fixture:hotel:a',
-        transportSelectionKey: 'fixture:transport:b',
-        mealSelectionKey: 'fixture:meal:a',
+        hotelSelectionKey: 'HOTEL_4_STAR',
+        transportSelectionKey: 'PREMIUM_VAN_10',
+        mealSelectionKey: 'LOCAL_RESTAURANT',
       },
     });
 
   await page.reload();
 
   await expect(page.getByRole('heading', { name: 'Build your trip' })).toBeVisible();
-  await expect(page.getByRole('radio', { name: /Fixture hotel A/i })).toBeChecked();
-  await expect(page.getByRole('radio', { name: /Fixture transport B/i })).toBeChecked();
-  await expect(page.getByRole('radio', { name: /Fixture meal A/i })).toBeChecked();
+  await expect(page.getByRole('radio', { name: /4-star hotel/i })).toBeChecked();
+  await expect(page.getByRole('radio', { name: /Premium van \\(10\\)/i })).toBeChecked();
+  await expect(page.getByRole('radio', { name: /Local restaurant/i })).toBeChecked();
   await expect(page.getByRole('spinbutton', { name: /participants/i })).toHaveValue('2');
   await expect(page.getByRole('button', { name: 'Review trip' })).toBeEnabled();
 });

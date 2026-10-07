@@ -39,14 +39,14 @@ for (const width of [1024, 1280]) {
     expect(summaryPosition).toBe('sticky');
 
     await page.getByRole('spinbutton', { name: /participants/i }).fill('2');
-    await page.getByRole('radio', { name: /Fixture hotel A/i }).check();
-    await page.getByRole('radio', { name: /Fixture transport B/i }).check();
-    await page.getByRole('radio', { name: /Fixture meal A/i }).check();
+    await page.getByRole('radio', { name: /4-star hotel/i }).check();
+    await page.getByRole('radio', { name: /Premium van \\(10\\)/i }).check();
+    await page.getByRole('radio', { name: /Local restaurant/i }).check();
 
     await expect(summary.getByText('2 participants')).toBeVisible();
-    await expect(summary.getByText('Fixture hotel A')).toBeVisible();
-    await expect(summary.getByText('Fixture transport B')).toBeVisible();
-    await expect(summary.getByText('Fixture meal A')).toBeVisible();
+    await expect(summary.getByText('4-star hotel')).toBeVisible();
+    await expect(summary.getByText('Premium van (10)')).toBeVisible();
+    await expect(summary.getByText('Local restaurant')).toBeVisible();
 
     const review = page.getByRole('button', { name: 'Review trip' });
     await expect(review).toBeEnabled();

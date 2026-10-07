@@ -146,30 +146,30 @@ describe('ConfigurePage desktop transaction', () => {
     fireEvent.change(screen.getByRole('spinbutton', { name: /participants/i }), {
       target: { value: '2' },
     });
-    fireEvent.click(screen.getByRole('radio', { name: /Fixture hotel A/i }));
-    fireEvent.click(screen.getByRole('radio', { name: /Fixture transport B/i }));
-    fireEvent.click(screen.getByRole('radio', { name: /Fixture meal A/i }));
+    fireEvent.click(screen.getByRole('radio', { name: /4-star hotel/i }));
+    fireEvent.click(screen.getByRole('radio', { name: /Premium van \\(10\\)/i }));
+    fireEvent.click(screen.getByRole('radio', { name: /Local restaurant/i }));
 
-    expect(screen.getByRole('radio', { name: /Fixture hotel A/i })).toBeChecked();
-    expect(screen.getByRole('radio', { name: /Fixture transport B/i })).toBeChecked();
-    expect(screen.getByRole('radio', { name: /Fixture meal A/i })).toBeChecked();
+    expect(screen.getByRole('radio', { name: /4-star hotel/i })).toBeChecked();
+    expect(screen.getByRole('radio', { name: /Premium van \\(10\\)/i })).toBeChecked();
+    expect(screen.getByRole('radio', { name: /Local restaurant/i })).toBeChecked();
 
     const summary = screen.getByRole('complementary', {
       name: 'Current trip configuration',
     });
     expect(within(summary).getByText('2 participants')).toBeVisible();
-    expect(within(summary).getByText('Fixture hotel A')).toBeVisible();
-    expect(within(summary).getByText('Fixture transport B')).toBeVisible();
-    expect(within(summary).getByText('Fixture meal A')).toBeVisible();
+    expect(within(summary).getByText('4-star hotel')).toBeVisible();
+    expect(within(summary).getByText('Premium van (10)')).toBeVisible();
+    expect(within(summary).getByText('Local restaurant')).toBeVisible();
 
     await waitFor(() => {
       const serialized = storage.getItem(RESERVATION_DRAFT_STORAGE_KEY);
       expect(JSON.parse(serialized ?? '{}')).toMatchObject({
         participantCount: 2,
         configuration: {
-          hotelSelectionKey: 'fixture:hotel:a',
-          transportSelectionKey: 'fixture:transport:b',
-          mealSelectionKey: 'fixture:meal:a',
+          hotelSelectionKey: 'HOTEL_4_STAR',
+          transportSelectionKey: 'PREMIUM_VAN_10',
+          mealSelectionKey: 'LOCAL_RESTAURANT',
         },
       });
     });
@@ -187,12 +187,12 @@ describe('ConfigurePage desktop transaction', () => {
     fireEvent.change(screen.getByRole('spinbutton', { name: /participants/i }), {
       target: { value: '1' },
     });
-    fireEvent.click(screen.getByRole('radio', { name: /Fixture hotel A/i }));
-    fireEvent.click(screen.getByRole('radio', { name: /Fixture transport A/i }));
+    fireEvent.click(screen.getByRole('radio', { name: /4-star hotel/i }));
+    fireEvent.click(screen.getByRole('radio', { name: /Private luxury car \\(2\\)/i }));
 
     expect(reviewButton).toBeDisabled();
 
-    fireEvent.click(screen.getByRole('radio', { name: /Fixture meal B/i }));
+    fireEvent.click(screen.getByRole('radio', { name: /Premium restaurant/i }));
 
     expect(reviewButton).toBeEnabled();
 
