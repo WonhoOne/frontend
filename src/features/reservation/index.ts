@@ -89,6 +89,11 @@ export {
   reservationPrivateQueryKey,
   reservationQueryKeys,
 } from '@/features/reservation/reservation.queryKeys';
+export {
+  reservationDetailQueryOptions,
+  shouldRetryReservationDetail,
+  useReservationDetail,
+} from '@/features/reservation/reservationDetail.query';
 
 export {
   createReservationReviewModel,

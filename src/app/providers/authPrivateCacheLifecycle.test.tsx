@@ -13,6 +13,7 @@ import {
   type LoginResult,
   useAuth,
 } from '@/features/auth';
+import { reservationQueryKeys } from '@/features/reservation';
 
 const loginResult: LoginResult = {
   accessToken: 'synthetic-token',
@@ -28,6 +29,10 @@ describe('auth private cache lifecycle', () => {
       meta: { privacy: PRIVATE_QUERY_META_KEY },
     });
     queryClient.setQueryData(['private-history'], [{ reservationId: 1 }]);
+    queryClient.setQueryDefaults(reservationQueryKeys.detail(801), {
+      meta: { privacy: PRIVATE_QUERY_META_KEY },
+    });
+    queryClient.setQueryData(reservationQueryKeys.detail(801), { id: 801 });
     queryClient.setQueryData(['public-tours'], [{ id: 'tour-1' }]);
 
     const dataSource: AuthDataSource = {
@@ -49,6 +54,7 @@ describe('auth private cache lifecycle', () => {
     });
 
     await waitFor(() => expect(queryClient.getQueryData(['private-history'])).toBeUndefined());
+    expect(queryClient.getQueryData(reservationQueryKeys.detail(801))).toBeUndefined();
     expect(queryClient.getQueryData(['public-tours'])).toEqual([{ id: 'tour-1' }]);
   });
 });
