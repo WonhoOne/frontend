@@ -99,11 +99,16 @@ export function ReservationReviewPage({
       const recovery = getReservationSubmitRecovery(result.error);
       if (recovery?.requiresFreshTruth === true) {
         setConflictTruthState('refreshing');
-        try {
-          const refreshed = await refreshConflictTruth(draft.tourProductId);
-          setConflictTruthState(refreshed ? 'refreshed' : 'failed');
-        } catch {
+        const tourProductIdentity = draft.tourProductId;
+        if (tourProductIdentity === null) {
           setConflictTruthState('failed');
+        } else {
+          try {
+            const refreshed = await refreshConflictTruth(tourProductIdentity);
+            setConflictTruthState(refreshed ? 'refreshed' : 'failed');
+          } catch {
+            setConflictTruthState('failed');
+          }
         }
       }
     }
