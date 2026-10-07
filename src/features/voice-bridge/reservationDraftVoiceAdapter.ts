@@ -14,6 +14,7 @@ import type {
 } from '../../integrations/voice/voiceCommand';
 import type { VoiceBridgeCapabilities } from './voiceCommandBridge';
 
+// prettier-ignore
 export type ReservationDraftVoiceCapabilities = Pick<
   VoiceBridgeCapabilities,
   | 'selectTourProduct'
@@ -34,6 +35,7 @@ export type ReservationDraftVoiceCapabilities = Pick<
  * Product/Style/Schedule/participant/option truth를 이 경계로 주입받고, false/null이면
  * 해당 음성 명령을 현재 GUI context에서 사용할 수 없는 것으로 거절한다.
  */
+// prettier-ignore
 export interface ReservationDraftVoiceContext {
   canSelectTourProduct: (tourProductId: number) => boolean;
   canSelectStyle: (style: VoiceTourStyle) => boolean;
@@ -47,6 +49,7 @@ export interface ReservationDraftVoiceContext {
   resolveExtraSelectionKey: (extraOption: VoiceExtraOption) => ReservationDraftSelectionKey | null;
 }
 
+// prettier-ignore
 export interface CreateReservationDraftVoiceAdapterInput {
   /** Always read the latest Draft because Voice delivery can occur after a render/context change. */
   getDraft: () => ReservationDraftV1;
@@ -65,6 +68,7 @@ export interface CreateReservationDraftVoiceAdapterInput {
  * - Repeated commands are idempotent when the Draft already satisfies the requested selection.
  * - No Reservation submit/create, HTTP, storage, navigation, or Backend Business Rule authority exists here.
  */
+// prettier-ignore
 export function createReservationDraftVoiceCapabilities({
   getDraft,
   getContext,
@@ -174,11 +178,13 @@ export function createReservationDraftVoiceCapabilities({
   };
 }
 
+// prettier-ignore
 function requireProductDraft(draft: ReservationDraftV1): ReservationDraftV1 {
   if (draft.tourProductId === null) rejectCurrentContext();
   return draft;
 }
 
+// prettier-ignore
 function requireConfigureDraft(draft: ReservationDraftV1): ReservationDraftV1 {
   if (
     draft.tourProductId === null ||
@@ -190,6 +196,7 @@ function requireConfigureDraft(draft: ReservationDraftV1): ReservationDraftV1 {
   return draft;
 }
 
+// prettier-ignore
 function requireSelectionKey(
   selectionKey: ReservationDraftSelectionKey | null,
 ): ReservationDraftSelectionKey {
@@ -197,6 +204,7 @@ function requireSelectionKey(
   return selectionKey;
 }
 
+// prettier-ignore
 function rejectCurrentContext(): never {
   // executeVoiceCommand intentionally sanitizes capability exceptions to CAPABILITY_FAILED.
   // Keep this internal error message empty so direct adapter misuse cannot leak GUI state.
