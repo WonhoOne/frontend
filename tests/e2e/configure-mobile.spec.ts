@@ -66,17 +66,17 @@ for (const width of [320, 390, 430, 768, 1023]) {
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
 
-    const extras = page
-      .getByRole('heading', { name: 'Extras' })
+    const finalRequiredGroup = page
+      .getByRole('heading', { name: 'Meal' })
       .locator('xpath=ancestor::section[1]');
-    const [extrasBox, barBox] = await Promise.all([
-      extras.boundingBox(),
+    const [groupBox, barBox] = await Promise.all([
+      finalRequiredGroup.boundingBox(),
       mobileSummary.boundingBox(),
     ]);
 
-    expect(extrasBox).not.toBeNull();
+    expect(groupBox).not.toBeNull();
     expect(barBox).not.toBeNull();
-    expect((extrasBox?.y ?? 0) + (extrasBox?.height ?? 0)).toBeLessThanOrEqual(barBox?.y ?? 0);
+    expect((groupBox?.y ?? 0) + (groupBox?.height ?? 0)).toBeLessThanOrEqual(barBox?.y ?? 0);
 
     const scrollBeforeSheet = await page.evaluate(() => window.scrollY);
     const trigger = mobileSummary.getByRole('button', { name: 'Open trip summary' });

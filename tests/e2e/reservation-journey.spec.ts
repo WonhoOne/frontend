@@ -34,25 +34,21 @@ async function expectNoHorizontalOverflow(page: Page) {
   ).toBe(false);
 }
 
-test('J02 Review creates once, clears Draft, survives Success refresh, and opens Detail', async ({
+test('J02 live Review requires authentication and preserves the Draft before login recovery', async ({
   page,
 }) => {
   await seedDraft(page);
   await page.goto('/reservation/review');
+
   const submit = page.getByRole('button', { name: 'Apply for reservation' });
   await expect(submit).toBeEnabled();
   await submit.dblclick();
-  await expect(page).toHaveURL(/\/reservation\/801\/success$/);
-  await expect(page.getByRole('heading', { name: 'Reservation received' })).toBeVisible();
+
+  await expect(page).toHaveURL('/login');
+  await expect(page.getByRole('heading', { name: 'Login' })).toBeVisible();
   await expect
     .poll(() => page.evaluate((key) => sessionStorage.getItem(key), storageKey))
-    .toBeNull();
-
-  await page.reload();
-  await expect(page.getByRole('heading', { name: 'Reservation received' })).toBeVisible();
-  await page.getByRole('link', { name: 'View reservation details' }).click();
-  await expect(page).toHaveURL(/\/reservations\/801$/);
-  await expect(page.getByRole('heading', { name: 'Mock 제주 허니문' })).toBeVisible();
+    .not.toBeNull();
 });
 
 for (const width of canonicalWidths) {

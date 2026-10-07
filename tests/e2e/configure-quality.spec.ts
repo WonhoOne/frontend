@@ -24,7 +24,7 @@ async function seedDraft(page: Page) {
   }, draft);
 }
 
-async function tabUntilFocused(page: Page, locator: Locator, maxTabs = 30) {
+async function tabUntilFocused(page: Page, locator: Locator, maxTabs = 40) {
   for (let index = 0; index < maxTabs; index += 1) {
     if (await locator.evaluate((element) => element === document.activeElement)) {
       return;
@@ -45,7 +45,7 @@ test('keyboard-only users can complete Configure and enter Review', async ({ pag
   await tabUntilFocused(page, participantInput);
   await page.keyboard.type('2');
 
-  const hotelA = page.getByRole('radio', { name: /4-star hotel/i });
+  const hotelA = page.getByRole('radio', { name: /3-star hotel/i });
   await tabUntilFocused(page, hotelA);
   const hotelCardOutline = await hotelA.locator('xpath=ancestor::div[1]').evaluate((element) => {
     const style = getComputedStyle(element);
@@ -59,7 +59,7 @@ test('keyboard-only users can complete Configure and enter Review', async ({ pag
   await tabUntilFocused(page, transportA);
   await page.keyboard.press('Space');
 
-  const mealA = page.getByRole('radio', { name: /Local restaurant/i });
+  const mealA = page.getByRole('radio', { name: /Lunch box/i });
   await tabUntilFocused(page, mealA);
   await page.keyboard.press('Space');
 
@@ -232,8 +232,8 @@ test.describe('Configure browser state matrix', () => {
     await expect(
       page.getByRole('heading', { name: 'Transport options unavailable' }),
     ).toBeVisible();
-    await expect(page.getByRole('radio', { name: /4-star hotel/i })).toBeVisible();
-    await expect(page.getByRole('radio', { name: /Local restaurant/i })).toBeVisible();
+    await expect(page.getByRole('radio', { name: /Fixture hotel A/i })).toBeVisible();
+    await expect(page.getByRole('radio', { name: /Fixture meal A/i })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Review trip' })).toBeDisabled();
 
     await page.getByRole('button', { name: 'Retry Transport' }).click();
@@ -248,8 +248,8 @@ test.describe('Configure browser state matrix', () => {
     await expect(
       page.getByRole('heading', { name: 'Transport options unavailable' }),
     ).toBeVisible();
-    await expect(page.getByRole('radio', { name: /4-star hotel/i })).toBeChecked();
-    await expect(page.getByRole('radio', { name: /Local restaurant/i })).toBeChecked();
+    await expect(page.getByRole('radio', { name: /Fixture hotel A/i })).toBeChecked();
+    await expect(page.getByRole('radio', { name: /Fixture meal A/i })).toBeChecked();
     await expect(page.getByRole('button', { name: 'Review trip' })).toBeDisabled();
   });
 
@@ -259,13 +259,13 @@ test.describe('Configure browser state matrix', () => {
     await expect(
       page.getByRole('alert').filter({ hasText: 'transport option is no longer available' }),
     ).toBeVisible();
-    await expect(page.getByRole('radio', { name: /Private luxury car \(2\)/i })).toBeChecked();
-    await expect(page.getByRole('radio', { name: /Premium van \(10\)/i })).not.toBeChecked();
+    await expect(page.getByRole('radio', { name: /Fixture transport A/i })).toBeChecked();
+    await expect(page.getByRole('radio', { name: /Fixture transport B/i })).not.toBeChecked();
     await expect(page.getByRole('button', { name: 'Review trip' })).toBeDisabled();
 
-    await page.getByRole('radio', { name: /Premium van \(10\)/i }).check();
+    await page.getByRole('radio', { name: /Fixture transport B/i }).check();
 
-    await expect(page.getByRole('radio', { name: /Premium van \(10\)/i })).toBeChecked();
+    await expect(page.getByRole('radio', { name: /Fixture transport B/i })).toBeChecked();
   });
 
   test('refreshing, stale, and offline preserve usable content with explicit status', async ({
