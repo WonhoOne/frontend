@@ -58,9 +58,7 @@ test.describe('Tour Detail → Configure transaction handoff', () => {
     await expect(page.getByRole('spinbutton', { name: /participants/i })).toHaveValue('');
     await expect(page.getByRole('radio', { name: /4-star hotel/i })).not.toBeChecked();
     await expect(page.getByRole('radio', { name: /5-star hotel/i })).not.toBeChecked();
-    await expect(
-      page.getByRole('radio', { name: /Private luxury car \(2\)/i }),
-    ).not.toBeChecked();
+    await expect(page.getByRole('radio', { name: /Private luxury car \(2\)/i })).not.toBeChecked();
     await expect(page.getByRole('radio', { name: /Premium van \(10\)/i })).not.toBeChecked();
     await expect(page.getByRole('radio', { name: /Local restaurant/i })).not.toBeChecked();
     await expect(page.getByRole('radio', { name: /Premium restaurant/i })).not.toBeChecked();
