@@ -74,11 +74,14 @@ describe('BackendAuthDataSource', () => {
 
   it('posts only the approved signup fields and never treats signup as login', async () => {
     const requestJson = vi.fn().mockResolvedValue(
-      backendResponse({
-        id: 102,
-        role: 'CUSTOMER',
-        name: 'New Customer',
-      }, 201),
+      backendResponse(
+        {
+          id: 102,
+          role: 'CUSTOMER',
+          name: 'New Customer',
+        },
+        201,
+      ),
     );
     const source = new BackendAuthDataSource({ requestJson });
     const input = {

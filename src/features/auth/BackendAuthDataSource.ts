@@ -8,10 +8,7 @@ import {
 import { mapBackendAuthFailure } from '@/features/auth/backendAuthError';
 import type { LoginInput, SignupInput } from '@/features/auth/authTypes';
 import type { BackendHttpClient } from '@/integrations/backend/client/backendClient';
-import {
-  decodeLoginResponseDto,
-  decodeSignupResponseDto,
-} from '@/integrations/backend/contracts';
+import { decodeLoginResponseDto, decodeSignupResponseDto } from '@/integrations/backend/contracts';
 
 export class BackendAuthDataSource implements AuthDataSource {
   constructor(private readonly client: Pick<BackendHttpClient, 'requestJson'>) {}
