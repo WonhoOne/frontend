@@ -17,7 +17,7 @@ afterEach(() => {
 
 describe('central BackendHttpClient auth composition', () => {
   it('reads the shared memory token for private requests only', async () => {
-    const fetchImplementation = vi.fn().mockResolvedValue(jsonResponse({ ok: true }));
+    const fetchImplementation = vi.fn(async () => jsonResponse({ ok: true }));
     vi.stubGlobal('fetch', fetchImplementation);
     authSessionStore.setSession({
       accessToken: 'central-memory-token',
