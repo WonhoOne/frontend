@@ -142,6 +142,98 @@ describe('BackendReservationDataSource', () => {
     expect(JSON.stringify(caught)).not.toContain('synthetic-sensitive-human-message');
   });
 
+
+  it.each([
+    {
+      status: 403,
+      code: 'FORBIDDEN',
+      fieldErrors: [],
+      expected: { kind: 'forbidden', code: 'FORBIDDEN' },
+    },
+    {
+      status: 409,
+      code: 'SCHEDULE_NOT_RESERVABLE',
+      fieldErrors: [
+        {
+          field: 'scheduleId',
+          code: 'INVALID_VALUE',
+          message: 'synthetic conflict message',
+        },
+      ],
+      expected: {
+        kind: 'conflict',
+        code: 'SCHEDULE_NOT_RESERVABLE',
+        fieldErrors: [{ field: 'scheduleId', code: 'INVALID_VALUE' }],
+      },
+    },
+    {
+      status: 422,
+      code: 'VALIDATION_FAILED',
+      fieldErrors: [
+        {
+          field: 'participantCount',
+          code: 'OUT_OF_RANGE',
+          message: 'synthetic validation message',
+        },
+        {
+          field: 'configuration.transportOption',
+          code: 'CAPACITY_EXCEEDED',
+          message: 'synthetic capacity message',
+        },
+      ],
+      expected: {
+        kind: 'validation',
+        code: 'VALIDATION_FAILED',
+        fieldErrors: [
+          { field: 'participantCount', code: 'OUT_OF_RANGE' },
+          { field: 'configuration.transportOption', code: 'CAPACITY_EXCEEDED' },
+        ],
+      },
+    },
+    {
+      status: 500,
+      code: 'INTERNAL_ERROR',
+      fieldErrors: [],
+      expected: { kind: 'server', code: 'INTERNAL_ERROR' },
+    },
+  ])(
+    'maps HTTP $status using status + stable code/fieldErrors without retaining human messages',
+    async ({ status, code, fieldErrors, expected }) => {
+      const raw = {
+        code,
+        message: 'synthetic top-level human message',
+        fieldErrors,
+      };
+      const requestJson = vi.fn().mockRejectedValue(
+        new BackendHttpError(
+          {
+            status,
+            statusText: 'Synthetic failure',
+            headers: {},
+          },
+          raw,
+        ),
+      );
+      const source = new BackendReservationDataSource({ requestJson });
+
+      let caught: unknown;
+      try {
+        await source.createReservation(input);
+      } catch (error) {
+        caught = error;
+      }
+
+      expect(caught).toBeInstanceOf(ReservationDataSourceError);
+      expect(caught).toMatchObject({ detail: expected });
+      expect(caught).not.toHaveProperty('body');
+      expect(JSON.stringify(caught)).not.toContain('human message');
+      expect(JSON.stringify(caught)).not.toContain('synthetic conflict message');
+      expect(JSON.stringify(caught)).not.toContain('synthetic validation message');
+      expect(JSON.stringify(caught)).not.toContain('synthetic capacity message');
+      expect(requestJson).toHaveBeenCalledTimes(1);
+    },
+  );
+
   it('uses the same strict representation adapter for authenticated detail GET', async () => {
     const requestJson = vi.fn().mockResolvedValue({
       status: 200,

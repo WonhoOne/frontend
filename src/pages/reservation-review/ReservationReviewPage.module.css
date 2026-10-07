@@ -55,11 +55,24 @@
 }
 
 .warning {
+  display: grid;
+  gap: var(--mw-space-2);
   margin: 0;
   padding: var(--mw-space-3) var(--mw-space-4);
   border: var(--mw-border-default);
   border-radius: var(--mw-radius-sm);
   background: var(--mw-surface-elevated);
+}
+
+.warning p {
+  margin: 0;
+}
+
+.recoveryList {
+  display: grid;
+  gap: var(--mw-space-1);
+  margin: 0;
+  padding-inline-start: var(--mw-space-5);
 }
 
 .section,

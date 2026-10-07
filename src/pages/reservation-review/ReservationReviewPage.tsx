@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 
+import { queryClient } from '@/app/providers/queryClient';
 import { reservationDataSource } from '@/app/providers/reservationDataSource';
 import { routeBuilders, routePaths } from '@/app/router/paths';
 import { saveReturnContext } from '@/features/auth';
@@ -10,10 +11,15 @@ import {
   createReservationIntent,
   createReservationMutationController,
   createReservationReviewModel,
+  getReservationNetworkRecovery,
+  getReservationSubmitRecovery,
   getReviewDraftHandoffState,
   previewReservationReviewResolver,
   presentReservationReviewValidation,
+  refreshReservationConflictTruth,
   useReservationDraft,
+  ReservationDataSourceError,
+  type ReservationCorrectionTarget,
   type ReservationDataSource,
   type ReservationMutationState,
 } from '@/features/reservation';
@@ -21,22 +27,58 @@ import { Button, PageContainer, TextLink } from '@/shared/ui';
 
 import styles from '@/pages/reservation-review/ReservationReviewPage.module.css';
 
+type ConflictTruthState = 'idle' | 'refreshing' | 'refreshed' | 'failed';
+
 interface ReservationReviewPageProps {
   dataSource?: ReservationDataSource;
+  refreshConflictTruth?: (tourProductIdentity: string) => Promise<boolean>;
+}
+
+function defaultRefreshConflictTruth(tourProductIdentity: string) {
+  return refreshReservationConflictTruth(queryClient, tourProductIdentity);
+}
+
+function correctionTargetLabel(target: ReservationCorrectionTarget) {
+  const labels: Record<ReservationCorrectionTarget, string> = {
+    schedule: 'Schedule',
+    'participant-count': 'Traveller count',
+    hotel: 'Hotel',
+    transport: 'Transport',
+    meal: 'Meal',
+    extras: 'Extras',
+    configuration: 'Configuration',
+  };
+
+  return labels[target];
 }
 
 export function ReservationReviewPage({
   dataSource = reservationDataSource,
+  refreshConflictTruth = defaultRefreshConflictTruth,
 }: ReservationReviewPageProps = {}) {
   const { draft, dispatch, hydrationStatus, persistenceStatus } = useReservationDraft();
   const navigate = useNavigate();
   const mutation = useMemo(() => createReservationMutationController(dataSource), [dataSource]);
   const [mutationState, setMutationState] = useState<ReservationMutationState>(mutation.getState());
+  const [conflictTruthState, setConflictTruthState] = useState<ConflictTruthState>('idle');
   const handoff = getReviewDraftHandoffState({ draft, hydrationStatus });
 
   async function submitReservation() {
     const intent = createReservationIntent(draft, canonicalReservationCreateIdentityResolver);
     if (intent.status !== 'ready') return;
+
+    setConflictTruthState('idle');
+
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      setMutationState({
+        status: 'failure',
+        error: new ReservationDataSourceError({
+          kind: 'network',
+          requestMayHaveReachedServer: false,
+        }),
+      });
+      return;
+    }
 
     const pending = mutation.submit(intent.input);
     setMutationState(mutation.getState());
@@ -53,6 +95,19 @@ export function ReservationReviewPage({
       return;
     }
 
+    if (result.status === 'failure') {
+      const recovery = getReservationSubmitRecovery(result.error);
+      if (recovery?.requiresFreshTruth === true) {
+        setConflictTruthState('refreshing');
+        try {
+          const refreshed = await refreshConflictTruth(draft.tourProductId);
+          setConflictTruthState(refreshed ? 'refreshed' : 'failed');
+        } catch {
+          setConflictTruthState('failed');
+        }
+      }
+    }
+
     const transition = createConfirmedReservationTransition(result, Date.now());
     if (transition !== null) {
       dispatch(transition.draftAction);
@@ -65,6 +120,37 @@ export function ReservationReviewPage({
     if (review !== null) {
       const validation = presentReservationReviewValidation({ status: 'valid' });
       const submitting = mutationState.status === 'submitting';
+      const submitRecovery =
+        mutationState.status === 'failure'
+          ? getReservationSubmitRecovery(mutationState.error)
+          : null;
+      const failureDetail =
+        mutationState.status === 'failure' &&
+        mutationState.error instanceof ReservationDataSourceError
+          ? mutationState.error.detail
+          : null;
+      const networkRecovery =
+        mutationState.status === 'failure'
+          ? getReservationNetworkRecovery({
+              status: 'failure',
+              error: mutationState.error,
+            })
+          : mutationState.status === 'uncertain'
+            ? getReservationNetworkRecovery({
+                status: 'uncertain',
+                error: mutationState.error,
+              })
+            : null;
+      const retryBlocked =
+        networkRecovery?.retryPolicy === 'blocked-until-resolved' ||
+        failureDetail?.kind === 'forbidden' ||
+        submitRecovery !== null;
+      const correctionRoute =
+        submitRecovery?.kind === 'schedule-conflict'
+          ? routeBuilders.tourDetail(review.tourProductId)
+          : submitRecovery === null
+            ? null
+            : routeBuilders.configure(review.tourProductId);
 
       return (
         <PageContainer variant="transaction">
@@ -157,21 +243,99 @@ export function ReservationReviewPage({
               </p>
             ) : null}
             {mutationState.status === 'uncertain' ? (
+              <section role="alert" className={styles.warning}>
+                <strong>Reservation result is uncertain.</strong>
+                <p>
+                  The request may already have reached the server. Your trip is preserved, and
+                  another submission is blocked to avoid creating a duplicate reservation.
+                </p>
+              </section>
+            ) : null}
+            {failureDetail?.kind === 'forbidden' ? (
+              <section role="alert" className={styles.warning}>
+                <strong>This account cannot submit this reservation.</strong>
+                <p>
+                  Your trip is preserved. Signing in again will not change this permission result,
+                  so the app will not redirect you to Login.
+                </p>
+              </section>
+            ) : null}
+            {submitRecovery !== null ? (
+              <section role="alert" className={styles.warning}>
+                <strong>
+                  {submitRecovery.kind === 'schedule-conflict'
+                    ? 'The selected schedule is no longer reservable.'
+                    : submitRecovery.kind === 'conflict'
+                      ? 'The latest trip availability conflicts with this draft.'
+                      : 'Some reservation details need correction.'}
+                </strong>
+                <p>
+                  Your draft was not changed automatically. Review the latest information, correct
+                  it yourself, then return here and confirm again.
+                </p>
+                {'issues' in submitRecovery && submitRecovery.issues.length > 0 ? (
+                  <ul className={styles.recoveryList} aria-label="Reservation corrections">
+                    {submitRecovery.issues.map((issue, index) => (
+                      <li data-error-code={issue.code} key={`${issue.target}-${issue.code}-${index}`}>
+                        {correctionTargetLabel(issue.target)} needs attention.
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+                {submitRecovery.requiresFreshTruth ? (
+                  <p role="status">
+                    {conflictTruthState === 'refreshing'
+                      ? 'Refreshing the latest product and schedule information…'
+                      : conflictTruthState === 'refreshed'
+                        ? 'Latest product and schedule information refreshed.'
+                        : conflictTruthState === 'failed'
+                          ? 'Latest information could not be refreshed here. The correction screen will request it again.'
+                          : 'Latest product and schedule information will be refreshed before correction.'}
+                  </p>
+                ) : null}
+                {correctionRoute !== null ? (
+                  <TextLink to={correctionRoute}>
+                    {submitRecovery.kind === 'schedule-conflict'
+                      ? 'Choose another schedule'
+                      : 'Correct configuration'}
+                  </TextLink>
+                ) : null}
+              </section>
+            ) : null}
+            {networkRecovery?.kind === 'network-failure' ? (
               <p role="alert" className={styles.warning}>
-                We could not confirm whether the reservation was created. Your trip is preserved. Do
-                not submit again until the result can be confirmed.
+                The reservation was not sent because the network is unavailable. Your trip is
+                preserved. Reconnect, then submit again manually.
               </p>
             ) : null}
-            {mutationState.status === 'failure' ? (
+            {networkRecovery?.kind === 'server-failure' ? (
               <p role="alert" className={styles.warning}>
-                The reservation could not be submitted. Your trip is preserved so you can review the
-                changed information and try again manually.
+                The server could not complete the reservation. Your trip is preserved. You can
+                submit again manually.
+              </p>
+            ) : null}
+            {mutationState.status === 'failure' &&
+            failureDetail === null &&
+            submitRecovery === null ? (
+              <p role="alert" className={styles.warning}>
+                The reservation could not be submitted. Your trip is preserved so you can review
+                the information and try again manually.
               </p>
             ) : null}
 
             <div className={styles.submitBar}>
-              <Button type="button" disabled={submitting} onClick={() => void submitReservation()}>
-                {submitting ? 'Applying…' : 'Apply for reservation'}
+              <Button
+                type="button"
+                disabled={submitting || retryBlocked}
+                onClick={() => void submitReservation()}
+              >
+                {submitting
+                  ? 'Applying…'
+                  : mutationState.status === 'uncertain'
+                    ? 'Submission locked'
+                    : retryBlocked
+                      ? 'Correct before resubmitting'
+                      : 'Apply for reservation'}
               </Button>
             </div>
           </div>

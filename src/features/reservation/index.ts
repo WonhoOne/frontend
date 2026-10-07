@@ -126,6 +126,11 @@ export {
 } from '@/features/reservation/reservationRecovery';
 
 export {
+  refreshReservationConflictTruth,
+  type ReservationConflictTruthQueryClient,
+} from '@/features/reservation/reservationConflictTruth';
+
+export {
   createOfflineBeforeSubmitRecovery,
   getReservationNetworkRecovery,
   type ReservationNetworkRecovery,
