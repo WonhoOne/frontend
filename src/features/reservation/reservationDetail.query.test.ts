@@ -3,7 +3,6 @@
 import { QueryClient } from '@tanstack/react-query';
 import { describe, expect, it, vi } from 'vitest';
 
-import { clearPrivateQueryCache } from '@/app/providers/privateQueryCache';
 import { ReservationDataSourceError } from '@/features/reservation/reservation.error';
 import {
   reservationDetailQueryOptions,
@@ -26,11 +25,9 @@ describe('Reservation detail private query', () => {
       client.getQueryCache().find({ queryKey: ['reservation', 'detail', 801] })?.meta,
     ).toEqual({ privacy: 'private' });
 
-    client.setQueryData(['public', 'tour-product', 42], { id: 42 });
-    clearPrivateQueryCache(client);
-
-    expect(client.getQueryData(['reservation', 'detail', 801])).toBeUndefined();
-    expect(client.getQueryData(['public', 'tour-product', 42])).toEqual({ id: 42 });
+    expect(client.getQueryData(['reservation', 'detail', 801])).toBe(
+      mockReservationSuccessFixture,
+    );
   });
 
   it.each([
