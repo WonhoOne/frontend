@@ -48,6 +48,28 @@ describe('decodeApiErrorDto', () => {
     }
   });
 
+  it('accepts the private stable error codes required by F2', () => {
+    for (const code of [
+      'LOGIN_FAILED',
+      'AUTHENTICATION_REQUIRED',
+      'INVALID_ACCESS_TOKEN',
+      'ACCESS_TOKEN_EXPIRED',
+      'FORBIDDEN',
+      'RESERVATION_NOT_FOUND',
+      'SCHEDULE_NOT_RESERVABLE',
+      'LOGIN_ID_ALREADY_EXISTS',
+      'VALIDATION_FAILED',
+    ] as const) {
+      expect(
+        decodeApiErrorDto({
+          code,
+          message: 'Human-readable text must not control flow.',
+          fieldErrors: [],
+        }).code,
+      ).toBe(code);
+    }
+  });
+
   it('rejects unknown top-level and field error codes', () => {
     expect(() =>
       decodeApiErrorDto({

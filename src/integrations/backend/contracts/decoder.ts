@@ -80,6 +80,25 @@ export function expectNonNegativeInteger(
   return value;
 }
 
+export function expectIntegerInRange(
+  value: unknown,
+  minimum: number,
+  maximum: number,
+  contract: BackendContractName,
+  path: string,
+): number {
+  if (
+    typeof value !== 'number' ||
+    !Number.isSafeInteger(value) ||
+    value < minimum ||
+    value > maximum
+  ) {
+    return mappingFailure(contract, path, 'expected-integer-range');
+  }
+
+  return value;
+}
+
 export function expectEnum<const T extends readonly string[]>(
   value: unknown,
   allowedValues: T,
@@ -138,7 +157,7 @@ export function expectUniqueEnumArray<const T extends readonly string[]>(
 ): readonly T[number][] {
   const entries = expectArray(value, contract, path);
   const decoded = entries.map((entry, index) =>
-    expectEnum(entry, allowedValues, contract, `${path}[${index}]`),
+    expectEnum(entry, allowedValues, contract, path + '[' + index + ']'),
   );
 
   if (new Set(decoded).size !== decoded.length) {
