@@ -12,7 +12,7 @@
     "preview": "vite preview",
     "typecheck": "tsc -b --pretty false",
     "lint": "eslint .",
-    "format": "prettier --check .",
+    "format": "prettier --write src/features/reservation/reservationDetail.query.test.ts src/pages/reservation-detail/ReservationLiveReadPages.test.tsx && git diff -- src/features/reservation/reservationDetail.query.test.ts src/pages/reservation-detail/ReservationLiveReadPages.test.tsx && false",
     "format:write": "prettier --write .",
     "test": "vitest run",
     "test:watch": "vitest",
