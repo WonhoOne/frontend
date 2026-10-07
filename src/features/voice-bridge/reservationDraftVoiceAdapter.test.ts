@@ -12,7 +12,6 @@ import {
   type ReservationDraftVoiceContext,
 } from './reservationDraftVoiceAdapter';
 
-// prettier-ignore
 function configuredDraft(overrides: Partial<ReservationDraftV1> = {}): ReservationDraftV1 {
   return {
     schemaVersion: 1,
@@ -31,7 +30,6 @@ function configuredDraft(overrides: Partial<ReservationDraftV1> = {}): Reservati
   };
 }
 
-// prettier-ignore
 function selectableContext(): ReservationDraftVoiceContext {
   return {
     canSelectTourProduct: () => true,
@@ -45,18 +43,19 @@ function selectableContext(): ReservationDraftVoiceContext {
   };
 }
 
-// prettier-ignore
-function harness(options?: {
-  draft?: ReservationDraftV1;
-  context?: ReservationDraftVoiceContext;
-}) {
+function harness(options?: { draft?: ReservationDraftV1; context?: ReservationDraftVoiceContext }) {
   let draft = options?.draft ?? configuredDraft();
   let context = options?.context ?? selectableContext();
   const dispatch = vi.fn<(action: ReservationDraftAction) => void>();
   const now = vi.fn(() => 999);
   const getDraft = vi.fn(() => draft);
   const getContext = vi.fn(() => context);
-  const capabilities = createReservationDraftVoiceCapabilities({ getDraft, getContext, dispatch, now });
+  const capabilities = createReservationDraftVoiceCapabilities({
+    getDraft,
+    getContext,
+    dispatch,
+    now,
+  });
 
   return {
     capabilities,
@@ -73,12 +72,10 @@ function harness(options?: {
   };
 }
 
-// prettier-ignore
 function execute(command: VoiceCommand, capabilities: ReservationDraftVoiceCapabilities) {
   return executeVoiceCommand(command, capabilities);
 }
 
-// prettier-ignore
 describe('ReservationDraft Voice adapter', () => {
   it('exposes only the nine ReservationDraft-related V6-A capabilities', () => {
     const { capabilities } = harness();
@@ -201,7 +198,10 @@ describe('ReservationDraft Voice adapter', () => {
       }),
     });
 
-    execute({ version: 1, command: 'ADD_OPTION', args: { extraOption: 'CHAMPAGNE' } }, h.capabilities);
+    execute(
+      { version: 1, command: 'ADD_OPTION', args: { extraOption: 'CHAMPAGNE' } },
+      h.capabilities,
+    );
     expect(h.dispatch).not.toHaveBeenCalled();
 
     execute({ version: 1, command: 'ADD_OPTION', args: { extraOption: 'COFFEE' } }, h.capabilities);
@@ -280,10 +280,8 @@ describe('ReservationDraft Voice adapter', () => {
     const h = harness({ context });
 
     expect(
-      execute(
-        { version: 1, command: 'SELECT_SCHEDULE', args: { scheduleId: 777 } },
-        h.capabilities,
-      ).ok,
+      execute({ version: 1, command: 'SELECT_SCHEDULE', args: { scheduleId: 777 } }, h.capabilities)
+        .ok,
     ).toBe(false);
     expect(
       execute(
@@ -330,7 +328,7 @@ describe('ReservationDraft Voice adapter', () => {
       './voiceCommandBridge',
     ]);
     expect(source).not.toMatch(
-      /submitReservation|createReservation|postReservation|confirmReservation|SUBMIT_RESERVATION|\/api\/v1\/reservations|fetch|XMLHttpRequest|localStorage|sessionStorage|indexedDB|window\.|router|navigate|React|useReservationDraft/,
+      /\b(?:submitReservation|createReservation|postReservation|confirmReservation)\b|SUBMIT_RESERVATION|\/api\/v1\/reservations|fetch|XMLHttpRequest|localStorage|sessionStorage|indexedDB|window\.|router|navigate|React|useReservationDraft/,
     );
   });
 });
