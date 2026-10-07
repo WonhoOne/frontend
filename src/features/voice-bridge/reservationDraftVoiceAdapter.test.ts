@@ -12,6 +12,7 @@ import {
   type ReservationDraftVoiceContext,
 } from './index';
 
+// prettier-ignore
 function configuredDraft(overrides: Partial<ReservationDraftV1> = {}): ReservationDraftV1 {
   return {
     schemaVersion: 1,
@@ -30,6 +31,7 @@ function configuredDraft(overrides: Partial<ReservationDraftV1> = {}): Reservati
   };
 }
 
+// prettier-ignore
 function selectableContext(): ReservationDraftVoiceContext {
   return {
     canSelectTourProduct: () => true,
@@ -43,6 +45,7 @@ function selectableContext(): ReservationDraftVoiceContext {
   };
 }
 
+// prettier-ignore
 function harness(options?: {
   draft?: ReservationDraftV1;
   context?: ReservationDraftVoiceContext;
@@ -75,10 +78,12 @@ function harness(options?: {
   };
 }
 
+// prettier-ignore
 function execute(command: VoiceCommand, capabilities: ReservationDraftVoiceCapabilities) {
   return executeVoiceCommand(command, capabilities);
 }
 
+// prettier-ignore
 describe('ReservationDraft Voice adapter', () => {
   it('exposes only the nine ReservationDraft-related V6-A capabilities', () => {
     const { capabilities } = harness();
