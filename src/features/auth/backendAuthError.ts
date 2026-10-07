@@ -1,5 +1,6 @@
 import { AuthError, type AuthErrorCode } from '@/features/auth/authTypes';
 import {
+  BackendAuthenticationRequiredError,
   BackendHttpError,
   BackendMalformedResponseError,
   BackendNetworkError,
@@ -28,6 +29,10 @@ function contractKey(status: number, code: ApiErrorCode) {
 export function mapBackendAuthFailure(error: unknown): Error {
   if (error instanceof AuthError || error instanceof ContractMappingError) {
     return error;
+  }
+
+  if (error instanceof BackendAuthenticationRequiredError) {
+    return new AuthError('AUTHENTICATION_REQUIRED');
   }
 
   if (error instanceof BackendHttpError) {

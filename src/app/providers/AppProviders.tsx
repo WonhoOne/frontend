@@ -1,5 +1,6 @@
 import type { PropsWithChildren } from 'react';
 
+import { authSessionStore } from '@/app/providers/authSession';
 import { clearPrivateQueryCache } from '@/app/providers/privateQueryCache';
 import { QueryProvider } from '@/app/providers/QueryProvider';
 import { queryClient } from '@/app/providers/queryClient';
@@ -16,8 +17,8 @@ const unavailableAuthDataSource: AuthDataSource = {
 };
 
 function createAuthDataSource(): AuthDataSource {
-  // SECURITY: PR-07 is mock-backed, but mock behavior is explicit opt-in and
-  // development-only. Production must not silently authenticate against mocks.
+  // SECURITY: Auth live composition arrives in F2-05. Until then, mock behavior
+  // remains explicit opt-in and development-only; production has no fallback.
   if (import.meta.env.DEV && import.meta.env.VITE_ENABLE_MOCKS === 'true') {
     return new MockAuthDataSource({
       login() {
@@ -49,6 +50,7 @@ export function AppProviders({ children }: PropsWithChildren) {
       <AuthProvider
         dataSource={authDataSource}
         onAuthLoss={() => clearPrivateQueryCache(queryClient)}
+        sessionStore={authSessionStore}
       >
         <ReservationDraftProvider>{children}</ReservationDraftProvider>
       </AuthProvider>

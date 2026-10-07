@@ -16,6 +16,15 @@ export class BackendHttpError extends Error {
   }
 }
 
+export class BackendAuthenticationRequiredError extends Error {
+  override readonly name = 'BackendAuthenticationRequiredError';
+  readonly kind = 'authentication-required' as const;
+
+  constructor() {
+    super('Backend request requires an active in-memory access token.');
+  }
+}
+
 export class BackendNetworkError extends Error {
   override readonly name = 'BackendNetworkError';
   readonly kind = 'network' as const;

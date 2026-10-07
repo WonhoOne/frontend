@@ -1,9 +1,10 @@
 import { http, HttpResponse, delay } from 'msw';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { server } from '@/mocks/server';
 import { BackendHttpClient } from '@/integrations/backend/client/backendClient';
 import {
+  BackendAuthenticationRequiredError,
   BackendHttpError,
   BackendMalformedResponseError,
   BackendNetworkError,
@@ -45,6 +46,117 @@ describe('BackendHttpClient', () => {
     await expect(
       client.requestJson({ path: '/echo', method: 'POST', body: { value: 7 } }),
     ).resolves.toMatchObject({ body: { accepted: true } });
+  });
+
+  it('attaches the exact Bearer token only when authentication is required', async () => {
+    const authenticatedClient = new BackendHttpClient({
+      baseUrl,
+      accessTokenProvider: () => 'synthetic-access-token',
+    });
+
+    server.use(
+      http.get(`${baseUrl}/private`, ({ request }) => {
+        expect(request.headers.get('authorization')).toBe('Bearer synthetic-access-token');
+        return HttpResponse.json({ ok: true });
+      }),
+      http.get(`${baseUrl}/public`, ({ request }) => {
+        expect(request.headers.get('authorization')).toBeNull();
+        return HttpResponse.json({ ok: true });
+      }),
+    );
+
+    await authenticatedClient.requestJson({
+      path: '/private',
+      authentication: 'required',
+    });
+    await authenticatedClient.requestJson({ path: '/public' });
+  });
+
+  it('fails closed before fetch when a private request has no active token', async () => {
+    const fetchImplementation = vi.fn();
+    const authenticatedClient = new BackendHttpClient({
+      baseUrl,
+      accessTokenProvider: () => null,
+      fetchImplementation,
+    });
+
+    await expect(
+      authenticatedClient.requestJson({
+        path: '/private',
+        authentication: 'required',
+      }),
+    ).rejects.toBeInstanceOf(BackendAuthenticationRequiredError);
+    expect(fetchImplementation).not.toHaveBeenCalled();
+  });
+
+  it('rejects caller-supplied Authorization headers for public and private requests', async () => {
+    const authenticatedClient = new BackendHttpClient({
+      baseUrl,
+      accessTokenProvider: () => 'central-token',
+    });
+
+    await expect(
+      authenticatedClient.requestJson({
+        path: '/public',
+        headers: { Authorization: 'Bearer caller-token' },
+      }),
+    ).rejects.toThrow(TypeError);
+    await expect(
+      authenticatedClient.requestJson({
+        path: '/private',
+        authentication: 'required',
+        headers: { authorization: 'Bearer caller-token' },
+      }),
+    ).rejects.toThrow(TypeError);
+  });
+
+  it('notifies auth lifecycle on private 401 but never on 403 or public 401', async () => {
+    const onPrivateUnauthorized = vi.fn();
+    const authenticatedClient = new BackendHttpClient({
+      baseUrl,
+      accessTokenProvider: () => 'synthetic-token',
+      onPrivateUnauthorized,
+    });
+
+    server.use(
+      http.get(`${baseUrl}/private-401`, () =>
+        HttpResponse.json(
+          { code: 'INVALID_ACCESS_TOKEN', message: 'Synthetic', fieldErrors: [] },
+          { status: 401 },
+        ),
+      ),
+      http.get(`${baseUrl}/private-403`, () =>
+        HttpResponse.json(
+          { code: 'FORBIDDEN', message: 'Synthetic', fieldErrors: [] },
+          { status: 403 },
+        ),
+      ),
+      http.get(`${baseUrl}/public-401`, () =>
+        HttpResponse.json(
+          { code: 'LOGIN_FAILED', message: 'Synthetic', fieldErrors: [] },
+          { status: 401 },
+        ),
+      ),
+    );
+
+    await expect(
+      authenticatedClient.requestJson({
+        path: '/private-401',
+        authentication: 'required',
+      }),
+    ).rejects.toMatchObject({ response: { status: 401 } });
+    expect(onPrivateUnauthorized).toHaveBeenCalledTimes(1);
+
+    await expect(
+      authenticatedClient.requestJson({
+        path: '/private-403',
+        authentication: 'required',
+      }),
+    ).rejects.toMatchObject({ response: { status: 403 } });
+    await expect(authenticatedClient.requestJson({ path: '/public-401' })).rejects.toMatchObject({
+      response: { status: 401 },
+    });
+    expect(onPrivateUnauthorized).toHaveBeenCalledTimes(1);
   });
 
   it.each([

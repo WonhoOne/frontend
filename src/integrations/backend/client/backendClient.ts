@@ -1,4 +1,5 @@
 import {
+  BackendAuthenticationRequiredError,
   BackendHttpError,
   BackendMalformedResponseError,
   BackendNetworkError,
@@ -7,10 +8,12 @@ import {
 } from '@/integrations/backend/client/backendHttpError';
 
 export type BackendHttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+export type BackendAuthenticationMode = 'none' | 'required';
 
 export interface BackendJsonRequest {
   path: string;
   method?: BackendHttpMethod;
+  authentication?: BackendAuthenticationMode;
   headers?: HeadersInit;
   body?: unknown;
   signal?: AbortSignal;
@@ -26,6 +29,8 @@ export interface BackendJsonResponse {
 export interface BackendHttpClientOptions {
   baseUrl: string;
   fetchImplementation?: typeof fetch;
+  accessTokenProvider?: () => string | null;
+  onPrivateUnauthorized?: () => void;
 }
 
 function buildRequestUrl(baseUrl: string, path: string) {
@@ -110,7 +115,8 @@ async function readJsonBody(response: Response): Promise<unknown> {
  * - Product meaning and DTO validation do not belong here.
  * - Successful JSON stays unknown until the resource decoder approves it.
  * - AbortSignal is forwarded unchanged to fetch.
- * - Authorization/session policy is intentionally deferred to Session F2.
+ * - Authorization is owned here: callers declare whether auth is required but
+ *   never construct or supply an Authorization header themselves.
  */
 export class BackendHttpClient {
   constructor(private readonly options: BackendHttpClientOptions) {}
@@ -118,8 +124,24 @@ export class BackendHttpClient {
   async requestJson(request: BackendJsonRequest): Promise<BackendJsonResponse> {
     const requestUrl = buildRequestUrl(this.options.baseUrl, request.path);
     const method = request.method ?? 'GET';
+    const authentication = request.authentication ?? 'none';
     const headers = new Headers(request.headers);
+
+    if (headers.has('Authorization')) {
+      throw new TypeError('Authorization header is managed by BackendHttpClient.');
+    }
+
     headers.set('Accept', 'application/json');
+
+    if (authentication === 'required') {
+      const accessToken = this.options.accessTokenProvider?.() ?? null;
+
+      if (accessToken === null || accessToken.length === 0) {
+        throw new BackendAuthenticationRequiredError();
+      }
+
+      headers.set('Authorization', `Bearer ${accessToken}`);
+    }
 
     const requestInit: RequestInit = {
       method,
@@ -151,6 +173,10 @@ export class BackendHttpClient {
     const parsedBody = await readJsonBody(response);
 
     if (!response.ok) {
+      if (authentication === 'required' && response.status === 401) {
+        this.options.onPrivateUnauthorized?.();
+      }
+
       throw new BackendHttpError(metadata, parsedBody);
     }
 
