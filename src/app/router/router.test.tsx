@@ -97,7 +97,9 @@ describe('foundation route table', () => {
         name: 'Sign in to view this reservation',
       }),
     ).toBeVisible();
-    expect(screen.queryByRole('heading', { name: 'Reservation not found' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: 'Reservation not found' }),
+    ).not.toBeInTheDocument();
   });
 
   it('uses GlobalHeader for public routes without interpreting Auth state', () => {
