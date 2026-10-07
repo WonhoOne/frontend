@@ -80,11 +80,11 @@ describe('Reservation v0.2 contract core', () => {
     const unresolved = createCompleteDraft();
     unresolved.configuration.hotelSelectionKey = 'fixture:hotel:a';
 
-    expect(
-      createReservationIntent(unresolved, canonicalReservationCreateIdentityResolver),
-    ).toEqual({
-      status: 'unresolved-selection',
-    });
+    expect(createReservationIntent(unresolved, canonicalReservationCreateIdentityResolver)).toEqual(
+      {
+        status: 'unresolved-selection',
+      },
+    );
   });
 
   it('returns server-shaped price truth only after mock create and supports id lookup', async () => {

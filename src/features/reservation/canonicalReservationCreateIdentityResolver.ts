@@ -23,8 +23,7 @@ function resolveCanonicalOption<const T extends readonly string[]>(
 export const canonicalReservationCreateIdentityResolver: ReservationCreateIdentityResolver = {
   resolveScheduleId: (selectionIdentity) => parseBackendResourceIdentity(selectionIdentity),
   resolveHotelOption: (selectionKey) => resolveCanonicalOption(selectionKey, hotelOptions),
-  resolveTransportOption: (selectionKey) =>
-    resolveCanonicalOption(selectionKey, transportOptions),
+  resolveTransportOption: (selectionKey) => resolveCanonicalOption(selectionKey, transportOptions),
   resolveMealOption: (selectionKey) => resolveCanonicalOption(selectionKey, mealOptions),
   resolveExtraOption: (selectionKey) => resolveCanonicalOption(selectionKey, extraOptions),
 };

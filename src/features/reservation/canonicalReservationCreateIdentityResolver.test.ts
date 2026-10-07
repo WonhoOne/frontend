@@ -6,9 +6,7 @@ describe('canonicalReservationCreateIdentityResolver', () => {
   it('promotes canonical Backend schedule and option identities', () => {
     expect(resolver.resolveScheduleId('501')).toBe(501);
     expect(resolver.resolveHotelOption('HOTEL_4_STAR')).toBe('HOTEL_4_STAR');
-    expect(resolver.resolveTransportOption('PRIVATE_LUXURY_CAR_2')).toBe(
-      'PRIVATE_LUXURY_CAR_2',
-    );
+    expect(resolver.resolveTransportOption('PRIVATE_LUXURY_CAR_2')).toBe('PRIVATE_LUXURY_CAR_2');
     expect(resolver.resolveMealOption('LOCAL_RESTAURANT')).toBe('LOCAL_RESTAURANT');
     expect(resolver.resolveExtraOption('COFFEE')).toBe('COFFEE');
   });
