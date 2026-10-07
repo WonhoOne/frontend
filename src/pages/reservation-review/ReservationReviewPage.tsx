@@ -281,7 +281,10 @@ export function ReservationReviewPage({
                 {'issues' in submitRecovery && submitRecovery.issues.length > 0 ? (
                   <ul className={styles.recoveryList} aria-label="Reservation corrections">
                     {submitRecovery.issues.map((issue, index) => (
-                      <li data-error-code={issue.code} key={`${issue.target}-${issue.code}-${index}`}>
+                      <li
+                        data-error-code={issue.code}
+                        key={`${issue.target}-${issue.code}-${index}`}
+                      >
                         {correctionTargetLabel(issue.target)} needs attention.
                       </li>
                     ))}
@@ -323,8 +326,8 @@ export function ReservationReviewPage({
             failureDetail === null &&
             submitRecovery === null ? (
               <p role="alert" className={styles.warning}>
-                The reservation could not be submitted. Your trip is preserved so you can review
-                the information and try again manually.
+                The reservation could not be submitted. Your trip is preserved so you can review the
+                information and try again manually.
               </p>
             ) : null}
 

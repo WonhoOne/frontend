@@ -273,9 +273,7 @@ describe('ReservationReviewPage composition', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Apply for reservation' }));
 
-    expect(
-      await screen.findByText('This account cannot submit this reservation.'),
-    ).toBeVisible();
+    expect(await screen.findByText('This account cannot submit this reservation.')).toBeVisible();
     expect(screen.queryByText('Login destination')).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Correct before resubmitting' })).toBeDisabled();
     expect(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY)).toBe(serializeReservationDraft(draft));
@@ -313,9 +311,7 @@ describe('ReservationReviewPage composition', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Apply for reservation' }));
 
-    expect(
-      await screen.findByText('The selected schedule is no longer reservable.'),
-    ).toBeVisible();
+    expect(await screen.findByText('The selected schedule is no longer reservable.')).toBeVisible();
     await waitFor(() => expect(refreshConflictTruth).toHaveBeenCalledWith('42'));
     expect(screen.getByText('Latest product and schedule information refreshed.')).toBeVisible();
     expect(screen.getByRole('link', { name: 'Choose another schedule' })).toHaveAttribute(
@@ -417,48 +413,51 @@ describe('ReservationReviewPage composition', () => {
       kind: 'network',
       requestMayHaveReachedServer: false,
     }),
-  ])('keeps Draft and allows only a user-triggered retry after a known failure', async (failure) => {
-    const storage = new MemoryStorage();
-    const draft = completeDraft();
-    storage.setItem(RESERVATION_DRAFT_STORAGE_KEY, serializeReservationDraft(draft));
-    const createReservation = vi
-      .fn()
-      .mockRejectedValueOnce(failure)
-      .mockResolvedValueOnce({ id: 903 });
-    const dataSource: ReservationDataSource = {
-      createReservation,
-      getReservation: vi.fn().mockRejectedValue(new Error('not used')),
-    };
+  ])(
+    'keeps Draft and allows only a user-triggered retry after a known failure',
+    async (failure) => {
+      const storage = new MemoryStorage();
+      const draft = completeDraft();
+      storage.setItem(RESERVATION_DRAFT_STORAGE_KEY, serializeReservationDraft(draft));
+      const createReservation = vi
+        .fn()
+        .mockRejectedValueOnce(failure)
+        .mockResolvedValueOnce({ id: 903 });
+      const dataSource: ReservationDataSource = {
+        createReservation,
+        getReservation: vi.fn().mockRejectedValue(new Error('not used')),
+      };
 
-    render(
-      <ReservationDraftProvider storage={storage} now={() => 10}>
-        <MemoryRouter initialEntries={['/reservation/review']}>
-          <Routes>
-            <Route
-              path="/reservation/review"
-              element={<ReservationReviewPage dataSource={dataSource} />}
-            />
-            <Route
-              path="/reservation/:reservationId/success"
-              element={<p>Success after manual retry</p>}
-            />
-          </Routes>
-        </MemoryRouter>
-      </ReservationDraftProvider>,
-    );
+      render(
+        <ReservationDraftProvider storage={storage} now={() => 10}>
+          <MemoryRouter initialEntries={['/reservation/review']}>
+            <Routes>
+              <Route
+                path="/reservation/review"
+                element={<ReservationReviewPage dataSource={dataSource} />}
+              />
+              <Route
+                path="/reservation/:reservationId/success"
+                element={<p>Success after manual retry</p>}
+              />
+            </Routes>
+          </MemoryRouter>
+        </ReservationDraftProvider>,
+      );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Apply for reservation' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Apply for reservation' }));
 
-    await waitFor(() => expect(createReservation).toHaveBeenCalledTimes(1));
-    expect(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY)).toBe(serializeReservationDraft(draft));
-    const retry = screen.getByRole('button', { name: 'Apply for reservation' });
-    expect(retry).toBeEnabled();
+      await waitFor(() => expect(createReservation).toHaveBeenCalledTimes(1));
+      expect(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY)).toBe(serializeReservationDraft(draft));
+      const retry = screen.getByRole('button', { name: 'Apply for reservation' });
+      expect(retry).toBeEnabled();
 
-    fireEvent.click(retry);
+      fireEvent.click(retry);
 
-    expect(await screen.findByText('Success after manual retry')).toBeVisible();
-    expect(createReservation).toHaveBeenCalledTimes(2);
-  });
+      expect(await screen.findByText('Success after manual retry')).toBeVisible();
+      expect(createReservation).toHaveBeenCalledTimes(2);
+    },
+  );
 
   it('does not send an offline-before-submit request and keeps the Draft for manual reconnect retry', async () => {
     const storage = new MemoryStorage();
@@ -565,5 +564,4 @@ describe('ReservationReviewPage composition', () => {
     expect(createReservation).toHaveBeenCalledTimes(2);
     await waitFor(() => expect(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY)).toBeNull());
   });
-
 });

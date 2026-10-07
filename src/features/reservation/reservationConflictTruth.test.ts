@@ -6,9 +6,7 @@ describe('Reservation conflict truth refresh', () => {
   it('refetches both approved public truth resources for a canonical product identity', async () => {
     const refetchQueries = vi.fn().mockResolvedValue(undefined);
 
-    await expect(
-      refreshReservationConflictTruth({ refetchQueries }, '42'),
-    ).resolves.toBe(true);
+    await expect(refreshReservationConflictTruth({ refetchQueries }, '42')).resolves.toBe(true);
 
     expect(refetchQueries).toHaveBeenCalledTimes(2);
     expect(refetchQueries).toHaveBeenNthCalledWith(1, {

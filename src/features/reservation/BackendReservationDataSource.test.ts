@@ -142,7 +142,6 @@ describe('BackendReservationDataSource', () => {
     expect(JSON.stringify(caught)).not.toContain('synthetic-sensitive-human-message');
   });
 
-
   it.each([
     {
       status: 403,

@@ -1,14 +1,8 @@
-import {
-  tourDetailQueryKey,
-  tourScheduleQueryKey,
-} from '@/features/tour-detail';
+import { tourDetailQueryKey, tourScheduleQueryKey } from '@/features/tour-detail';
 import { parseBackendResourceIdentity } from '@/shared/lib/resourceIdentity';
 
 export interface ReservationConflictTruthQueryClient {
-  refetchQueries(filters: {
-    queryKey: readonly unknown[];
-    type: 'all';
-  }): Promise<unknown>;
+  refetchQueries(filters: { queryKey: readonly unknown[]; type: 'all' }): Promise<unknown>;
 }
 
 /**
