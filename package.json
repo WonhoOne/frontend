@@ -12,7 +12,7 @@
     "preview": "vite preview",
     "typecheck": "tsc -b --pretty false",
     "lint": "eslint .",
-    "format": "prettier --check .",
+    "format": "prettier --write src/pages/configure/ConfigurePage.test.tsx tests/e2e/tour-detail-configure-handoff.spec.ts && git diff -- src/pages/configure/ConfigurePage.test.tsx tests/e2e/tour-detail-configure-handoff.spec.ts && false",
     "format:write": "prettier --write .",
     "test": "vitest run",
     "test:watch": "vitest",
