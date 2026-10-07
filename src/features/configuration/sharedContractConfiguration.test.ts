@@ -6,33 +6,42 @@ import { canonicalReservationCreateIdentityResolver } from '@/features/reservati
 describe('Shared v0.2 live configuration scenario', () => {
   it('stores only canonical option IDs accepted by the production Reservation resolver', () => {
     const scenario = createSharedContractConfigureScenario();
-    const groups = Object.fromEntries(scenario.groups.map((group) => [group.category, group]));
+    const hotel = scenario.groups.find((group) => group.category === 'hotel');
+    const transport = scenario.groups.find((group) => group.category === 'transport');
+    const meal = scenario.groups.find((group) => group.category === 'meal');
+
+    expect(hotel).toBeDefined();
+    expect(transport).toBeDefined();
+    expect(meal).toBeDefined();
+    if (hotel === undefined || transport === undefined || meal === undefined) {
+      throw new Error('Expected all required Shared v0.2 configuration groups');
+    }
 
     expect(scenario.source).toBe('shared-contract');
-    expect(groups.hotel.options.map((option) => option.selectionKey)).toEqual([
+    expect(hotel.options.map((option) => option.selectionKey)).toEqual([
       'HOTEL_3_STAR',
       'HOTEL_4_STAR',
       'HOTEL_5_STAR',
     ]);
-    expect(groups.transport.options.map((option) => option.selectionKey)).toEqual([
+    expect(transport.options.map((option) => option.selectionKey)).toEqual([
       'PRIVATE_LUXURY_CAR_2',
       'PREMIUM_VAN_10',
     ]);
-    expect(groups.meal.options.map((option) => option.selectionKey)).toEqual([
+    expect(meal.options.map((option) => option.selectionKey)).toEqual([
       'LUNCH_BOX',
       'LOCAL_RESTAURANT',
       'PREMIUM_RESTAURANT',
     ]);
 
-    for (const option of groups.hotel.options) {
+    for (const option of hotel.options) {
       expect(canonicalReservationCreateIdentityResolver.resolveHotelOption(option.selectionKey)).not.toBeNull();
     }
-    for (const option of groups.transport.options) {
+    for (const option of transport.options) {
       expect(
         canonicalReservationCreateIdentityResolver.resolveTransportOption(option.selectionKey),
       ).not.toBeNull();
     }
-    for (const option of groups.meal.options) {
+    for (const option of meal.options) {
       expect(canonicalReservationCreateIdentityResolver.resolveMealOption(option.selectionKey)).not.toBeNull();
     }
   });

@@ -130,7 +130,6 @@ describe('ConfigurePage desktop transaction', () => {
     expect(screen.getByRole('heading', { name: 'Hotel' })).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Transport' })).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Meal' })).toBeVisible();
-    expect(screen.getByRole('heading', { name: 'Extras' })).toBeVisible();
     expect(screen.getByRole('button', { name: 'Review trip' })).toBeDisabled();
     expect(screen.getByText(/current Style price comes from TourProduct/i)).toBeVisible();
     expect(screen.getByText(/₩1,800,000 per participant/i)).toBeVisible();
@@ -201,20 +200,21 @@ describe('ConfigurePage desktop transaction', () => {
     expect(screen.getByRole('heading', { name: 'Reservation review marker' })).toBeVisible();
   });
 
-  it('does not invent Extras interaction before its Shared Contract is approved', async () => {
+  it('keeps optional v0.2 extras empty while the live screen exposes the three required groups', async () => {
     const storage = new MemoryStorage();
     storage.setItem(RESERVATION_DRAFT_STORAGE_KEY, serializeReservationDraft(tripContextDraft()));
 
     renderConfigure(storage);
 
     await screen.findByRole('heading', { name: 'Build your trip' });
-    const extrasHeading = screen.getByRole('heading', { name: 'Extras' });
-    const extrasSection = extrasHeading.closest('section');
+    expect(screen.queryByRole('heading', { name: 'Extras' })).not.toBeInTheDocument();
 
-    expect(extrasSection).not.toBeNull();
-    expect(within(extrasSection as HTMLElement).queryByRole('checkbox')).not.toBeInTheDocument();
-    expect(
-      within(extrasSection as HTMLElement).getByText(/reserved configuration area/i),
-    ).toBeVisible();
+    const serialized = storage.getItem(RESERVATION_DRAFT_STORAGE_KEY);
+    expect(JSON.parse(serialized ?? '{}')).toMatchObject({
+      configuration: {
+        extraSelectionKeys: [],
+      },
+    });
   });
+
 });
