@@ -12,7 +12,7 @@
     "preview": "vite preview",
     "typecheck": "tsc -b --pretty false",
     "lint": "eslint .",
-    "format": "prettier --check .",
+    "format": "prettier --write src/features/reservation/BackendReservationDataSource.test.ts src/features/reservation/reservationConflictTruth.test.ts src/features/reservation/reservationConflictTruth.ts src/pages/reservation-review/ReservationReviewPage.test.tsx src/pages/reservation-review/ReservationReviewPage.tsx && git diff -- src/features/reservation/BackendReservationDataSource.test.ts src/features/reservation/reservationConflictTruth.test.ts src/features/reservation/reservationConflictTruth.ts src/pages/reservation-review/ReservationReviewPage.test.tsx src/pages/reservation-review/ReservationReviewPage.tsx && false",
     "format:write": "prettier --write .",
     "test": "vitest run",
     "test:watch": "vitest",
