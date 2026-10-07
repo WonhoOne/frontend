@@ -384,8 +384,9 @@ describe('ReservationDraft Voice adapter', () => {
     expect(h.dispatch).not.toHaveBeenCalled();
   });
 
-  it('keeps V6-B production code free of submit, network, storage, router, and React surfaces', () => {
-    const source = readFileSync(new URL('./reservationDraftVoiceAdapter.ts', import.meta.url), 'utf8');
+  it('keeps V6-B production code effect-free', () => {
+    const adapterUrl = new URL('./reservationDraftVoiceAdapter.ts', import.meta.url);
+    const source = readFileSync(adapterUrl, 'utf8');
     const imports = [...source.matchAll(/from ['"]([^'"]+)['"]/g)].map((match) => match[1]);
 
     expect(imports).toEqual([
