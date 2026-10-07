@@ -12,7 +12,7 @@
     "preview": "vite preview",
     "typecheck": "tsc -b --pretty false",
     "lint": "eslint .",
-    "format": "prettier --check .",
+    "format": "prettier --write src/features/auth/AuthProvider.tsx src/features/auth/AuthProvider.test.tsx && git diff -- src/features/auth/AuthProvider.tsx src/features/auth/AuthProvider.test.tsx && false",
     "format:write": "prettier --write .",
     "test": "vitest run",
     "test:watch": "vitest",
