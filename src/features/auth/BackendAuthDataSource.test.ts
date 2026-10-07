@@ -196,10 +196,7 @@ describe('BackendAuthDataSource', () => {
 
   it.each([
     new BackendNetworkError(),
-    new BackendMalformedResponseError(
-      { status: 200, statusText: '', headers: {} },
-      'invalid-json',
-    ),
+    new BackendMalformedResponseError({ status: 200, statusText: '', headers: {} }, 'invalid-json'),
   ])('maps transport failure %s to UNKNOWN AuthError', async (failure) => {
     const source = new BackendAuthDataSource({
       requestJson: vi.fn().mockRejectedValue(failure),
@@ -209,38 +206,35 @@ describe('BackendAuthDataSource', () => {
     await expect(pending).rejects.toEqual(expect.objectContaining({ code: 'UNKNOWN' }));
   });
 
-  it(
-    'does not retain credentials or raw private error extensions in the mapped AuthError',
-    async () => {
-      const loginId = 'private-login-marker';
-      const password = 'private-password-marker';
-      const echoedPrivateValue = 'private-backend-extension';
-      const requestJson = vi.fn().mockRejectedValue(
-        httpError(401, {
-          code: 'LOGIN_FAILED',
-          message: 'Generic login failure.',
-          fieldErrors: [],
-          loginId,
-          password,
-          echoedPrivateValue,
-        }),
-      );
-      const source = new BackendAuthDataSource({ requestJson });
+  it('does not retain credentials or raw private error extensions in the mapped AuthError', async () => {
+    const loginId = 'private-login-marker';
+    const password = 'private-password-marker';
+    const echoedPrivateValue = 'private-backend-extension';
+    const requestJson = vi.fn().mockRejectedValue(
+      httpError(401, {
+        code: 'LOGIN_FAILED',
+        message: 'Generic login failure.',
+        fieldErrors: [],
+        loginId,
+        password,
+        echoedPrivateValue,
+      }),
+    );
+    const source = new BackendAuthDataSource({ requestJson });
 
-      let mappedError: unknown;
-      try {
-        await source.login({ loginId, password });
-      } catch (error) {
-        mappedError = error;
-      }
+    let mappedError: unknown;
+    try {
+      await source.login({ loginId, password });
+    } catch (error) {
+      mappedError = error;
+    }
 
-      expect(mappedError).toBeInstanceOf(AuthError);
-      expect(String(mappedError)).not.toContain(loginId);
-      expect(String(mappedError)).not.toContain(password);
-      expect(String(mappedError)).not.toContain(echoedPrivateValue);
-      expect(JSON.stringify(mappedError)).not.toContain(loginId);
-      expect(JSON.stringify(mappedError)).not.toContain(password);
-      expect(JSON.stringify(mappedError)).not.toContain(echoedPrivateValue);
-    },
-  );
+    expect(mappedError).toBeInstanceOf(AuthError);
+    expect(String(mappedError)).not.toContain(loginId);
+    expect(String(mappedError)).not.toContain(password);
+    expect(String(mappedError)).not.toContain(echoedPrivateValue);
+    expect(JSON.stringify(mappedError)).not.toContain(loginId);
+    expect(JSON.stringify(mappedError)).not.toContain(password);
+    expect(JSON.stringify(mappedError)).not.toContain(echoedPrivateValue);
+  });
 });
