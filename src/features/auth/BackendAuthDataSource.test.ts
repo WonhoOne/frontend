@@ -209,36 +209,39 @@ describe('BackendAuthDataSource', () => {
     ).rejects.toEqual(expect.objectContaining({ code: 'UNKNOWN' }));
   });
 
-  it('does not retain credentials or raw private error extensions in the mapped AuthError', async () => {
-    const loginId = 'private-login-marker';
-    const password = 'private-password-marker';
-    const echoedPrivateValue = 'private-backend-extension';
-    const source = new BackendAuthDataSource({
-      requestJson: vi.fn().mockRejectedValue(
-        httpError(401, {
-          code: 'LOGIN_FAILED',
-          message: 'Generic login failure.',
-          fieldErrors: [],
-          loginId,
-          password,
-          echoedPrivateValue,
-        }),
-      ),
-    });
+  it(
+    'does not retain credentials or raw private error extensions in the mapped AuthError',
+    async () => {
+      const loginId = 'private-login-marker';
+      const password = 'private-password-marker';
+      const echoedPrivateValue = 'private-backend-extension';
+      const source = new BackendAuthDataSource({
+        requestJson: vi.fn().mockRejectedValue(
+          httpError(401, {
+            code: 'LOGIN_FAILED',
+            message: 'Generic login failure.',
+            fieldErrors: [],
+            loginId,
+            password,
+            echoedPrivateValue,
+          }),
+        ),
+      });
 
-    let mappedError: unknown;
-    try {
-      await source.login({ loginId, password });
-    } catch (error) {
-      mappedError = error;
-    }
+      let mappedError: unknown;
+      try {
+        await source.login({ loginId, password });
+      } catch (error) {
+        mappedError = error;
+      }
 
-    expect(mappedError).toBeInstanceOf(AuthError);
-    expect(String(mappedError)).not.toContain(loginId);
-    expect(String(mappedError)).not.toContain(password);
-    expect(String(mappedError)).not.toContain(echoedPrivateValue);
-    expect(JSON.stringify(mappedError)).not.toContain(loginId);
-    expect(JSON.stringify(mappedError)).not.toContain(password);
-    expect(JSON.stringify(mappedError)).not.toContain(echoedPrivateValue);
-  });
+      expect(mappedError).toBeInstanceOf(AuthError);
+      expect(String(mappedError)).not.toContain(loginId);
+      expect(String(mappedError)).not.toContain(password);
+      expect(String(mappedError)).not.toContain(echoedPrivateValue);
+      expect(JSON.stringify(mappedError)).not.toContain(loginId);
+      expect(JSON.stringify(mappedError)).not.toContain(password);
+      expect(JSON.stringify(mappedError)).not.toContain(echoedPrivateValue);
+    },
+  );
 });
