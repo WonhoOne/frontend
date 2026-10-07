@@ -96,12 +96,8 @@ describe('Reservation Success/Detail live reads', () => {
 
     renderDetail(getReservation, path);
 
-    expect(
-      await screen.findByRole('heading', { name: 'Reservation not found' }),
-    ).toBeVisible();
-    expect(
-      screen.getByText('This reservation is unavailable or cannot be shown.'),
-    ).toBeVisible();
+    expect(await screen.findByRole('heading', { name: 'Reservation not found' })).toBeVisible();
+    expect(screen.getByText('This reservation is unavailable or cannot be shown.')).toBeVisible();
     expect(screen.queryByText('Mock 제주 허니문')).not.toBeInTheDocument();
   });
 
@@ -127,10 +123,7 @@ describe('Reservation Success/Detail live reads', () => {
     expect(
       await screen.findByRole('heading', { name: 'Sign in to view this reservation' }),
     ).toBeVisible();
-    expect(screen.getByRole('link', { name: 'Go to Login' })).toHaveAttribute(
-      'href',
-      '/login',
-    );
+    expect(screen.getByRole('link', { name: 'Go to Login' })).toHaveAttribute('href', '/login');
     expect(screen.queryByText('Mock 제주 허니문')).not.toBeInTheDocument();
   });
 

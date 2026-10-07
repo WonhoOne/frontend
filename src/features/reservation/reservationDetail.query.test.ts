@@ -18,13 +18,10 @@ describe('Reservation detail private query', () => {
     await client.fetchQuery(reservationDetailQueryOptions({ getReservation }, 801));
 
     expect(getReservation).toHaveBeenCalledWith(801);
-    expect(client.getQueryData(['reservation', 'detail', 801])).toBe(
-      mockReservationSuccessFixture,
+    expect(client.getQueryData(['reservation', 'detail', 801])).toBe(mockReservationSuccessFixture);
+    expect(client.getQueryCache().find({ queryKey: ['reservation', 'detail', 801] })?.meta).toEqual(
+      { privacy: 'private' },
     );
-    expect(
-      client.getQueryCache().find({ queryKey: ['reservation', 'detail', 801] })?.meta,
-    ).toEqual({ privacy: 'private' });
-
   });
 
   it.each([
