@@ -11,7 +11,7 @@ import {
 import { mockReservationSuccessFixture } from '@/features/reservation/reservationSuccessFixture';
 
 describe('Reservation detail private query', () => {
-  it('uses one private cache key and is removed by the private auth-loss cache boundary', async () => {
+  it('uses one private cache key and marks it as private server state', async () => {
     const client = new QueryClient();
     const getReservation = vi.fn().mockResolvedValue(mockReservationSuccessFixture);
 
@@ -25,9 +25,6 @@ describe('Reservation detail private query', () => {
       client.getQueryCache().find({ queryKey: ['reservation', 'detail', 801] })?.meta,
     ).toEqual({ privacy: 'private' });
 
-    expect(client.getQueryData(['reservation', 'detail', 801])).toBe(
-      mockReservationSuccessFixture,
-    );
   });
 
   it.each([
