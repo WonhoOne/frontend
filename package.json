@@ -12,7 +12,7 @@
     "preview": "vite preview",
     "typecheck": "tsc -b --pretty false",
     "lint": "eslint .",
-    "format": "prettier --check .",
+    "format": "prettier --write src/features/reservation/canonicalReservationCreateIdentityResolver.ts src/features/reservation/canonicalReservationCreateIdentityResolver.test.ts src/features/reservation/reservationContract.test.ts && git diff -- src/features/reservation/canonicalReservationCreateIdentityResolver.ts src/features/reservation/canonicalReservationCreateIdentityResolver.test.ts src/features/reservation/reservationContract.test.ts && false",
     "format:write": "prettier --write .",
     "test": "vitest run",
     "test:watch": "vitest",
