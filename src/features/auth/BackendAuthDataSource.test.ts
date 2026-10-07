@@ -9,9 +9,28 @@ import {
 } from '@/integrations/backend/client/backendHttpError';
 import { ContractMappingError } from '@/integrations/backend/contracts';
 
-function backendResponse(body: unknown, status = 200) {
+const authErrorCases = [
+  [401, 'LOGIN_FAILED', 'LOGIN_FAILED'],
+  [409, 'LOGIN_ID_ALREADY_EXISTS', 'LOGIN_ID_ALREADY_EXISTS'],
+  [422, 'VALIDATION_FAILED', 'VALIDATION_FAILED'],
+  [401, 'AUTHENTICATION_REQUIRED', 'AUTHENTICATION_REQUIRED'],
+  [401, 'INVALID_ACCESS_TOKEN', 'INVALID_ACCESS_TOKEN'],
+  [401, 'ACCESS_TOKEN_EXPIRED', 'ACCESS_TOKEN_EXPIRED'],
+  [403, 'FORBIDDEN', 'FORBIDDEN'],
+] as const;
+
+function backendResponse(body: unknown) {
   return {
-    status,
+    status: 200,
+    statusText: '',
+    headers: {},
+    body,
+  };
+}
+
+function createdBackendResponse(body: unknown) {
+  return {
+    status: 201,
     statusText: '',
     headers: {},
     body,
@@ -74,14 +93,11 @@ describe('BackendAuthDataSource', () => {
 
   it('posts only the approved signup fields and never treats signup as login', async () => {
     const requestJson = vi.fn().mockResolvedValue(
-      backendResponse(
-        {
-          id: 102,
-          role: 'CUSTOMER',
-          name: 'New Customer',
-        },
-        201,
-      ),
+      createdBackendResponse({
+        id: 102,
+        role: 'CUSTOMER',
+        name: 'New Customer',
+      }),
     );
     const source = new BackendAuthDataSource({ requestJson });
     const input = {
@@ -114,15 +130,7 @@ describe('BackendAuthDataSource', () => {
     expect(result).not.toHaveProperty('accessToken');
   });
 
-  it.each([
-    [401, 'LOGIN_FAILED', 'LOGIN_FAILED'],
-    [409, 'LOGIN_ID_ALREADY_EXISTS', 'LOGIN_ID_ALREADY_EXISTS'],
-    [422, 'VALIDATION_FAILED', 'VALIDATION_FAILED'],
-    [401, 'AUTHENTICATION_REQUIRED', 'AUTHENTICATION_REQUIRED'],
-    [401, 'INVALID_ACCESS_TOKEN', 'INVALID_ACCESS_TOKEN'],
-    [401, 'ACCESS_TOKEN_EXPIRED', 'ACCESS_TOKEN_EXPIRED'],
-    [403, 'FORBIDDEN', 'FORBIDDEN'],
-  ] as const)(
+  it.each(authErrorCases)(
     'maps HTTP %i + %s by stable code instead of human message',
     async (status, backendCode, expectedCode) => {
       const requestJson = vi.fn().mockRejectedValue(
@@ -133,64 +141,57 @@ describe('BackendAuthDataSource', () => {
         }),
       );
       const source = new BackendAuthDataSource({ requestJson });
+      const pending = source.login({ loginId: 'synthetic', password: 'input-only' });
 
-      await expect(
-        source.login({ loginId: 'synthetic', password: 'input-only' }),
-      ).rejects.toEqual(expect.objectContaining({ code: expectedCode }));
+      await expect(pending).rejects.toEqual(expect.objectContaining({ code: expectedCode }));
     },
   );
 
   it('does not accept a stable code under the wrong HTTP status', async () => {
-    const source = new BackendAuthDataSource({
-      requestJson: vi.fn().mockRejectedValue(
-        httpError(500, {
-          code: 'LOGIN_FAILED',
-          message: 'Human text must not override the status.',
-          fieldErrors: [],
-        }),
-      ),
-    });
+    const requestJson = vi.fn().mockRejectedValue(
+      httpError(500, {
+        code: 'LOGIN_FAILED',
+        message: 'Human text must not override the status.',
+        fieldErrors: [],
+      }),
+    );
+    const source = new BackendAuthDataSource({ requestJson });
+    const pending = source.login({ loginId: 'synthetic', password: 'input-only' });
 
-    await expect(
-      source.login({ loginId: 'synthetic', password: 'input-only' }),
-    ).rejects.toEqual(expect.objectContaining({ code: 'UNKNOWN' }));
+    await expect(pending).rejects.toEqual(expect.objectContaining({ code: 'UNKNOWN' }));
   });
 
   it('rejects an EMPLOYEE login before creating a customer-app AuthUser', async () => {
-    const source = new BackendAuthDataSource({
-      requestJson: vi.fn().mockResolvedValue(
-        backendResponse({
-          accessToken: 'employee-token',
-          tokenType: 'Bearer',
-          expiresIn: 3600,
-          user: {
-            id: 201,
-            role: 'EMPLOYEE',
-            name: 'Synthetic Employee',
-          },
-        }),
-      ),
-    });
+    const requestJson = vi.fn().mockResolvedValue(
+      backendResponse({
+        accessToken: 'employee-token',
+        tokenType: 'Bearer',
+        expiresIn: 3600,
+        user: {
+          id: 201,
+          role: 'EMPLOYEE',
+          name: 'Synthetic Employee',
+        },
+      }),
+    );
+    const source = new BackendAuthDataSource({ requestJson });
+    const pending = source.login({ loginId: 'employee', password: 'input-only' });
 
-    await expect(
-      source.login({ loginId: 'employee', password: 'input-only' }),
-    ).rejects.toEqual(expect.objectContaining({ code: 'FORBIDDEN' }));
+    await expect(pending).rejects.toEqual(expect.objectContaining({ code: 'FORBIDDEN' }));
   });
 
   it('surfaces malformed API error contracts instead of hiding drift', async () => {
-    const source = new BackendAuthDataSource({
-      requestJson: vi.fn().mockRejectedValue(
-        httpError(401, {
-          code: 'NEW_UNAPPROVED_AUTH_CODE',
-          message: 'Synthetic message',
-          fieldErrors: [],
-        }),
-      ),
-    });
+    const requestJson = vi.fn().mockRejectedValue(
+      httpError(401, {
+        code: 'NEW_UNAPPROVED_AUTH_CODE',
+        message: 'Synthetic message',
+        fieldErrors: [],
+      }),
+    );
+    const source = new BackendAuthDataSource({ requestJson });
+    const pending = source.login({ loginId: 'synthetic', password: 'input-only' });
 
-    await expect(
-      source.login({ loginId: 'synthetic', password: 'input-only' }),
-    ).rejects.toBeInstanceOf(ContractMappingError);
+    await expect(pending).rejects.toBeInstanceOf(ContractMappingError);
   });
 
   it.each([
@@ -203,10 +204,9 @@ describe('BackendAuthDataSource', () => {
     const source = new BackendAuthDataSource({
       requestJson: vi.fn().mockRejectedValue(failure),
     });
+    const pending = source.login({ loginId: 'synthetic', password: 'input-only' });
 
-    await expect(
-      source.login({ loginId: 'synthetic', password: 'input-only' }),
-    ).rejects.toEqual(expect.objectContaining({ code: 'UNKNOWN' }));
+    await expect(pending).rejects.toEqual(expect.objectContaining({ code: 'UNKNOWN' }));
   });
 
   it(
@@ -215,18 +215,17 @@ describe('BackendAuthDataSource', () => {
       const loginId = 'private-login-marker';
       const password = 'private-password-marker';
       const echoedPrivateValue = 'private-backend-extension';
-      const source = new BackendAuthDataSource({
-        requestJson: vi.fn().mockRejectedValue(
-          httpError(401, {
-            code: 'LOGIN_FAILED',
-            message: 'Generic login failure.',
-            fieldErrors: [],
-            loginId,
-            password,
-            echoedPrivateValue,
-          }),
-        ),
-      });
+      const requestJson = vi.fn().mockRejectedValue(
+        httpError(401, {
+          code: 'LOGIN_FAILED',
+          message: 'Generic login failure.',
+          fieldErrors: [],
+          loginId,
+          password,
+          echoedPrivateValue,
+        }),
+      );
+      const source = new BackendAuthDataSource({ requestJson });
 
       let mappedError: unknown;
       try {
