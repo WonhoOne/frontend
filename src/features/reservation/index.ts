@@ -57,6 +57,11 @@ export {
   type ReservationCreateIdentityResolver,
   type ReservationCreateIntentResult,
 } from '@/features/reservation/reservationCreateIntent';
+export { canonicalReservationCreateIdentityResolver } from '@/features/reservation/canonicalReservationCreateIdentityResolver';
+export {
+  adaptReservationResponseDto,
+  toReservationCreateRequestDto,
+} from '@/features/reservation/reservation.adapter';
 export type { ReservationDataSource } from '@/features/reservation/reservation.dataSource';
 export {
   ReservationDataSourceError,

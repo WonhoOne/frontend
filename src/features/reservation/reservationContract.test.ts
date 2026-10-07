@@ -1,24 +1,14 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
+import { canonicalReservationCreateIdentityResolver } from '@/features/reservation/canonicalReservationCreateIdentityResolver';
 import { createEmptyReservationDraft } from '@/features/reservation/ReservationDraft';
-import {
-  createReservationIntent,
-  type ReservationCreateIdentityResolver,
-} from '@/features/reservation/reservationCreateIntent';
+import { createReservationIntent } from '@/features/reservation/reservationCreateIntent';
 import {
   mockReservationDataSource,
   resetMockReservationDataSource,
 } from '@/features/reservation/mockReservationDataSource';
 import { ReservationDataSourceError } from '@/features/reservation/reservation.error';
-
-const resolver: ReservationCreateIdentityResolver = {
-  resolveScheduleId: (value) => (value === '501' ? 501 : null),
-  resolveHotelOption: (value) => (value === 'hotel-grand' ? 'HOTEL_4_STAR' : null),
-  resolveTransportOption: (value) =>
-    value === 'transport-private' ? 'PRIVATE_LUXURY_CAR_2' : null,
-  resolveMealOption: (value) => (value === 'meal-local' ? 'LOCAL_RESTAURANT' : null),
-  resolveExtraOption: (value) => (value === 'extra-coffee' ? 'COFFEE' : null),
-};
+import { toReservationCreateRequestDto } from '@/features/reservation/reservation.adapter';
 
 function createCompleteDraft() {
   return {
@@ -28,10 +18,10 @@ function createCompleteDraft() {
     tourStyle: 'GRAND' as const,
     participantCount: 2,
     configuration: {
-      hotelSelectionKey: 'hotel-grand',
-      transportSelectionKey: 'transport-private',
-      mealSelectionKey: 'meal-local',
-      extraSelectionKeys: ['extra-coffee'],
+      hotelSelectionKey: 'HOTEL_4_STAR',
+      transportSelectionKey: 'PRIVATE_LUXURY_CAR_2',
+      mealSelectionKey: 'LOCAL_RESTAURANT',
+      extraSelectionKeys: ['COFFEE'],
     },
   };
 }
@@ -41,8 +31,11 @@ describe('Reservation v0.2 contract core', () => {
     resetMockReservationDataSource();
   });
 
-  it('maps Draft intent to the exact Reservation create request boundary', () => {
-    const result = createReservationIntent(createCompleteDraft(), resolver);
+  it('maps canonical Draft intent to the exact Reservation create request boundary', () => {
+    const result = createReservationIntent(
+      createCompleteDraft(),
+      canonicalReservationCreateIdentityResolver,
+    );
 
     expect(result).toEqual({
       status: 'ready',
@@ -59,31 +52,46 @@ describe('Reservation v0.2 contract core', () => {
       },
     });
 
-    if (result.status === 'ready') {
-      expect(result.input).not.toHaveProperty('customerId');
-      expect(result.input).not.toHaveProperty('tourId');
-      expect(result.input).not.toHaveProperty('theme');
-      expect(result.input).not.toHaveProperty('price');
-      expect(result.input).not.toHaveProperty('discount');
-      expect(result.input).not.toHaveProperty('coupleCount');
+    if (result.status !== 'ready') {
+      throw new Error('Expected ready Reservation intent');
     }
+
+    const request = toReservationCreateRequestDto(result.input);
+    expect(request).toEqual(result.input);
+    expect(request).not.toHaveProperty('customerId');
+    expect(request).not.toHaveProperty('tourId');
+    expect(request).not.toHaveProperty('theme');
+    expect(request).not.toHaveProperty('price');
+    expect(request).not.toHaveProperty('discount');
+    expect(request).not.toHaveProperty('contact');
+    expect(request).not.toHaveProperty('coupleCount');
   });
 
-  it('refuses incomplete or unresolved Draft identities instead of guessing wire values', () => {
-    expect(createReservationIntent(createEmptyReservationDraft(1), resolver)).toEqual({
+  it('refuses incomplete, opaque, or unresolved Draft identities instead of guessing wire values', () => {
+    expect(
+      createReservationIntent(
+        createEmptyReservationDraft(1),
+        canonicalReservationCreateIdentityResolver,
+      ),
+    ).toEqual({
       status: 'incomplete-draft',
     });
 
     const unresolved = createCompleteDraft();
-    unresolved.configuration.hotelSelectionKey = 'unknown-hotel';
+    unresolved.configuration.hotelSelectionKey = 'fixture:hotel:a';
 
-    expect(createReservationIntent(unresolved, resolver)).toEqual({
+    expect(
+      createReservationIntent(unresolved, canonicalReservationCreateIdentityResolver),
+    ).toEqual({
       status: 'unresolved-selection',
     });
   });
 
   it('returns server-shaped price truth only after mock create and supports id lookup', async () => {
-    const intent = createReservationIntent(createCompleteDraft(), resolver);
+    const intent = createReservationIntent(
+      createCompleteDraft(),
+      canonicalReservationCreateIdentityResolver,
+    );
     expect(intent.status).toBe('ready');
 
     if (intent.status !== 'ready') {
