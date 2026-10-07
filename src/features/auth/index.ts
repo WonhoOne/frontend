@@ -1,4 +1,5 @@
 export type { AuthDataSource } from './AuthDataSource';
+export { BackendAuthDataSource } from './BackendAuthDataSource';
 export { AuthProvider } from './AuthProvider';
 export { MockAuthDataSource } from './MockAuthDataSource';
 export { useAuth } from './authContext';
