@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import { createAuthDataSource } from '@/app/providers/authDataSource';
-import { AuthError, BackendAuthDataSource, MockAuthDataSource } from '@/features/auth';
+import { BackendAuthDataSource, MockAuthDataSource } from '@/features/auth';
 
 function backendLoginResponse() {
   return {
@@ -95,7 +95,7 @@ describe('auth data source composition', () => {
         loginId: 'customer-1',
         password: 'input-only-password',
       }),
-    ).rejects.toEqual(expect.objectContaining<AuthError>({ code: 'UNKNOWN' }));
+    ).rejects.toEqual(expect.objectContaining({ code: 'UNKNOWN' }));
     expect(requestJson).toHaveBeenCalledTimes(1);
   });
 });
