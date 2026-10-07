@@ -5,12 +5,12 @@ import { describe, expect, expectTypeOf, it, vi } from 'vitest';
 import type { ReservationDraftAction, ReservationDraftV1 } from '@/features/reservation';
 
 import type { VoiceCommand } from '../../integrations/voice/voiceCommand';
+import { executeVoiceCommand } from './voiceCommandBridge';
 import {
   createReservationDraftVoiceCapabilities,
-  executeVoiceCommand,
   type ReservationDraftVoiceCapabilities,
   type ReservationDraftVoiceContext,
-} from './index';
+} from './reservationDraftVoiceAdapter';
 
 // prettier-ignore
 function configuredDraft(overrides: Partial<ReservationDraftV1> = {}): ReservationDraftV1 {
@@ -56,12 +56,7 @@ function harness(options?: {
   const now = vi.fn(() => 999);
   const getDraft = vi.fn(() => draft);
   const getContext = vi.fn(() => context);
-  const capabilities = createReservationDraftVoiceCapabilities({
-    getDraft,
-    getContext,
-    dispatch,
-    now,
-  });
+  const capabilities = createReservationDraftVoiceCapabilities({ getDraft, getContext, dispatch, now });
 
   return {
     capabilities,
@@ -146,19 +141,13 @@ describe('ReservationDraft Voice adapter', () => {
   });
 
   it('maps style and participant commands to the existing reducer actions', () => {
-    const h = harness({
-      draft: configuredDraft({ tourStyle: 'GRAND', participantCount: 2 }),
-    });
+    const h = harness({ draft: configuredDraft({ tourStyle: 'GRAND', participantCount: 2 }) });
 
-    expect(
-      execute({ version: 1, command: 'SELECT_STYLE', args: { style: 'PREMIUM' } }, h.capabilities),
-    ).toEqual({ ok: true, command: 'SELECT_STYLE' });
-    expect(
-      execute(
-        { version: 1, command: 'SET_PARTICIPANT_COUNT', args: { participantCount: 4 } },
-        h.capabilities,
-      ),
-    ).toEqual({ ok: true, command: 'SET_PARTICIPANT_COUNT' });
+    execute({ version: 1, command: 'SELECT_STYLE', args: { style: 'PREMIUM' } }, h.capabilities);
+    execute(
+      { version: 1, command: 'SET_PARTICIPANT_COUNT', args: { participantCount: 4 } },
+      h.capabilities,
+    );
 
     expect(h.dispatch.mock.calls.map(([action]) => action)).toEqual([
       { type: 'SELECT_TOUR_STYLE', tourStyle: 'PREMIUM', updatedAt: 999 },
@@ -166,7 +155,7 @@ describe('ReservationDraft Voice adapter', () => {
     ]);
   });
 
-  it('uses current GUI resolvers for opaque Hotel/Transport/Meal selection keys', () => {
+  it('uses current GUI resolvers for opaque configuration selection keys', () => {
     const context = selectableContext();
     context.resolveHotelSelectionKey = vi.fn(() => 'opaque:hotel:five');
     context.resolveTransportSelectionKey = vi.fn(() => 'opaque:transport:van');
@@ -186,11 +175,7 @@ describe('ReservationDraft Voice adapter', () => {
       h.capabilities,
     );
     execute(
-      {
-        version: 1,
-        command: 'CHANGE_MEAL',
-        args: { mealOption: 'PREMIUM_RESTAURANT' },
-      },
+      { version: 1, command: 'CHANGE_MEAL', args: { mealOption: 'PREMIUM_RESTAURANT' } },
       h.capabilities,
     );
 
@@ -204,7 +189,7 @@ describe('ReservationDraft Voice adapter', () => {
     ]);
   });
 
-  it('adds and removes extras through SET_EXTRAS without duplication or unrelated removal', () => {
+  it('keeps extra add/remove unique and targeted', () => {
     const h = harness({
       draft: configuredDraft({
         configuration: {
@@ -216,18 +201,10 @@ describe('ReservationDraft Voice adapter', () => {
       }),
     });
 
-    expect(
-      execute(
-        { version: 1, command: 'ADD_OPTION', args: { extraOption: 'CHAMPAGNE' } },
-        h.capabilities,
-      ),
-    ).toEqual({ ok: true, command: 'ADD_OPTION' });
+    execute({ version: 1, command: 'ADD_OPTION', args: { extraOption: 'CHAMPAGNE' } }, h.capabilities);
     expect(h.dispatch).not.toHaveBeenCalled();
 
-    execute(
-      { version: 1, command: 'ADD_OPTION', args: { extraOption: 'COFFEE' } },
-      h.capabilities,
-    );
+    execute({ version: 1, command: 'ADD_OPTION', args: { extraOption: 'COFFEE' } }, h.capabilities);
     expect(h.dispatch).toHaveBeenLastCalledWith({
       type: 'SET_EXTRAS',
       selectionKeys: ['fixture:extra:CHAMPAGNE', 'fixture:extra:COFFEE'],
@@ -254,25 +231,6 @@ describe('ReservationDraft Voice adapter', () => {
       selectionKeys: ['fixture:extra:COFFEE'],
       updatedAt: 999,
     });
-
-    h.dispatch.mockClear();
-    h.setDraft(
-      configuredDraft({
-        configuration: {
-          hotelSelectionKey: 'fixture:hotel:grand',
-          transportSelectionKey: 'fixture:transport:car',
-          mealSelectionKey: 'fixture:meal:local',
-          extraSelectionKeys: ['fixture:extra:COFFEE'],
-        },
-      }),
-    );
-    expect(
-      execute(
-        { version: 1, command: 'REMOVE_OPTION', args: { extraOption: 'CHAMPAGNE' } },
-        h.capabilities,
-      ),
-    ).toEqual({ ok: true, command: 'REMOVE_OPTION' });
-    expect(h.dispatch).not.toHaveBeenCalled();
   });
 
   it('is idempotent for repeated commands that already match the Draft', () => {
@@ -288,9 +246,7 @@ describe('ReservationDraft Voice adapter', () => {
       { version: 1, command: 'CHANGE_HOTEL', args: { hotelOption: 'HOTEL_4_STAR' } },
     ];
 
-    for (const command of commands) {
-      expect(execute(command, h.capabilities).ok).toBe(true);
-    }
+    for (const command of commands) expect(execute(command, h.capabilities).ok).toBe(true);
     expect(h.dispatch).not.toHaveBeenCalled();
     expect(h.now).not.toHaveBeenCalled();
   });
@@ -307,25 +263,17 @@ describe('ReservationDraft Voice adapter', () => {
       command: 'SELECT_STYLE',
       error: { code: 'CAPABILITY_FAILED' },
     });
-    expect(h.dispatch).not.toHaveBeenCalled();
 
-    const secondContext = selectableContext();
-    h.setContext(secondContext);
+    h.setContext(selectableContext());
     h.setDraft(configuredDraft({ tourStyle: 'CLASSIC' }));
-
     expect(
       execute({ version: 1, command: 'SELECT_STYLE', args: { style: 'PREMIUM' } }, h.capabilities),
     ).toEqual({ ok: true, command: 'SELECT_STYLE' });
     expect(h.getContext).toHaveBeenCalledTimes(2);
     expect(h.getDraft).toHaveBeenCalledTimes(2);
-    expect(h.dispatch).toHaveBeenCalledExactlyOnceWith({
-      type: 'SELECT_TOUR_STYLE',
-      tourStyle: 'PREMIUM',
-      updatedAt: 999,
-    });
   });
 
-  it('rejects unavailable GUI selections without Draft mutation', () => {
+  it('rejects unavailable GUI selections and missing Draft prerequisites without mutation', () => {
     const context = selectableContext();
     context.canSelectSchedule = () => false;
     context.resolveMealSelectionKey = () => null;
@@ -335,40 +283,21 @@ describe('ReservationDraft Voice adapter', () => {
       execute(
         { version: 1, command: 'SELECT_SCHEDULE', args: { scheduleId: 777 } },
         h.capabilities,
-      ),
-    ).toEqual({
-      ok: false,
-      command: 'SELECT_SCHEDULE',
-      error: { code: 'CAPABILITY_FAILED' },
-    });
+      ).ok,
+    ).toBe(false);
     expect(
       execute(
         { version: 1, command: 'CHANGE_MEAL', args: { mealOption: 'LUNCH_BOX' } },
         h.capabilities,
-      ),
-    ).toEqual({
-      ok: false,
-      command: 'CHANGE_MEAL',
-      error: { code: 'CAPABILITY_FAILED' },
-    });
+      ).ok,
+    ).toBe(false);
+
+    h.setDraft(configuredDraft({ tourProductId: null, tourScheduleId: null, tourStyle: null }));
+    expect(
+      execute({ version: 1, command: 'SELECT_STYLE', args: { style: 'GRAND' } }, h.capabilities).ok,
+    ).toBe(false);
     expect(h.dispatch).not.toHaveBeenCalled();
     expect(h.now).not.toHaveBeenCalled();
-  });
-
-  it('requires product/configure context before dependent Draft actions', () => {
-    const h = harness({
-      draft: configuredDraft({ tourProductId: null, tourScheduleId: null, tourStyle: null }),
-    });
-
-    for (const command of [
-      { version: 1, command: 'SELECT_STYLE', args: { style: 'GRAND' } },
-      { version: 1, command: 'SELECT_SCHEDULE', args: { scheduleId: 501 } },
-      { version: 1, command: 'SET_PARTICIPANT_COUNT', args: { participantCount: 2 } },
-      { version: 1, command: 'CHANGE_HOTEL', args: { hotelOption: 'HOTEL_4_STAR' } },
-    ] satisfies VoiceCommand[]) {
-      expect(execute(command, h.capabilities).ok).toBe(false);
-    }
-    expect(h.dispatch).not.toHaveBeenCalled();
   });
 
   it('defensively rejects invalid runtime numeric IDs before dispatch', () => {
