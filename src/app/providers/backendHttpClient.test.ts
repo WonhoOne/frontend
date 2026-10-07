@@ -17,7 +17,7 @@ afterEach(() => {
 
 describe('central BackendHttpClient auth composition', () => {
   it('reads the shared memory token for private requests only', async () => {
-    const fetchImplementation = vi.fn(async () => jsonResponse({ ok: true }));
+    const fetchImplementation = vi.fn(\n      async (_input: RequestInfo | URL, _init?: RequestInit) => jsonResponse({ ok: true }),\n    );
     vi.stubGlobal('fetch', fetchImplementation);
     authSessionStore.setSession({
       accessToken: 'central-memory-token',
@@ -32,13 +32,15 @@ describe('central BackendHttpClient auth composition', () => {
       path: '/public-contract-test',
     });
 
-    const privateInit = fetchImplementation.mock.calls[0]?.[1] as RequestInit;
-    const publicInit = fetchImplementation.mock.calls[1]?.[1] as RequestInit;
+    const privateInit = fetchImplementation.mock.calls[0]?.[1];
+    const publicInit = fetchImplementation.mock.calls[1]?.[1];
 
-    expect(new Headers(privateInit.headers).get('authorization')).toBe(
+    expect(privateInit).toBeDefined();
+    expect(publicInit).toBeDefined();
+    expect(new Headers(privateInit?.headers).get('authorization')).toBe(
       'Bearer central-memory-token',
     );
-    expect(new Headers(publicInit.headers).get('authorization')).toBeNull();
+    expect(new Headers(publicInit?.headers).get('authorization')).toBeNull();
   });
 
   it('clears the shared session after a private 401 but not after a private 403', async () => {
