@@ -1,4 +1,5 @@
 import {
+  expectBoolean,
   expectEnum,
   expectIntegerInRange,
   expectIsoCalendarDate,
@@ -116,10 +117,7 @@ function decodeRecruitment(value: unknown, path: string): ReservationRecruitment
     unit: expectEnum(record.unit, recruitmentUnits, contract, path + '.unit'),
     currentCount: expectNonNegativeInteger(record.currentCount, contract, path + '.currentCount'),
     requiredCount: expectPositiveInteger(record.requiredCount, contract, path + '.requiredCount'),
-    confirmed:
-      typeof record.confirmed === 'boolean'
-        ? record.confirmed
-        : mappingFailure(contract, path + '.confirmed', 'expected-boolean'),
+    confirmed: expectBoolean(record.confirmed, contract, path + '.confirmed'),
   };
 }
 
@@ -133,7 +131,13 @@ function decodeDiscount(value: unknown, path: string): ReservationDiscountDto | 
 
   return {
     type: expectEnum(record.type, ['LOYALTY'] as const, contract, path + '.type'),
-    ratePercent: expectIntegerInRange(record.ratePercent, 5, 5, contract, path + '.ratePercent') as 5,
+    ratePercent: expectIntegerInRange(
+      record.ratePercent,
+      5,
+      5,
+      contract,
+      path + '.ratePercent',
+    ) as 5,
     amount: expectPositiveInteger(record.amount, contract, path + '.amount'),
   };
 }
@@ -169,7 +173,13 @@ export function decodeReservationResponseDto(value: unknown): ReservationRespons
 
   return {
     id: expectPositiveInteger(record.id, contract, '$.id'),
-    participantCount: expectIntegerInRange(record.participantCount, 1, 10, contract, '$.participantCount'),
+    participantCount: expectIntegerInRange(
+      record.participantCount,
+      1,
+      10,
+      contract,
+      '$.participantCount',
+    ),
     tourProduct: {
       id: expectPositiveInteger(tourProduct.id, contract, '$.tourProduct.id'),
       theme: expectEnum(tourProduct.theme, tourThemes, contract, '$.tourProduct.theme'),

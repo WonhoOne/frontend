@@ -19,7 +19,9 @@ const loginResponse = {
 
 describe('Auth runtime contract', () => {
   it('decodes the approved login representation', () => {
-    expect(decodeLoginResponseDto({ ...loginResponse, ignored: 'extension' })).toEqual(loginResponse);
+    expect(
+      decodeLoginResponseDto({ ...loginResponse, ignored: 'extension' }),
+    ).toEqual(loginResponse);
   });
 
   it('accepts the Backend-supported EMPLOYEE role at the wire boundary', () => {

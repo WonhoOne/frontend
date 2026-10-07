@@ -40,7 +40,10 @@ describe('Travel History runtime contract', () => {
       endDate: '2026-08-05',
     };
 
-    expect(decodeTravelHistoryListDto([recentTrip, olderTrip])).toEqual([recentTrip, olderTrip]);
+    expect(decodeTravelHistoryListDto([recentTrip, olderTrip])).toEqual([
+      recentTrip,
+      olderTrip,
+    ]);
   });
 
   it.each([
@@ -78,7 +81,11 @@ describe('Travel History runtime contract', () => {
     expect(() =>
       decodeTravelHistoryListDto([
         recentTrip,
-        { ...recentTrip, reservationId: 802, tourProduct: { ...recentTrip.tourProduct, id: 0 } },
+        {
+          ...recentTrip,
+          reservationId: 802,
+          tourProduct: { ...recentTrip.tourProduct, id: 0 },
+        },
       ]),
     ).toThrowError(
       expect.objectContaining({
