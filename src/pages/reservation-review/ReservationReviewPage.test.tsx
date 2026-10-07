@@ -424,7 +424,7 @@ describe('ReservationReviewPage composition', () => {
     const createReservation = vi
       .fn()
       .mockRejectedValueOnce(failure)
-      .mockResolvedValueOnce({ id: 903 } as ReservationModel);
+      .mockResolvedValueOnce({ id: 903 });
     const dataSource: ReservationDataSource = {
       createReservation,
       getReservation: vi.fn().mockRejectedValue(new Error('not used')),
@@ -510,7 +510,7 @@ describe('ReservationReviewPage composition', () => {
     const createReservation = vi
       .fn()
       .mockRejectedValueOnce(authInterruption)
-      .mockResolvedValueOnce({ id: 904 } as ReservationModel);
+      .mockResolvedValueOnce({ id: 904 });
     const reservationSource: ReservationDataSource = {
       createReservation,
       getReservation: vi.fn().mockRejectedValue(new Error('not used')),
