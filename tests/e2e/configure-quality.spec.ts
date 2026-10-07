@@ -55,7 +55,7 @@ test('keyboard-only users can complete Configure and enter Review', async ({ pag
   expect(hotelCardOutline.width).not.toBe('0px');
   await page.keyboard.press('Space');
 
-  const transportA = page.getByRole('radio', { name: /Private luxury car \\(2\\)/i });
+  const transportA = page.getByRole('radio', { name: /Private luxury car \(2\)/i });
   await tabUntilFocused(page, transportA);
   await page.keyboard.press('Space');
 
@@ -108,14 +108,14 @@ test('rapid option changes keep the latest intent without resetting sibling grou
   await page.goto('/tours/103/configure');
 
   await page.getByRole('spinbutton', { name: /participants/i }).fill('2');
-  await page.getByRole('radio', { name: /Private luxury car \\(2\\)/i }).check();
+  await page.getByRole('radio', { name: /Private luxury car \(2\)/i }).check();
   await page.getByRole('radio', { name: /Local restaurant/i }).check();
 
   await page.getByRole('radio', { name: /4-star hotel/i }).click();
   await page.getByRole('radio', { name: /5-star hotel/i }).click();
 
   await expect(page.getByRole('radio', { name: /5-star hotel/i })).toBeChecked();
-  await expect(page.getByRole('radio', { name: /Private luxury car \\(2\\)/i })).toBeChecked();
+  await expect(page.getByRole('radio', { name: /Private luxury car \(2\)/i })).toBeChecked();
   await expect(page.getByRole('radio', { name: /Local restaurant/i })).toBeChecked();
 
   await expect
@@ -259,13 +259,13 @@ test.describe('Configure browser state matrix', () => {
     await expect(
       page.getByRole('alert').filter({ hasText: 'transport option is no longer available' }),
     ).toBeVisible();
-    await expect(page.getByRole('radio', { name: /Private luxury car \\(2\\)/i })).toBeChecked();
-    await expect(page.getByRole('radio', { name: /Premium van \\(10\\)/i })).not.toBeChecked();
+    await expect(page.getByRole('radio', { name: /Private luxury car \(2\)/i })).toBeChecked();
+    await expect(page.getByRole('radio', { name: /Premium van \(10\)/i })).not.toBeChecked();
     await expect(page.getByRole('button', { name: 'Review trip' })).toBeDisabled();
 
-    await page.getByRole('radio', { name: /Premium van \\(10\\)/i }).check();
+    await page.getByRole('radio', { name: /Premium van \(10\)/i }).check();
 
-    await expect(page.getByRole('radio', { name: /Premium van \\(10\\)/i })).toBeChecked();
+    await expect(page.getByRole('radio', { name: /Premium van \(10\)/i })).toBeChecked();
   });
 
   test('refreshing, stale, and offline preserve usable content with explicit status', async ({

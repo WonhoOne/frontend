@@ -34,7 +34,9 @@ describe('Shared v0.2 live configuration scenario', () => {
     ]);
 
     for (const option of hotel.options) {
-      expect(canonicalReservationCreateIdentityResolver.resolveHotelOption(option.selectionKey)).not.toBeNull();
+      expect(
+        canonicalReservationCreateIdentityResolver.resolveHotelOption(option.selectionKey),
+      ).not.toBeNull();
     }
     for (const option of transport.options) {
       expect(
@@ -42,12 +44,18 @@ describe('Shared v0.2 live configuration scenario', () => {
       ).not.toBeNull();
     }
     for (const option of meal.options) {
-      expect(canonicalReservationCreateIdentityResolver.resolveMealOption(option.selectionKey)).not.toBeNull();
+      expect(
+        canonicalReservationCreateIdentityResolver.resolveMealOption(option.selectionKey),
+      ).not.toBeNull();
     }
   });
 
   it('does not route live configuration through opaque fixture identities', () => {
     const scenario = createSharedContractConfigureScenario();
-    expect(scenario.groups.flatMap((group) => group.options).some((option) => option.selectionKey.startsWith('fixture:'))).toBe(false);
+    expect(
+      scenario.groups
+        .flatMap((group) => group.options)
+        .some((option) => option.selectionKey.startsWith('fixture:')),
+    ).toBe(false);
   });
 });

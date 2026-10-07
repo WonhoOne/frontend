@@ -125,7 +125,7 @@ describe('Tour Detail → Configure public handoff boundary', () => {
     ).toBeVisible();
     expect(screen.getByRole('spinbutton', { name: /participants/i })).toHaveValue(null);
     expect(screen.getByRole('radio', { name: /4-star hotel/i })).not.toBeChecked();
-    expect(screen.getByRole('radio', { name: /Private luxury car \\(2\\)/i })).not.toBeChecked();
+    expect(screen.getByRole('radio', { name: /Private luxury car \(2\)/i })).not.toBeChecked();
     expect(screen.getByRole('radio', { name: /Local restaurant/i })).not.toBeChecked();
     expect(screen.getByRole('button', { name: 'Review trip' })).toBeDisabled();
 

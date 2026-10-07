@@ -31,7 +31,7 @@ async function seedDraft(page: Page, draft = baseDraft) {
 async function completeConfiguration(page: Page) {
   await page.getByRole('spinbutton', { name: /participants/i }).fill('2');
   await page.getByRole('radio', { name: /4-star hotel/i }).check();
-  await page.getByRole('radio', { name: /Premium van \\(10\\)/i }).check();
+  await page.getByRole('radio', { name: /Premium van \(10\)/i }).check();
   await page.getByRole('radio', { name: /Local restaurant/i }).check();
 }
 
@@ -54,7 +54,7 @@ test('Configure → Review → browser Back preserves the transaction Draft', as
 
   await expect(page).toHaveURL('/tours/103/configure');
   await expect(page.getByRole('radio', { name: /4-star hotel/i })).toBeChecked();
-  await expect(page.getByRole('radio', { name: /Premium van \\(10\\)/i })).toBeChecked();
+  await expect(page.getByRole('radio', { name: /Premium van \(10\)/i })).toBeChecked();
   await expect(page.getByRole('radio', { name: /Local restaurant/i })).toBeChecked();
   await expect(page.getByRole('spinbutton', { name: /participants/i })).toHaveValue('2');
   await expect(page.getByRole('button', { name: 'Review trip' })).toBeEnabled();
@@ -99,7 +99,7 @@ test('refresh rehydrates the same Configure selections from sessionStorage', asy
 
   await expect(page.getByRole('heading', { name: 'Build your trip' })).toBeVisible();
   await expect(page.getByRole('radio', { name: /4-star hotel/i })).toBeChecked();
-  await expect(page.getByRole('radio', { name: /Premium van \\(10\\)/i })).toBeChecked();
+  await expect(page.getByRole('radio', { name: /Premium van \(10\)/i })).toBeChecked();
   await expect(page.getByRole('radio', { name: /Local restaurant/i })).toBeChecked();
   await expect(page.getByRole('spinbutton', { name: /participants/i })).toHaveValue('2');
   await expect(page.getByRole('button', { name: 'Review trip' })).toBeEnabled();

@@ -40,7 +40,7 @@ for (const width of [1024, 1280]) {
 
     await page.getByRole('spinbutton', { name: /participants/i }).fill('2');
     await page.getByRole('radio', { name: /4-star hotel/i }).check();
-    await page.getByRole('radio', { name: /Premium van \\(10\\)/i }).check();
+    await page.getByRole('radio', { name: /Premium van \(10\)/i }).check();
     await page.getByRole('radio', { name: /Local restaurant/i }).check();
 
     await expect(summary.getByText('2 participants')).toBeVisible();

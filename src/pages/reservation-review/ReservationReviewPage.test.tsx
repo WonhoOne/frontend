@@ -161,7 +161,10 @@ describe('ReservationReviewPage composition', () => {
               path="/reservation/review"
               element={<ReservationReviewPage dataSource={dataSource} />}
             />
-            <Route path="/reservation/:reservationId/success" element={<p>Success destination</p>} />
+            <Route
+              path="/reservation/:reservationId/success"
+              element={<p>Success destination</p>}
+            />
           </Routes>
         </MemoryRouter>
       </ReservationDraftProvider>,

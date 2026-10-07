@@ -146,11 +146,11 @@ describe('ConfigurePage desktop transaction', () => {
       target: { value: '2' },
     });
     fireEvent.click(screen.getByRole('radio', { name: /4-star hotel/i }));
-    fireEvent.click(screen.getByRole('radio', { name: /Premium van \\(10\\)/i }));
+    fireEvent.click(screen.getByRole('radio', { name: /Premium van \(10\)/i }));
     fireEvent.click(screen.getByRole('radio', { name: /Local restaurant/i }));
 
     expect(screen.getByRole('radio', { name: /4-star hotel/i })).toBeChecked();
-    expect(screen.getByRole('radio', { name: /Premium van \\(10\\)/i })).toBeChecked();
+    expect(screen.getByRole('radio', { name: /Premium van \(10\)/i })).toBeChecked();
     expect(screen.getByRole('radio', { name: /Local restaurant/i })).toBeChecked();
 
     const summary = screen.getByRole('complementary', {
@@ -187,7 +187,7 @@ describe('ConfigurePage desktop transaction', () => {
       target: { value: '1' },
     });
     fireEvent.click(screen.getByRole('radio', { name: /4-star hotel/i }));
-    fireEvent.click(screen.getByRole('radio', { name: /Private luxury car \\(2\\)/i }));
+    fireEvent.click(screen.getByRole('radio', { name: /Private luxury car \(2\)/i }));
 
     expect(reviewButton).toBeDisabled();
 
