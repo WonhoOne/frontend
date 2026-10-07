@@ -39,16 +39,12 @@ export interface ReservationDraftVoiceContext {
   canSelectStyle: (style: VoiceTourStyle) => boolean;
   canSelectSchedule: (scheduleId: number) => boolean;
   canSetParticipantCount: (participantCount: number) => boolean;
-  resolveHotelSelectionKey: (
-    hotelOption: VoiceHotelOption,
-  ) => ReservationDraftSelectionKey | null;
+  resolveHotelSelectionKey: (hotelOption: VoiceHotelOption) => ReservationDraftSelectionKey | null;
   resolveTransportSelectionKey: (
     transportOption: VoiceTransportOption,
   ) => ReservationDraftSelectionKey | null;
   resolveMealSelectionKey: (mealOption: VoiceMealOption) => ReservationDraftSelectionKey | null;
-  resolveExtraSelectionKey: (
-    extraOption: VoiceExtraOption,
-  ) => ReservationDraftSelectionKey | null;
+  resolveExtraSelectionKey: (extraOption: VoiceExtraOption) => ReservationDraftSelectionKey | null;
 }
 
 export interface CreateReservationDraftVoiceAdapterInput {
