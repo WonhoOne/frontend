@@ -24,12 +24,12 @@ test('real MySQL signup, login, reservation, cold detail, and empty history with
 
   const catalog = (await (await request.get(`${backend}/tours`)).json()) as Array<{ id: number; name: string }>;
   expect(catalog).toHaveLength(1);
-  expect(catalog[0].name).toBe('F2 Synthetic Golf');
-  const scheduleResponse = await request.get(`${backend}/tour-schedules?tourId=${catalog[0].id}`);
+  expect(catalog[0]!.name).toBe('F2 Synthetic Golf');
+  const scheduleResponse = await request.get(`${backend}/tour-schedules?tourId=${catalog[0]!.id}`);
   expect(scheduleResponse.status()).toBe(200);
   const schedules = (await scheduleResponse.json()) as Array<{ id: number; reservable: boolean }>;
   expect(schedules).toHaveLength(1);
-  expect(schedules[0].reservable).toBe(true);
+  expect(schedules[0]!.reservable).toBe(true);
 
   await page.goto('/signup');
   await page.getByRole('textbox', { name: '로그인 ID' }).fill(account.loginId);
@@ -72,7 +72,7 @@ test('real MySQL signup, login, reservation, cold detail, and empty history with
   const creation = await request.post(`${backend}/reservations`, {
     headers: authorization,
     data: {
-      scheduleId: schedules[0].id,
+      scheduleId: schedules[0]!.id,
       participantCount: 2,
       configuration: {
         style: 'GRAND',
