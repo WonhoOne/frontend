@@ -174,3 +174,44 @@ test('an invalid selected Extra remains visible and can be deselected to recover
   await expect(page.getByRole('button', { name: 'Review trip' })).toBeEnabled();
   await expect(page.getByRole('checkbox', { name: /Fixture extra B/i })).toBeEnabled();
 });
+
+test('a missing saved Extra can be removed on mobile to unblock Review safely', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 760 });
+  await page.addInitScript(
+    ({ key, value }) => {
+      sessionStorage.setItem(
+        key,
+        JSON.stringify({
+          ...value,
+          configuration: {
+            ...value.configuration,
+            extraSelectionKeys: ['LEGACY_OPAQUE_EXTRA', 'COFFEE'],
+          },
+        }),
+      );
+    },
+    { key: storageKey, value: draft },
+  );
+  await page.goto('/tours/103/configure');
+  const recovery = page.getByRole('button', { name: 'Remove unavailable extra' });
+  await expect(recovery).toBeVisible();
+  await expect(page.getByRole('checkbox', { name: /Coffee/i })).toBeChecked();
+  await expect(page.getByText('LEGACY_OPAQUE_EXTRA')).toHaveCount(0);
+
+  const trigger = page.getByRole('button', { name: 'Open trip summary' });
+  await trigger.click();
+  const sheet = page.getByRole('dialog', { name: 'Trip summary' });
+  await expect(sheet.getByRole('button', { name: 'Review trip' })).toBeDisabled();
+  await page.keyboard.press('Escape');
+
+  await recovery.click();
+  await expect(recovery).toHaveCount(0);
+  await expect.poll(() => readExtras(page)).toEqual(['COFFEE']);
+  await trigger.click();
+  await expect(sheet.getByRole('button', { name: 'Review trip' })).toBeEnabled();
+  expect(
+    await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1),
+  ).toBe(false);
+});
