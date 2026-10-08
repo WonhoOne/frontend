@@ -160,7 +160,9 @@ export function MobileTripSummary({
 
           {!readiness.isReady ? (
             <p className={styles.requirements}>
-              Complete the participant count, Hotel, Transport, and Meal to continue.
+              {readiness.issues.includes('extras')
+                ? 'Remove an unavailable Extra before continuing.'
+                : 'Complete the participant count, Hotel, Transport, and Meal to continue.'}
             </p>
           ) : null}
         </div>

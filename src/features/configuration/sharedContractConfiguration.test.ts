@@ -9,11 +9,18 @@ describe('Shared v0.2 live configuration scenario', () => {
     const hotel = scenario.groups.find((group) => group.category === 'hotel');
     const transport = scenario.groups.find((group) => group.category === 'transport');
     const meal = scenario.groups.find((group) => group.category === 'meal');
+    const extras = scenario.groups.find((group) => group.category === 'extras');
 
     expect(hotel).toBeDefined();
     expect(transport).toBeDefined();
     expect(meal).toBeDefined();
-    if (hotel === undefined || transport === undefined || meal === undefined) {
+    expect(extras).toBeDefined();
+    if (
+      hotel === undefined ||
+      transport === undefined ||
+      meal === undefined ||
+      extras === undefined
+    ) {
       throw new Error('Expected all required Shared v0.2 configuration groups');
     }
 
@@ -32,6 +39,13 @@ describe('Shared v0.2 live configuration scenario', () => {
       'LOCAL_RESTAURANT',
       'PREMIUM_RESTAURANT',
     ]);
+    expect(extras).toMatchObject({
+      category: 'extras',
+      required: false,
+      selectionMode: 'multiple',
+      heading: 'Extras',
+    });
+    expect(extras.options.map((option) => option.selectionKey)).toEqual(['CHAMPAGNE', 'COFFEE']);
 
     for (const option of hotel.options) {
       expect(
@@ -47,6 +61,11 @@ describe('Shared v0.2 live configuration scenario', () => {
       expect(
         canonicalReservationCreateIdentityResolver.resolveMealOption(option.selectionKey),
       ).not.toBeNull();
+    }
+    for (const option of extras.options) {
+      expect(
+        canonicalReservationCreateIdentityResolver.resolveExtraOption(option.selectionKey),
+      ).toBe(option.selectionKey);
     }
   });
 

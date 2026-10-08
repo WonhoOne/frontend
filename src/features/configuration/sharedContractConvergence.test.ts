@@ -72,13 +72,13 @@ describe('Shared Contract convergence gate — approved docs/main v0.1.2', () =>
     }
   });
 
-  it('keeps Extras interaction contract-dependent and price truth unavailable in the neutral fixture', () => {
+  it('keeps demo Extras multi-select distinct from Shared canonical catalog and price truth', () => {
     const fixture = createContractNeutralConfigureFixture();
     const extras = fixture.groups.find((group) => group.category === 'extras');
 
     expect(extras).toMatchObject({
       required: false,
-      selectionMode: 'contract-dependent',
+      selectionMode: 'multiple',
     });
     expect(fixture.tripSummary.price).toEqual({
       state: 'unavailable',

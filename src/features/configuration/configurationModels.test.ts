@@ -12,7 +12,7 @@ describe('configuration model boundary', () => {
     expect(CONFIGURATION_GROUP_ORDER).toEqual(['hotel', 'transport', 'meal', 'extras']);
   });
 
-  it('keeps required categories explicit without inventing an Extras selection mode', () => {
+  it('keeps required single-select groups and optional multi-select fixture Extras distinct', () => {
     const fixture = createContractNeutralConfigureFixture();
 
     expect(
@@ -25,7 +25,7 @@ describe('configuration model boundary', () => {
       { category: 'hotel', required: true, selectionMode: 'single' },
       { category: 'transport', required: true, selectionMode: 'single' },
       { category: 'meal', required: true, selectionMode: 'single' },
-      { category: 'extras', required: false, selectionMode: 'contract-dependent' },
+      { category: 'extras', required: false, selectionMode: 'multiple' },
     ]);
   });
 

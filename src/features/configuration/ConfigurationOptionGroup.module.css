@@ -65,12 +65,17 @@
   cursor: pointer;
 }
 
-.radio {
+.selectionInput {
   inline-size: 18px;
   block-size: 18px;
   flex: 0 0 auto;
   margin: 3px 0 0;
   accent-color: var(--mw-accent);
+}
+
+.selectionInput:focus-visible {
+  outline: 2px solid var(--mw-accent);
+  outline-offset: 3px;
 }
 
 .optionBody {
@@ -149,20 +154,31 @@
 }
 
 .compactEmpty,
-.contractNotice,
 .invalidNotice {
   padding: var(--mw-space-4);
   border: var(--mw-border-subtle);
   border-radius: var(--mw-radius-md);
 }
 
-.compactEmpty,
-.contractNotice {
+.compactEmpty {
   background: var(--mw-surface-muted);
 }
 
-.contractNotice {
-  color: var(--mw-text-secondary);
+.missingExtraRecovery {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--mw-space-3);
+  padding: var(--mw-space-4);
+  border: var(--mw-border-subtle);
+  border-radius: var(--mw-radius-md);
+  background: var(--mw-warning-soft);
+}
+
+.missingExtraRecovery p {
+  flex: 1 1 100%;
+  margin: 0;
+  color: var(--mw-ink-soft);
   font-size: var(--mw-font-size-body-sm);
   line-height: var(--mw-line-height-body-sm);
 }

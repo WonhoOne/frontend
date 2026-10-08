@@ -158,16 +158,33 @@ test('real MySQL authenticated customer journey', async ({ page, request }) => {
     },
     { productId: String(catalog[0]!.id), scheduleId: String(schedules[0]!.id) },
   );
-  await page.goto('/reservation/review');
+  // Enter Configure with the real Backend catalog, then make both choices
+  // through actual checkboxes instead of fabricating the final Draft payload.
+  await page.goto(`/tours/${catalog[0]!.id}/configure`);
+  await expect(page.getByRole('heading', { name: 'Build your trip' })).toBeVisible();
+  await page.getByRole('checkbox', { name: /Coffee/i }).check();
+  await page.getByRole('checkbox', { name: /Champagne/i }).check();
+  const summary = page.getByRole('complementary', { name: 'Current trip configuration' });
+  await expect(summary.getByText('Champagne, Coffee')).toBeVisible();
+  await page.getByRole('button', { name: 'Review trip' }).click();
+  await expect(page).toHaveURL('/reservation/review');
   await expect(page.getByRole('heading', { name: 'Review your trip' })).toBeVisible();
+  await expect(
+    page.locator('section[aria-labelledby="review-configuration"]').getByText('Champagne, Coffee'),
+  ).toBeVisible();
 
   let browserReservationPosts = 0;
+  const observedExtraOptions: string[][] = [];
   page.on('request', (requested) => {
     if (
       requested.method() === 'POST' &&
       new URL(requested.url()).pathname === '/api/v1/reservations'
     ) {
       browserReservationPosts += 1;
+      const body = requested.postDataJSON() as {
+        configuration: { extraOptions: string[] };
+      };
+      observedExtraOptions.push(body.configuration.extraOptions);
     }
   });
   await page.getByRole('button', { name: 'Apply for reservation' }).click();
@@ -182,6 +199,17 @@ test('real MySQL authenticated customer journey', async ({ page, request }) => {
   await expect(page).toHaveURL(/\/reservation\/\d+\/success$/);
   await expect(page.getByRole('heading', { name: 'Reservation received' })).toBeVisible();
   expect(browserReservationPosts).toBe(1);
+  expect(observedExtraOptions).toEqual([['CHAMPAGNE', 'COFFEE']]);
+  const successIdentity = /\/reservation\/(\d+)\/success$/.exec(new URL(page.url()).pathname);
+  expect(successIdentity).not.toBeNull();
+  const savedResponse = await request.get(`${backend}/reservations/${successIdentity![1]}`, {
+    headers: authorization,
+  });
+  expect(savedResponse.status()).toBe(200);
+  const savedDetail = (await savedResponse.json()) as {
+    configuration: { extraOptions: string[] };
+  };
+  expect(savedDetail.configuration.extraOptions).toEqual(['CHAMPAGNE', 'COFFEE']);
   await page.getByRole('link', { name: 'View reservation details' }).click();
   await expect(page).toHaveURL(/\/reservations\/\d+$/);
   await expect(page.getByRole('heading', { name: 'F2 Synthetic Golf' })).toBeVisible();

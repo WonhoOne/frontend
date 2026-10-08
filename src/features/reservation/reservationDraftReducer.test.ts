@@ -56,6 +56,12 @@ describe('reservationDraftReducer', () => {
       tourProductId: '102',
       tourStyle: 'CLASSIC',
       tourScheduleId: '1002',
+      configuration: {
+        hotelSelectionKey: 'HOTEL_3_STAR',
+        transportSelectionKey: null,
+        mealSelectionKey: 'LUNCH_BOX',
+        extraSelectionKeys: [],
+      },
     });
   });
 
@@ -170,4 +176,133 @@ describe('reservationDraftReducer', () => {
       ).toEqual(createEmptyReservationDraft(300));
     },
   );
+
+  it.each([
+    ['CLASSIC', 'HOTEL_3_STAR', 'LUNCH_BOX', []],
+    ['GRAND', 'HOTEL_4_STAR', 'LOCAL_RESTAURANT', []],
+    ['PREMIUM', 'HOTEL_5_STAR', 'PREMIUM_RESTAURANT', ['CHAMPAGNE']],
+  ] as const)(
+    '%s begins a fresh transaction with the approved Shared v0.2 defaults only once',
+    (tourStyle, hotelSelectionKey, mealSelectionKey, extraSelectionKeys) => {
+      const started = reservationDraftReducer(configuredDraft(), {
+        type: 'BEGIN_CONFIGURE',
+        tourProductId: '102',
+        tourStyle,
+        tourScheduleId: '1002',
+        updatedAt: 150,
+      });
+
+      expect(started).toMatchObject({
+        tourProductId: '102',
+        tourStyle,
+        tourScheduleId: '1002',
+        participantCount: null,
+        configuration: {
+          hotelSelectionKey,
+          transportSelectionKey: null,
+          mealSelectionKey,
+          extraSelectionKeys,
+        },
+      });
+      expect(started.configuration.extraSelectionKeys).not.toBe(
+        configuredDraft().configuration.extraSelectionKeys,
+      );
+    },
+  );
+
+  it('never resurrects deselected Premium Champagne after RESTORE_DRAFT or style-only edits', () => {
+    const started = reservationDraftReducer(createEmptyReservationDraft(0), {
+      type: 'BEGIN_CONFIGURE',
+      tourProductId: '103',
+      tourStyle: 'PREMIUM',
+      tourScheduleId: '1301',
+      updatedAt: 10,
+    });
+    expect(started.configuration.extraSelectionKeys).toEqual(['CHAMPAGNE']);
+
+    const removed = reservationDraftReducer(started, {
+      type: 'SET_EXTRAS',
+      selectionKeys: [],
+      updatedAt: 11,
+    });
+    const rehydrated = reservationDraftReducer(createEmptyReservationDraft(12), {
+      type: 'RESTORE_DRAFT',
+      draft: removed,
+    });
+    const changed = reservationDraftReducer(rehydrated, {
+      type: 'SELECT_TOUR_STYLE',
+      tourStyle: 'GRAND',
+      updatedAt: 13,
+    });
+    const backToPremium = reservationDraftReducer(changed, {
+      type: 'SELECT_TOUR_STYLE',
+      tourStyle: 'PREMIUM',
+      updatedAt: 14,
+    });
+
+    for (const draft of [removed, rehydrated, changed, backToPremium]) {
+      expect(draft.configuration.extraSelectionKeys).toEqual([]);
+      expect(draft.configuration.hotelSelectionKey).toBe('HOTEL_5_STAR');
+      expect(draft.configuration.mealSelectionKey).toBe('PREMIUM_RESTAURANT');
+      expect(draft.configuration.transportSelectionKey).toBeNull();
+    }
+    expect(started.configuration.extraSelectionKeys).toEqual(['CHAMPAGNE']);
+    expect(rehydrated.configuration.extraSelectionKeys).not.toBe(
+      removed.configuration.extraSelectionKeys,
+    );
+  });
+
+  it('never overwrites explicit Hotel/Meal/Extra changes on navigation, and resets only on a new BEGIN_CONFIGURE', () => {
+    const started = reservationDraftReducer(createEmptyReservationDraft(0), {
+      type: 'BEGIN_CONFIGURE',
+      tourProductId: '103',
+      tourStyle: 'PREMIUM',
+      tourScheduleId: '1301',
+      updatedAt: 10,
+    });
+    const changedHotel = reservationDraftReducer(started, {
+      type: 'SELECT_HOTEL',
+      selectionKey: 'HOTEL_4_STAR',
+      updatedAt: 11,
+    });
+    const changedMeal = reservationDraftReducer(changedHotel, {
+      type: 'SELECT_MEAL',
+      selectionKey: 'LOCAL_RESTAURANT',
+      updatedAt: 12,
+    });
+    const selectedCoffee = reservationDraftReducer(changedMeal, {
+      type: 'SET_EXTRAS',
+      selectionKeys: ['COFFEE'],
+      updatedAt: 13,
+    });
+    const changedSchedule = reservationDraftReducer(selectedCoffee, {
+      type: 'SELECT_SCHEDULE',
+      tourScheduleId: '1302',
+      updatedAt: 14,
+    });
+    const restored = reservationDraftReducer(createEmptyReservationDraft(20), {
+      type: 'RESTORE_DRAFT',
+      draft: changedSchedule,
+    });
+    expect(restored.configuration).toEqual({
+      hotelSelectionKey: 'HOTEL_4_STAR',
+      transportSelectionKey: null,
+      mealSelectionKey: 'LOCAL_RESTAURANT',
+      extraSelectionKeys: ['COFFEE'],
+    });
+    const nextJourney = reservationDraftReducer(restored, {
+      type: 'BEGIN_CONFIGURE',
+      tourProductId: '104',
+      tourStyle: 'GRAND',
+      tourScheduleId: '1401',
+      updatedAt: 21,
+    });
+    expect(nextJourney.configuration).toEqual({
+      hotelSelectionKey: 'HOTEL_4_STAR',
+      transportSelectionKey: null,
+      mealSelectionKey: 'LOCAL_RESTAURANT',
+      extraSelectionKeys: [],
+    });
+    expect(nextJourney.participantCount).toBeNull();
+  });
 });

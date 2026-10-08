@@ -122,6 +122,36 @@ export function ConfigureDesktop({
     }
   }
 
+  function toggleExtra(selectionKey: string) {
+    const extrasGroup = scenario.groups.find((group) => group.category === 'extras');
+    if (extrasGroup?.selectionMode !== 'multiple') return;
+
+    const wasSelected = draft.configuration.extraSelectionKeys.includes(selectionKey);
+    const isSelectable = extrasGroup.options.some(
+      (option) =>
+        option.selectionKey === selectionKey && option.availability.status === 'selectable',
+    );
+    // Removing an unavailable selected Extra is recovery, not adding an invalid choice.
+    if (!wasSelected && !isSelectable) return;
+
+    // Draft owns the complete selection truth. Set removes pre-existing duplicates;
+    // the live catalog provides deterministic canonical order regardless of click order.
+    // Preserve unknown historical keys rather than silently deleting another intent.
+    const next = new Set(draft.configuration.extraSelectionKeys);
+    if (next.has(selectionKey)) {
+      next.delete(selectionKey);
+    } else {
+      next.add(selectionKey);
+    }
+    const optionKeys = new Set(extrasGroup.options.map((option) => option.selectionKey));
+    const selectionKeys = [
+      ...extrasGroup.options.map((option) => option.selectionKey).filter((key) => next.has(key)),
+      ...[...next].filter((key) => !optionKeys.has(key)).sort(),
+    ];
+
+    dispatch({ type: 'SET_EXTRAS', selectionKeys, updatedAt: now() });
+  }
+
   return (
     <div className={styles.layout}>
       <div className={styles.configuration}>
@@ -159,6 +189,12 @@ export function ConfigureDesktop({
             onSelect={(selectionKey) => selectConfiguration(group.category, selectionKey)}
             runtimeState={runtimeState.groups[group.category]}
             selectedKey={selectedKeyForCategory(group.category, draft.configuration)}
+            {...(group.category === 'extras'
+              ? {
+                  selectedKeys: draft.configuration.extraSelectionKeys,
+                  onToggle: toggleExtra,
+                }
+              : {})}
             stepNumber={index + 1}
           />
         ))}

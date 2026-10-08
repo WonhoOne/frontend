@@ -82,9 +82,9 @@ export function createContractNeutralConfigureFixture(): ConfigureFixtureScenari
       {
         category: 'extras',
         heading: 'Extras',
-        helperText: 'Selection rules depend on the approved Shared Contract.',
+        helperText: 'Demo-only options, not the Shared v0.2 catalog.',
         required: false,
-        selectionMode: 'contract-dependent',
+        selectionMode: 'multiple',
         options: [
           fixtureOption('extras', 'a', 'Fixture extra A', 'Demo-only additional option.'),
           fixtureOption('extras', 'b', 'Fixture extra B', 'Demo-only additional option.'),

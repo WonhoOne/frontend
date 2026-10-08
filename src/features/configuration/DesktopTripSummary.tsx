@@ -99,7 +99,9 @@ export function DesktopTripSummary({
         </Button>
         {!readiness.isReady ? (
           <p className={styles.requirements}>
-            Complete the trip context, participant count, Hotel, Transport, and Meal to continue.
+            {readiness.issues.includes('extras')
+              ? 'Remove an unavailable Extra before continuing.'
+              : 'Complete the trip context, participant count, Hotel, Transport, and Meal to continue.'}
           </p>
         ) : null}
       </div>

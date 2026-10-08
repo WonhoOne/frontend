@@ -82,6 +82,9 @@ function runtimeFor(state: string): ConfigureRuntimeState {
     case 'stale':
       runtime.groups.transport = { status: 'stale' };
       break;
+    case 'extras-invalid':
+      runtime.groups.extras = { status: 'invalid' };
+      break;
     case 'offline':
       runtime.connectivity = 'offline';
       break;
@@ -111,7 +114,20 @@ function ConfigureStateFixture() {
   const [retryResult, setRetryResult] = useState('idle');
   const [reviewResult, setReviewResult] = useState('idle');
   const state = readState();
-  const [storage] = useState(() => new FixtureStorage(completeDraft));
+  const [storage] = useState(
+    () =>
+      new FixtureStorage(
+        state === 'extras-invalid'
+          ? {
+              ...completeDraft,
+              configuration: {
+                ...completeDraft.configuration,
+                extraSelectionKeys: ['fixture:extras:a'],
+              },
+            }
+          : completeDraft,
+      ),
+  );
   const runtimeState = runtimeFor(state);
   const price = priceFor(state);
 

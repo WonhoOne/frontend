@@ -11,6 +11,8 @@ interface ConfigurationOptionGroupProps {
   stepNumber: number;
   selectedKey: string | null;
   onSelect: (selectionKey: string) => void;
+  selectedKeys?: readonly string[];
+  onToggle?: (selectionKey: string) => void;
   runtimeState?: ConfigurationGroupRuntimeState;
   onRetry?: () => void;
   onReturnToTour?: () => void;
@@ -93,11 +95,21 @@ export function ConfigurationOptionGroup({
   stepNumber,
   selectedKey,
   onSelect,
+  selectedKeys = [],
+  onToggle,
   runtimeState = { status: 'ready' },
   onRetry = () => undefined,
   onReturnToTour = () => undefined,
 }: ConfigurationOptionGroupProps) {
   const headingId = useId();
+  const isMultiple = group.selectionMode === 'multiple';
+  // A restored Draft may contain an Extra removed from today's catalog.
+  // Never silently discard the user's intent, but always offer a way out.
+  const missingExtraKeys = isMultiple
+    ? [...new Set(selectedKeys)].filter(
+        (key) => !group.options.some((option) => option.selectionKey === key),
+      )
+    : [];
 
   let content;
 
@@ -109,18 +121,6 @@ export function ConfigurationOptionGroup({
     );
   } else if (runtimeState.status === 'empty') {
     content = <GroupEmpty group={group} onReturnToTour={onReturnToTour} />;
-  } else if (group.selectionMode === 'contract-dependent') {
-    content = (
-      <>
-        {runtimeState.status === 'refreshing' || runtimeState.status === 'stale' ? (
-          <RuntimeIndicator state={runtimeState.status} />
-        ) : null}
-        <div className={styles.contractNotice}>
-          Extras are shown as a reserved configuration area until the approved Shared Contract
-          defines their exact selection behavior.
-        </div>
-      </>
-    );
   } else {
     content = (
       <>
@@ -130,32 +130,57 @@ export function ConfigurationOptionGroup({
 
         {runtimeState.status === 'invalid' ? (
           <div className={styles.invalidNotice} role="alert">
-            Your selected {group.heading.toLowerCase()} option is no longer available. Choose
-            another option.
+            Your selected {group.heading.toLowerCase()} option is no longer available. Change the
+            selection.
           </div>
         ) : null}
 
-        <div aria-labelledby={headingId} className={styles.options} role="radiogroup">
+        <div
+          aria-labelledby={headingId}
+          className={styles.options}
+          role={isMultiple ? 'group' : 'radiogroup'}
+        >
           {group.options.map((option) => {
-            const isSelected = selectedKey === option.selectionKey;
+            const isSelected = isMultiple
+              ? selectedKeys.includes(option.selectionKey)
+              : selectedKey === option.selectionKey;
             const isInvalidSelection = runtimeState.status === 'invalid' && isSelected;
-            const isDisabled = option.availability.status === 'disabled' || isInvalidSelection;
+            // Optional Extras must remain removable even if availability changes.
+            // Prevent adding unavailable choices; never trap an existing selection.
+            const canRemoveExtra = isMultiple && isSelected && onToggle !== undefined;
+            const isDisabled =
+              ((option.availability.status === 'disabled' || isInvalidSelection) &&
+                !canRemoveExtra) ||
+              (isMultiple && onToggle === undefined);
             const disabledReason = isInvalidSelection
-              ? 'This selection is no longer available. Choose another option.'
+              ? isMultiple
+                ? 'This extra is no longer available. Deselect it to continue.'
+                : 'This selection is no longer available. Choose another option.'
               : option.availability.status === 'disabled'
                 ? option.availability.reason
                 : null;
 
             return (
-              <OptionCard isDisabled={isDisabled} isSelected={isSelected} key={option.selectionKey}>
+              <OptionCard
+                isDisabled={isDisabled}
+                isInvalid={isInvalidSelection}
+                isSelected={isSelected}
+                key={option.selectionKey}
+              >
                 <label className={styles.optionLabel}>
                   <input
                     checked={isSelected}
-                    className={styles.radio}
+                    className={styles.selectionInput}
                     disabled={isDisabled}
                     name={`configuration-${group.category}`}
-                    onChange={() => onSelect(option.selectionKey)}
-                    type="radio"
+                    onChange={() => {
+                      if (isMultiple) {
+                        onToggle?.(option.selectionKey);
+                      } else {
+                        onSelect(option.selectionKey);
+                      }
+                    }}
+                    type={isMultiple ? 'checkbox' : 'radio'}
                     value={option.selectionKey}
                   />
 
@@ -193,6 +218,27 @@ export function ConfigurationOptionGroup({
       </header>
 
       {content}
+      {missingExtraKeys.length > 0 ? (
+        <div className={styles.missingExtraRecovery} role="alert">
+          <p>
+            {missingExtraKeys.length} saved extra
+            {missingExtraKeys.length === 1 ? ' is' : 's are'} no longer in the available options.
+            Remove {missingExtraKeys.length === 1 ? 'it' : 'them'} to continue.
+          </p>
+          {missingExtraKeys.map((key, index) => (
+            <Button
+              disabled={onToggle === undefined}
+              key={key}
+              onClick={() => onToggle?.(key)}
+              variant="secondary"
+            >
+              {missingExtraKeys.length === 1
+                ? 'Remove unavailable extra'
+                : `Remove unavailable extra ${index + 1}`}
+            </Button>
+          ))}
+        </div>
+      ) : null}
     </section>
   );
 }

@@ -1,11 +1,13 @@
 // @vitest-environment jsdom
 
 import { fireEvent, render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
 import {
   ConfigurationOptionGroup,
   createContractNeutralConfigureFixture,
+  createSharedContractConfigureScenario,
   type OptionGroupModel,
 } from '@/features/configuration';
 
@@ -162,7 +164,7 @@ describe('ConfigurationOptionGroup state matrix', () => {
     expect(invalidSelection).toBeDisabled();
     expect(
       screen.getByText(
-        'Your selected transport option is no longer available. Choose another option.',
+        'Your selected transport option is no longer available. Change the selection.',
       ),
     ).toBeVisible();
 
@@ -199,5 +201,228 @@ describe('ConfigurationOptionGroup state matrix', () => {
 
     expect(screen.getByRole('radio', { name: /Fixture hotel A/i })).toBeDisabled();
     expect(screen.getByText('Unavailable in this fixture state.')).toBeVisible();
+  });
+});
+
+describe('Shared v0.2 Extras checkbox primitive', () => {
+  const extras = () => {
+    const group = createSharedContractConfigureScenario().groups.find(
+      (candidate) => candidate.category === 'extras',
+    );
+    if (group === undefined) throw new Error('Missing canonical Extras group');
+    return group;
+  };
+
+  it('renders two distinct labelled checkboxes without changing single-select radios', () => {
+    const onToggle = vi.fn();
+    render(
+      <ConfigurationOptionGroup
+        group={extras()}
+        onSelect={vi.fn()}
+        onToggle={onToggle}
+        selectedKey={null}
+        selectedKeys={[]}
+        stepNumber={4}
+      />,
+    );
+
+    expect(screen.getByRole('group', { name: 'Extras' })).toBeVisible();
+    expect(screen.queryByRole('radiogroup')).not.toBeInTheDocument();
+    expect(screen.getAllByRole('checkbox')).toHaveLength(2);
+    expect(screen.getByRole('checkbox', { name: /Champagne/i })).not.toBeChecked();
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).not.toBeChecked();
+
+    fireEvent.click(screen.getByRole('checkbox', { name: /Champagne/i }));
+    expect(onToggle).toHaveBeenCalledExactlyOnceWith('CHAMPAGNE');
+  });
+
+  it('reflects controlled selection sets and delegates add/remove to the parent', () => {
+    const onToggle = vi.fn();
+    const renderGroup = (selectionKeys: readonly string[]) => (
+      <ConfigurationOptionGroup
+        group={extras()}
+        onSelect={vi.fn()}
+        onToggle={onToggle}
+        selectedKey={null}
+        selectedKeys={selectionKeys}
+        stepNumber={4}
+      />
+    );
+
+    const { rerender } = render(renderGroup(['CHAMPAGNE']));
+    expect(screen.getByRole('checkbox', { name: /Champagne/i })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).not.toBeChecked();
+    fireEvent.click(screen.getByRole('checkbox', { name: /Coffee/i }));
+    expect(onToggle).toHaveBeenLastCalledWith('COFFEE');
+
+    rerender(renderGroup(['CHAMPAGNE', 'COFFEE']));
+    expect(screen.getByRole('checkbox', { name: /Champagne/i })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeChecked();
+
+    fireEvent.click(screen.getByRole('checkbox', { name: /Champagne/i }));
+    expect(onToggle).toHaveBeenLastCalledWith('CHAMPAGNE');
+    rerender(renderGroup(['COFFEE']));
+    expect(screen.getByRole('checkbox', { name: /Champagne/i })).not.toBeChecked();
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeChecked();
+  });
+
+  it('supports native keyboard activation and keeps refreshing options available', async () => {
+    const onToggle = vi.fn();
+    const user = userEvent.setup();
+    render(
+      <ConfigurationOptionGroup
+        group={extras()}
+        onSelect={vi.fn()}
+        onToggle={onToggle}
+        runtimeState={{ status: 'refreshing' }}
+        selectedKey={null}
+        selectedKeys={[]}
+        stepNumber={4}
+      />,
+    );
+
+    const coffee = screen.getByRole('checkbox', { name: /Coffee/i });
+    coffee.focus();
+    expect(coffee).toHaveFocus();
+    expect(coffee).toBeEnabled();
+    await user.keyboard(' ');
+    expect(onToggle).toHaveBeenCalledExactlyOnceWith('COFFEE');
+    expect(screen.getByRole('status')).toHaveTextContent('Updating availability');
+  });
+
+  it('allows deselecting unavailable Extras but never adding them, preserving checked truth', () => {
+    const onToggle = vi.fn();
+    const extrasGroup = extras();
+    const disabled: OptionGroupModel = {
+      ...extrasGroup,
+      options: extrasGroup.options.map((option) =>
+        option.selectionKey === 'COFFEE'
+          ? {
+              ...option,
+              availability: { status: 'disabled', reason: 'Not selectable now.' },
+            }
+          : option,
+      ),
+    };
+
+    const { rerender } = render(
+      <ConfigurationOptionGroup
+        group={disabled}
+        onSelect={vi.fn()}
+        onToggle={onToggle}
+        selectedKey={null}
+        selectedKeys={['COFFEE']}
+        stepNumber={4}
+      />,
+    );
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeEnabled();
+    expect(screen.getByText('Not selectable now.')).toBeVisible();
+    fireEvent.click(screen.getByRole('checkbox', { name: /Coffee/i }));
+    expect(onToggle).toHaveBeenCalledWith('COFFEE');
+    expect(screen.getByRole('checkbox', { name: /Champagne/i })).toBeEnabled();
+
+    rerender(
+      <ConfigurationOptionGroup
+        group={extrasGroup}
+        onSelect={vi.fn()}
+        onToggle={onToggle}
+        runtimeState={{ status: 'invalid' }}
+        selectedKey={null}
+        selectedKeys={['CHAMPAGNE']}
+        stepNumber={4}
+      />,
+    );
+    expect(screen.getByRole('checkbox', { name: /Champagne/i })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: /Champagne/i })).toBeEnabled();
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeEnabled();
+    expect(
+      screen.getByText('This extra is no longer available. Deselect it to continue.'),
+    ).toBeVisible();
+    fireEvent.click(screen.getByRole('checkbox', { name: /Champagne/i }));
+    expect(onToggle).toHaveBeenCalledWith('CHAMPAGNE');
+  });
+
+  it('disables an unavailable unselected Extra but keeps its reason visible', () => {
+    const extra = extras();
+    const unavailable: OptionGroupModel = {
+      ...extra,
+      options: extra.options.map((option) =>
+        option.selectionKey === 'COFFEE'
+          ? { ...option, availability: { status: 'disabled', reason: 'No coffee available.' } }
+          : option,
+      ),
+    };
+    render(
+      <ConfigurationOptionGroup
+        group={unavailable}
+        onSelect={vi.fn()}
+        onToggle={vi.fn()}
+        selectedKey={null}
+        selectedKeys={[]}
+        stepNumber={4}
+      />,
+    );
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeDisabled();
+    expect(screen.getByText('No coffee available.')).toBeVisible();
+    expect(screen.getByRole('checkbox', { name: /Champagne/i })).toBeEnabled();
+  });
+
+  it('allows explicit removal when a restored Extra key is absent from the current catalog', () => {
+    const onToggle = vi.fn();
+    render(
+      <ConfigurationOptionGroup
+        group={extras()}
+        onSelect={vi.fn()}
+        onToggle={onToggle}
+        selectedKey={null}
+        selectedKeys={['LEGACY_PRIVATE_EXTRA', 'COFFEE']}
+        stepNumber={4}
+      />,
+    );
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeChecked();
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      '1 saved extra is no longer in the available options.',
+    );
+    expect(screen.queryByText('LEGACY_PRIVATE_EXTRA')).not.toBeInTheDocument();
+    const removal = screen.getByRole('button', { name: 'Remove unavailable extra' });
+    expect(removal).toBeEnabled();
+    fireEvent.click(removal);
+    expect(onToggle).toHaveBeenCalledExactlyOnceWith('LEGACY_PRIVATE_EXTRA');
+  });
+
+  it('provides separately labelled controls for multiple missing saved Extra keys', () => {
+    const onToggle = vi.fn();
+    render(
+      <ConfigurationOptionGroup
+        group={extras()}
+        onSelect={vi.fn()}
+        onToggle={onToggle}
+        selectedKey={null}
+        selectedKeys={['LEGACY_ONE', 'LEGACY_ONE', 'LEGACY_TWO']}
+        stepNumber={4}
+      />,
+    );
+    expect(screen.getByRole('button', { name: 'Remove unavailable extra 1' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Remove unavailable extra 2' })).toBeEnabled();
+    fireEvent.click(screen.getByRole('button', { name: 'Remove unavailable extra 2' }));
+    expect(onToggle).toHaveBeenCalledExactlyOnceWith('LEGACY_TWO');
+    expect(screen.queryByText('LEGACY_ONE')).not.toBeInTheDocument();
+  });
+
+  it('does not expose a seemingly interactive checkbox before an owning toggle callback exists', () => {
+    render(
+      <ConfigurationOptionGroup
+        group={extras()}
+        onSelect={vi.fn()}
+        selectedKey={null}
+        selectedKeys={[]}
+        stepNumber={4}
+      />,
+    );
+    expect(screen.getAllByRole('checkbox')).toHaveLength(2);
+    for (const checkbox of screen.getAllByRole('checkbox')) {
+      expect(checkbox).toBeDisabled();
+    }
   });
 });
