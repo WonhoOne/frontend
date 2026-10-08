@@ -70,7 +70,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['playwright.config.ts'],
+    files: ['playwright.config.ts', 'playwright.f2-mysql.config.ts'],
     languageOptions: {
       globals: globals.node,
     },
