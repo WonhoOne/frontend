@@ -200,7 +200,7 @@ describe('ConfigurePage desktop transaction', () => {
     expect(screen.getByRole('heading', { name: 'Reservation review marker' })).toBeVisible();
   });
 
-  it('shows optional Shared Extras while retaining an empty Draft until wiring is enabled', async () => {
+  it('renders enabled optional Shared Extras without blocking an empty selection', async () => {
     const storage = new MemoryStorage();
     storage.setItem(RESERVATION_DRAFT_STORAGE_KEY, serializeReservationDraft(tripContextDraft()));
 
@@ -208,14 +208,123 @@ describe('ConfigurePage desktop transaction', () => {
 
     await screen.findByRole('heading', { name: 'Build your trip' });
     expect(screen.getByRole('heading', { name: 'Extras' })).toBeVisible();
-    expect(screen.getByRole('checkbox', { name: /Champagne/i })).toBeDisabled();
-    expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeDisabled();
+    expect(screen.getByRole('checkbox', { name: /Champagne/i })).toBeEnabled();
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeEnabled();
 
     const serialized = storage.getItem(RESERVATION_DRAFT_STORAGE_KEY);
     expect(JSON.parse(serialized ?? '{}')).toMatchObject({
       configuration: {
         extraSelectionKeys: [],
       },
+    });
+  });
+
+  it('wires Extras to one Draft truth with deterministic ordering, toggles and live summary', async () => {
+    const storage = new MemoryStorage();
+    const draft = tripContextDraft();
+    storage.setItem(RESERVATION_DRAFT_STORAGE_KEY, serializeReservationDraft(draft));
+
+    renderConfigure(storage);
+
+    await screen.findByRole('heading', { name: 'Build your trip' });
+    const champagne = screen.getByRole('checkbox', { name: /Champagne/i });
+    const coffee = screen.getByRole('checkbox', { name: /Coffee/i });
+    const summary = screen.getByRole('complementary', { name: 'Current trip configuration' });
+
+    async function expectSavedExtras(keys: string[]) {
+      await waitFor(() => {
+        expect(JSON.parse(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY) ?? '{}')).toMatchObject({
+          configuration: { extraSelectionKeys: keys },
+        });
+      });
+    }
+
+    expect(champagne).not.toBeChecked();
+    expect(coffee).not.toBeChecked();
+    await expectSavedExtras([]);
+
+    // Reverse click order still produces the canonical Shared option order.
+    fireEvent.click(coffee);
+    expect(coffee).toBeChecked();
+    expect(champagne).not.toBeChecked();
+    expect(within(summary).getByText('Coffee')).toBeVisible();
+    await expectSavedExtras(['COFFEE']);
+
+    fireEvent.click(champagne);
+    expect(champagne).toBeChecked();
+    expect(coffee).toBeChecked();
+    expect(within(summary).getByText('Champagne, Coffee')).toBeVisible();
+    await expectSavedExtras(['CHAMPAGNE', 'COFFEE']);
+
+    fireEvent.click(champagne);
+    expect(champagne).not.toBeChecked();
+    expect(coffee).toBeChecked();
+    expect(within(summary).getByText('Coffee')).toBeVisible();
+    await expectSavedExtras(['COFFEE']);
+
+    fireEvent.click(coffee);
+    expect(champagne).not.toBeChecked();
+    expect(coffee).not.toBeChecked();
+    await expectSavedExtras([]);
+
+    // Extras never reset unrelated required choices.
+    expect(draft.configuration.hotelSelectionKey).toBeNull();
+    expect(screen.getByRole('radio', { name: /4-star hotel/i })).not.toBeChecked();
+    expect(within(summary).getByRole('button', { name: 'Review trip' })).toBeDisabled();
+  });
+
+  it('restores selected Extras from persistence without introducing parallel component state', async () => {
+    const storage = new MemoryStorage();
+    const draft = tripContextDraft();
+    storage.setItem(
+      RESERVATION_DRAFT_STORAGE_KEY,
+      serializeReservationDraft({
+        ...draft,
+        configuration: { ...draft.configuration, extraSelectionKeys: ['COFFEE'] },
+      }),
+    );
+
+    const mounted = renderConfigure(storage);
+    await screen.findByRole('heading', { name: 'Build your trip' });
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: /Champagne/i })).not.toBeChecked();
+    mounted.unmount();
+
+    renderConfigure(storage);
+    await screen.findByRole('heading', { name: 'Build your trip' });
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeChecked();
+
+    fireEvent.click(screen.getByRole('checkbox', { name: /Coffee/i }));
+    await waitFor(() => {
+      expect(JSON.parse(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY) ?? '{}')).toMatchObject({
+        configuration: { extraSelectionKeys: [] },
+      });
+    });
+  });
+
+  it('deduplicates existing selection keys on a GUI toggle instead of multiplying them', async () => {
+    const storage = new MemoryStorage();
+    const draft = tripContextDraft();
+    storage.setItem(
+      RESERVATION_DRAFT_STORAGE_KEY,
+      serializeReservationDraft({
+        ...draft,
+        configuration: {
+          ...draft.configuration,
+          extraSelectionKeys: ['COFFEE', 'COFFEE'],
+        },
+      }),
+    );
+
+    renderConfigure(storage);
+    await screen.findByRole('heading', { name: 'Build your trip' });
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeChecked();
+    fireEvent.click(screen.getByRole('checkbox', { name: /Champagne/i }));
+
+    await waitFor(() => {
+      expect(JSON.parse(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY) ?? '{}')).toMatchObject({
+        configuration: { extraSelectionKeys: ['CHAMPAGNE', 'COFFEE'] },
+      });
     });
   });
 });
