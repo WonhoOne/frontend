@@ -200,14 +200,16 @@ describe('ConfigurePage desktop transaction', () => {
     expect(screen.getByRole('heading', { name: 'Reservation review marker' })).toBeVisible();
   });
 
-  it('keeps optional v0.2 extras empty while the live screen exposes the three required groups', async () => {
+  it('shows optional Shared Extras while retaining an empty Draft until wiring is enabled', async () => {
     const storage = new MemoryStorage();
     storage.setItem(RESERVATION_DRAFT_STORAGE_KEY, serializeReservationDraft(tripContextDraft()));
 
     renderConfigure(storage);
 
     await screen.findByRole('heading', { name: 'Build your trip' });
-    expect(screen.queryByRole('heading', { name: 'Extras' })).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Extras' })).toBeVisible();
+    expect(screen.getByRole('checkbox', { name: /Champagne/i })).toBeDisabled();
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeDisabled();
 
     const serialized = storage.getItem(RESERVATION_DRAFT_STORAGE_KEY);
     expect(JSON.parse(serialized ?? '{}')).toMatchObject({
