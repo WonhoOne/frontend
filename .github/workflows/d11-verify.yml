@@ -14,6 +14,8 @@ jobs:
           node-version: 24.21.0
           cache: npm
       - run: npm ci
+      - name: Show exact formatting diff for Extras primitive
+        run: npx prettier src/features/configuration/ConfigurationOptionGroup.tsx | diff -u src/features/configuration/ConfigurationOptionGroup.tsx - || true
       - run: npm run verify
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
