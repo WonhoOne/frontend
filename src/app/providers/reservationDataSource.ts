@@ -36,4 +36,6 @@ export function createReservationDataSource(
   return new BackendReservationDataSource(client);
 }
 
-export const reservationDataSource = createReservationDataSource();
+export const reservationDataSource = import.meta.env.PROD
+  ? new BackendReservationDataSource(backendHttpClient)
+  : createReservationDataSource();

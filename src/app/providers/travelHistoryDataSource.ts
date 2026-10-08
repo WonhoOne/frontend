@@ -34,4 +34,6 @@ export function createTravelHistoryDataSource(
   return new BackendTravelHistoryDataSource(client);
 }
 
-export const travelHistoryDataSource = createTravelHistoryDataSource();
+export const travelHistoryDataSource = import.meta.env.PROD
+  ? new BackendTravelHistoryDataSource(backendHttpClient)
+  : createTravelHistoryDataSource();

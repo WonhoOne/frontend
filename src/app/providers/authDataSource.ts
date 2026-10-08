@@ -48,4 +48,6 @@ export function createAuthDataSource(
   return new BackendAuthDataSource(client);
 }
 
-export const authDataSource = createAuthDataSource();
+export const authDataSource = import.meta.env.PROD
+  ? new BackendAuthDataSource(backendHttpClient)
+  : createAuthDataSource();
