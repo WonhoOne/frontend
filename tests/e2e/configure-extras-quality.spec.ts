@@ -19,11 +19,14 @@ const draft = {
 };
 
 async function seedDraft(page: Page) {
-  await page.addInitScript(({ key, value }) => {
-    if (sessionStorage.getItem(key) === null) {
-      sessionStorage.setItem(key, JSON.stringify(value));
-    }
-  }, { key: storageKey, value: draft });
+  await page.addInitScript(
+    ({ key, value }) => {
+      if (sessionStorage.getItem(key) === null) {
+        sessionStorage.setItem(key, JSON.stringify(value));
+      }
+    },
+    { key: storageKey, value: draft },
+  );
 }
 
 async function readExtras(page: Page) {
@@ -83,13 +86,11 @@ for (const width of [320, 390, 768, 1023, 1024, 1280]) {
       await expect(trigger).toBeFocused();
     } else {
       await expect(
-        page.getByRole('complementary', { name: 'Current trip configuration' }).getByText(
-          'Champagne, Coffee',
-        ),
+        page
+          .getByRole('complementary', { name: 'Current trip configuration' })
+          .getByText('Champagne, Coffee'),
       ).toBeVisible();
-      await expect(
-        page.getByRole('complementary', { name: 'Mobile trip summary' }),
-      ).toHaveCount(0);
+      await expect(page.getByRole('complementary', { name: 'Mobile trip summary' })).toHaveCount(0);
     }
 
     expect(

@@ -336,7 +336,9 @@ describe('Shared v0.2 Extras checkbox primitive', () => {
     expect(screen.getByRole('checkbox', { name: /Champagne/i })).toBeChecked();
     expect(screen.getByRole('checkbox', { name: /Champagne/i })).toBeEnabled();
     expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeEnabled();
-    expect(screen.getByText('This extra is no longer available. Deselect it to continue.')).toBeVisible();
+    expect(
+      screen.getByText('This extra is no longer available. Deselect it to continue.'),
+    ).toBeVisible();
     fireEvent.click(screen.getByRole('checkbox', { name: /Champagne/i }));
     expect(onToggle).toHaveBeenCalledWith('CHAMPAGNE');
   });

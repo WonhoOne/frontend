@@ -14,10 +14,6 @@ jobs:
           node-version: 24.21.0
           cache: npm
       - run: npm ci
-      - name: Inspect X6 formatter changes (read only)
-        run: |
-          npx prettier src/features/configuration/ConfigurationOptionGroup.test.tsx | diff -u src/features/configuration/ConfigurationOptionGroup.test.tsx - || true
-          npx prettier tests/e2e/configure-extras-quality.spec.ts | diff -u tests/e2e/configure-extras-quality.spec.ts - || true
       - run: npm run verify
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
