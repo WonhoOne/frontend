@@ -42,6 +42,10 @@ for (const fileUrl of await filesUnder(pagesRoot)) {
 }
 
 for (const fileUrl of await filesUnder(distRoot)) {
+  if (fileUrl.pathname.endsWith('/mockServiceWorker.js')) {
+    throw new Error('Production build must never publish the development Mock Service Worker.');
+  }
+
   const content = await readFile(fileUrl, 'utf8').catch(() => '');
   for (const marker of forbidden) {
     if (content.includes(marker)) {
