@@ -14,6 +14,10 @@ jobs:
           node-version: 24.21.0
           cache: npm
       - run: npm ci
+      - name: Inspect X5 formatter output without changing source
+        run: |
+          npx prettier src/features/reservation/sharedExtrasRoundtrip.test.ts | diff -u src/features/reservation/sharedExtrasRoundtrip.test.ts - || true
+          npx prettier src/features/voice-bridge/reservationDraftVoiceAdapter.test.ts | diff -u src/features/voice-bridge/reservationDraftVoiceAdapter.test.ts - || true
       - run: npm run verify
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
