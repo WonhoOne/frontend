@@ -368,6 +368,48 @@ describe('Shared v0.2 Extras checkbox primitive', () => {
     expect(screen.getByRole('checkbox', { name: /Champagne/i })).toBeEnabled();
   });
 
+  it('allows explicit removal when a restored Extra key is absent from the current catalog', () => {
+    const onToggle = vi.fn();
+    render(
+      <ConfigurationOptionGroup
+        group={extras()}
+        onSelect={vi.fn()}
+        onToggle={onToggle}
+        selectedKey={null}
+        selectedKeys={['LEGACY_PRIVATE_EXTRA', 'COFFEE']}
+        stepNumber={4}
+      />,
+    );
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeChecked();
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      '1 saved extra is no longer in the available options.',
+    );
+    expect(screen.queryByText('LEGACY_PRIVATE_EXTRA')).not.toBeInTheDocument();
+    const removal = screen.getByRole('button', { name: 'Remove unavailable extra' });
+    expect(removal).toBeEnabled();
+    fireEvent.click(removal);
+    expect(onToggle).toHaveBeenCalledExactlyOnceWith('LEGACY_PRIVATE_EXTRA');
+  });
+
+  it('provides separately labelled controls for multiple missing saved Extra keys', () => {
+    const onToggle = vi.fn();
+    render(
+      <ConfigurationOptionGroup
+        group={extras()}
+        onSelect={vi.fn()}
+        onToggle={onToggle}
+        selectedKey={null}
+        selectedKeys={['LEGACY_ONE', 'LEGACY_ONE', 'LEGACY_TWO']}
+        stepNumber={4}
+      />,
+    );
+    expect(screen.getByRole('button', { name: 'Remove unavailable extra 1' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Remove unavailable extra 2' })).toBeEnabled();
+    fireEvent.click(screen.getByRole('button', { name: 'Remove unavailable extra 2' }));
+    expect(onToggle).toHaveBeenCalledExactlyOnceWith('LEGACY_TWO');
+    expect(screen.queryByText('LEGACY_ONE')).not.toBeInTheDocument();
+  });
+
   it('does not expose a seemingly interactive checkbox before an owning toggle callback exists', () => {
     render(
       <ConfigurationOptionGroup
