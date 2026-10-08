@@ -141,14 +141,19 @@ test('real MySQL authenticated customer journey', async ({ page, request }) => {
 
   // Seed a completed snapshot in this disposable CI database only.
   // Public reservation creation rightly refuses dates in the past.
-  const mysqlContainer = process.env.MYSQL_CONTAINER_ID;
   const mysqlPassword = process.env.DB_PASSWORD;
-  if (process.env.CI !== 'true' || !mysqlContainer || !mysqlPassword) {
+  if (process.env.CI !== 'true' || !mysqlPassword) {
     throw new Error('Completed-history fixture requires isolated CI MySQL.');
   }
-  if (!/^[a-f0-9]{12,64}$/.test(mysqlContainer)) {
-    throw new Error('Invalid disposable MySQL container ID.');
+  const containers = execFileSync(
+    'docker',
+    ['ps', '--quiet', '--filter', 'ancestor=mysql:8.4'],
+    { encoding: 'utf8' },
+  ).trim().split('\n').filter(Boolean);
+  if (containers.length !== 1 || !/^[a-f0-9]{12,64}$/.test(containers[0] ?? '')) {
+    throw new Error('Expected exactly one disposable MySQL service container.');
   }
+  const mysqlContainer = containers[0]!;
   if (!Number.isSafeInteger(created.id) || created.id <= 0) {
     throw new Error('Invalid test reservation identity.');
   }
