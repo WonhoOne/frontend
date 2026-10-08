@@ -290,7 +290,7 @@ describe('Shared v0.2 Extras checkbox primitive', () => {
     expect(screen.getByRole('status')).toHaveTextContent('Updating availability');
   });
 
-  it('disables unavailable and invalid selections while retaining their checked truth', () => {
+  it('allows deselecting unavailable Extras but never adding them, preserving checked truth', () => {
     const onToggle = vi.fn();
     const extrasGroup = extras();
     const disabled: OptionGroupModel = {
@@ -316,8 +316,10 @@ describe('Shared v0.2 Extras checkbox primitive', () => {
       />,
     );
     expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeChecked();
-    expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeDisabled();
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeEnabled();
     expect(screen.getByText('Not selectable now.')).toBeVisible();
+    fireEvent.click(screen.getByRole('checkbox', { name: /Coffee/i }));
+    expect(onToggle).toHaveBeenCalledWith('COFFEE');
     expect(screen.getByRole('checkbox', { name: /Champagne/i })).toBeEnabled();
 
     rerender(
@@ -332,9 +334,36 @@ describe('Shared v0.2 Extras checkbox primitive', () => {
       />,
     );
     expect(screen.getByRole('checkbox', { name: /Champagne/i })).toBeChecked();
-    expect(screen.getByRole('checkbox', { name: /Champagne/i })).toBeDisabled();
+    expect(screen.getByRole('checkbox', { name: /Champagne/i })).toBeEnabled();
     expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeEnabled();
-    expect(onToggle).not.toHaveBeenCalled();
+    expect(screen.getByText('This extra is no longer available. Deselect it to continue.')).toBeVisible();
+    fireEvent.click(screen.getByRole('checkbox', { name: /Champagne/i }));
+    expect(onToggle).toHaveBeenCalledWith('CHAMPAGNE');
+  });
+
+  it('disables an unavailable unselected Extra but keeps its reason visible', () => {
+    const extra = extras();
+    const unavailable: OptionGroupModel = {
+      ...extra,
+      options: extra.options.map((option) =>
+        option.selectionKey === 'COFFEE'
+          ? { ...option, availability: { status: 'disabled', reason: 'No coffee available.' } }
+          : option,
+      ),
+    };
+    render(
+      <ConfigurationOptionGroup
+        group={unavailable}
+        onSelect={vi.fn()}
+        onToggle={vi.fn()}
+        selectedKey={null}
+        selectedKeys={[]}
+        stepNumber={4}
+      />,
+    );
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeDisabled();
+    expect(screen.getByText('No coffee available.')).toBeVisible();
+    expect(screen.getByRole('checkbox', { name: /Champagne/i })).toBeEnabled();
   });
 
   it('does not expose a seemingly interactive checkbox before an owning toggle callback exists', () => {

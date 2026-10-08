@@ -138,18 +138,28 @@ export function ConfigurationOptionGroup({
               ? selectedKeys.includes(option.selectionKey)
               : selectedKey === option.selectionKey;
             const isInvalidSelection = runtimeState.status === 'invalid' && isSelected;
+            // Optional Extras must remain removable even if availability changes.
+            // Prevent adding unavailable choices; never trap an existing selection.
+            const canRemoveExtra = isMultiple && isSelected && onToggle !== undefined;
             const isDisabled =
-              option.availability.status === 'disabled' ||
-              isInvalidSelection ||
+              ((option.availability.status === 'disabled' || isInvalidSelection) &&
+                !canRemoveExtra) ||
               (isMultiple && onToggle === undefined);
             const disabledReason = isInvalidSelection
-              ? 'This selection is no longer available. Choose another option.'
+              ? isMultiple
+                ? 'This extra is no longer available. Deselect it to continue.'
+                : 'This selection is no longer available. Choose another option.'
               : option.availability.status === 'disabled'
                 ? option.availability.reason
                 : null;
 
             return (
-              <OptionCard isDisabled={isDisabled} isSelected={isSelected} key={option.selectionKey}>
+              <OptionCard
+                isDisabled={isDisabled}
+                isInvalid={isInvalidSelection}
+                isSelected={isSelected}
+                key={option.selectionKey}
+              >
                 <label className={styles.optionLabel}>
                   <input
                     checked={isSelected}

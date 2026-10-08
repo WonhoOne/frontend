@@ -124,15 +124,15 @@ export function ConfigureDesktop({
 
   function toggleExtra(selectionKey: string) {
     const extrasGroup = scenario.groups.find((group) => group.category === 'extras');
-    if (
-      extrasGroup?.selectionMode !== 'multiple' ||
-      !extrasGroup.options.some(
-        (option) =>
-          option.selectionKey === selectionKey && option.availability.status === 'selectable',
-      )
-    ) {
-      return;
-    }
+    if (extrasGroup?.selectionMode !== 'multiple') return;
+
+    const wasSelected = draft.configuration.extraSelectionKeys.includes(selectionKey);
+    const isSelectable = extrasGroup.options.some(
+      (option) =>
+        option.selectionKey === selectionKey && option.availability.status === 'selectable',
+    );
+    // Removing an unavailable selected Extra is recovery, not adding an invalid choice.
+    if (!wasSelected && !isSelectable) return;
 
     // Draft owns the complete selection truth. Set removes pre-existing duplicates;
     // the live catalog provides deterministic canonical order regardless of click order.
