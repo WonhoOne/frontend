@@ -205,5 +205,10 @@ test('real MySQL authenticated customer journey', async ({ page, request }) => {
   await previousTrips.getByRole('button', { name: '전체 여행 보기' }).click();
   await expect(page).toHaveURL('/my-trips');
   await expect(page.getByRole('heading', { name: 'My Trips', level: 1 })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'F2 Synthetic Golf', level: 3 })).toBeVisible();
+  await expect(
+    page.locator('section[aria-labelledby="trip-history-heading"]').getByRole('heading', {
+      name: 'F2 Synthetic Golf',
+      level: 3,
+    }),
+  ).toBeVisible();
 });
