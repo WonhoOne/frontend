@@ -164,10 +164,13 @@ test('an invalid selected Extra remains visible and can be deselected to recover
   const invalid = page.getByRole('checkbox', { name: /Fixture extra A/i });
   await expect(invalid).toBeChecked();
   await expect(invalid).toBeEnabled();
+  await expect(page.getByRole('button', { name: 'Review trip' })).toBeDisabled();
+  await expect(page.getByText('Remove an unavailable Extra before continuing.')).toBeVisible();
   await expect(
     page.getByRole('alert').filter({ hasText: 'selected extras option is no longer available' }),
   ).toBeVisible();
   await invalid.uncheck();
   await expect(invalid).not.toBeChecked();
+  await expect(page.getByRole('button', { name: 'Review trip' })).toBeEnabled();
   await expect(page.getByRole('checkbox', { name: /Fixture extra B/i })).toBeEnabled();
 });

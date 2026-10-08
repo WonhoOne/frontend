@@ -11,7 +11,7 @@ import {
 } from '@/features/reservation';
 
 export type ConfigureReadinessIssue =
-  'tour-context' | 'style' | 'schedule' | 'participants' | 'hotel' | 'transport' | 'meal';
+  'tour-context' | 'style' | 'schedule' | 'participants' | 'hotel' | 'transport' | 'meal' | 'extras';
 
 export interface ConfigureReadiness {
   isReady: boolean;
@@ -123,6 +123,19 @@ export function getConfigureReadiness({
     })
   ) {
     issues.push('meal');
+  }
+
+  // Extras are optional, but an already-selected unavailable Extra cannot
+  // be submitted as though it were valid. Clearing it restores Review access.
+  const selectedExtras = draft.configuration.extraSelectionKeys;
+  if (selectedExtras.length > 0) {
+    const extrasGroup = groups.find((group) => group.category === 'extras');
+    if (
+      runtimeState.groups.extras.status === 'invalid' ||
+      selectedExtras.some((key) => !hasSelectableSelection(extrasGroup, key))
+    ) {
+      issues.push('extras');
+    }
   }
 
   return {
