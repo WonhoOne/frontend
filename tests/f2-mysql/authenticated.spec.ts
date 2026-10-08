@@ -22,12 +22,12 @@ test('real MySQL signup, login, reservation, cold detail, and empty history with
     }
   }, { timeout: 90_000 }).toBe(200);
 
-  const catalog = await (await request.get(`${backend}/tours`)).json();
+  const catalog = (await (await request.get(`${backend}/tours`)).json()) as Array<{ id: number; name: string }>;
   expect(catalog).toHaveLength(1);
   expect(catalog[0].name).toBe('F2 Synthetic Golf');
   const scheduleResponse = await request.get(`${backend}/tour-schedules?tourId=${catalog[0].id}`);
   expect(scheduleResponse.status()).toBe(200);
-  const schedules = await scheduleResponse.json();
+  const schedules = (await scheduleResponse.json()) as Array<{ id: number; reservable: boolean }>;
   expect(schedules).toHaveLength(1);
   expect(schedules[0].reservable).toBe(true);
 
@@ -54,7 +54,10 @@ test('real MySQL signup, login, reservation, cold detail, and empty history with
     data: { loginId: account.loginId, password: account.password },
   });
   expect(bearerResponse.status()).toBe(200);
-  const session = await bearerResponse.json();
+  const session = (await bearerResponse.json()) as {
+    accessToken: string;
+    user: { role: string };
+  };
   expect(session.user.role).toBe('CUSTOMER');
   const authorization = { Authorization: `Bearer ${session.accessToken}` };
 
@@ -81,7 +84,10 @@ test('real MySQL signup, login, reservation, cold detail, and empty history with
     },
   });
   expect(creation.status()).toBe(201);
-  const created = await creation.json();
+  const created = (await creation.json()) as {
+    id: number;
+    tourProduct: { name: string };
+  };
   expect(created.id).toBeGreaterThan(0);
   expect(created.tourProduct.name).toBe('F2 Synthetic Golf');
 
@@ -94,6 +100,15 @@ test('real MySQL signup, login, reservation, cold detail, and empty history with
   // Full document reload intentionally loses the in-memory bearer token.
   await page.goto(`/reservations/${created.id}`);
   await expect(page.getByRole('heading', { name: 'Sign in to view this reservation' })).toBeVisible();
+  await page.evaluate((id) => {
+    sessionStorage.setItem('mister-world:return-context:v1', JSON.stringify({
+      schemaVersion: 1,
+      returnTo: `/reservations/${id}`,
+      intent: 'continue-navigation',
+      draftSchemaVersion: 1,
+      createdAt: Date.now(),
+    }));
+  }, created.id);
   await page.getByRole('link', { name: /sign in|log in|login/i }).first().click();
   await login();
   await expect(page.getByRole('heading', { name: 'F2 Synthetic Golf', level: 1 })).toBeVisible();
