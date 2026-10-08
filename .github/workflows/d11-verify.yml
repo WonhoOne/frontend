@@ -14,6 +14,10 @@ jobs:
           node-version: 24.21.0
           cache: npm
       - run: npm ci
+      - name: Show formatter difference for F2 integration test
+        run: |
+          npx prettier --write tests/f2-mysql/authenticated.spec.ts
+          git diff -- tests/f2-mysql/authenticated.spec.ts
       - run: npm run verify
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
