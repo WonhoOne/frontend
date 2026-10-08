@@ -2,12 +2,8 @@ export const CONFIGURATION_GROUP_ORDER = ['hotel', 'transport', 'meal', 'extras'
 
 export type ConfigurationCategory = (typeof CONFIGURATION_GROUP_ORDER)[number];
 
-/**
- * Hotel/Transport/Meal은 source requirement상 single choice다.
- * Extras의 exact selection rule은 approved Shared Contract가 아직 닫지 않았으므로
- * C3에서는 multi-select로 확정하지 않는다.
- */
-export type ConfigurationSelectionMode = 'single' | 'contract-dependent';
+/** Hotel/Transport/Meal use radio selection; Shared v0.2 Extras are optional multi-select. */
+export type ConfigurationSelectionMode = 'single' | 'multiple';
 
 export type ConfigurationOptionAvailability =
   { status: 'selectable' } | { status: 'disabled'; reason: string };
@@ -20,8 +16,8 @@ export interface ConfigurationOptionVisualModel {
 /**
  * Configure UI가 소비하는 local presentation model.
  *
- * selectionKey는 Frontend transaction intent를 연결하기 위한 opaque key이며
- * Backend canonical option ID/DTO field라고 가정하지 않는다.
+ * selectionKey belongs to the scenario: Shared v0.2 uses canonical REST IDs;
+ * historical fixture scenarios retain opaque demo-only selection keys.
  */
 export interface ConfigurationOptionModel {
   selectionKey: string;

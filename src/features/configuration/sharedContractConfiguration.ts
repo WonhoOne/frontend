@@ -15,8 +15,8 @@ function option(selectionKey: string, title: string, description: string) {
  * journey. The Backend exposes no option-catalog endpoint in v0.2, so these
  * canonical IDs come directly from the approved Shared contract.
  *
- * Extras are optional and remain an empty selection in this screen iteration;
- * the create contract accepts an empty unique set.
+ * Optional Extras use the v0.2 canonical identities directly. Selection and
+ * user intent are owned by ReservationDraft, not a secondary local UI state.
  */
 export function createSharedContractConfigureScenario(): ConfigureScenario {
   return {
@@ -64,6 +64,17 @@ export function createSharedContractConfigureScenario(): ConfigureScenario {
           option('LUNCH_BOX', 'Lunch box', 'Prepared lunch-box meal option.'),
           option('LOCAL_RESTAURANT', 'Local restaurant', 'Local restaurant meal option.'),
           option('PREMIUM_RESTAURANT', 'Premium restaurant', 'Premium restaurant meal option.'),
+        ],
+      },
+      {
+        category: 'extras',
+        heading: 'Extras',
+        helperText: 'Optional additions. Select any combination.',
+        required: false,
+        selectionMode: 'multiple',
+        options: [
+          option('CHAMPAGNE', 'Champagne', 'Optional champagne.'),
+          option('COFFEE', 'Coffee', 'Optional coffee.'),
         ],
       },
     ],
