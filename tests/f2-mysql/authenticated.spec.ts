@@ -14,15 +14,23 @@ test('real MySQL signup, login, reservation, cold detail, and empty history with
 }) => {
   const backend = 'http://127.0.0.1:8080/api/v1';
 
-  await expect.poll(async () => {
-    try {
-      return (await request.get(`${backend}/tours`)).status();
-    } catch {
-      return 0;
-    }
-  }, { timeout: 90_000 }).toBe(200);
+  await expect
+    .poll(
+      async () => {
+        try {
+          return (await request.get(`${backend}/tours`)).status();
+        } catch {
+          return 0;
+        }
+      },
+      { timeout: 90_000 },
+    )
+    .toBe(200);
 
-  const catalog = (await (await request.get(`${backend}/tours`)).json()) as Array<{ id: number; name: string }>;
+  const catalog = (await (await request.get(`${backend}/tours`)).json()) as Array<{
+    id: number;
+    name: string;
+  }>;
   expect(catalog).toHaveLength(1);
   expect(catalog[0]!.name).toBe('F2 Synthetic Golf');
   const scheduleResponse = await request.get(`${backend}/tour-schedules?tourId=${catalog[0]!.id}`);
@@ -99,15 +107,20 @@ test('real MySQL signup, login, reservation, cold detail, and empty history with
 
   // Full document reload intentionally loses the in-memory bearer token.
   await page.goto(`/reservations/${created.id}`);
-  await expect(page.getByRole('heading', { name: 'Sign in to view this reservation' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Sign in to view this reservation' }),
+  ).toBeVisible();
   await page.evaluate((id) => {
-    sessionStorage.setItem('mister-world:return-context:v1', JSON.stringify({
-      schemaVersion: 1,
-      returnTo: `/reservations/${id}`,
-      intent: 'continue-navigation',
-      draftSchemaVersion: 1,
-      createdAt: Date.now(),
-    }));
+    sessionStorage.setItem(
+      'mister-world:return-context:v1',
+      JSON.stringify({
+        schemaVersion: 1,
+        returnTo: `/reservations/${id}`,
+        intent: 'continue-navigation',
+        draftSchemaVersion: 1,
+        createdAt: Date.now(),
+      }),
+    );
   }, created.id);
   await page.getByRole('link', { name: /sign in|log in|login/i }).first().click();
   await login();
