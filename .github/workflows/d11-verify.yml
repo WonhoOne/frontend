@@ -100,3 +100,82 @@ jobs:
           if [ -f /tmp/f1-backend.pid ]; then
             kill "$(cat /tmp/f1-backend.pid)" || true
           fi
+
+  authenticated-mysql-e2e:
+    name: Real Backend + MySQL authenticated customer journey
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: misterworld
+          MYSQL_USER: misterworld
+          MYSQL_PASSWORD: f2-disposable-test-only-password
+          MYSQL_ROOT_PASSWORD: f2-disposable-test-only-root-password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 --silent"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=30
+          --health-start-period=20s
+    env:
+      DB_URL: jdbc:mysql://127.0.0.1:3306/misterworld?useSSL=false&allowPublicKeyRetrieval=true&connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&connectTimeout=5000&socketTimeout=20000
+      DB_USERNAME: misterworld
+      DB_PASSWORD: f2-disposable-test-only-password
+      JWT_SECRET: f2-disposable-jwt-signing-key-at-least-32-bytes
+      SMS_DELIVERY_ENABLED: 'false'
+      EMPLOYEE_BOOTSTRAP_ENABLED: 'false'
+      DEMO_PROVISIONING_ENABLED: 'true'
+      DEMO_EXPECTED_DATABASE: misterworld
+      BUSINESS_TIME_ZONE: Asia/Seoul
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.21.0
+          cache: npm
+      - run: npm ci
+      - uses: actions/checkout@v4
+        with:
+          repository: WonhoOne/backend
+          ref: 597cf92f1baf93211862d4ea5dbfa8a199b808a2
+          path: .f2-backend
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: .f2-backend/pom.xml
+      - name: Generate disposable catalog manifest
+        run: node scripts/prepare-f2-mysql-scenario.mjs
+      - name: Build approved Backend
+        working-directory: .f2-backend
+        run: |
+          chmod +x mvnw
+          ./mvnw --batch-mode --no-transfer-progress -DskipTests package
+      - name: Launch real Backend with billable SMS disabled
+        env:
+          DEMO_SCENARIO_FILE: ${{ github.workspace }}/.f2-backend/target/f2-mysql-scenario.json
+        run: |
+          nohup java -jar .f2-backend/target/misterworld-0.0.1-SNAPSHOT.jar > /tmp/f2-backend.log 2>&1 &
+          echo $! > /tmp/f2-backend.pid
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Cross-repository authenticated browser/API journey
+        env:
+          CI: 'true'
+          BACKEND_DEV_PROXY_TARGET: http://127.0.0.1:8080
+          VITE_ENABLE_MOCKS: 'false'
+        run: npx playwright test -c playwright.f2-mysql.config.ts
+      - name: Print Backend diagnostics on failure
+        if: failure()
+        run: tail -n 120 /tmp/f2-backend.log || true
+      - name: Stop Backend
+        if: always()
+        run: |
+          if [ -f /tmp/f2-backend.pid ]; then
+            kill "$(cat /tmp/f2-backend.pid)" || true
+          fi
