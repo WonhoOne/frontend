@@ -144,7 +144,10 @@ describe('Configure readiness', () => {
     ).toEqual({ isReady: false, issues: ['extras'] });
     expect(
       getConfigureReadiness({
-        draft: { ...selected, configuration: { ...selected.configuration, extraSelectionKeys: [] } },
+        draft: {
+          ...selected,
+          configuration: { ...selected.configuration, extraSelectionKeys: [] },
+        },
         expectedTourProductId: '101',
         groups: unavailable,
         participantRule: 'general',
