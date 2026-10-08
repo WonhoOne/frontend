@@ -33,4 +33,6 @@ const manifest = {
 const directory = resolve('.f2-backend/target');
 await mkdir(directory, { recursive: true });
 await writeFile(resolve(directory, 'f2-mysql-scenario.json'), JSON.stringify(manifest));
-globalThis.console.log('Prepared one disposable F2 tour and one future schedule for MySQL integration.');
+globalThis.console.log(
+  'Prepared one disposable F2 tour and one future schedule for MySQL integration.',
+);
