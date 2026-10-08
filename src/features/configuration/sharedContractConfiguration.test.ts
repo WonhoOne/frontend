@@ -45,10 +45,7 @@ describe('Shared v0.2 live configuration scenario', () => {
       selectionMode: 'multiple',
       heading: 'Extras',
     });
-    expect(extras.options.map((option) => option.selectionKey)).toEqual([
-      'CHAMPAGNE',
-      'COFFEE',
-    ]);
+    expect(extras.options.map((option) => option.selectionKey)).toEqual(['CHAMPAGNE', 'COFFEE']);
 
     for (const option of hotel.options) {
       expect(
