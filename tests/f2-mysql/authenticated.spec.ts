@@ -133,6 +133,62 @@ test('real MySQL authenticated customer journey', async ({ page, request }) => {
   await expect(page.getByRole('heading', { name: 'F2 Synthetic Golf', level: 1 })).toBeVisible();
   await expect(page.getByText(`Reservation #${created.id}`, { exact: true })).toBeVisible();
 
+  // End-to-end Browser Review: authenticated API setup is not a substitute
+  // for the actual Review → Login → manual POST → Success navigation.
+  await page.goto('/');
+  await page.evaluate(
+    ({ productId, scheduleId }) => {
+      sessionStorage.setItem(
+        'mister-world:reservation-draft:v1',
+        JSON.stringify({
+          schemaVersion: 1,
+          tourProductId: productId,
+          tourScheduleId: scheduleId,
+          tourStyle: 'GRAND',
+          participantCount: 2,
+          configuration: {
+            hotelSelectionKey: 'HOTEL_4_STAR',
+            transportSelectionKey: 'PRIVATE_LUXURY_CAR_2',
+            mealSelectionKey: 'LOCAL_RESTAURANT',
+            extraSelectionKeys: [],
+          },
+          updatedAt: Date.now(),
+        }),
+      );
+    },
+    { productId: String(catalog[0]!.id), scheduleId: String(schedules[0]!.id) },
+  );
+  await page.goto('/reservation/review');
+  await expect(page.getByRole('heading', { name: 'Review your trip' })).toBeVisible();
+
+  let browserReservationPosts = 0;
+  page.on('request', (requested) => {
+    if (
+      requested.method() === 'POST' &&
+      new URL(requested.url()).pathname === '/api/v1/reservations'
+    ) {
+      browserReservationPosts += 1;
+    }
+  });
+  await page.getByRole('button', { name: 'Apply for reservation' }).click();
+  await expect(page).toHaveURL('/login');
+  expect(browserReservationPosts).toBe(0);
+  await login();
+  await expect(page).toHaveURL('/reservation/review');
+  await expect(page.getByRole('button', { name: 'Apply for reservation' })).toBeEnabled();
+  expect(browserReservationPosts).toBe(0);
+
+  await page.getByRole('button', { name: 'Apply for reservation' }).click();
+  await expect(page).toHaveURL(/\/reservation\/\d+\/success$/);
+  await expect(page.getByRole('heading', { name: 'Reservation received' })).toBeVisible();
+  expect(browserReservationPosts).toBe(1);
+  await page.getByRole('link', { name: 'View reservation details' }).click();
+  await expect(page).toHaveURL(/\/reservations\/\d+$/);
+  await expect(page.getByRole('heading', { name: 'F2 Synthetic Golf' })).toBeVisible();
+  expect(
+    await page.evaluate(() => sessionStorage.getItem('mister-world:reservation-draft:v1')),
+  ).toBeNull();
+
   // History eligibility is Backend-owned: a future trip must still be excluded.
   const stillEmpty = await request.get(`${backend}/customers/me/travel-history`, {
     headers: authorization,
