@@ -33,9 +33,14 @@ test('real MySQL signup, login, reservation, cold detail, and empty history with
   }>;
   expect(catalog).toHaveLength(1);
   expect(catalog[0]!.name).toBe('F2 Synthetic Golf');
-  const scheduleResponse = await request.get(`${backend}/tour-schedules?tourId=${catalog[0]!.id}`);
+  const scheduleResponse = await request.get(
+    `${backend}/tour-schedules?tourId=${catalog[0]!.id}`,
+  );
   expect(scheduleResponse.status()).toBe(200);
-  const schedules = (await scheduleResponse.json()) as Array<{ id: number; reservable: boolean }>;
+  const schedules = (await scheduleResponse.json()) as Array<{
+    id: number;
+    reservable: boolean;
+  }>;
   expect(schedules).toHaveLength(1);
   expect(schedules[0]!.reservable).toBe(true);
 
@@ -124,7 +129,9 @@ test('real MySQL signup, login, reservation, cold detail, and empty history with
   }, created.id);
   await page.getByRole('link', { name: /sign in|log in|login/i }).first().click();
   await login();
-  await expect(page.getByRole('heading', { name: 'F2 Synthetic Golf', level: 1 })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'F2 Synthetic Golf', level: 1 }),
+  ).toBeVisible();
   await expect(page.getByText(`Reservation #${created.id}`, { exact: true })).toBeVisible();
 
   // History eligibility is Backend-owned: a future trip must still be excluded.
