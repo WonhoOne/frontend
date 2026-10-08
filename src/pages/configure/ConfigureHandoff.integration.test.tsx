@@ -124,9 +124,9 @@ describe('Tour Detail → Configure public handoff boundary', () => {
       await screen.findByText(/Golf Challenge · Grand · 2027-03-10 – 2027-03-14/),
     ).toBeVisible();
     expect(screen.getByRole('spinbutton', { name: /participants/i })).toHaveValue(null);
-    expect(screen.getByRole('radio', { name: /4-star hotel/i })).not.toBeChecked();
+    expect(screen.getByRole('radio', { name: /4-star hotel/i })).toBeChecked();
     expect(screen.getByRole('radio', { name: /Private luxury car \(2\)/i })).not.toBeChecked();
-    expect(screen.getByRole('radio', { name: /Local restaurant/i })).not.toBeChecked();
+    expect(screen.getByRole('radio', { name: /Local restaurant/i })).toBeChecked();
     expect(screen.getByRole('button', { name: 'Review trip' })).toBeDisabled();
 
     await waitFor(() => {
@@ -140,9 +140,9 @@ describe('Tour Detail → Configure public handoff boundary', () => {
         tourScheduleId: '1301',
         participantCount: null,
         configuration: {
-          hotelSelectionKey: null,
+          hotelSelectionKey: 'HOTEL_4_STAR',
           transportSelectionKey: null,
-          mealSelectionKey: null,
+          mealSelectionKey: 'LOCAL_RESTAURANT',
           extraSelectionKeys: [],
         },
       });

@@ -56,11 +56,11 @@ test.describe('Tour Detail → Configure transaction handoff', () => {
     await expect(page.getByText(/Golf Challenge · Grand · 2027-03-10 – 2027-03-14/)).toBeVisible();
 
     await expect(page.getByRole('spinbutton', { name: /participants/i })).toHaveValue('');
-    await expect(page.getByRole('radio', { name: /4-star hotel/i })).not.toBeChecked();
+    await expect(page.getByRole('radio', { name: /4-star hotel/i })).toBeChecked();
     await expect(page.getByRole('radio', { name: /5-star hotel/i })).not.toBeChecked();
     await expect(page.getByRole('radio', { name: /Private luxury car \(2\)/i })).not.toBeChecked();
     await expect(page.getByRole('radio', { name: /Premium van \(10\)/i })).not.toBeChecked();
-    await expect(page.getByRole('radio', { name: /Local restaurant/i })).not.toBeChecked();
+    await expect(page.getByRole('radio', { name: /Local restaurant/i })).toBeChecked();
     await expect(page.getByRole('radio', { name: /Premium restaurant/i })).not.toBeChecked();
     await expect(page.getByRole('button', { name: 'Review trip' })).toBeDisabled();
 
@@ -93,9 +93,9 @@ test.describe('Tour Detail → Configure transaction handoff', () => {
       tourStyle: 'GRAND',
       participantCount: null,
       configuration: {
-        hotelSelectionKey: null,
+        hotelSelectionKey: 'HOTEL_4_STAR',
         transportSelectionKey: null,
-        mealSelectionKey: null,
+        mealSelectionKey: 'LOCAL_RESTAURANT',
         extraSelectionKeys: [],
       },
     });
@@ -110,5 +110,52 @@ test.describe('Tour Detail → Configure transaction handoff', () => {
         extraSelectionKeys: ['CHAMPAGNE'],
       },
     });
+  });
+
+  test('Premium Champagne defaults once and remains deselected after reload and navigation', async ({
+    page,
+  }) => {
+    await page.goto('/tours/103');
+    await page.getByRole('radio', { name: /Premium/ }).click();
+    await page.getByRole('radio', { name: /2027-03-10 – 2027-03-14/ }).click();
+    await page.getByRole('button', { name: 'Configure this trip' }).click();
+
+    await expect(page).toHaveURL(/\/tours\/103\/configure$/);
+    await expect(page.getByRole('radio', { name: /5-star hotel/i })).toBeChecked();
+    await expect(page.getByRole('radio', { name: /Premium restaurant/i })).toBeChecked();
+    await expect(page.getByRole('radio', { name: /Premium van \(10\)/i })).not.toBeChecked();
+
+    const champagne = page.getByRole('checkbox', { name: /Champagne/i });
+    const coffee = page.getByRole('checkbox', { name: /Coffee/i });
+    await expect(champagne).toBeChecked();
+    await expect(coffee).not.toBeChecked();
+
+    const readExtras = () =>
+      page.evaluate((key) => {
+        const raw = sessionStorage.getItem(key);
+        if (raw === null) return null;
+        const draft = JSON.parse(raw) as {
+          configuration: { extraSelectionKeys: string[] };
+        };
+        return draft.configuration.extraSelectionKeys;
+      }, reservationDraftStorageKey);
+
+    await expect.poll(readExtras).toEqual(['CHAMPAGNE']);
+    await champagne.uncheck();
+    await expect(champagne).not.toBeChecked();
+    await expect.poll(readExtras).toEqual([]);
+
+    await page.reload();
+    await expect(page.getByRole('heading', { name: 'Build your trip' })).toBeVisible();
+    await expect(page.getByRole('radio', { name: /5-star hotel/i })).toBeChecked();
+    await expect(page.getByRole('radio', { name: /Premium restaurant/i })).toBeChecked();
+    await expect(page.getByRole('checkbox', { name: /Champagne/i })).not.toBeChecked();
+    await expect.poll(readExtras).toEqual([]);
+
+    await page.goto('/tours/103');
+    await page.goBack();
+    await expect(page).toHaveURL(/\/tours\/103\/configure$/);
+    await expect(page.getByRole('checkbox', { name: /Champagne/i })).not.toBeChecked();
+    await expect.poll(readExtras).toEqual([]);
   });
 });
