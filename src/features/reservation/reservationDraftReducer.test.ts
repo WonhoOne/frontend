@@ -305,5 +305,4 @@ describe('reservationDraftReducer', () => {
     });
     expect(nextJourney.participantCount).toBeNull();
   });
-
 });

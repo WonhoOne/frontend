@@ -14,8 +14,6 @@ jobs:
           node-version: 24.21.0
           cache: npm
       - run: npm ci
-      - name: Inspect X4 test formatting (read only)
-        run: npx prettier src/features/reservation/reservationDraftReducer.test.ts | diff -u src/features/reservation/reservationDraftReducer.test.ts - || true
       - run: npm run verify
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
