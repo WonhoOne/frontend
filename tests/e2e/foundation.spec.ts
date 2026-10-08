@@ -55,7 +55,9 @@ test.describe('Foundation routes', () => {
 
     await openAuthenticatedReservation(page, '/reservations/801');
     await expect(page.getByText('Reservation #801', { exact: true })).toBeVisible();
-    await expect(page.getByRole('heading', { level: 1, name: 'Synthetic Honeymoon' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Synthetic Honeymoon' }),
+    ).toBeVisible();
   });
 
   test('navigation preserves browser back and forward history', async ({ page }) => {
