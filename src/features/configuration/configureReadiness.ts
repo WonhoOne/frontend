@@ -11,7 +11,14 @@ import {
 } from '@/features/reservation';
 
 export type ConfigureReadinessIssue =
-  'tour-context' | 'style' | 'schedule' | 'participants' | 'hotel' | 'transport' | 'meal' | 'extras';
+  | 'tour-context'
+  | 'style'
+  | 'schedule'
+  | 'participants'
+  | 'hotel'
+  | 'transport'
+  | 'meal'
+  | 'extras';
 
 export interface ConfigureReadiness {
   isReady: boolean;
