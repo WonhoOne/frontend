@@ -103,6 +103,13 @@ export function ConfigurationOptionGroup({
 }: ConfigurationOptionGroupProps) {
   const headingId = useId();
   const isMultiple = group.selectionMode === 'multiple';
+  // A restored Draft may contain an Extra removed from today's catalog.
+  // Never silently discard the user's intent, but always offer a way out.
+  const missingExtraKeys = isMultiple
+    ? [...new Set(selectedKeys)].filter(
+        (key) => !group.options.some((option) => option.selectionKey === key),
+      )
+    : [];
 
   let content;
 
@@ -211,6 +218,27 @@ export function ConfigurationOptionGroup({
       </header>
 
       {content}
+      {missingExtraKeys.length > 0 ? (
+        <div className={styles.missingExtraRecovery} role="alert">
+          <p>
+            {missingExtraKeys.length} saved extra
+            {missingExtraKeys.length === 1 ? ' is' : 's are'} no longer in the available options.
+            Remove {missingExtraKeys.length === 1 ? 'it' : 'them'} to continue.
+          </p>
+          {missingExtraKeys.map((key, index) => (
+            <Button
+              disabled={onToggle === undefined}
+              key={key}
+              onClick={() => onToggle?.(key)}
+              variant="secondary"
+            >
+              {missingExtraKeys.length === 1
+                ? 'Remove unavailable extra'
+                : `Remove unavailable extra ${index + 1}`}
+            </Button>
+          ))}
+        </div>
+      ) : null}
     </section>
   );
 }
