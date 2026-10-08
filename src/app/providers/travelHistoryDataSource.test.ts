@@ -1,7 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import { createTravelHistoryDataSource } from '@/app/providers/travelHistoryDataSource';
-import { BackendTravelHistoryDataSource, MockTravelHistoryDataSource } from '@/features/travel-history';
+import {
+  BackendTravelHistoryDataSource,
+  MockTravelHistoryDataSource,
+} from '@/features/travel-history';
 
 describe('Travel History composition', () => {
   it('selects the Real Backend in production even if the mock flag is set', () => {
