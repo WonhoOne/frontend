@@ -164,6 +164,25 @@
   background: var(--mw-surface-muted);
 }
 
+.missingExtraRecovery {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--mw-space-3);
+  padding: var(--mw-space-4);
+  border: var(--mw-border-subtle);
+  border-radius: var(--mw-radius-md);
+  background: var(--mw-warning-soft);
+}
+
+.missingExtraRecovery p {
+  flex: 1 1 100%;
+  margin: 0;
+  color: var(--mw-ink-soft);
+  font-size: var(--mw-font-size-body-sm);
+  line-height: var(--mw-line-height-body-sm);
+}
+
 .invalidNotice {
   background: var(--mw-warning-soft);
   color: var(--mw-ink-soft);
