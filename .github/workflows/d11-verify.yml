@@ -14,6 +14,10 @@ jobs:
           node-version: 24.21.0
           cache: npm
       - run: npm ci
+      - name: Inspect X6 readiness formatter (read only)
+        run: |
+          npx prettier src/features/configuration/configureReadiness.ts | diff -u src/features/configuration/configureReadiness.ts - || true
+          npx prettier src/features/configuration/configureReadiness.test.ts | diff -u src/features/configuration/configureReadiness.test.ts - || true
       - run: npm run verify
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
