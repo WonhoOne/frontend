@@ -8,10 +8,7 @@ const account = {
   contact: '01000000001',
 };
 
-test('real MySQL signup, login, reservation, cold detail, and empty history without HTTP fixtures', async ({
-  page,
-  request,
-}) => {
+test('real MySQL authenticated customer journey', async ({ page, request }) => {
   const backend = 'http://127.0.0.1:8080/api/v1';
 
   await expect
