@@ -128,7 +128,11 @@ export function ConfigurationOptionGroup({
           </div>
         ) : null}
 
-        <div aria-labelledby={headingId} className={styles.options} role={isMultiple ? 'group' : 'radiogroup'}>
+        <div
+          aria-labelledby={headingId}
+          className={styles.options}
+          role={isMultiple ? 'group' : 'radiogroup'}
+        >
           {group.options.map((option) => {
             const isSelected = isMultiple
               ? selectedKeys.includes(option.selectionKey)
