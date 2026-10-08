@@ -2,7 +2,11 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, expectTypeOf, it, vi } from 'vitest';
 
-import { reservationDraftReducer, type ReservationDraftAction, type ReservationDraftV1 } from '@/features/reservation';
+import {
+  reservationDraftReducer,
+  type ReservationDraftAction,
+  type ReservationDraftV1,
+} from '@/features/reservation';
 
 import type { VoiceCommand } from '../../integrations/voice/voiceCommand';
 import { executeVoiceCommand } from './voiceCommandBridge';
@@ -255,33 +259,41 @@ describe('ReservationDraft Voice adapter', () => {
     });
 
     // Voice removes Premium's default; GUI does not reinstate it.
-    expect(execute(
-      { version: 1, command: 'REMOVE_OPTION', args: { extraOption: 'CHAMPAGNE' } },
-      capabilities,
-    ).ok).toBe(true);
+    expect(
+      execute(
+        { version: 1, command: 'REMOVE_OPTION', args: { extraOption: 'CHAMPAGNE' } },
+        capabilities,
+      ).ok,
+    ).toBe(true);
     expect(draft.configuration.extraSelectionKeys).toEqual([]);
 
     // GUI adds Coffee and the following Voice command reads the updated Draft.
     dispatch({ type: 'SET_EXTRAS', selectionKeys: ['COFFEE'], updatedAt: 301 });
-    expect(execute(
-      { version: 1, command: 'ADD_OPTION', args: { extraOption: 'CHAMPAGNE' } },
-      capabilities,
-    ).ok).toBe(true);
+    expect(
+      execute(
+        { version: 1, command: 'ADD_OPTION', args: { extraOption: 'CHAMPAGNE' } },
+        capabilities,
+      ).ok,
+    ).toBe(true);
     expect(draft.configuration.extraSelectionKeys).toEqual(['COFFEE', 'CHAMPAGNE']);
 
     const beforeDuplicate = dispatch.mock.calls.length;
-    expect(execute(
-      { version: 1, command: 'ADD_OPTION', args: { extraOption: 'CHAMPAGNE' } },
-      capabilities,
-    ).ok).toBe(true);
+    expect(
+      execute(
+        { version: 1, command: 'ADD_OPTION', args: { extraOption: 'CHAMPAGNE' } },
+        capabilities,
+      ).ok,
+    ).toBe(true);
     expect(dispatch).toHaveBeenCalledTimes(beforeDuplicate);
 
     // GUI normalization and a later Voice removal use the same canonical keys.
     dispatch({ type: 'SET_EXTRAS', selectionKeys: ['CHAMPAGNE', 'COFFEE'], updatedAt: 302 });
-    expect(execute(
-      { version: 1, command: 'REMOVE_OPTION', args: { extraOption: 'COFFEE' } },
-      capabilities,
-    ).ok).toBe(true);
+    expect(
+      execute(
+        { version: 1, command: 'REMOVE_OPTION', args: { extraOption: 'COFFEE' } },
+        capabilities,
+      ).ok,
+    ).toBe(true);
     expect(draft.configuration.extraSelectionKeys).toEqual(['CHAMPAGNE']);
   });
 

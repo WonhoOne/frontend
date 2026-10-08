@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildConfigureTripSummary, createSharedContractConfigureScenario } from '@/features/configuration';
+import {
+  buildConfigureTripSummary,
+  createSharedContractConfigureScenario,
+} from '@/features/configuration';
 import {
   canonicalReservationCreateIdentityResolver,
   createEmptyReservationDraft,
@@ -28,17 +31,28 @@ describe('X5 Shared v0.2 Extras projection and reservation contract', () => {
       updatedAt: 2,
     });
     draft = reservationDraftReducer(draft, {
-      type: 'SET_PARTICIPANT_COUNT', participantCount: 2, updatedAt: 3,
+      type: 'SET_PARTICIPANT_COUNT',
+      participantCount: 2,
+      updatedAt: 3,
     });
     draft = reservationDraftReducer(draft, {
-      type: 'SELECT_TRANSPORT', selectionKey: 'PRIVATE_LUXURY_CAR_2', updatedAt: 4,
+      type: 'SELECT_TRANSPORT',
+      selectionKey: 'PRIVATE_LUXURY_CAR_2',
+      updatedAt: 4,
     });
     draft = reservationDraftReducer(draft, {
-      type: 'SET_EXTRAS', selectionKeys: keys, updatedAt: 5,
+      type: 'SET_EXTRAS',
+      selectionKeys: keys,
+      updatedAt: 5,
     });
 
-    expect(buildConfigureTripSummary({ draft, scenario, participantRule: 'general' }).selections.extraLabels).toEqual(labels);
-    expect(createReservationReviewModel(draft, previewReservationReviewResolver)?.extraLabels).toEqual(labels);
+    expect(
+      buildConfigureTripSummary({ draft, scenario, participantRule: 'general' }).selections
+        .extraLabels,
+    ).toEqual(labels);
+    expect(
+      createReservationReviewModel(draft, previewReservationReviewResolver)?.extraLabels,
+    ).toEqual(labels);
 
     const result = createReservationIntent(draft, canonicalReservationCreateIdentityResolver);
     expect(result.status).toBe('ready');
