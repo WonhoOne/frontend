@@ -122,7 +122,10 @@ test('real MySQL authenticated customer journey', async ({ page, request }) => {
       }),
     );
   }, created.id);
-  await page.getByRole('link', { name: /sign in|log in|login/i }).first().click();
+  await page
+    .getByRole('link', { name: /sign in|log in|login/i })
+    .first()
+    .click();
   await login();
   await expect(page.getByRole('heading', { name: 'F2 Synthetic Golf', level: 1 })).toBeVisible();
   await expect(page.getByText(`Reservation #${created.id}`, { exact: true })).toBeVisible();
