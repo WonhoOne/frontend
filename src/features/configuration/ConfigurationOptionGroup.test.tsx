@@ -1,11 +1,13 @@
 // @vitest-environment jsdom
 
 import { fireEvent, render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
 import {
   ConfigurationOptionGroup,
   createContractNeutralConfigureFixture,
+  createSharedContractConfigureScenario,
   type OptionGroupModel,
 } from '@/features/configuration';
 
@@ -199,5 +201,155 @@ describe('ConfigurationOptionGroup state matrix', () => {
 
     expect(screen.getByRole('radio', { name: /Fixture hotel A/i })).toBeDisabled();
     expect(screen.getByText('Unavailable in this fixture state.')).toBeVisible();
+  });
+});
+
+describe('Shared v0.2 Extras checkbox primitive', () => {
+  const extras = () => {
+    const group = createSharedContractConfigureScenario().groups.find(
+      (candidate) => candidate.category === 'extras',
+    );
+    if (group === undefined) throw new Error('Missing canonical Extras group');
+    return group;
+  };
+
+  it('renders two distinct labelled checkboxes without changing single-select radios', () => {
+    const onToggle = vi.fn();
+    render(
+      <ConfigurationOptionGroup
+        group={extras()}
+        onSelect={vi.fn()}
+        onToggle={onToggle}
+        selectedKey={null}
+        selectedKeys={[]}
+        stepNumber={4}
+      />,
+    );
+
+    expect(screen.getByRole('group', { name: 'Extras' })).toBeVisible();
+    expect(screen.queryByRole('radiogroup')).not.toBeInTheDocument();
+    expect(screen.getAllByRole('checkbox')).toHaveLength(2);
+    expect(screen.getByRole('checkbox', { name: /Champagne/i })).not.toBeChecked();
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).not.toBeChecked();
+
+    fireEvent.click(screen.getByRole('checkbox', { name: /Champagne/i }));
+    expect(onToggle).toHaveBeenCalledExactlyOnceWith('CHAMPAGNE');
+  });
+
+  it('reflects controlled selection sets and delegates add/remove to the parent', () => {
+    const onToggle = vi.fn();
+    const renderGroup = (selectionKeys: readonly string[]) => (
+      <ConfigurationOptionGroup
+        group={extras()}
+        onSelect={vi.fn()}
+        onToggle={onToggle}
+        selectedKey={null}
+        selectedKeys={selectionKeys}
+        stepNumber={4}
+      />
+    );
+
+    const { rerender } = render(renderGroup(['CHAMPAGNE']));
+    expect(screen.getByRole('checkbox', { name: /Champagne/i })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).not.toBeChecked();
+    fireEvent.click(screen.getByRole('checkbox', { name: /Coffee/i }));
+    expect(onToggle).toHaveBeenLastCalledWith('COFFEE');
+
+    rerender(renderGroup(['CHAMPAGNE', 'COFFEE']));
+    expect(screen.getByRole('checkbox', { name: /Champagne/i })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeChecked();
+
+    fireEvent.click(screen.getByRole('checkbox', { name: /Champagne/i }));
+    expect(onToggle).toHaveBeenLastCalledWith('CHAMPAGNE');
+    rerender(renderGroup(['COFFEE']));
+    expect(screen.getByRole('checkbox', { name: /Champagne/i })).not.toBeChecked();
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeChecked();
+  });
+
+  it('supports native keyboard activation and keeps refreshing options available', async () => {
+    const onToggle = vi.fn();
+    const user = userEvent.setup();
+    render(
+      <ConfigurationOptionGroup
+        group={extras()}
+        onSelect={vi.fn()}
+        onToggle={onToggle}
+        runtimeState={{ status: 'refreshing' }}
+        selectedKey={null}
+        selectedKeys={[]}
+        stepNumber={4}
+      />,
+    );
+
+    const coffee = screen.getByRole('checkbox', { name: /Coffee/i });
+    coffee.focus();
+    expect(coffee).toHaveFocus();
+    expect(coffee).toBeEnabled();
+    await user.keyboard(' ');
+    expect(onToggle).toHaveBeenCalledExactlyOnceWith('COFFEE');
+    expect(screen.getByRole('status')).toHaveTextContent('Updating availability');
+  });
+
+  it('disables unavailable and invalid selections while retaining their checked truth', () => {
+    const onToggle = vi.fn();
+    const extrasGroup = extras();
+    const disabled: OptionGroupModel = {
+      ...extrasGroup,
+      options: extrasGroup.options.map((option) =>
+        option.selectionKey === 'COFFEE'
+          ? {
+              ...option,
+              availability: { status: 'disabled', reason: 'Not selectable now.' },
+            }
+          : option,
+      ),
+    };
+
+    const { rerender } = render(
+      <ConfigurationOptionGroup
+        group={disabled}
+        onSelect={vi.fn()}
+        onToggle={onToggle}
+        selectedKey={null}
+        selectedKeys={['COFFEE']}
+        stepNumber={4}
+      />,
+    );
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeDisabled();
+    expect(screen.getByText('Not selectable now.')).toBeVisible();
+    expect(screen.getByRole('checkbox', { name: /Champagne/i })).toBeEnabled();
+
+    rerender(
+      <ConfigurationOptionGroup
+        group={extrasGroup}
+        onSelect={vi.fn()}
+        onToggle={onToggle}
+        runtimeState={{ status: 'invalid' }}
+        selectedKey={null}
+        selectedKeys={['CHAMPAGNE']}
+        stepNumber={4}
+      />,
+    );
+    expect(screen.getByRole('checkbox', { name: /Champagne/i })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: /Champagne/i })).toBeDisabled();
+    expect(screen.getByRole('checkbox', { name: /Coffee/i })).toBeEnabled();
+    expect(onToggle).not.toHaveBeenCalled();
+  });
+
+  it('does not expose a seemingly interactive checkbox before an owning toggle callback exists', () => {
+    render(
+      <ConfigurationOptionGroup
+        group={extras()}
+        onSelect={vi.fn()}
+        selectedKey={null}
+        selectedKeys={[]}
+        stepNumber={4}
+      />,
+    );
+    expect(screen.getAllByRole('checkbox')).toHaveLength(2);
+    for (const checkbox of screen.getAllByRole('checkbox')) {
+      expect(checkbox).toBeDisabled();
+    }
   });
 });
