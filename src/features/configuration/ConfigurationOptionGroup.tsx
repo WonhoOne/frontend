@@ -123,8 +123,8 @@ export function ConfigurationOptionGroup({
 
         {runtimeState.status === 'invalid' ? (
           <div className={styles.invalidNotice} role="alert">
-            Your selected {group.heading.toLowerCase()} option is no longer available. Change
-            the selection.
+            Your selected {group.heading.toLowerCase()} option is no longer available. Change the
+            selection.
           </div>
         ) : null}
 
