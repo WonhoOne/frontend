@@ -145,11 +145,12 @@ test('real MySQL authenticated customer journey', async ({ page, request }) => {
   if (process.env.CI !== 'true' || !mysqlPassword) {
     throw new Error('Completed-history fixture requires isolated CI MySQL.');
   }
-  const containers = execFileSync(
-    'docker',
-    ['ps', '--quiet', '--filter', 'ancestor=mysql:8.4'],
-    { encoding: 'utf8' },
-  ).trim().split('\n').filter(Boolean);
+  const containers = execFileSync('docker', ['ps', '--quiet', '--filter', 'ancestor=mysql:8.4'], {
+    encoding: 'utf8',
+  })
+    .trim()
+    .split('\n')
+    .filter(Boolean);
   if (containers.length !== 1 || !/^[a-f0-9]{12,64}$/.test(containers[0] ?? '')) {
     throw new Error('Expected exactly one disposable MySQL service container.');
   }
@@ -158,15 +159,24 @@ test('real MySQL authenticated customer journey', async ({ page, request }) => {
     throw new Error('Invalid test reservation identity.');
   }
 
-  const fixtureSql = [
-    `UPDATE tour_schedule SET confirmed = TRUE WHERE id = ${schedules[0]!.id}`,
-    `UPDATE tour_reservation SET schedule_start_date_snapshot = DATE_SUB(CURRENT_DATE(), INTERVAL 20 DAY), schedule_end_date_snapshot = DATE_SUB(CURRENT_DATE(), INTERVAL 10 DAY) WHERE id = ${created.id}`,
-  ].join('; ') + ';';
+  const fixtureSql =
+    [
+      `UPDATE tour_schedule SET confirmed = TRUE WHERE id = ${schedules[0]!.id}`,
+      `UPDATE tour_reservation SET schedule_start_date_snapshot = DATE_SUB(CURRENT_DATE(), INTERVAL 20 DAY), schedule_end_date_snapshot = DATE_SUB(CURRENT_DATE(), INTERVAL 10 DAY) WHERE id = ${created.id}`,
+    ].join('; ') + ';';
   execFileSync(
     'docker',
     [
-      'exec', '-e', `MYSQL_PWD=${mysqlPassword}`, mysqlContainer,
-      'mysql', '-u', 'misterworld', 'misterworld', '-e', fixtureSql,
+      'exec',
+      '-e',
+      `MYSQL_PWD=${mysqlPassword}`,
+      mysqlContainer,
+      'mysql',
+      '-u',
+      'misterworld',
+      'misterworld',
+      '-e',
+      fixtureSql,
     ],
     { stdio: 'pipe' },
   );
