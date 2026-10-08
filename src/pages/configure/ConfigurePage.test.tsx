@@ -267,6 +267,16 @@ describe('ConfigurePage desktop transaction', () => {
     expect(coffee).not.toBeChecked();
     await expectSavedExtras([]);
 
+    fireEvent.click(champagne);
+    expect(champagne).toBeChecked();
+    expect(coffee).not.toBeChecked();
+    expect(within(summary).getByText('Champagne')).toBeVisible();
+    await expectSavedExtras(['CHAMPAGNE']);
+
+    fireEvent.click(champagne);
+    expect(champagne).not.toBeChecked();
+    await expectSavedExtras([]);
+
     // Extras never reset unrelated required choices.
     expect(draft.configuration.hotelSelectionKey).toBeNull();
     expect(screen.getByRole('radio', { name: /4-star hotel/i })).not.toBeChecked();
