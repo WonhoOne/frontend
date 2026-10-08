@@ -9,22 +9,26 @@ const dateAfter = (days) => {
 };
 const manifest = {
   schemaVersion: 1,
-  products: [{
-    key: 'f2-golf',
-    theme: 'GOLF_CHALLENGE',
-    name: 'F2 Synthetic Golf',
-    description: 'Automated disposable integration-only tour.',
-    stylePrices: [
-      { style: 'CLASSIC', amount: 250000, currency: 'KRW' },
-      { style: 'GRAND', amount: 400000, currency: 'KRW' },
-      { style: 'PREMIUM', amount: 650000, currency: 'KRW' },
-    ],
-  }],
-  schedules: [{
-    productKey: 'f2-golf',
-    startDate: dateAfter(35),
-    endDate: dateAfter(40),
-  }],
+  products: [
+    {
+      key: 'f2-golf',
+      theme: 'GOLF_CHALLENGE',
+      name: 'F2 Synthetic Golf',
+      description: 'Automated disposable integration-only tour.',
+      stylePrices: [
+        { style: 'CLASSIC', amount: 250000, currency: 'KRW' },
+        { style: 'GRAND', amount: 400000, currency: 'KRW' },
+        { style: 'PREMIUM', amount: 650000, currency: 'KRW' },
+      ],
+    },
+  ],
+  schedules: [
+    {
+      productKey: 'f2-golf',
+      startDate: dateAfter(35),
+      endDate: dateAfter(40),
+    },
+  ],
 };
 const directory = resolve('.f2-backend/target');
 await mkdir(directory, { recursive: true });
