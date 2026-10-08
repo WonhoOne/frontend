@@ -1,5 +1,14 @@
 export type BackendContractName =
-  'ApiError' | 'TourProduct' | 'TourProduct[]' | 'TourSchedule' | 'TourSchedule[]';
+  | 'ApiError'
+  | 'TourProduct'
+  | 'TourProduct[]'
+  | 'TourSchedule'
+  | 'TourSchedule[]'
+  | 'AuthLoginResponse'
+  | 'AuthSignupResponse'
+  | 'Reservation'
+  | 'TravelHistory'
+  | 'TravelHistory[]';
 
 export type ContractMappingFailureReason =
   | 'expected-object'
@@ -8,6 +17,7 @@ export type ContractMappingFailureReason =
   | 'expected-boolean'
   | 'expected-positive-integer'
   | 'expected-non-negative-integer'
+  | 'expected-integer-range'
   | 'unknown-enum'
   | 'duplicate-value'
   | 'invalid-date'
@@ -31,6 +41,6 @@ export class ContractMappingError extends Error {
     readonly path: string,
     readonly reason: ContractMappingFailureReason,
   ) {
-    super(`Backend contract mapping failed for ${contract} at ${path}: ${reason}.`);
+    super('Backend contract mapping failed for ' + contract + ' at ' + path + ': ' + reason + '.');
   }
 }

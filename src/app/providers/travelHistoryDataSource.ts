@@ -1,15 +1,29 @@
-import type { TravelHistoryDataSource } from '@/features/travel-history';
+import { backendHttpClient } from '@/app/providers/backendHttpClient';
+import {
+  BackendTravelHistoryDataSource,
+  MockTravelHistoryDataSource,
+  type TravelHistoryDataSource,
+} from '@/features/travel-history';
+import type { BackendHttpClient } from '@/integrations/backend/client/backendClient';
 
-import { MockTravelHistoryDataSource } from '@/features/travel-history';
+export interface TravelHistoryCompositionEnvironment {
+  DEV: boolean;
+  VITE_ENABLE_MOCKS?: string;
+}
 
-const unavailableTravelHistoryDataSource: TravelHistoryDataSource = {
-  getTravelHistory() {
-    return Promise.reject(new Error('Travel History data source is unavailable.'));
-  },
-};
+export interface TravelHistoryCompositionOptions {
+  client?: Pick<BackendHttpClient, 'requestJson'>;
+  environment?: TravelHistoryCompositionEnvironment;
+}
 
-function createTravelHistoryDataSource(): TravelHistoryDataSource {
-  if (import.meta.env.DEV && import.meta.env.VITE_ENABLE_MOCKS === 'true') {
+/** Normal development and production always use the authenticated Backend. */
+export function createTravelHistoryDataSource(
+  options: TravelHistoryCompositionOptions = {},
+): TravelHistoryDataSource {
+  const environment = options.environment ?? import.meta.env;
+  const client = options.client ?? backendHttpClient;
+
+  if (environment.DEV && environment.VITE_ENABLE_MOCKS === 'true') {
     return new MockTravelHistoryDataSource({
       getTravelHistory() {
         return Promise.resolve([]);
@@ -17,7 +31,9 @@ function createTravelHistoryDataSource(): TravelHistoryDataSource {
     });
   }
 
-  return unavailableTravelHistoryDataSource;
+  return new BackendTravelHistoryDataSource(client);
 }
 
-export const travelHistoryDataSource = createTravelHistoryDataSource();
+export const travelHistoryDataSource = import.meta.env.PROD
+  ? new BackendTravelHistoryDataSource(backendHttpClient)
+  : createTravelHistoryDataSource();

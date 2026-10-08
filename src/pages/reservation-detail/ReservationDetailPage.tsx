@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 
+import { reservationDataSource } from '@/app/providers/reservationDataSource';
 import { routePaths } from '@/app/router/paths';
 import {
-  lookupReservation,
-  mockReservationDataSource,
-  visibleReservationFromLookup,
-  type ReservationLookupState,
+  ReservationDataSourceError,
+  useReservationDetail,
+  type ReservationDataSource,
 } from '@/features/reservation';
+import { parseBackendResourceIdentity } from '@/shared/lib/resourceIdentity';
 import { PageContainer, Skeleton, TextLink } from '@/shared/ui';
 import styles from '@/pages/reservation-detail/ReservationDetailPage.module.css';
 
@@ -19,26 +19,20 @@ function formatKrw(value: number) {
   }).format(value);
 }
 
-export function ReservationDetailPage() {
+interface ReservationDetailPageProps {
+  dataSource?: Pick<ReservationDataSource, 'getReservation'>;
+}
+
+export function ReservationDetailPage({
+  dataSource = reservationDataSource,
+}: ReservationDetailPageProps = {}) {
   const { reservationId } = useParams();
-  const parsedId = Number(reservationId);
-  const validReservationId = Number.isSafeInteger(parsedId) && parsedId > 0;
-  const [state, setState] = useState<ReservationLookupState>({ status: 'loading' });
+  const parsedId = parseBackendResourceIdentity(reservationId);
+  const query = useReservationDetail(dataSource, parsedId);
+  const privateError =
+    query.error instanceof ReservationDataSourceError ? query.error.detail : null;
 
-  useEffect(() => {
-    if (!validReservationId) return;
-    let active = true;
-    const previous = visibleReservationFromLookup(state);
-    void lookupReservation(mockReservationDataSource, parsedId, previous).then((next) => {
-      if (active) setState(next);
-    });
-    return () => {
-      active = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [parsedId, validReservationId]);
-
-  if (!validReservationId || state.status === 'not-found')
+  if (parsedId === null || privateError?.kind === 'not-found')
     return (
       <PageContainer variant="reading">
         <section className={styles.message}>
@@ -48,7 +42,7 @@ export function ReservationDetailPage() {
         </section>
       </PageContainer>
     );
-  if (state.status === 'loading')
+  if (query.data === undefined && query.isPending)
     return (
       <PageContainer variant="transaction">
         <section className={styles.page} aria-busy="true" aria-label="Loading reservation details">
@@ -59,8 +53,30 @@ export function ReservationDetailPage() {
       </PageContainer>
     );
 
-  const reservation = visibleReservationFromLookup(state);
-  if (reservation === null)
+  if (privateError?.kind === 'authentication-required')
+    return (
+      <PageContainer variant="reading">
+        <section className={styles.message}>
+          <h1>Sign in to view this reservation</h1>
+          <p>Your reservation details are private. Sign in, then open this reservation again.</p>
+          <TextLink to={routePaths.login}>Go to Login</TextLink>
+        </section>
+      </PageContainer>
+    );
+
+  if (privateError?.kind === 'forbidden')
+    return (
+      <PageContainer variant="reading">
+        <section className={styles.message}>
+          <h1>Reservation unavailable</h1>
+          <p>This account cannot view this private reservation.</p>
+          <TextLink to={routePaths.tours}>Browse tours</TextLink>
+        </section>
+      </PageContainer>
+    );
+
+  const reservation = query.data;
+  if (reservation === undefined)
     return (
       <PageContainer variant="reading">
         <section className={styles.message}>
@@ -71,10 +87,7 @@ export function ReservationDetailPage() {
       </PageContainer>
     );
 
-  const stale =
-    state.status === 'refreshing' ||
-    state.status === 'network-error' ||
-    state.status === 'server-error';
+  const stale = query.isFetching || query.isError;
   return (
     <PageContainer variant="transaction">
       <article className={styles.page}>

@@ -23,9 +23,9 @@ async function seedDraft(page: Page) {
 
 async function completeRequiredConfiguration(page: Page) {
   await page.getByRole('spinbutton', { name: /participants/i }).fill('2');
-  await page.getByRole('radio', { name: /Fixture hotel A/i }).check();
-  await page.getByRole('radio', { name: /Fixture transport B/i }).check();
-  await page.getByRole('radio', { name: /Fixture meal A/i }).check();
+  await page.getByRole('radio', { name: /4-star hotel/i }).check();
+  await page.getByRole('radio', { name: /Premium van \(10\)/i }).check();
+  await page.getByRole('radio', { name: /Local restaurant/i }).check();
 }
 
 for (const width of [320, 390, 430, 768, 1023]) {
@@ -66,17 +66,17 @@ for (const width of [320, 390, 430, 768, 1023]) {
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
 
-    const extras = page
-      .getByRole('heading', { name: 'Extras' })
+    const finalRequiredGroup = page
+      .getByRole('heading', { name: 'Meal' })
       .locator('xpath=ancestor::section[1]');
-    const [extrasBox, barBox] = await Promise.all([
-      extras.boundingBox(),
+    const [groupBox, barBox] = await Promise.all([
+      finalRequiredGroup.boundingBox(),
       mobileSummary.boundingBox(),
     ]);
 
-    expect(extrasBox).not.toBeNull();
+    expect(groupBox).not.toBeNull();
     expect(barBox).not.toBeNull();
-    expect((extrasBox?.y ?? 0) + (extrasBox?.height ?? 0)).toBeLessThanOrEqual(barBox?.y ?? 0);
+    expect((groupBox?.y ?? 0) + (groupBox?.height ?? 0)).toBeLessThanOrEqual(barBox?.y ?? 0);
 
     const scrollBeforeSheet = await page.evaluate(() => window.scrollY);
     const trigger = mobileSummary.getByRole('button', { name: 'Open trip summary' });
@@ -85,9 +85,9 @@ for (const width of [320, 390, 430, 768, 1023]) {
     const sheet = page.getByRole('dialog', { name: 'Trip summary' });
     await expect(sheet).toBeVisible();
     await expect(sheet.getByText('2 participants')).toBeVisible();
-    await expect(sheet.getByText('Fixture hotel A')).toBeVisible();
-    await expect(sheet.getByText('Fixture transport B')).toBeVisible();
-    await expect(sheet.getByText('Fixture meal A')).toBeVisible();
+    await expect(sheet.getByText('4-star hotel')).toBeVisible();
+    await expect(sheet.getByText('Premium van (10)')).toBeVisible();
+    await expect(sheet.getByText('Local restaurant')).toBeVisible();
 
     await page.keyboard.press('Escape');
 

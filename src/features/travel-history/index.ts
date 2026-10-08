@@ -1,3 +1,4 @@
+export { BackendTravelHistoryDataSource } from '@/features/travel-history/BackendTravelHistoryDataSource';
 export type { TravelHistoryDataSource } from '@/features/travel-history/TravelHistoryDataSource';
 export {
   MockTravelHistoryDataSource,

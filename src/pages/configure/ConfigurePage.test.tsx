@@ -130,7 +130,6 @@ describe('ConfigurePage desktop transaction', () => {
     expect(screen.getByRole('heading', { name: 'Hotel' })).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Transport' })).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Meal' })).toBeVisible();
-    expect(screen.getByRole('heading', { name: 'Extras' })).toBeVisible();
     expect(screen.getByRole('button', { name: 'Review trip' })).toBeDisabled();
     expect(screen.getByText(/current Style price comes from TourProduct/i)).toBeVisible();
     expect(screen.getByText(/₩1,800,000 per participant/i)).toBeVisible();
@@ -146,30 +145,30 @@ describe('ConfigurePage desktop transaction', () => {
     fireEvent.change(screen.getByRole('spinbutton', { name: /participants/i }), {
       target: { value: '2' },
     });
-    fireEvent.click(screen.getByRole('radio', { name: /Fixture hotel A/i }));
-    fireEvent.click(screen.getByRole('radio', { name: /Fixture transport B/i }));
-    fireEvent.click(screen.getByRole('radio', { name: /Fixture meal A/i }));
+    fireEvent.click(screen.getByRole('radio', { name: /4-star hotel/i }));
+    fireEvent.click(screen.getByRole('radio', { name: /Premium van \(10\)/i }));
+    fireEvent.click(screen.getByRole('radio', { name: /Local restaurant/i }));
 
-    expect(screen.getByRole('radio', { name: /Fixture hotel A/i })).toBeChecked();
-    expect(screen.getByRole('radio', { name: /Fixture transport B/i })).toBeChecked();
-    expect(screen.getByRole('radio', { name: /Fixture meal A/i })).toBeChecked();
+    expect(screen.getByRole('radio', { name: /4-star hotel/i })).toBeChecked();
+    expect(screen.getByRole('radio', { name: /Premium van \(10\)/i })).toBeChecked();
+    expect(screen.getByRole('radio', { name: /Local restaurant/i })).toBeChecked();
 
     const summary = screen.getByRole('complementary', {
       name: 'Current trip configuration',
     });
     expect(within(summary).getByText('2 participants')).toBeVisible();
-    expect(within(summary).getByText('Fixture hotel A')).toBeVisible();
-    expect(within(summary).getByText('Fixture transport B')).toBeVisible();
-    expect(within(summary).getByText('Fixture meal A')).toBeVisible();
+    expect(within(summary).getByText('4-star hotel')).toBeVisible();
+    expect(within(summary).getByText('Premium van (10)')).toBeVisible();
+    expect(within(summary).getByText('Local restaurant')).toBeVisible();
 
     await waitFor(() => {
       const serialized = storage.getItem(RESERVATION_DRAFT_STORAGE_KEY);
       expect(JSON.parse(serialized ?? '{}')).toMatchObject({
         participantCount: 2,
         configuration: {
-          hotelSelectionKey: 'fixture:hotel:a',
-          transportSelectionKey: 'fixture:transport:b',
-          mealSelectionKey: 'fixture:meal:a',
+          hotelSelectionKey: 'HOTEL_4_STAR',
+          transportSelectionKey: 'PREMIUM_VAN_10',
+          mealSelectionKey: 'LOCAL_RESTAURANT',
         },
       });
     });
@@ -187,12 +186,12 @@ describe('ConfigurePage desktop transaction', () => {
     fireEvent.change(screen.getByRole('spinbutton', { name: /participants/i }), {
       target: { value: '1' },
     });
-    fireEvent.click(screen.getByRole('radio', { name: /Fixture hotel A/i }));
-    fireEvent.click(screen.getByRole('radio', { name: /Fixture transport A/i }));
+    fireEvent.click(screen.getByRole('radio', { name: /4-star hotel/i }));
+    fireEvent.click(screen.getByRole('radio', { name: /Private luxury car \(2\)/i }));
 
     expect(reviewButton).toBeDisabled();
 
-    fireEvent.click(screen.getByRole('radio', { name: /Fixture meal B/i }));
+    fireEvent.click(screen.getByRole('radio', { name: /Premium restaurant/i }));
 
     expect(reviewButton).toBeEnabled();
 
@@ -201,20 +200,20 @@ describe('ConfigurePage desktop transaction', () => {
     expect(screen.getByRole('heading', { name: 'Reservation review marker' })).toBeVisible();
   });
 
-  it('does not invent Extras interaction before its Shared Contract is approved', async () => {
+  it('keeps optional v0.2 extras empty while the live screen exposes the three required groups', async () => {
     const storage = new MemoryStorage();
     storage.setItem(RESERVATION_DRAFT_STORAGE_KEY, serializeReservationDraft(tripContextDraft()));
 
     renderConfigure(storage);
 
     await screen.findByRole('heading', { name: 'Build your trip' });
-    const extrasHeading = screen.getByRole('heading', { name: 'Extras' });
-    const extrasSection = extrasHeading.closest('section');
+    expect(screen.queryByRole('heading', { name: 'Extras' })).not.toBeInTheDocument();
 
-    expect(extrasSection).not.toBeNull();
-    expect(within(extrasSection as HTMLElement).queryByRole('checkbox')).not.toBeInTheDocument();
-    expect(
-      within(extrasSection as HTMLElement).getByText(/reserved configuration area/i),
-    ).toBeVisible();
+    const serialized = storage.getItem(RESERVATION_DRAFT_STORAGE_KEY);
+    expect(JSON.parse(serialized ?? '{}')).toMatchObject({
+      configuration: {
+        extraSelectionKeys: [],
+      },
+    });
   });
 });

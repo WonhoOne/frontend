@@ -15,7 +15,9 @@ export {
   isConfigurationFixtureSelectionKey,
   type ConfigurationFixtureSelectionKey,
   type ConfigureFixtureScenario,
+  type ConfigureScenario,
 } from '@/features/configuration/configurationFixtures';
+export { createSharedContractConfigureScenario } from '@/features/configuration/sharedContractConfiguration';
 export {
   configurationGroupBlocksReview,
   configurationGroupRetainsData,

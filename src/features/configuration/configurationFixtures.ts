@@ -7,11 +7,15 @@ import {
 
 export type ConfigurationFixtureSelectionKey = `fixture:${string}`;
 
-export interface ConfigureFixtureScenario {
-  source: 'fixture';
+export interface ConfigureScenario {
+  source: 'fixture' | 'shared-contract';
   scenarioId: string;
   groups: readonly OptionGroupModel[];
   tripSummary: TripSummaryModel;
+}
+
+export interface ConfigureFixtureScenario extends ConfigureScenario {
+  source: 'fixture';
 }
 
 function fixtureOption(

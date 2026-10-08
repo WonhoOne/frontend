@@ -1,6 +1,9 @@
 export type { AuthDataSource } from './AuthDataSource';
+export { BackendAuthDataSource } from './BackendAuthDataSource';
 export { AuthProvider } from './AuthProvider';
 export { MockAuthDataSource } from './MockAuthDataSource';
+export { MemoryAuthSessionStore } from './authSession';
+export type { ActiveAuthSession, AuthSessionStore } from './authSession';
 export { useAuth } from './authContext';
 export type { AuthContextValue } from './authContext';
 export { AuthError } from './authTypes';

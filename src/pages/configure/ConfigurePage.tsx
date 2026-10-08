@@ -8,7 +8,7 @@ import { routeBuilders, routePaths } from '@/app/router/paths';
 import {
   buildPublicConfigurePrice,
   ConfigureDesktop,
-  createContractNeutralConfigureFixture,
+  createSharedContractConfigureScenario,
   type PriceDisplayModel,
 } from '@/features/configuration';
 import { type TourDetailModel, useTourDetail, useTourSchedules } from '@/features/tour-detail';
@@ -184,7 +184,7 @@ function ResolvedConfigurePage({
     scheduleQuery.data?.find((schedule) => schedule.selectionKey === draft.tourScheduleId)
       ?.dateLabel ?? 'Selected schedule';
 
-  const baseScenario = createContractNeutralConfigureFixture();
+  const baseScenario = createSharedContractConfigureScenario();
   const scenario = {
     ...baseScenario,
     tripSummary: {

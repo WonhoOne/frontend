@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
+import { openAuthenticatedReservation } from './support/authenticated-reservation';
+
 const storageKey = 'mister-world:reservation-draft:v1';
 const canonicalWidths = [320, 360, 390, 430, 768, 1024, 1280, 1440, 1728];
 
@@ -10,9 +12,9 @@ const draft = {
   tourStyle: 'GRAND',
   participantCount: 2,
   configuration: {
-    hotelSelectionKey: 'fixture:hotel:a',
-    transportSelectionKey: 'fixture:transport:b',
-    mealSelectionKey: 'fixture:meal:a',
+    hotelSelectionKey: 'HOTEL_4_STAR',
+    transportSelectionKey: 'PREMIUM_VAN_10',
+    mealSelectionKey: 'LOCAL_RESTAURANT',
     extraSelectionKeys: [],
   },
   updatedAt: 1,
@@ -34,25 +36,21 @@ async function expectNoHorizontalOverflow(page: Page) {
   ).toBe(false);
 }
 
-test('J02 Review creates once, clears Draft, survives Success refresh, and opens Detail', async ({
+test('J02 live Review requires authentication and preserves the Draft before login recovery', async ({
   page,
 }) => {
   await seedDraft(page);
   await page.goto('/reservation/review');
+
   const submit = page.getByRole('button', { name: 'Apply for reservation' });
   await expect(submit).toBeEnabled();
   await submit.dblclick();
-  await expect(page).toHaveURL(/\/reservation\/801\/success$/);
-  await expect(page.getByRole('heading', { name: 'Reservation received' })).toBeVisible();
+
+  await expect(page).toHaveURL('/login');
+  await expect(page.getByRole('heading', { name: 'Login' })).toBeVisible();
   await expect
     .poll(() => page.evaluate((key) => sessionStorage.getItem(key), storageKey))
-    .toBeNull();
-
-  await page.reload();
-  await expect(page.getByRole('heading', { name: 'Reservation received' })).toBeVisible();
-  await page.getByRole('link', { name: 'View reservation details' }).click();
-  await expect(page).toHaveURL(/\/reservations\/801$/);
-  await expect(page.getByRole('heading', { name: 'Mock 제주 허니문' })).toBeVisible();
+    .not.toBeNull();
 });
 
 for (const width of canonicalWidths) {
@@ -63,12 +61,13 @@ for (const width of canonicalWidths) {
     await expect(page.getByRole('heading', { name: 'Review your trip' })).toBeVisible();
     await expectNoHorizontalOverflow(page);
 
-    await page.goto('/reservation/801/success');
+    await openAuthenticatedReservation(page, '/reservation/801/success');
     await expect(page.getByRole('heading', { name: 'Reservation received' })).toBeVisible();
     await expectNoHorizontalOverflow(page);
 
-    await page.goto('/reservations/801');
-    await expect(page.getByRole('heading', { name: 'Mock 제주 허니문' })).toBeVisible();
+    await page.getByRole('link', { name: 'View reservation details' }).click();
+    await expect(page).toHaveURL('/reservations/801');
+    await expect(page.getByRole('heading', { name: 'Synthetic Honeymoon' })).toBeVisible();
     await expectNoHorizontalOverflow(page);
   });
 }
@@ -96,8 +95,9 @@ test('J09 Review primary action is keyboard reachable', async ({ page }) => {
 
 test('Reservation read views remain readable with reduced motion requested', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('/reservation/801/success');
+  await openAuthenticatedReservation(page, '/reservation/801/success');
   await expect(page.getByRole('heading', { name: 'Reservation received' })).toBeVisible();
-  await page.goto('/reservations/801');
-  await expect(page.getByRole('heading', { name: 'Mock 제주 허니문' })).toBeVisible();
+  await page.getByRole('link', { name: 'View reservation details' }).click();
+  await expect(page).toHaveURL('/reservations/801');
+  await expect(page.getByRole('heading', { name: 'Synthetic Honeymoon' })).toBeVisible();
 });

@@ -24,7 +24,7 @@ async function seedDraft(page: Page) {
   }, draft);
 }
 
-async function tabUntilFocused(page: Page, locator: Locator, maxTabs = 30) {
+async function tabUntilFocused(page: Page, locator: Locator, maxTabs = 40) {
   for (let index = 0; index < maxTabs; index += 1) {
     if (await locator.evaluate((element) => element === document.activeElement)) {
       return;
@@ -45,7 +45,7 @@ test('keyboard-only users can complete Configure and enter Review', async ({ pag
   await tabUntilFocused(page, participantInput);
   await page.keyboard.type('2');
 
-  const hotelA = page.getByRole('radio', { name: /Fixture hotel A/i });
+  const hotelA = page.getByRole('radio', { name: /3-star hotel/i });
   await tabUntilFocused(page, hotelA);
   const hotelCardOutline = await hotelA.locator('xpath=ancestor::div[1]').evaluate((element) => {
     const style = getComputedStyle(element);
@@ -55,11 +55,11 @@ test('keyboard-only users can complete Configure and enter Review', async ({ pag
   expect(hotelCardOutline.width).not.toBe('0px');
   await page.keyboard.press('Space');
 
-  const transportA = page.getByRole('radio', { name: /Fixture transport A/i });
+  const transportA = page.getByRole('radio', { name: /Private luxury car \(2\)/i });
   await tabUntilFocused(page, transportA);
   await page.keyboard.press('Space');
 
-  const mealA = page.getByRole('radio', { name: /Fixture meal A/i });
+  const mealA = page.getByRole('radio', { name: /Lunch box/i });
   await tabUntilFocused(page, mealA);
   await page.keyboard.press('Space');
 
@@ -108,15 +108,15 @@ test('rapid option changes keep the latest intent without resetting sibling grou
   await page.goto('/tours/103/configure');
 
   await page.getByRole('spinbutton', { name: /participants/i }).fill('2');
-  await page.getByRole('radio', { name: /Fixture transport A/i }).check();
-  await page.getByRole('radio', { name: /Fixture meal A/i }).check();
+  await page.getByRole('radio', { name: /Private luxury car \(2\)/i }).check();
+  await page.getByRole('radio', { name: /Local restaurant/i }).check();
 
-  await page.getByRole('radio', { name: /Fixture hotel A/i }).click();
-  await page.getByRole('radio', { name: /Fixture hotel B/i }).click();
+  await page.getByRole('radio', { name: /4-star hotel/i }).click();
+  await page.getByRole('radio', { name: /5-star hotel/i }).click();
 
-  await expect(page.getByRole('radio', { name: /Fixture hotel B/i })).toBeChecked();
-  await expect(page.getByRole('radio', { name: /Fixture transport A/i })).toBeChecked();
-  await expect(page.getByRole('radio', { name: /Fixture meal A/i })).toBeChecked();
+  await expect(page.getByRole('radio', { name: /5-star hotel/i })).toBeChecked();
+  await expect(page.getByRole('radio', { name: /Private luxury car \(2\)/i })).toBeChecked();
+  await expect(page.getByRole('radio', { name: /Local restaurant/i })).toBeChecked();
 
   await expect
     .poll(() =>
@@ -144,9 +144,9 @@ test('rapid option changes keep the latest intent without resetting sibling grou
       }, storageKey),
     )
     .toMatchObject({
-      hotelSelectionKey: 'fixture:hotel:b',
-      transportSelectionKey: 'fixture:transport:a',
-      mealSelectionKey: 'fixture:meal:a',
+      hotelSelectionKey: 'HOTEL_5_STAR',
+      transportSelectionKey: 'PRIVATE_LUXURY_CAR_2',
+      mealSelectionKey: 'LOCAL_RESTAURANT',
     });
 });
 
@@ -157,7 +157,7 @@ test('interactive Configure targets remain touch-sized on a 320px viewport', asy
 
   const targets = [
     page.getByRole('spinbutton', { name: /participants/i }),
-    page.getByRole('radio', { name: /Fixture hotel A/i }).locator('xpath=ancestor::label[1]'),
+    page.getByRole('radio', { name: /4-star hotel/i }).locator('xpath=ancestor::label[1]'),
     page.getByRole('button', { name: 'Open trip summary' }),
     page.getByRole('button', { name: 'Review' }),
   ];

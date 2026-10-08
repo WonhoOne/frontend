@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type PropsWithChildr
 
 import type { AuthDataSource } from '@/features/auth/AuthDataSource';
 import { AuthContext } from '@/features/auth/authContext';
+import { MemoryAuthSessionStore, type AuthSessionStore } from '@/features/auth/authSession';
 import {
   AuthError,
   type AuthState,
@@ -10,15 +11,11 @@ import {
   type SignupResult,
 } from '@/features/auth/authTypes';
 
-interface ActiveSession {
-  accessToken: string;
-  expiresAt: number;
-}
-
 interface AuthProviderProps extends PropsWithChildren {
   dataSource: AuthDataSource;
   onAuthLoss?: () => void;
   now?: () => number;
+  sessionStore?: AuthSessionStore;
 }
 
 const UNAUTHENTICATED: AuthState = { status: 'unauthenticated' };
@@ -26,24 +23,33 @@ const UNAUTHENTICATED: AuthState = { status: 'unauthenticated' };
 /**
  * Owns the v0.2 browser auth lifecycle.
  *
- * SECURITY: bearer material intentionally lives only in this mounted provider's
- * memory. It is never mirrored to Web Storage, Query cache, URL state, or UI
- * context. A document reload therefore starts unauthenticated.
+ * SECURITY: bearer material lives in an AuthSessionStore that is document-memory
+ * only. The public React context exposes user/auth state but never the token.
  */
 export function AuthProvider({
   children,
   dataSource,
   onAuthLoss,
   now = Date.now,
+  sessionStore,
 }: AuthProviderProps) {
   const [state, setState] = useState<AuthState>({ status: 'checking' });
-  const sessionRef = useRef<ActiveSession | null>(null);
+  const [ownedSessionStore] = useState<AuthSessionStore>(() => new MemoryAuthSessionStore(now));
   const wasAuthenticatedRef = useRef(false);
+  const activeSessionStore = sessionStore ?? ownedSessionStore;
 
   const becomeUnauthenticated = useCallback(() => {
-    sessionRef.current = null;
+    activeSessionStore.clear();
     setState(UNAUTHENTICATED);
-  }, []);
+  }, [activeSessionStore]);
+
+  useEffect(
+    () =>
+      activeSessionStore.subscribe(() => {
+        setState(UNAUTHENTICATED);
+      }),
+    [activeSessionStore],
+  );
 
   useEffect(() => {
     // E01 has no persistent bootstrap. Keep the explicit checking phase while
@@ -64,35 +70,35 @@ export function AuthProvider({
   }, [onAuthLoss, state.status]);
 
   useEffect(() => {
-    if (state.status !== 'authenticated' || !sessionRef.current) {
+    if (state.status !== 'authenticated') {
       return;
     }
 
-    const remainingMs = sessionRef.current.expiresAt - now();
+    const expiresAt = activeSessionStore.getExpiresAt();
 
-    if (remainingMs <= 0) {
-      becomeUnauthenticated();
+    if (expiresAt === null) {
       return;
     }
 
+    const remainingMs = Math.max(0, expiresAt - now());
     const timeoutId = window.setTimeout(becomeUnauthenticated, remainingMs);
     return () => window.clearTimeout(timeoutId);
-  }, [becomeUnauthenticated, now, state.status]);
+  }, [activeSessionStore, becomeUnauthenticated, now, state.status]);
 
   const login = useCallback(
     async (input: LoginInput) => {
       const result = await dataSource.login(input);
 
-      sessionRef.current = {
+      activeSessionStore.setSession({
         accessToken: result.accessToken,
         expiresAt: now() + result.expiresIn * 1000,
-      };
+      });
       setState({
         status: 'authenticated',
         user: result.user,
       });
     },
-    [dataSource, now],
+    [activeSessionStore, dataSource, now],
   );
 
   const signup = useCallback(
@@ -105,7 +111,11 @@ export function AuthProvider({
       if (
         state.status !== 'authenticated' ||
         !(error instanceof AuthError) ||
-        !(error.code === 'INVALID_ACCESS_TOKEN' || error.code === 'ACCESS_TOKEN_EXPIRED')
+        !(
+          error.code === 'AUTHENTICATION_REQUIRED' ||
+          error.code === 'INVALID_ACCESS_TOKEN' ||
+          error.code === 'ACCESS_TOKEN_EXPIRED'
+        )
       ) {
         return false;
       }

@@ -10,6 +10,8 @@ export default defineConfig(({ mode }) => {
     environment.BACKEND_DEV_PROXY_TARGET || DEFAULT_BACKEND_DEV_PROXY_TARGET;
 
   return {
+    // public/ contains only the MSW development worker. Never deploy it.
+    publicDir: mode === 'production' ? false : 'public',
     plugins: [react()],
     resolve: {
       alias: {

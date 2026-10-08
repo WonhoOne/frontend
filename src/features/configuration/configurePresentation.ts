@@ -1,4 +1,4 @@
-import type { ConfigureFixtureScenario } from '@/features/configuration/configurationFixtures';
+import type { ConfigureScenario } from '@/features/configuration/configurationFixtures';
 import type {
   ConfigurationCategory,
   OptionGroupModel,
@@ -72,7 +72,7 @@ export function buildConfigureTripSummary({
   draft: ReservationDraftV1;
   participantRule: ParticipantCountRule;
   price?: PriceDisplayModel;
-  scenario: ConfigureFixtureScenario;
+  scenario: ConfigureScenario;
   runtimeState?: ConfigureRuntimeState;
 }): TripSummaryModel {
   const participantValidation = validateParticipantCount(participantRule, draft.participantCount);

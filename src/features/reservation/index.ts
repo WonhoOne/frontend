@@ -57,7 +57,13 @@ export {
   type ReservationCreateIdentityResolver,
   type ReservationCreateIntentResult,
 } from '@/features/reservation/reservationCreateIntent';
+export { canonicalReservationCreateIdentityResolver } from '@/features/reservation/canonicalReservationCreateIdentityResolver';
+export {
+  adaptReservationResponseDto,
+  toReservationCreateRequestDto,
+} from '@/features/reservation/reservation.adapter';
 export type { ReservationDataSource } from '@/features/reservation/reservation.dataSource';
+export { BackendReservationDataSource } from '@/features/reservation/BackendReservationDataSource';
 export {
   ReservationDataSourceError,
   type ReservationDataError,
@@ -83,6 +89,11 @@ export {
   reservationPrivateQueryKey,
   reservationQueryKeys,
 } from '@/features/reservation/reservation.queryKeys';
+export {
+  reservationDetailQueryOptions,
+  shouldRetryReservationDetail,
+  useReservationDetail,
+} from '@/features/reservation/reservationDetail.query';
 
 export {
   createReservationReviewModel,
@@ -118,6 +129,11 @@ export {
   type ReservationInlineIssue,
   type ReservationSubmitRecovery,
 } from '@/features/reservation/reservationRecovery';
+
+export {
+  refreshReservationConflictTruth,
+  type ReservationConflictTruthQueryClient,
+} from '@/features/reservation/reservationConflictTruth';
 
 export {
   createOfflineBeforeSubmitRecovery,

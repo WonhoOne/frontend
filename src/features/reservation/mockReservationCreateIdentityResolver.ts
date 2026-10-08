@@ -1,5 +1,5 @@
+import { canonicalReservationCreateIdentityResolver } from '@/features/reservation/canonicalReservationCreateIdentityResolver';
 import type { ReservationCreateIdentityResolver } from '@/features/reservation/reservationCreateIntent';
-import { parseBackendResourceIdentity } from '@/shared/lib/resourceIdentity';
 
 const scheduleIds: Record<string, number> = {
   'fixture:schedule:a': 301,
@@ -24,13 +24,28 @@ const extraOptions = {
 } as const;
 
 /**
- * Real canonical decimal schedule identities are strictly parsed back to
- * Backend numbers. Explicit DEV fixture identities remain mapped locally.
+ * DEV/test fixture compatibility resolver.
+ *
+ * Canonical v0.2 identities are delegated to the production resolver first.
+ * Only explicit fixture/demo keys are handled locally here.
  */
 export const mockReservationCreateIdentityResolver: ReservationCreateIdentityResolver = {
-  resolveScheduleId: (key) => parseBackendResourceIdentity(key) ?? scheduleIds[key] ?? null,
-  resolveHotelOption: (key) => hotelOptions[key as keyof typeof hotelOptions] ?? null,
-  resolveTransportOption: (key) => transportOptions[key as keyof typeof transportOptions] ?? null,
-  resolveMealOption: (key) => mealOptions[key as keyof typeof mealOptions] ?? null,
-  resolveExtraOption: (key) => extraOptions[key as keyof typeof extraOptions] ?? null,
+  resolveScheduleId: (key) =>
+    canonicalReservationCreateIdentityResolver.resolveScheduleId(key) ?? scheduleIds[key] ?? null,
+  resolveHotelOption: (key) =>
+    canonicalReservationCreateIdentityResolver.resolveHotelOption(key) ??
+    hotelOptions[key as keyof typeof hotelOptions] ??
+    null,
+  resolveTransportOption: (key) =>
+    canonicalReservationCreateIdentityResolver.resolveTransportOption(key) ??
+    transportOptions[key as keyof typeof transportOptions] ??
+    null,
+  resolveMealOption: (key) =>
+    canonicalReservationCreateIdentityResolver.resolveMealOption(key) ??
+    mealOptions[key as keyof typeof mealOptions] ??
+    null,
+  resolveExtraOption: (key) =>
+    canonicalReservationCreateIdentityResolver.resolveExtraOption(key) ??
+    extraOptions[key as keyof typeof extraOptions] ??
+    null,
 };

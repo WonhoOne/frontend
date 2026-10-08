@@ -1,13 +1,15 @@
 import { expect, test, type Page } from '@playwright/test';
 
+import { openAuthenticatedReservation } from './support/authenticated-reservation';
+
 const routeCases = [
   ['/', 'A journey made for your moment.'],
   ['/tours', 'Four ways to travel differently.'],
   ['/tours/101', 'Honeymoon Romance · Journey 01'],
   ['/tours/42/configure', 'Configure'],
   ['/reservation/review', 'Reservation Review'],
-  ['/reservation/801/success', 'Reservation received'],
-  ['/reservations/801', 'Mock 제주 허니문'],
+  ['/reservation/801/success', 'Sign in to view this reservation'],
+  ['/reservations/801', 'Sign in to view this reservation'],
   ['/login', 'Login'],
   ['/signup', 'Signup'],
   ['/my-trips', 'Login'],
@@ -51,8 +53,11 @@ test.describe('Foundation routes', () => {
       page.getByRole('heading', { level: 1, name: "This journey couldn't be found." }),
     ).toBeVisible();
 
-    await page.goto('/reservations/801');
+    await openAuthenticatedReservation(page, '/reservations/801');
     await expect(page.getByText('Reservation #801', { exact: true })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Synthetic Honeymoon' }),
+    ).toBeVisible();
   });
 
   test('navigation preserves browser back and forward history', async ({ page }) => {

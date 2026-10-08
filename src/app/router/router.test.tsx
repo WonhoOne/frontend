@@ -18,8 +18,16 @@ const routeCases = [
   [routeBuilders.tourDetail('101'), routeTitles.tourDetail, 'Honeymoon Romance · Journey 01'],
   [routeBuilders.configure('101'), routeTitles.configure, routeTitles.configure],
   [routePaths.reservationReview, routeTitles.reservationReview, routeTitles.reservationReview],
-  [routeBuilders.reservationSuccess('801'), routeTitles.reservationSuccess, 'Reservation received'],
-  [routeBuilders.reservationDetail('801'), routeTitles.reservationDetail, 'Mock 제주 허니문'],
+  [
+    routeBuilders.reservationSuccess('801'),
+    routeTitles.reservationSuccess,
+    'Sign in to view this reservation',
+  ],
+  [
+    routeBuilders.reservationDetail('801'),
+    routeTitles.reservationDetail,
+    'Sign in to view this reservation',
+  ],
   [routePaths.login, routeTitles.login, routeTitles.login],
   [routePaths.signup, routeTitles.signup, routeTitles.signup],
   [routePaths.myTrips, routeTitles.myTrips, routeTitles.login],
@@ -67,22 +75,31 @@ describe('foundation route table', () => {
     ).toBeVisible();
   });
 
-  it('renders Reservation Detail from the private reservation lookup', async () => {
+  it('does not expose private Reservation Detail before authentication', async () => {
     renderRoute(routeBuilders.reservationDetail('801'));
 
     expect(
-      await screen.findByRole('heading', { level: 1, name: 'Mock 제주 허니문' }),
+      await screen.findByRole('heading', {
+        level: 1,
+        name: 'Sign in to view this reservation',
+      }),
     ).toBeVisible();
-    expect(screen.getByText('Reservation #801')).toBeVisible();
+    expect(screen.getByRole('link', { name: 'Go to Login' })).toHaveAttribute('href', '/login');
+    expect(screen.queryByText('Reservation #801')).not.toBeInTheDocument();
   });
 
-  it('does not disclose whether an unavailable reservation exists', async () => {
+  it('does not disclose reservation existence before authentication', async () => {
     renderRoute(routeBuilders.reservationDetail('999999'));
 
     expect(
-      await screen.findByRole('heading', { level: 1, name: 'Reservation not found' }),
+      await screen.findByRole('heading', {
+        level: 1,
+        name: 'Sign in to view this reservation',
+      }),
     ).toBeVisible();
-    expect(screen.getByText('This reservation is unavailable or cannot be shown.')).toBeVisible();
+    expect(
+      screen.queryByRole('heading', { name: 'Reservation not found' }),
+    ).not.toBeInTheDocument();
   });
 
   it('uses GlobalHeader for public routes without interpreting Auth state', () => {
