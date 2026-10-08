@@ -164,7 +164,7 @@ describe('ConfigurationOptionGroup state matrix', () => {
     expect(invalidSelection).toBeDisabled();
     expect(
       screen.getByText(
-        'Your selected transport option is no longer available. Choose another option.',
+        'Your selected transport option is no longer available. Change the selection.',
       ),
     ).toBeVisible();
 
