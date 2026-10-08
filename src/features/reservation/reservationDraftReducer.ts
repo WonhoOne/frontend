@@ -5,6 +5,7 @@ import {
   type ReservationDraftTourStyle,
   type ReservationDraftV1,
 } from '@/features/reservation/ReservationDraft';
+import { createStyleDefaultConfiguration } from '@/features/reservation/reservationStyleDefaults';
 
 export type ReservationDraftAction =
   | {
@@ -85,14 +86,16 @@ export function reservationDraftReducer(
 ): ReservationDraftV1 {
   switch (action.type) {
     case 'BEGIN_CONFIGURE': {
-      // PUBLIC HANDOFF: Tour Detail에서 선택 완료된 product/style/schedule context를
-      // 하나의 transaction transition으로 시작한다. 이전 상품의 participant/configuration
-      // intent를 섞지 않고 Configure가 요구하는 context만 보존한다.
+      // PUBLIC HANDOFF: begin a fresh transaction with approved Shared v0.2
+      // Style baseline once. Theme-owned transport remains unset because this
+      // action has no Theme; never infer from product ID. User overrides persist
+      // through reload, Review return, RESTORE_DRAFT and SELECT_TOUR_STYLE.
       return {
         ...createEmptyReservationDraft(action.updatedAt),
         tourProductId: action.tourProductId,
         tourStyle: action.tourStyle,
         tourScheduleId: action.tourScheduleId,
+        configuration: createStyleDefaultConfiguration(action.tourStyle),
       };
     }
 
