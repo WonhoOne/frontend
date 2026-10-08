@@ -1,3 +1,6 @@
+import { execFileSync } from 'node:child_process';
+import process from 'node:process';
+
 import { expect, test } from '@playwright/test';
 
 const account = {
@@ -135,4 +138,57 @@ test('real MySQL authenticated customer journey', async ({ page, request }) => {
     headers: authorization,
   });
   expect(await stillEmpty.json()).toEqual([]);
+
+  // Seed a completed snapshot in this disposable CI database only.
+  // Public reservation creation rightly refuses dates in the past.
+  const mysqlContainer = process.env.MYSQL_CONTAINER_ID;
+  const mysqlPassword = process.env.DB_PASSWORD;
+  if (process.env.CI !== 'true' || !mysqlContainer || !mysqlPassword) {
+    throw new Error('Completed-history fixture requires isolated CI MySQL.');
+  }
+  if (!/^[a-f0-9]{12,64}$/.test(mysqlContainer)) {
+    throw new Error('Invalid disposable MySQL container ID.');
+  }
+  if (!Number.isSafeInteger(created.id) || created.id <= 0) {
+    throw new Error('Invalid test reservation identity.');
+  }
+
+  const fixtureSql = [
+    `UPDATE tour_schedule SET confirmed = TRUE WHERE id = ${schedules[0]!.id}`,
+    `UPDATE tour_reservation SET schedule_start_date_snapshot = DATE_SUB(CURRENT_DATE(), INTERVAL 20 DAY), schedule_end_date_snapshot = DATE_SUB(CURRENT_DATE(), INTERVAL 10 DAY) WHERE id = ${created.id}`,
+  ].join('; ') + ';';
+  execFileSync(
+    'docker',
+    [
+      'exec', '-e', `MYSQL_PWD=${mysqlPassword}`, mysqlContainer,
+      'mysql', '-u', 'misterworld', 'misterworld', '-e', fixtureSql,
+    ],
+    { stdio: 'pipe' },
+  );
+
+  const completedResponse = await request.get(`${backend}/customers/me/travel-history`, {
+    headers: authorization,
+  });
+  expect(completedResponse.status()).toBe(200);
+  const completed = (await completedResponse.json()) as Array<{
+    reservationId: number;
+    tourProduct: { name: string };
+    price: { amount: number; currency: string };
+  }>;
+  expect(completed).toHaveLength(1);
+  expect(completed[0]?.reservationId).toBe(created.id);
+  expect(completed[0]?.tourProduct.name).toBe('F2 Synthetic Golf');
+  expect(completed[0]?.price.currency).toBe('KRW');
+
+  // New document + real login opens Previous Trips using the actual Backend.
+  await page.goto('/login');
+  await login();
+  await expect(page).toHaveURL('/');
+  const previousTrips = page.getByRole('dialog', { name: 'Your previous trips' });
+  await expect(previousTrips).toBeVisible();
+  await expect(previousTrips.getByRole('heading', { name: 'F2 Synthetic Golf' })).toBeVisible();
+  await previousTrips.getByRole('button', { name: '전체 여행 보기' }).click();
+  await expect(page).toHaveURL('/my-trips');
+  await expect(page.getByRole('heading', { name: 'My Trips', level: 1 })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'F2 Synthetic Golf', level: 3 })).toBeVisible();
 });
