@@ -282,6 +282,7 @@ describe('live Runtime → Interpreter → V6-A/B → Provider → GUI', () => {
     );
     expect(observed.configuration.extraSelectionKeys).toEqual([]);
     fireEvent.click(screen.getByRole('button', { name: 'Stop voice' }));
+    expect(screen.getByRole('status')).toHaveTextContent('Voice stopped');
     say(second.recognition, '커피 추가');
     expect(observed.configuration.extraSelectionKeys).toEqual([]);
     fireEvent.click(screen.getByRole('button', { name: 'Start voice' }));

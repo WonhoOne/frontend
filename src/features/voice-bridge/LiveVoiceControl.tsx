@@ -111,6 +111,9 @@ export function LiveVoiceControl({
           break;
         case 'end':
           setActive(false);
+          setMessage((current) =>
+            current === 'Listening…' ? 'Voice stopped. Start again or use the form.' : current,
+          );
           break;
       }
     });
