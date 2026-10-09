@@ -2,11 +2,12 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, expectTypeOf, it, vi } from 'vitest';
 
+import type { ReservationDraftV1 } from '@/features/reservation';
+// Exercise the pure reducer without eagerly loading unrelated HTTP/query UI exports in Node.
 import {
   reservationDraftReducer,
   type ReservationDraftAction,
-  type ReservationDraftV1,
-} from '@/features/reservation';
+} from '@/features/reservation/reservationDraftReducer';
 
 import type { VoiceCommand } from '../../integrations/voice/voiceCommand';
 import { executeVoiceCommand } from './voiceCommandBridge';

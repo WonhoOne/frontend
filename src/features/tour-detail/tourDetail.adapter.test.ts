@@ -55,6 +55,7 @@ describe('Tour Detail adapters', () => {
 
     expect(adaptTourScheduleDto(dto, 103)).toEqual({
       selectionKey: '1301',
+      calendar: { tourProductId: 103, startDate: '2027-03-10', endDate: '2027-03-14' },
       dateLabel: '2027-03-10 – 2027-03-14',
       statusLabel: 'Reservation available',
       recruitmentSummary: '2 / 3 participants · Not confirmed',

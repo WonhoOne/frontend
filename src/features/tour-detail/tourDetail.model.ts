@@ -42,6 +42,8 @@ export interface TourDetailModel {
 }
 
 export interface ScheduleChoiceModel {
+  /** Backend-derived calendar identity. Legacy presentation-only fixtures may omit it. */
+  calendar?: { tourProductId: number; startDate: string; endDate: string };
   /**
    * Frontend-facing TourSchedule identity.
    * Real resources are canonical decimal strings; mock identities may be opaque.

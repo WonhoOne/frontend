@@ -2,6 +2,7 @@ import { useMatches } from 'react-router';
 
 import { RouteMotionBoundary } from '@/app/router/RouteMotionBoundary';
 import { RouteRuntime } from '@/app/router/RouteRuntime';
+import { CustomerVoiceControl } from '@/app/shell/CustomerVoiceControl';
 import { GlobalHeader } from '@/app/shell/GlobalHeader';
 import { PostLoginPreviousTrips } from '@/app/shell/PostLoginPreviousTrips';
 import { TransactionHeader } from '@/app/shell/TransactionHeader';
@@ -57,6 +58,7 @@ export function AppRouteLayout() {
 
       <main id="main-content" tabIndex={-1}>
         <RouteMotionBoundary />
+        <CustomerVoiceControl />
       </main>
     </>
   );
