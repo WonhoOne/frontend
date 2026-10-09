@@ -1,0 +1,14 @@
+.control {
+  margin: var(--space-4, 1rem) auto;
+  padding: var(--space-4, 1rem);
+  width: min(100%, 74rem);
+  overflow-wrap: anywhere;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3, 0.75rem);
+}
+.control p {
+  margin-block: var(--space-2, 0.5rem);
+}

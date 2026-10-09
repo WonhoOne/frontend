@@ -36,12 +36,20 @@ import { Button, PageContainer, TextLink } from '@/shared/ui';
 
 import styles from '@/pages/tour-detail/TourDetailPage.module.css';
 
+interface TourDetailSelection {
+  style: TourDetailStyle | null;
+  scheduleKey: string | null;
+  onStyleChange: (style: TourDetailStyle) => void;
+  onScheduleChange: (key: string) => void;
+}
+
 interface TourDetailPageViewProps {
   coreState: TourDetailCoreState;
   scheduleState?: TourScheduleSectionState;
   onRetry?: () => void;
   onRetrySchedule?: () => void;
   onConfigure?: (intent: ConfigureHandoffIntent) => void;
+  selection?: TourDetailSelection;
 }
 
 const styleSummaryLabel: Record<TourDetailStyle, string> = {
@@ -100,14 +108,18 @@ function TourDetailReadyView({
   onRetrySchedule,
   scheduleState,
   tour,
+  selection,
 }: {
   tour: TourDetailModel;
   scheduleState?: TourScheduleSectionState;
   onRetrySchedule?: () => void;
   onConfigure?: (intent: ConfigureHandoffIntent) => void;
+  selection?: TourDetailSelection;
 }) {
-  const [selectedStyle, setSelectedStyle] = useState<TourDetailStyle | null>(null);
-  const [selectedScheduleKey, setSelectedScheduleKey] = useState<string | null>(null);
+  const [localStyle, setSelectedStyle] = useState<TourDetailStyle | null>(null);
+  const [localScheduleKey, setSelectedScheduleKey] = useState<string | null>(null);
+  const selectedStyle = selection ? selection.style : localStyle;
+  const selectedScheduleKey = selection ? selection.scheduleKey : localScheduleKey;
   const resolvedScheduleState: TourScheduleSectionState = scheduleState ?? { status: 'loading' };
 
   const effectiveScheduleKey =
@@ -154,11 +166,11 @@ function TourDetailReadyView({
       <IncludedExperienceSection tour={tour} />
       <TourStyleSelection
         availableStyles={tour.availableStyles}
-        onChange={setSelectedStyle}
+        onChange={selection?.onStyleChange ?? setSelectedStyle}
         selectedStyle={selectedStyle}
       />
       <TourScheduleSection
-        onChange={setSelectedScheduleKey}
+        onChange={selection?.onScheduleChange ?? setSelectedScheduleKey}
         {...(onRetrySchedule !== undefined ? { onRetry: onRetrySchedule } : {})}
         scheduleState={resolvedScheduleState}
         selectedScheduleKey={effectiveScheduleKey}
@@ -222,6 +234,7 @@ export function TourDetailPageView({
   onRetry,
   onRetrySchedule,
   scheduleState,
+  selection,
 }: TourDetailPageViewProps) {
   if (coreState.status === 'loading') {
     return (
@@ -269,6 +282,7 @@ export function TourDetailPageView({
       {...(onRetrySchedule !== undefined ? { onRetrySchedule } : {})}
       {...(scheduleState !== undefined ? { scheduleState } : {})}
       tour={tour}
+      {...(selection === undefined ? {} : { selection })}
     />
   );
 }
@@ -285,7 +299,7 @@ function ResolvedTourDetailPage({
   scheduleDataSource,
 }: ResolvedTourDetailPageProps) {
   const navigate = useNavigate();
-  const { dispatch } = useReservationDraft();
+  const { draft, dispatch } = useReservationDraft();
   const detailQuery = useTourDetail(detailDataSource, resourceId);
   const scheduleQuery = useTourSchedules(scheduleDataSource, resourceId);
   const coreState = toTourDetailCoreState(detailQuery);
@@ -299,6 +313,32 @@ function ResolvedTourDetailPage({
   return (
     <TourDetailPageView
       coreState={coreState}
+      selection={{
+        style: draft.tourProductId === detailQuery.data?.id ? draft.tourStyle : null,
+        scheduleKey: draft.tourProductId === detailQuery.data?.id ? draft.tourScheduleId : null,
+        onStyleChange: (style) => {
+          if (!detailQuery.data) return;
+          if (draft.tourProductId !== detailQuery.data.id) {
+            dispatch({
+              type: 'START_DRAFT',
+              tourProductId: detailQuery.data.id,
+              updatedAt: Date.now(),
+            });
+          }
+          dispatch({ type: 'SELECT_TOUR_STYLE', tourStyle: style, updatedAt: Date.now() });
+        },
+        onScheduleChange: (key) => {
+          if (!detailQuery.data) return;
+          if (draft.tourProductId !== detailQuery.data.id) {
+            dispatch({
+              type: 'START_DRAFT',
+              tourProductId: detailQuery.data.id,
+              updatedAt: Date.now(),
+            });
+          }
+          dispatch({ type: 'SELECT_SCHEDULE', tourScheduleId: key, updatedAt: Date.now() });
+        },
+      }}
       onConfigure={handleConfigure}
       onRetry={() => {
         void detailQuery.refetch();

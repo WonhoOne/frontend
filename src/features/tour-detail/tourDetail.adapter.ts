@@ -61,6 +61,7 @@ export function adaptTourScheduleDto(
 
   return {
     selectionKey: toCanonicalBackendResourceIdentity(dto.id),
+    calendar: { tourProductId: dto.tourId, startDate: dto.startDate, endDate: dto.endDate },
     dateLabel: `${dto.startDate} – ${dto.endDate}`,
     statusLabel: dto.reservable ? 'Reservation available' : 'Reservation unavailable',
     recruitmentSummary: `${dto.recruitment.currentCount} / ${dto.recruitment.requiredCount} ${unitLabel} · ${dto.recruitment.confirmed ? 'Confirmed' : 'Not confirmed'}`,
