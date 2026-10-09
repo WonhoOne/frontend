@@ -303,7 +303,14 @@ describe('live Runtime → Interpreter → V6-A/B → Provider → GUI', () => {
       if (failContext) throw new Error();
       return choices();
     });
-    for (const error of ['not-allowed', 'no-speech', 'network']) {
+    for (const error of [
+      'not-allowed',
+      'audio-capture',
+      'no-speech',
+      'network',
+      'aborted',
+      'unknown',
+    ]) {
       act(() => {
         Recognition.instances.at(-1)!.onerror?.({ error });
         Recognition.instances.at(-1)!.onend?.();
@@ -321,5 +328,29 @@ describe('live Runtime → Interpreter → V6-A/B → Provider → GUI', () => {
       }),
     ).toBeEnabled();
     live.unmount();
+  });
+  it('owns exactly one subscribed runtime after StrictMode replay and detaches on unmount', () => {
+    const adapters: ReturnType<typeof createBrowserSpeechRecognitionAdapter>[] = [];
+    const subscriptions: { mock: { calls: unknown[] } }[] = [];
+    const aborts: { mock: { calls: unknown[] } }[] = [];
+    const countedAdapter = () => {
+      const adapter = createAdapter();
+      adapters.push(adapter);
+      subscriptions.push(vi.spyOn(adapter, 'subscribe'));
+      aborts.push(vi.spyOn(adapter, 'abort'));
+      return adapter;
+    };
+    const view = mount(readyDraft(), choices, countedAdapter);
+    expect(adapters).toHaveLength(2);
+    expect(subscriptions.map((spy) => spy.mock.calls.length)).toEqual([1, 1]);
+    expect(aborts.map((spy) => spy.mock.calls.length)).toEqual([1, 0]);
+    const before = observed;
+    say(view.recognition, '인원 4명');
+    expect(observed.participantCount).toBe(4);
+    expect(observed).not.toBe(before);
+    view.unmount();
+    expect(aborts.map((spy) => spy.mock.calls.length)).toEqual([1, 1]);
+    expect(view.recognition.onresult).toBeNull();
+    expect(view.recognition.onend).toBeNull();
   });
 });
