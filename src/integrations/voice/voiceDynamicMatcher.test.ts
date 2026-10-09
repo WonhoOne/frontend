@@ -383,3 +383,21 @@ describe('context trust boundary and purity', () => {
     failure('11월 10일 일정 선택', empty, 'UNRECOGNIZED');
   });
 });
+
+describe('V9.1 preserves exact dynamic names', () => {
+  it('does not collapse Korean whitespace or rewrite hotel words in Product names', () => {
+    const context = {
+      ...empty,
+      tourProducts: [
+        { id: 201, name: '투어 보여줘' },
+        { id: 202, name: '투어 보여 줘' },
+        { id: 203, name: '삼성급 여행' },
+      ],
+    };
+    success('상품 투어 보여줘 선택', context, 'SELECT_TOUR_PRODUCT', 201);
+    success('상품 투어 보여 줘 선택', context, 'SELECT_TOUR_PRODUCT', 202);
+    success('상품 삼성급 여행 선택', context, 'SELECT_TOUR_PRODUCT', 203);
+    failure('상품 3성급 여행 선택', context, 'UNRECOGNIZED');
+    failure('상품 투어보여줘 선택', context, 'UNRECOGNIZED');
+  });
+});

@@ -15,6 +15,7 @@ import type {
   BrowserSpeechRecognitionResultEvent,
 } from '@/integrations/voice/browserSpeechRecognitionAdapter';
 import { LiveVoiceControl } from './LiveVoiceControl';
+import * as bridge from './voiceCommandBridge';
 import type { LiveVoiceChoices } from './liveVoiceContext';
 
 class Recognition implements BrowserSpeechRecognition {
@@ -134,7 +135,7 @@ function mount(
   );
   fireEvent.click(screen.getByRole('button', { name: 'Start voice' }));
   const recognition = Recognition.instances.at(-1);
-  return { ...view, recognition: recognition!, onProductSelected, showTours };
+  return { ...view, recognition: recognition!, onProductSelected, showTours, storage };
 }
 function say(recognition: Recognition, text: string, final = true) {
   act(() => recognition.say(text, final));
@@ -353,4 +354,33 @@ describe('live Runtime → Interpreter → V6-A/B → Provider → GUI', () => {
     expect(view.recognition.onresult).toBeNull();
     expect(view.recognition.onend).toBeNull();
   });
+});
+
+describe('V9.1 reservation safety through the live composition', () => {
+  it.each(['예약해줘', '예약 해줘', '예약해 줘', '예약 해 줘'])(
+    'does not execute, mutate, click submit or POST for %s',
+    (text) => {
+      const execute = vi.spyOn(bridge, 'executeVoiceCommand');
+      const fetch = vi.spyOn(globalThis, 'fetch');
+      const submit = vi.fn();
+      try {
+        const { recognition, showTours, onProductSelected, storage } = mount();
+        render(<button onClick={submit}>Submit reservation</button>);
+        const before = observed;
+        storage.setItem.mockClear();
+        say(recognition, text);
+        expect(screen.getByRole('status')).toHaveTextContent('not understood');
+        expect(observed).toBe(before);
+        expect(storage.setItem).not.toHaveBeenCalled();
+        expect(execute).not.toHaveBeenCalled();
+        expect(showTours).not.toHaveBeenCalled();
+        expect(onProductSelected).not.toHaveBeenCalled();
+        expect(submit).not.toHaveBeenCalled();
+        expect(fetch).not.toHaveBeenCalled();
+      } finally {
+        execute.mockRestore();
+        fetch.mockRestore();
+      }
+    },
+  );
 });

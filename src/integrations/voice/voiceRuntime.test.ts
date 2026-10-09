@@ -496,3 +496,25 @@ describe('Voice integration boundary', () => {
     ]);
   });
 });
+
+describe('V9.1 reservation intent runtime gate', () => {
+  it.each(['예약해줘', '예약 해줘', '예약해 줘', '예약 해 줘'])(
+    'emits UNSUPPORTED_INTENT and no executable command for %s',
+    (text) => {
+      const { adapter, events } = session(choices);
+      adapter.transcript(text);
+      expect(events).toEqual([
+        { type: 'transcript', transcript: text, isFinal: true },
+        {
+          type: 'interpretation-failure',
+          normalizedTranscript: text,
+          error: {
+            code: 'UNSUPPORTED_INTENT',
+            message: 'Voice interpretation failed: UNSUPPORTED_INTENT.',
+          },
+        },
+      ]);
+      expect(events.some((event) => event.type === 'command')).toBe(false);
+    },
+  );
+});
