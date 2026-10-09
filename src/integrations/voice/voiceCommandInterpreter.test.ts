@@ -326,3 +326,77 @@ describe('unrecognized transcripts have no authority', () => {
     success('커피 추가', { version: 1, command: 'ADD_OPTION', args: { extraOption: 'COFFEE' } });
   });
 });
+
+describe('V9.1 real Chrome Korean transcript compatibility', () => {
+  it.each([
+    '투어 보여줘',
+    '투어 보여 줘',
+    '상품 보여줘',
+    '상품 보여 줘',
+    '여행 상품 보여줘',
+    '여행 상품 보여 줘',
+  ])('resolves unscoped SHOW_TOURS: %s', (text) => {
+    success(text, { version: 1, command: 'SHOW_TOURS', args: {} });
+  });
+  it.each([
+    '허니문 상품 보여줘',
+    '허니문 상품 보여 줘',
+    '허니문 여행 상품 보여줘',
+    '허니문 여행 상품 보여 줘',
+  ])('resolves theme-scoped SHOW_TOURS: %s', (text) => {
+    success(text, { version: 1, command: 'SHOW_TOURS', args: { theme: 'HONEYMOON_ROMANCE' } });
+  });
+  it.each([
+    ['3성급 호텔로 변경', 'HOTEL_3_STAR'],
+    ['삼성급 호텔로 변경', 'HOTEL_3_STAR'],
+    ['4성급 호텔로 변경', 'HOTEL_4_STAR'],
+    ['사성급 호텔로 변경', 'HOTEL_4_STAR'],
+    ['5성급 호텔로 변경', 'HOTEL_5_STAR'],
+    ['오성급 호텔로 변경', 'HOTEL_5_STAR'],
+    ['호텔 삼성급 선택', 'HOTEL_3_STAR'],
+    ['호텔 사성급로 변경', 'HOTEL_4_STAR'],
+    ['호텔 오성급 호텔 선택', 'HOTEL_5_STAR'],
+  ] as const)('resolves hotel-context number words: %s', (text, hotelOption) => {
+    success(text, { version: 1, command: 'CHANGE_HOTEL', args: { hotelOption } });
+  });
+  it.each([
+    '고급 레스토랑 식사로 변경',
+    '식사 고급 레스토랑로 변경',
+    '식사 고급 레스토랑 선택',
+    '식사 고급 레스토랑으로 변경',
+  ])('preserves old and natural Meal phrasing: %s', (text) => {
+    success(text, {
+      version: 1,
+      command: 'CHANGE_MEAL',
+      args: { mealOption: 'PREMIUM_RESTAURANT' },
+    });
+  });
+  it.each([
+    ['식사 도시락으로 변경', 'LUNCH_BOX'],
+    ['식사 현지식 레스토랑으로 변경', 'LOCAL_RESTAURANT'],
+  ] as const)('supports the same Korean Meal suffix: %s', (text, mealOption) => {
+    success(text, { version: 1, command: 'CHANGE_MEAL', args: { mealOption } });
+  });
+  it.each(['예약해줘', '예약 해줘', '예약해 줘', '예약 해 줘'])(
+    'rejects reservation intent without a command: %s',
+    (text) => {
+      failure(text, 'UNSUPPORTED_INTENT');
+      failure(text + ' 커피 추가', 'UNSUPPORTED_INTENT');
+    },
+  );
+  it.each([
+    '투어보여줘',
+    '허니문상품 보여 줘',
+    '투어 보여 줘 커피 추가',
+    '삼성급',
+    '삼성급 선택',
+    '인원 삼 명',
+    '인원 사 명',
+    '인원 오 명',
+    '상품 삼 선택',
+    '일정 오 선택',
+    '식사 삼성급으로 변경',
+  ])('does not generalize whitespace, numbers or multiple actions: %s', (text) => {
+    failure(text, 'UNRECOGNIZED');
+  });
+});

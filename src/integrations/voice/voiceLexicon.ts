@@ -22,9 +22,9 @@ export const STYLE_ALIASES = {
 } as const satisfies Record<VoiceTourStyle, readonly string[]>;
 
 export const HOTEL_ALIASES = {
-  HOTEL_3_STAR: ['3성급', '3성급 호텔', '3 star', '3 star hotel'],
-  HOTEL_4_STAR: ['4성급', '4성급 호텔', '4 star', '4 star hotel'],
-  HOTEL_5_STAR: ['5성급', '5성급 호텔', '5 star', '5 star hotel'],
+  HOTEL_3_STAR: ['3성급', '3성급 호텔', '삼성급', '삼성급 호텔', '3 star', '3 star hotel'],
+  HOTEL_4_STAR: ['4성급', '4성급 호텔', '사성급', '사성급 호텔', '4 star', '4 star hotel'],
+  HOTEL_5_STAR: ['5성급', '5성급 호텔', '오성급', '오성급 호텔', '5 star', '5 star hotel'],
 } as const satisfies Record<VoiceHotelOption, readonly string[]>;
 
 export const TRANSPORT_ALIASES = {
@@ -70,6 +70,8 @@ export const UNSUPPORTED_PHRASES = [
   '예약 확정',
   '예약해줘',
   '예약 해줘',
+  '예약해 줘',
+  '예약 해 줘',
   'submit reservation',
   'create reservation',
   '로그인',

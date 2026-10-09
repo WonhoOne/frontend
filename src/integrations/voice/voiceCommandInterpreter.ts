@@ -170,18 +170,39 @@ function buildPhrases(): Phrase[] {
       phrases.push({ transcript: normalizeVoiceTranscript(transcript), command });
     }
   };
-  add(['여행 상품 보여줘', '상품 보여줘', '투어 보여줘', 'show tours'], {
-    version: 1,
-    command: 'SHOW_TOURS',
-    args: {},
-  });
+  // Chrome의 보조 용언 띄어쓰기는 정적 SHOW_TOURS 문장에만 명시적으로 허용한다.
+  add(
+    [
+      '여행 상품 보여줘',
+      '여행 상품 보여 줘',
+      '상품 보여줘',
+      '상품 보여 줘',
+      '투어 보여줘',
+      '투어 보여 줘',
+      'show tours',
+    ],
+    {
+      version: 1,
+      command: 'SHOW_TOURS',
+      args: {},
+    },
+  );
   for (const theme of Object.keys(THEME_ALIASES) as (keyof typeof THEME_ALIASES)[]) {
     for (const alias of THEME_ALIASES[theme]) {
-      add([`${alias} 상품 보여줘`, `${alias} 여행 상품 보여줘`, `show ${alias} tours`], {
-        version: 1,
-        command: 'SHOW_TOURS',
-        args: { theme },
-      });
+      add(
+        [
+          `${alias} 상품 보여줘`,
+          `${alias} 상품 보여 줘`,
+          `${alias} 여행 상품 보여줘`,
+          `${alias} 여행 상품 보여 줘`,
+          `show ${alias} tours`,
+        ],
+        {
+          version: 1,
+          command: 'SHOW_TOURS',
+          args: { theme },
+        },
+      );
       add([`${alias} 테마 선택`, `${alias} 테마로 변경`, `select theme ${alias}`], {
         version: 1,
         command: 'SELECT_THEME',
@@ -232,6 +253,8 @@ function buildPhrases(): Phrase[] {
         [
           `식사 ${alias} 선택`,
           `식사 ${alias}로 변경`,
+          // 현재 한국어 Meal 별칭(도시락/레스토랑)은 받침이 있어 으로를 사용한다.
+          ...(/[가-힣]$/.test(alias) ? [`식사 ${alias}으로 변경`] : []),
           `${alias} 식사로 변경`,
           `change meal ${alias}`,
         ],
