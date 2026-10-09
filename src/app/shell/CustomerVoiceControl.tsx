@@ -15,7 +15,7 @@ import { parseResourceIdRouteParam } from '@/shared/lib/resourceIdentity';
 /** Read existing public Query data only. Voice adds no HTTP reads or private-cache access. */
 export function CustomerVoiceControl() {
   const queryClient = useQueryClient();
-  const { pathname, search } = useLocation();
+  const { pathname } = useLocation();
   const navigate = useNavigate();
   const configure = matchPath(routePatterns.configure, pathname);
   const detail = matchPath(routePatterns.tourDetail, pathname);
@@ -23,15 +23,13 @@ export function CustomerVoiceControl() {
   const discovery = pathname === routePaths.home || pathname === routePaths.tours;
   // No recognition lifetime on Auth, Review/Submit, History or Employee surfaces.
   if (!discovery && id === null) return null;
-  const theme = new URLSearchParams(search).get('theme');
 
   return (
     <LiveVoiceControl
       getChoices={() => ({
         screen: discovery ? 'discovery' : configure ? 'configure' : 'detail',
-        products: (
-          queryClient.getQueryData<readonly TourProductSummaryModel[]>(tourDiscoveryQueryKey) ?? []
-        ).filter((product) => theme === null || product.theme === theme),
+        products:
+          queryClient.getQueryData<readonly TourProductSummaryModel[]>(tourDiscoveryQueryKey) ?? [],
         product:
           id === null
             ? undefined

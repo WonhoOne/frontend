@@ -14,8 +14,29 @@ import {
   tourDetailQueryKey,
   tourScheduleQueryKey,
 } from '@/features/tour-detail';
+import { adaptTourProductDto, tourDiscoveryQueryKey } from '@/features/tour-discovery';
 import type { BrowserSpeechRecognitionResultEvent } from '@/integrations/voice/browserSpeechRecognitionAdapter';
 import { CustomerVoiceControl } from './CustomerVoiceControl';
+
+class Recognition {
+  static current: Recognition;
+  onstart: (() => void) | null = null;
+  onresult: ((event: BrowserSpeechRecognitionResultEvent) => void) | null = null;
+  onend: (() => void) | null = null;
+  start() {
+    Recognition.current = this;
+    this.onstart?.();
+  }
+  abort() {
+    this.onend?.();
+  }
+  say(transcript: string) {
+    this.onresult?.({
+      resultIndex: 0,
+      results: { length: 1, 0: { isFinal: true, length: 1, 0: { transcript } } },
+    });
+  }
+}
 
 let observed: ReservationDraftV1;
 function Probe() {
@@ -28,25 +49,6 @@ function Probe() {
 afterEach(() => vi.unstubAllGlobals());
 
 it('reads the current public Query cache per callback without Voice HTTP, and uses discovery navigation', () => {
-  class Recognition {
-    static current: Recognition;
-    onstart: (() => void) | null = null;
-    onresult: ((event: BrowserSpeechRecognitionResultEvent) => void) | null = null;
-    onend: (() => void) | null = null;
-    start() {
-      Recognition.current = this;
-      this.onstart?.();
-    }
-    abort() {
-      this.onend?.();
-    }
-    say(transcript: string) {
-      this.onresult?.({
-        resultIndex: 0,
-        results: { length: 1, 0: { isFinal: true, length: 1, 0: { transcript } } },
-      });
-    }
-  }
   vi.stubGlobal('SpeechRecognition', Recognition);
   const client = new QueryClient();
   const product = adaptTourProductDetailDto({
@@ -140,3 +142,48 @@ it('reads the current public Query cache per callback without Voice HTTP, and us
   act(() => recognition.say('샴페인 추가'));
   expect(observed).toBe(before);
 });
+
+it.each(['HONEYMOON_ROMANCE', 'UNKNOWN'])(
+  'keeps all visible discovery products selectable when theme focus is %s',
+  (theme) => {
+    vi.stubGlobal('SpeechRecognition', Recognition);
+    const client = new QueryClient();
+    client.setQueryData(tourDiscoveryQueryKey, [
+      adaptTourProductDto({
+        id: 103,
+        name: '골프 상품',
+        description: 'Test',
+        theme: 'GOLF_CHALLENGE',
+        availableStyles: ['GRAND'],
+        stylePrices: [{ style: 'GRAND', amount: 100, currency: 'KRW' }],
+      }),
+    ]);
+    const router = createMemoryRouter(
+      [
+        {
+          path: '*',
+          element: (
+            <>
+              <CustomerVoiceControl />
+              <Probe />
+            </>
+          ),
+        },
+      ],
+      { initialEntries: ['/tours?theme=' + theme] },
+    );
+    render(
+      <QueryClientProvider client={client}>
+        <ReservationDraftProvider
+          storage={{ getItem: () => null, setItem: vi.fn(), removeItem: vi.fn() }}
+        >
+          <RouterProvider router={router} />
+        </ReservationDraftProvider>
+      </QueryClientProvider>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Start voice' }));
+    act(() => Recognition.current.say('상품 103 선택'));
+    expect(observed.tourProductId).toBe('103');
+    expect(router.state.location.pathname).toBe('/tours/103');
+  },
+);
