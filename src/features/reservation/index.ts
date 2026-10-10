@@ -97,6 +97,7 @@ export {
 
 export {
   createReservationReviewModel,
+  createReservationReviewSelectionResolver,
   previewReservationReviewResolver,
   type ReservationReviewModel,
   type ReservationReviewSelectionResolver,

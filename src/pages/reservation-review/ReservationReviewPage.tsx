@@ -1,8 +1,20 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router';
 
 import { queryClient } from '@/app/providers/queryClient';
 import { reservationDataSource } from '@/app/providers/reservationDataSource';
+import {
+  tourDetailDataSource,
+  tourScheduleDataSource,
+} from '@/app/providers/tourDetailDataSources';
+import { LoadingState, SectionError } from '@/app/state';
+import {
+  useTourDetail,
+  useTourSchedules,
+  type TourDetailDataSource,
+  type TourScheduleDataSource,
+} from '@/features/tour-detail';
+import { parseBackendResourceIdentity } from '@/shared/lib/resourceIdentity';
 import { routeBuilders, routePaths } from '@/app/router/paths';
 import { saveReturnContext } from '@/features/auth';
 import {
@@ -14,7 +26,9 @@ import {
   getReservationNetworkRecovery,
   getReservationSubmitRecovery,
   getReviewDraftHandoffState,
-  previewReservationReviewResolver,
+  createReservationReviewSelectionResolver,
+  type ReservationReviewSelectionResolver,
+  type ReservationDraftV1,
   presentReservationReviewValidation,
   refreshReservationConflictTruth,
   useReservationDraft,
@@ -23,7 +37,7 @@ import {
   type ReservationDataSource,
   type ReservationMutationState,
 } from '@/features/reservation';
-import { Button, PageContainer, TextLink } from '@/shared/ui';
+import { Button, PageContainer, Skeleton, TextLink } from '@/shared/ui';
 
 import styles from '@/pages/reservation-review/ReservationReviewPage.module.css';
 
@@ -31,6 +45,8 @@ type ConflictTruthState = 'idle' | 'refreshing' | 'refreshed' | 'failed';
 
 interface ReservationReviewPageProps {
   dataSource?: ReservationDataSource;
+  detailDataSource?: TourDetailDataSource;
+  scheduleDataSource?: TourScheduleDataSource;
   refreshConflictTruth?: (tourProductIdentity: string) => Promise<boolean>;
 }
 
@@ -52,8 +68,91 @@ function correctionTargetLabel(target: ReservationCorrectionTarget) {
   return labels[target];
 }
 
+function ReviewIdentityRecovery({
+  onRetry,
+  isRetrying = false,
+}: {
+  onRetry?: () => void;
+  isRetrying?: boolean;
+}) {
+  return (
+    <PageContainer variant="transaction">
+      <div className={styles.page}>
+        <h1>Reservation Review</h1>
+        {onRetry ? (
+          <SectionError
+            title="We couldn't load your selected trip."
+            retryLabel="Try again"
+            retryingLabel="Trying again"
+            isRetrying={isRetrying}
+            onRetry={onRetry}
+          >
+            <p>
+              Your draft is preserved. Reload the product and schedule information before reviewing.
+            </p>
+          </SectionError>
+        ) : (
+          <p>Your selected trip could not be verified. Your draft is preserved.</p>
+        )}
+        <TextLink to={routePaths.tours}>Browse tours</TextLink>
+      </div>
+    </PageContainer>
+  );
+}
+
+function ReservationReviewSelection({
+  resourceId,
+  draft,
+  detailDataSource,
+  scheduleDataSource,
+  children,
+}: {
+  resourceId: number;
+  draft: ReservationDraftV1;
+  detailDataSource: TourDetailDataSource;
+  scheduleDataSource: TourScheduleDataSource;
+  children: (resolver: ReservationReviewSelectionResolver) => ReactNode;
+}) {
+  const detail = useTourDetail(detailDataSource, resourceId);
+  const schedules = useTourSchedules(scheduleDataSource, resourceId);
+  const resolver =
+    detail.data !== undefined && schedules.data !== undefined
+      ? createReservationReviewSelectionResolver(draft, detail.data, schedules.data)
+      : null;
+
+  if (resolver !== null) return children(resolver);
+  if (
+    detail.isError ||
+    schedules.isError ||
+    (detail.data !== undefined && schedules.data !== undefined)
+  ) {
+    return (
+      <ReviewIdentityRecovery
+        isRetrying={detail.isFetching || schedules.isFetching}
+        onRetry={() => {
+          void detail.refetch();
+          void schedules.refetch();
+        }}
+      />
+    );
+  }
+  return (
+    <PageContainer variant="transaction">
+      <div className={styles.page}>
+        <h1>Reservation Review</h1>
+        <LoadingState label="Loading your selected trip">
+          <Skeleton style={{ height: '12rem' }} />
+          <Skeleton style={{ height: '12rem' }} />
+        </LoadingState>
+      </div>
+    </PageContainer>
+  );
+}
+
 export function ReservationReviewPage({
   dataSource = reservationDataSource,
+  detailDataSource = tourDetailDataSource,
+  scheduleDataSource = tourScheduleDataSource,
   refreshConflictTruth = defaultRefreshConflictTruth,
 }: ReservationReviewPageProps = {}) {
   const { draft, dispatch, hydrationStatus, persistenceStatus } = useReservationDraft();
@@ -120,8 +219,8 @@ export function ReservationReviewPage({
     }
   }
 
-  if (handoff.status === 'ready') {
-    const review = createReservationReviewModel(draft, previewReservationReviewResolver);
+  function renderReview(resolver: ReservationReviewSelectionResolver) {
+    const review = createReservationReviewModel(draft, resolver);
     if (review !== null) {
       const validation = presentReservationReviewValidation({ status: 'valid' });
       const submitting = mutationState.status === 'submitting';
@@ -350,6 +449,22 @@ export function ReservationReviewPage({
         </PageContainer>
       );
     }
+    return null;
+  }
+
+  if (handoff.status === 'ready') {
+    const resourceId = parseBackendResourceIdentity(draft.tourProductId ?? undefined);
+    if (resourceId === null) return <ReviewIdentityRecovery />;
+    return (
+      <ReservationReviewSelection
+        resourceId={resourceId}
+        draft={draft}
+        detailDataSource={detailDataSource}
+        scheduleDataSource={scheduleDataSource}
+      >
+        {renderReview}
+      </ReservationReviewSelection>
+    );
   }
 
   const configureRecoveryTarget =
