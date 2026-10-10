@@ -1,3 +1,5 @@
+import type { ScheduleChoiceModel, TourDetailModel } from '@/features/tour-detail';
+
 import type { ReservationDraftV1 } from '@/features/reservation/ReservationDraft';
 
 export interface ReservationReviewSelectionResolver {
@@ -62,34 +64,50 @@ export function createReservationReviewModel(
   };
 }
 
-/**
- * Review presentation resolver for canonical v0.2 option IDs with legacy
- * fixture labels retained only for explicit DEV/test compatibility.
- */
+/** 이미 조회된 Feature model만 소비하며 Draft나 서버 상태를 변경하지 않는다. */
+export function createReservationReviewSelectionResolver(
+  draft: ReservationDraftV1,
+  tour: TourDetailModel,
+  schedules: readonly ScheduleChoiceModel[],
+): ReservationReviewSelectionResolver | null {
+  const schedule = schedules.find((choice) => choice.selectionKey === draft.tourScheduleId);
+  if (tour.id !== draft.tourProductId || schedule === undefined) return null;
+
+  return {
+    tourProductLabel: () => tour.name,
+    scheduleLabel: () => schedule.dateLabel,
+    optionLabel: reservationReviewOptionLabel,
+  };
+}
+
+/** Canonical option labels retain explicit DEV/test fixture compatibility. */
+function reservationReviewOptionLabel(key: string): string {
+  const labels: Record<string, string> = {
+    'fixture:hotel:a': 'Fixture hotel A',
+    'fixture:hotel:b': 'Fixture hotel B',
+    'fixture:transport:a': 'Fixture transport A',
+    'fixture:transport:b': 'Fixture transport B',
+    'fixture:meal:a': 'Fixture meal A',
+    'fixture:meal:b': 'Fixture meal B',
+    'fixture:extras:a': 'Fixture extra A',
+    'fixture:extras:b': 'Fixture extra B',
+    HOTEL_3_STAR: '3-star hotel',
+    HOTEL_4_STAR: '4-star hotel',
+    HOTEL_5_STAR: '5-star hotel',
+    PRIVATE_LUXURY_CAR_2: 'Private luxury car (2)',
+    PREMIUM_VAN_10: 'Premium van (10)',
+    LUNCH_BOX: 'Lunch box',
+    LOCAL_RESTAURANT: 'Local restaurant',
+    PREMIUM_RESTAURANT: 'Premium restaurant',
+    CHAMPAGNE: 'Champagne',
+    COFFEE: 'Coffee',
+  };
+  return labels[key] ?? 'Selected option';
+}
+
+/** Placeholder identities are only for explicit preview/test projections. */
 export const previewReservationReviewResolver: ReservationReviewSelectionResolver = {
   tourProductLabel: () => 'Selected tour',
   scheduleLabel: () => 'Selected schedule',
-  optionLabel: (key) => {
-    const labels: Record<string, string> = {
-      'fixture:hotel:a': 'Fixture hotel A',
-      'fixture:hotel:b': 'Fixture hotel B',
-      'fixture:transport:a': 'Fixture transport A',
-      'fixture:transport:b': 'Fixture transport B',
-      'fixture:meal:a': 'Fixture meal A',
-      'fixture:meal:b': 'Fixture meal B',
-      'fixture:extras:a': 'Fixture extra A',
-      'fixture:extras:b': 'Fixture extra B',
-      HOTEL_3_STAR: '3-star hotel',
-      HOTEL_4_STAR: '4-star hotel',
-      HOTEL_5_STAR: '5-star hotel',
-      PRIVATE_LUXURY_CAR_2: 'Private luxury car (2)',
-      PREMIUM_VAN_10: 'Premium van (10)',
-      LUNCH_BOX: 'Lunch box',
-      LOCAL_RESTAURANT: 'Local restaurant',
-      PREMIUM_RESTAURANT: 'Premium restaurant',
-      CHAMPAGNE: 'Champagne',
-      COFFEE: 'Coffee',
-    };
-    return labels[key] ?? 'Selected option';
-  },
+  optionLabel: reservationReviewOptionLabel,
 };

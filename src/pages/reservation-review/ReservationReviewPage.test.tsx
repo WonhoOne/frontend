@@ -1,8 +1,12 @@
 // @vitest-environment jsdom
 
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render as renderComponent, screen, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import type { ReactElement } from 'react';
+import { adaptTourProductDetailDto, adaptTourScheduleDto } from '@/features/tour-detail';
+import { ContractMappingError } from '@/integrations/backend/contracts';
 import { MemoryRouter, Route, Routes } from 'react-router';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   AuthProvider,
@@ -25,6 +29,48 @@ import {
 } from '@/features/reservation';
 import { LoginPage } from '@/pages/login/LoginPage';
 import { ReservationReviewPage } from '@/pages/reservation-review/ReservationReviewPage';
+
+const reads = vi.hoisted(() => ({ getTourProduct: vi.fn(), getTourSchedules: vi.fn() }));
+vi.mock('@/app/providers/tourDetailDataSources', () => ({
+  tourDetailDataSource: { getTourProduct: reads.getTourProduct },
+  tourScheduleDataSource: { getTourSchedules: reads.getTourSchedules },
+}));
+
+const tour = adaptTourProductDetailDto({
+  id: 42,
+  theme: 'GOLF_CHALLENGE',
+  name: 'F2 Synthetic Golf',
+  description: 'Backend product',
+  availableStyles: ['CLASSIC', 'GRAND', 'PREMIUM'],
+  stylePrices: [
+    { style: 'CLASSIC', amount: 100000, currency: 'KRW' },
+    { style: 'GRAND', amount: 200000, currency: 'KRW' },
+    { style: 'PREMIUM', amount: 300000, currency: 'KRW' },
+  ],
+});
+const schedules = [302, 301].map((id) =>
+  adaptTourScheduleDto(
+    {
+      id,
+      tourId: 42,
+      startDate: id === 301 ? '2026-11-14' : '2026-12-01',
+      endDate: id === 301 ? '2026-11-18' : '2026-12-05',
+      reservable: true,
+      recruitment: { unit: 'PARTICIPANT', currentCount: 0, requiredCount: 3, confirmed: false },
+    },
+    42,
+  ),
+);
+
+function render(ui: ReactElement) {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  return renderComponent(<QueryClientProvider client={client}>{ui}</QueryClientProvider>);
+}
+
+beforeEach(() => {
+  reads.getTourProduct.mockReset().mockResolvedValue(tour);
+  reads.getTourSchedules.mockReset().mockResolvedValue(schedules);
+});
 
 class MemoryStorage implements ReservationDraftStorage {
   private readonly values = new Map<string, string>();
@@ -75,18 +121,107 @@ afterEach(() => {
 });
 
 describe('ReservationReviewPage composition', () => {
-  it('renders a read-only Draft review with explicit change paths', () => {
+  it.each(['product', 'schedule'] as const)(
+    'waits for %s truth without fabricating labels or submitting',
+    async (pendingSource) => {
+      const storage = new MemoryStorage();
+      const saved = serializeReservationDraft(completeDraft());
+      storage.setItem(RESERVATION_DRAFT_STORAGE_KEY, saved);
+      if (pendingSource === 'product') {
+        reads.getTourProduct.mockImplementation(() => new Promise(() => {}));
+      } else {
+        reads.getTourSchedules.mockImplementation(() => new Promise(() => {}));
+      }
+      renderReview(storage);
+      expect(await screen.findByLabelText('Loading your selected trip')).toHaveAttribute(
+        'aria-busy',
+        'true',
+      );
+      for (const label of [
+        'Selected tour',
+        'Selected schedule',
+        '42',
+        '301',
+        'F2 Synthetic Golf',
+      ]) {
+        expect(screen.queryByText(label)).not.toBeInTheDocument();
+      }
+      expect(
+        screen.queryByRole('button', { name: 'Apply for reservation' }),
+      ).not.toBeInTheDocument();
+      expect(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY)).toBe(saved);
+    },
+  );
+
+  it.each(['product', 'schedule'] as const)(
+    'preserves Draft after %s read failure and recovers only on retry',
+    async (failedSource) => {
+      const storage = new MemoryStorage();
+      const saved = serializeReservationDraft(completeDraft());
+      storage.setItem(RESERVATION_DRAFT_STORAGE_KEY, saved);
+      const failure = new ContractMappingError('TourProduct', 'id', 'resource-identity-mismatch');
+      if (failedSource === 'product') {
+        reads.getTourProduct.mockRejectedValueOnce(failure);
+      } else {
+        reads.getTourSchedules.mockRejectedValueOnce(failure);
+      }
+      renderReview(storage);
+      expect(await screen.findByText("We couldn't load your selected trip.")).toBeVisible();
+      expect(
+        screen.queryByRole('button', { name: 'Apply for reservation' }),
+      ).not.toBeInTheDocument();
+      expect(screen.queryByText('Selected tour')).not.toBeInTheDocument();
+      expect(screen.queryByText('Selected schedule')).not.toBeInTheDocument();
+      expect(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY)).toBe(saved);
+      fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
+      expect(await screen.findByText('F2 Synthetic Golf')).toBeVisible();
+      expect(screen.getByText('2026-11-14 – 2026-11-18')).toBeVisible();
+      expect(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY)).toBe(saved);
+    },
+  );
+
+  it.each(['missing-schedule', 'wrong-product'] as const)(
+    'does not substitute another identity on %s',
+    async (mismatch) => {
+      const storage = new MemoryStorage();
+      const saved = serializeReservationDraft(completeDraft());
+      storage.setItem(RESERVATION_DRAFT_STORAGE_KEY, saved);
+      if (mismatch === 'missing-schedule') {
+        reads.getTourSchedules.mockResolvedValue([schedules[0]!]);
+      } else {
+        reads.getTourProduct.mockResolvedValue({ ...tour, id: '43' });
+      }
+      renderReview(storage);
+      expect(await screen.findByText("We couldn't load your selected trip.")).toBeVisible();
+      expect(screen.queryByText('2026-12-01 – 2026-12-05')).not.toBeInTheDocument();
+      expect(screen.queryByText('F2 Synthetic Golf')).not.toBeInTheDocument();
+      expect(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY)).toBe(saved);
+    },
+  );
+
+  it('renders a read-only Draft review with explicit change paths', async () => {
     const storage = new MemoryStorage();
     storage.setItem(RESERVATION_DRAFT_STORAGE_KEY, serializeReservationDraft(completeDraft()));
 
     renderReview(storage);
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Review your trip' })).toBeVisible();
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Review your trip' }),
+    ).toBeVisible();
+    expect(screen.getByText('F2 Synthetic Golf')).toBeVisible();
+    expect(screen.getByText('2026-11-14 – 2026-11-18')).toBeVisible();
+    expect(screen.queryByText('2026-12-01 – 2026-12-05')).not.toBeInTheDocument();
+    for (const label of ['42', '301', 'Selected tour', 'Selected schedule']) {
+      expect(screen.queryByText(label)).not.toBeInTheDocument();
+    }
+    expect(reads.getTourProduct).toHaveBeenCalledWith(42, expect.anything());
+    expect(reads.getTourSchedules).toHaveBeenCalledWith(42, expect.anything());
     expect(screen.getByText('Grand')).toBeVisible();
     expect(screen.getByText('2 participants')).toBeVisible();
     expect(screen.getByText('4-star hotel')).toBeVisible();
     expect(screen.getByText('Premium van (10)')).toBeVisible();
     expect(screen.getByText('Local restaurant')).toBeVisible();
+    expect(screen.getByText('None')).toBeVisible();
     expect(screen.getByRole('link', { name: 'Change configuration' })).toHaveAttribute(
       'href',
       '/tours/42/configure',
@@ -174,7 +309,8 @@ describe('ReservationReviewPage composition', () => {
       </ReservationDraftProvider>,
     );
 
-    const submit = screen.getByRole('button', { name: 'Apply for reservation' });
+    const submit = await screen.findByRole('button', { name: 'Apply for reservation' });
+    expect(createReservation).not.toHaveBeenCalled();
     fireEvent.click(submit);
     fireEvent.click(submit);
 
@@ -228,7 +364,7 @@ describe('ReservationReviewPage composition', () => {
       </ReservationDraftProvider>,
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Apply for reservation' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Apply for reservation' }));
 
     expect(await screen.findByText('Login destination')).toBeVisible();
     expect(createReservation).toHaveBeenCalledTimes(1);
@@ -271,7 +407,7 @@ describe('ReservationReviewPage composition', () => {
       </ReservationDraftProvider>,
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Apply for reservation' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Apply for reservation' }));
 
     expect(await screen.findByText('This account cannot submit this reservation.')).toBeVisible();
     expect(screen.queryByText('Login destination')).not.toBeInTheDocument();
@@ -309,7 +445,7 @@ describe('ReservationReviewPage composition', () => {
       </ReservationDraftProvider>,
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Apply for reservation' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Apply for reservation' }));
 
     expect(await screen.findByText('The selected schedule is no longer reservable.')).toBeVisible();
     await waitFor(() => expect(refreshConflictTruth).toHaveBeenCalledWith('42'));
@@ -354,7 +490,7 @@ describe('ReservationReviewPage composition', () => {
       </ReservationDraftProvider>,
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Apply for reservation' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Apply for reservation' }));
 
     expect(await screen.findByText('Some reservation details need correction.')).toBeVisible();
     expect(screen.getByText('Traveller count needs attention.')).toHaveAttribute(
@@ -397,7 +533,7 @@ describe('ReservationReviewPage composition', () => {
       </ReservationDraftProvider>,
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Apply for reservation' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Apply for reservation' }));
 
     expect(await screen.findByText('Reservation result is uncertain.')).toBeVisible();
     const locked = screen.getByRole('button', { name: 'Submission locked' });
@@ -445,7 +581,7 @@ describe('ReservationReviewPage composition', () => {
         </ReservationDraftProvider>,
       );
 
-      fireEvent.click(screen.getByRole('button', { name: 'Apply for reservation' }));
+      fireEvent.click(await screen.findByRole('button', { name: 'Apply for reservation' }));
 
       await waitFor(() => expect(createReservation).toHaveBeenCalledTimes(1));
       expect(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY)).toBe(serializeReservationDraft(draft));
@@ -480,7 +616,7 @@ describe('ReservationReviewPage composition', () => {
         </ReservationDraftProvider>,
       );
 
-      fireEvent.click(screen.getByRole('button', { name: 'Apply for reservation' }));
+      fireEvent.click(await screen.findByRole('button', { name: 'Apply for reservation' }));
 
       expect(
         await screen.findByText(/reservation was not sent because the network is unavailable/i),
@@ -545,7 +681,7 @@ describe('ReservationReviewPage composition', () => {
       </AuthProvider>,
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Apply for reservation' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Apply for reservation' }));
 
     const loginId = await screen.findByRole('textbox', { name: '로그인 ID' });
     fireEvent.change(loginId, { target: { value: 'synthetic-customer' } });
@@ -555,10 +691,12 @@ describe('ReservationReviewPage composition', () => {
     fireEvent.click(screen.getByRole('button', { name: '로그인' }));
 
     expect(await screen.findByRole('heading', { name: 'Review your trip' })).toBeVisible();
+    expect(screen.getByText('F2 Synthetic Golf')).toBeVisible();
+    expect(screen.getByText('2026-11-14 – 2026-11-18')).toBeVisible();
     expect(createReservation).toHaveBeenCalledTimes(1);
     expect(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY)).toBe(serializeReservationDraft(draft));
 
-    fireEvent.click(screen.getByRole('button', { name: 'Apply for reservation' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Apply for reservation' }));
 
     expect(await screen.findByText('Recovered success')).toBeVisible();
     expect(createReservation).toHaveBeenCalledTimes(2);
