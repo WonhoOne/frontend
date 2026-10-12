@@ -1,5 +1,7 @@
 # Voice V9 — Browser / Accessibility / Voice GUI QA
 
+> **Post-closeout status (2026-10-12):** This file is preserved as the historical V9 execution record. Subsequent V9.1 Korean STT work, real Chrome/microphone QA, B9-D cross-repository E2E, and the final 10/10 Chrome smoke were completed after this record was written. The approved SSOT closeout is [WonhoOne/docs — B9 Integration Gate Final Closeout](https://github.com/WonhoOne/docs/blob/main/B9-INTEGRATION-CLOSEOUT.md), approved on `docs/main` at merge commit `f49d0457498e8b775f659a27e0c3a96d288d0ba0`. It records **B9-C Voice Live Integration = FINAL PASS**, **B9-D = PASS**, and **Overall B9 Integration Gate = FINAL PASS**. Any `MANUAL DEVICE QA REQUIRED` / `PENDING` or “next B9-D” wording below describes the V9 execution-time state only and is not the current project gate status.
+
 ## Gate decision
 
 Code/browser QA evidence is recorded below. Final CI results belong to the PR's
@@ -116,7 +118,9 @@ This audits application behavior. Native browser SpeechRecognition may use a
 browser/platform recognition service; no claim of offline recognition or absence
 of browser-owned service traffic is made.
 
-## Real microphone QA
+## Real microphone QA — V9 execution-time evidence
+
+The following records what was available **during the V9 task itself**. Later real-device completion evidence is recorded in the approved B9 closeout linked at the top of this file.
 
 - Real microphone QA: **NOT EXECUTED**
 - Environment observed: Windows, Codex in-app Chromium-based browser, localhost.
@@ -156,6 +160,15 @@ Voice semantics changed: NO
 ReservationDraft schema changed: NO
 Business Rules changed: NO
 
-B9-C readiness: **MANUAL DEVICE QA REQUIRED** after code/automated gates pass.
-Next gate: V9 code/automated PASS + manual device evidence → B9-C Voice Live
-Integration Gate → B9-D Cross-Repo E2E.
+### Historical V9 handoff and current closeout
+
+At V9 execution time, **MANUAL DEVICE QA REQUIRED** remained the correct readiness statement and the next planned gate was B9-C Voice Live Integration followed by B9-D Cross-Repo E2E. Those steps were subsequently completed.
+
+Current approved status is maintained by `WonhoOne/docs` SSOT:
+
+- B9-C Voice Live Integration: **FINAL PASS**
+- B9-D Cross-Repo E2E: **PASS**
+- Final Chrome Real-Microphone Smoke: **PASS — 10/10**
+- Overall B9 Integration Gate: **FINAL PASS**
+
+See [B9 Integration Gate — Final Closeout](https://github.com/WonhoOne/docs/blob/main/B9-INTEGRATION-CLOSEOUT.md). This update changes documentation status only; V9 execution evidence, Voice semantics, contracts, business rules, APIs, and `ReservationDraft` schema remain unchanged.
