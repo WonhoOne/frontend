@@ -1,15 +1,19 @@
 # Mister World Frontend
 
-Customer-facing web GUI for Mister World.
+Customer and Employee web frontend for Mister World. The customer journey is implemented; the Employee Console is the next frontend implementation scope.
 
 ## Start here
+
+- **Current Employee Console scope and execution plan:** [`docs/implementation/EMPLOYEE-CONSOLE-IMPLEMENTATION-PLAN.md`](docs/implementation/EMPLOYEE-CONSOLE-IMPLEMENTATION-PLAN.md)
+- **Current responsibility and coding rules:** [`AGENTS.md`](AGENTS.md)
+- **Customer/Voice B9 completion evidence:** [`WonhoOne/docs/B9-INTEGRATION-CLOSEOUT.md`](https://github.com/WonhoOne/docs/blob/main/B9-INTEGRATION-CLOSEOUT.md)
+- Older customer planning documents preserve historical planning decisions and are not a current "start foundation" instruction.
 
 - **Implementation start handoff:** [`docs/IMPLEMENTATION-START-HANDOFF.md`](docs/IMPLEMENTATION-START-HANDOFF.md)
 - Frontend documentation: [`docs/README.md`](docs/README.md)
 - Frontend planning index: [`docs/planning/00-PLANNING-INDEX.md`](docs/planning/00-PLANNING-INDEX.md)
 - Implementation handoff: [`docs/planning/12-IMPLEMENTATION-HANDOFF.md`](docs/planning/12-IMPLEMENTATION-HANDOFF.md)
 - Source-structure guide: [`src/README.md`](src/README.md)
-- Development rules: [`AGENTS.md`](AGENTS.md)
 
 ## Shared source of truth
 
@@ -71,7 +75,7 @@ Browser API mocking is opt-in and development-only:
 VITE_ENABLE_MOCKS=true npm run dev
 ```
 
-Foundation intentionally ships with an empty shared MSW handler registry. Add Product handlers only after the relevant Backend contract is approved.
+Mock handlers and scenarios are development-only; consult the approved docs/main contract and production mock-safety rules before changing them.
 
 ## Verification
 
@@ -81,7 +85,7 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-`npm run verify` runs typecheck, lint, formatting, unit/component tests, and the production build. The PR-01 Playwright baseline runs Chromium Foundation smoke tests.
+`npm run verify` runs typecheck, lint, formatting, unit/component tests, and the production build. Playwright runs the browser E2E suite, including implemented Customer/Voice journeys; Employee Console E2E coverage is planned separately.
 
 
 ### Development scenarios
