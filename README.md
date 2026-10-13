@@ -1,5 +1,7 @@
 # Mister World Frontend
 
+> **Employee Console planning (not implementation):** [Employee Console Planning Program](docs/employee-console/README.md) follows **plan → detailed planning package → implementation**. Its latest progress and next-chat handoff are tracked [here](docs/employee-console/01-PROGRESS-AND-HANDOFF.md). Employee routes/UI are not yet implemented; historical Customer planning docs remain Customer-specific.
+
 Customer-facing web GUI for Mister World.
 
 ## Start here
