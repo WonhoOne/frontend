@@ -1,5 +1,8 @@
 # Mister World Frontend Planning Index
 
+> **CURRENT SCOPE NOTICE (2026-10-13):** This is the **historical Customer-screen planning index** (2026-09-29). It does not define all current WonhoOne/frontend ownership or current v0.2 gate status. Customer/Voice B9 is complete; Employee Console is a separate frontend responsibility under docs/main repository-responsibilities.md. For current Employee implementation use [Employee Console Implementation Plan](../implementation/EMPLOYEE-CONSOLE-IMPLEMENTATION-PLAN.md). Older CP0 blockers and v0.1.1 assumptions below are historical, not current API/role decisions.
+
+
 > Status: **FRONTEND PLANNING COMPLETE — CP0 through CP11 finalized; ready for implementation**  
 > Scope: Customer-facing Frontend (`WonhoOne/frontend`)  
 > Planning baseline: 2026-09-29  
@@ -159,12 +162,11 @@ Parents Healing / Golf Challenge / Outdoor Trekking:
 - Frontend automated tests
 - Voice 결과가 반영될 UI state / interface
 
-프론트가 소유하지 않는 것:
+이 **고객용 화면 기획 패키지**에서 프론트가 소유하지 않는 것:
 
 - Spring Boot Backend
 - MySQL schema / persistence
 - Business Rule의 최종 판정
-- Employee Console
 - Speech-to-Text 엔진
 - 자유대화형 AI
 - 문자 발송 인프라
@@ -173,6 +175,8 @@ Parents Healing / Golf Challenge / Outdoor Trekking:
 - 환불
 
 ---
+
+직원 콘솔은 이 고객 화면 스펙에는 포함되지 않지만, **현재 프론트엔드 저장소 및 김태우의 구현 책임에는 포함된다.** 이력상 고객 화면 범위와 팀 전체의 현재 소유권을 혼동하지 않는다.
 
 ## 6. Planned Customer Routes
 
