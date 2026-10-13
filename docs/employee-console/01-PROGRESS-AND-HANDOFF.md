@@ -22,6 +22,7 @@
 | CP0-C stacked PR | [PR #48 — Scope/device/demo gate](https://github.com/WonhoOne/frontend/pull/48), **OPEN / DRAFT / DEVICE A APPROVED**; targets CP0-B branch, retarget to main after #46/#47 merge |
 | CP1-A stacked PR | [PR #49 — Employee task flows](https://github.com/WonhoOne/frontend/pull/49), **OPEN / DRAFT / DEPENDENT**, targets CP0-C branch; only retarget to main after #48 merge |
 | CP1-B stacked PR | [PR #50 — Information architecture & role-safe routes](https://github.com/WonhoOne/frontend/pull/50), **OPEN / DRAFT / OWNER IA REVIEW PENDING**, targets CP1-A branch; only retarget to main after #49 merge |
+| CP2-A stacked PR | [PR #51 — Provider reference comparison, Mobbin visual pending](https://github.com/WonhoOne/frontend/pull/51), **OPEN / DRAFT / PARTIAL VISUAL BLOCKED**, targets CP1-B branch; retarget after #50 merge and complete screenshot review before CP2-A PASS |
 | Employee implementation | **NOT STARTED** |
 
 ## Stage tracker
