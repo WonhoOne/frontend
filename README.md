@@ -56,7 +56,7 @@ frontend/
     └── e2e/
 ```
 
-The source directories are intentionally tracked before the React scaffold so every contributor starts from the same human-readable structure. The first implementation foundation PR fills this skeleton with the app bootstrap, tokens, shared UI, router, test harness, and mocks.
+The application scaffold, shared UI, router, test harness and Customer/Voice features have already been implemented. The planned Employee Console should extend the existing application structure and reuse its Backend/auth boundaries rather than restart the foundation.
 
 
 ## Local development
