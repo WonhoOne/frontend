@@ -2,9 +2,9 @@
 
 > Updated: 2026-10-13
 > Document phase: P1 — CP0-C (Scope, device policy, demo readiness)
-> Status: **P0 MERGED; CP0-A #46 OPEN; CP0-B #47 OPEN; CP0-C DRAFT / DECISION PENDING on stacked branch**
-> P1 checkpoint progress: **CP0-A/B REVIEW/unmerged; CP0-C scope report DRAFT, owner device decision needed; CP1 onward NOT STARTED**
-> Next action: **owner chooses Employee device policy A/B/C; review/merge source PRs in order #46 → #47 → CP0-C**. CP1 cannot be called approved until CP0-C decision and merge.
+> Status: **P0 MERGED; CP0-A #46 OPEN; CP0-B #47 OPEN; CP0-C DEVICE A APPROVED / PR REVIEW on stacked branch**
+> P1 checkpoint progress: **CP0-A/B REVIEW/unmerged; CP0-C source report updated with owner-approved A (PC-only), PR merge pending; CP1 onward NOT STARTED**
+> Next action: **employee device A (PC-only) CONFIRMED 2026-10-13; review/merge #46 → #47 → #48 in order**. CP1 may be drafted upon user's explicit continuation request but is **not approved** until CP0 merge gate passes.
 
 ## Source and branch state
 
@@ -19,7 +19,7 @@
 | Employee detailed planning CP0–CP11 | **CP0-A/B source reports REVIEW; CP0-C DRAFT; CP1 onward NOT STARTED** |
 | CP0-A PR branch | [PR #46 — Frontend runtime and reuse audit](https://github.com/WonhoOne/frontend/pull/46), **OPEN / REVIEW / unmerged**; branch `docs/employee-console-cp0-a-runtime-inventory-20261013` |
 | CP0-B stacked branch | [PR #47 — Backend contract audit](https://github.com/WonhoOne/frontend/pull/47), **OPEN / REVIEW / unmerged**, currently targets CP0-A branch, **must retarget to main after #46 merges** |
-| CP0-C stacked PR | [PR #48 — Scope/device/demo gate](https://github.com/WonhoOne/frontend/pull/48), **OPEN / DRAFT / owner device decision pending**; currently targets CP0-B branch, retarget to main after #46/#47 merge |
+| CP0-C stacked PR | [PR #48 — Scope/device/demo gate](https://github.com/WonhoOne/frontend/pull/48), **OPEN / DRAFT / DEVICE A APPROVED**; targets CP0-B branch, retarget to main after #46/#47 merge |
 | Employee implementation | **NOT STARTED** |
 
 ## Stage tracker
@@ -30,7 +30,7 @@
 | P0 planning program | `MERGED` | [PR #45](https://github.com/WonhoOne/frontend/pull/45) merged; [program](00-PLANNING-PROGRAM.md) approved for execution |
 | CP0-A — current frontend code inventory | `REVIEW` | [CP0-A source audit](planning/CP0-A-FRONTEND-RUNTIME-INVENTORY.md) committed on CP0-A PR branch; user review/merge pending |
 | CP0-B — shared/back-end contract verification | `REVIEW` | [CP0-B Backend Employee contract audit](planning/CP0-B-BACKEND-EMPLOYEE-CONTRACT-AUDIT.md) committed on stacked review branch; Backend/main `597cf92f1baf93211862d4ea5dbfa8a199b808a2`; no new tests run |
-| CP0-C — scope and device policy | `DRAFT / BLOCKED ON OWNER DECISION` | [CP0-C scope, device and demo gate](planning/CP0-C-SCOPE-DEVICE-DEMO-GATE.md); assignment milestones Nov23 report, Nov24 demo; device A/B/C not approved; stacked review PR to follow #47 |
+| CP0-C — scope and device policy | `REVIEW / OWNER DECISION APPROVED` | [CP0-C scope, device and demo gate](planning/CP0-C-SCOPE-DEVICE-DEMO-GATE.md); **A PC-only confirmed** 2026-10-13; Nov23 final report, Nov24 demo; [PR #48](https://github.com/WonhoOne/frontend/pull/48) draft/stacked, unmerged |
 | CP1 — IA/task flows | `NOT STARTED` | No specs |
 | CP2 — visual reference comparison/direction | `NOT STARTED` | Full Mobbin visual review pending |
 | CP3 — component/design-system reuse | `NOT STARTED` | No reuse matrix |
@@ -65,13 +65,13 @@
 
 - [CP0-C proposal](planning/CP0-C-SCOPE-DEVICE-DEMO-GATE.md): Original two-page course assignment confirms Employee product planning and adding warehouse goods; **no explicit Employee phone/mobile requirement**. Approved v0.2 confirms 5 Employee operations + shared Backend-provisioned Employee account.
 - **COURSE DATES:** 2026-10-12 midterm report, 2026-10-13 midterm presentation, **2026-11-23 final report and source submission**, **2026-11-24 UML/implementation demo**. Past submission/presentation completion is unknown.
-- **RECOMMENDED, NOT APPROVED:** A desktop-only Employee UX, keyboard-accessible within supported desktop viewport; alternative B desktop+tablet; C full including phone. Owner must choose.
+- **OWNER-APPROVED:** A desktop-only Employee UX confirmed 2026-10-13. All employee critical operations and accessible keyboard/focus/zoom apply to PC; tablet/phone not acceptance targets. Alternative B/C not selected.
 - **PROPOSED:** Employee sign-in/role gating → Tour create/update → four-item stock read/add → persistence/negative QA demonstration; actual target Employee credentials, fixture/database and presenter remain unverified.
-- **Status:** `DRAFT / DECISION PENDING`. CP0-A/B review PRs still open when drafted; merge in order before CP0 freeze. No tests or application code changed.
+- **Status:** `REVIEW / DEVICE DECISION RESOLVED`, but CP0-A/B/C PRs still unmerged at 2026-10-13 check. Merge dependency chain #46 → #47 → #48 before CP0 freeze. No tests or application code changed.
 
 ## Open decisions (do not silently assume)
 
-1. **BLOCKING DEC-C01:** Owner must choose **A desktop-only (proposed)** / **B desktop+tablet** / **C full responsive including phones**. No Employee mobile mandate in original course assignment/approved v0.2. Amend CP0-C with choice before marking it COMPLETE.
+1. **RESOLVED DEC-C01:** Owner chose **A — desktop/PC-only** on 2026-10-13. Employee phone/tablet responsive layouts are **not** mandatory; do not re-ask or introduce mobile QA gates.
 2. CP1: route and authentication entry/recovery/navigation decisions; no employee URL fixed at P0.
 3. CP2: real screen-level Mobbin visual inspection; visual direction is not decided by reference titles.
 4. CP5/CP8: detailed handling of ambiguous POST outcomes, invalid API responses, concurrent stock additions and PUT Theme 409; Backend is final authority.
@@ -79,12 +79,12 @@
 
 ## How to continue in a fresh chat
 
-1. Verify latest PR states via GitHub; at report time #46 and #47 were unmerged, and CP0-C is on a stacked branch **based on CP0-B head**, with device decision pending.
+1. Verify latest PR states via GitHub; #46, #47 and #48 were unmerged, CP0-C is on a stacked branch **based on CP0-B head**, and **device A has been approved**. Do not repeat the device question.
 2. Read current `WonhoOne/docs/main` and `frontend/AGENTS.md`.
 3. Read [00-PLANNING-PROGRAM.md](00-PLANNING-PROGRAM.md) for exact CP0-A definition, inputs and gate.
 4. Review/merge #46 first, retarget/review/merge #47 against latest main, then retarget/review/merge CP0-C PR against latest main **after user decision**. Never mark earlier PRs merged before verified.
-5. CP0-C draft is already committed as [CP0-C report](planning/CP0-C-SCOPE-DEVICE-DEMO-GATE.md), drawing from two-page original assignment (Nov23 report/Nov24 presentation). **Do not redo research; obtain explicit owner device decision**, update CP0-C and ledger, and merge dependencies.
-6. Once CP0-C is genuinely approved/merged and user says continue, start CP1-A: operator tasks/flowcharts; no UI implementation until CP11 gate.
+5. CP0-C report is updated and decision A already recorded. **Do not redo CP0-C research or ask device choice again**. Process review merges in sequence. If CP1-A source-flow drafting was explicitly requested before merge, it must be on a dependent draft PR with clear blockers, never declared approved.
+6. User approved A and explicitly requested **next**, authorizing a dependent **CP1-A DRAFT** (task flows) before prior docs PRs merge; do not label CP1-A approved/complete before CP0 dependency resolution. No UI implementation until CP11.
 
 ## Checkpoint update template
 
