@@ -1,5 +1,7 @@
 # Frontend Documentation
 
+> **CURRENT EMPLOYEE CONSOLE ENTRY (2026-10-13, P0 PROPOSAL):** [Employee Console planning README](employee-console/README.md) · [planning program](employee-console/00-PLANNING-PROGRAM.md) · [progress and next-session handoff](employee-console/01-PROGRESS-AND-HANDOFF.md). The older CP0–CP11 and Customer implementation master plan below document the historical **Customer** scope; they are not a complete Employee Console UX plan.
+
 This directory contains **frontend-owned documentation only**.
 
 ## Where to start
