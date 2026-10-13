@@ -19,6 +19,7 @@
 | Employee detailed planning CP0–CP11 | **CP0-A/B source reports REVIEW; CP0-C DRAFT; CP1 onward NOT STARTED** |
 | CP0-A PR branch | [PR #46 — Frontend runtime and reuse audit](https://github.com/WonhoOne/frontend/pull/46), **OPEN / REVIEW / unmerged**; branch `docs/employee-console-cp0-a-runtime-inventory-20261013` |
 | CP0-B stacked branch | [PR #47 — Backend contract audit](https://github.com/WonhoOne/frontend/pull/47), **OPEN / REVIEW / unmerged**, currently targets CP0-A branch, **must retarget to main after #46 merges** |
+| CP0-C stacked PR | [PR #48 — Scope/device/demo gate](https://github.com/WonhoOne/frontend/pull/48), **OPEN / DRAFT / owner device decision pending**; currently targets CP0-B branch, retarget to main after #46/#47 merge |
 | Employee implementation | **NOT STARTED** |
 
 ## Stage tracker
