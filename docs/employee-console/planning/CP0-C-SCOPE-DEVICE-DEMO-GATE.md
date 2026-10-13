@@ -5,7 +5,7 @@
 > Owner: 김태우 / `WonhoOne/frontend`
 > Program: [P0 approved planning program](../00-PLANNING-PROGRAM.md) → P1 CP0-C → CP1-A
 > Source snapshot: frontend/main `fa84f4b578a3969213bfc851d5b4fa8121ead66d`; docs/main `f49d0457498e8b775f659a27e0c3a96d288d0ba0`; backend/main `597cf92f1baf93211862d4ea5dbfa8a199b808a2`.
-> Dependencies: [CP0-A PR #46](https://github.com/WonhoOne/frontend/pull/46) and [CP0-B PR #47](https://github.com/WonhoOne/frontend/pull/47) are **still OPEN/unmerged** as checked when preparing this document. **CP0-C lives on a third stacked branch, NOT main.** Merge/review in order and reconcile refs. This CP0-C report is a **proposal awaiting device-policy owner decision**.
+> Dependencies: [CP0-A PR #46](https://github.com/WonhoOne/frontend/pull/46) and [CP0-B PR #47](https://github.com/WonhoOne/frontend/pull/47) are **still OPEN/unmerged** as checked when preparing this document. **CP0-C lives on a third stacked branch, NOT main.** Merge/review in order and reconcile refs. This CP0-C report records the **owner-approved PC-only device policy** and is awaiting prerequisite PR merges and final review.
 > Assignment primary evidence: user-supplied two-page `미스터월드테마투어.pdf` (course 소프트웨어공학 71032; project "AI 기반 미스터 월드 테마 여행 서비스 구축"). This original assignment is not automatically an approved v0.2 API field-level specification.
 > Shared SSOT: [approved requirements](https://github.com/WonhoOne/docs/blob/main/requirements/requirements.md), [Business Rules](https://github.com/WonhoOne/docs/blob/main/requirements/business-rules.md), [NFRs](https://github.com/WonhoOne/docs/blob/main/requirements/non-functional-requirements.md), [REST](https://github.com/WonhoOne/docs/blob/main/api/api-spec-draft.md), [Baseline](https://github.com/WonhoOne/docs/blob/main/baseline/BASELINE-v0.2.md), [ownership](https://github.com/WonhoOne/docs/blob/main/architecture/repository-responsibilities.md).
 
@@ -13,14 +13,14 @@
 
 Set an **evidence-backed** Employee scope and non-goals; propose—not presume—a device support policy, concrete end-to-end demo story and milestone plan. Record owner decisions separately so a new ChatGPT session can resume without filling gaps. This is **not** an IA/design/route spec and contains no implementation code.
 
-**Current outcome:** Scope and deadline are source-backed. A desktop-first device policy and demonstration plan have been **proposed**. The owner has **NOT** explicitly approved employee device support or the final demo plan, so CP0-C is NOT COMPLETE.
+**Current outcome:** Scope and deadline are source-backed. Owner **explicitly approved Option A, PC-only support** on 2026-10-13. The demonstration sequence and local/hosted runtime logistics remain proposals/unverified; CP0-C is NOT COMPLETE until dependencies are merged and final gate reviewed.
 
 ### Evidence hierarchy
 
 - `ASSIGNMENT CONFIRMED`: two-page professor assignment PDF, reproduced briefly/faithfully.
 - `SHARED SSOT CONFIRMED`: approved docs/main v0.2 requirements/domain/API contract.
 - `IMPLEMENTATION OBSERVED`: backend/main and frontend/main from CP0-A/CP0-B.
-- `FRONTEND PROPOSAL`: this draft's recommended UX/device/demo/time targets; not an assignment requirement.
+- `FRONTEND PROPOSAL`: this draft's UX/demo/time targets beyond approved device A; not an assignment requirement.
 - `OWNER CONFIRMED`: on 2026-10-13, user explicitly chose Employee support **Option A — PC-only**. Device scope is locked; remaining demo environment and scheduling logistics remain proposals/TBD.
 - `RUNTIME UNVERIFIED`: an actual Employee demo account/deployed URL/database availability or completion of course midterm submissions.
 
@@ -78,7 +78,7 @@ Known Domain rules: Themes `HONEYMOON_ROMANCE`, `PARENTS_HEALING`, `GOLF_CHALLEN
 | Inventory decrement, overwrite, delete, transfers, audit history, SKU warehouse ledger | BR-24/25 fixed aggregate **read/add only** |
 | Automatically decrementing stock on reservation, 0-stock purchase block | Explicitly outside v0.2 |
 | Employee Voice, AI chat, dashboard KPIs/analytics, independent admin Backend/DB access | No requirement or API; Mobbin examples are reference patterns, not feature commitments |
-| Separate mobile-native Employee application | Not required; device support within existing web app remains pending decision |
+| Separate mobile-native Employee application | Not required; **PC-only web console explicitly approved** |
 
 **Note:** UI-only helpers (client-side sorting/filtering if justified, confirmation dialog, local validity messages, protected routes, display formatting) can be scoped during CP1/CP2/CP5, but may not assume new Backend pagination or analytics endpoints.
 
