@@ -1,5 +1,8 @@
 # Mister World Frontend — Implementation Start Handoff
 
+> **HISTORICAL HANDOFF — NOT THE CURRENT NEXT ACTION (2026-10-13).** This document is the September 2026 pre-scaffold Customer start snapshot. Its statements about absent React/Vite runtime, absent Backend APIs, planning blockers and PR-01/Foundation as next step were true at that earlier checkpoint and must **not** guide new work now. Customer/Voice B9 integration is complete according to [approved closeout](https://github.com/WonhoOne/docs/blob/main/B9-INTEGRATION-CLOSEOUT.md); current shared baseline is docs/main v0.2. The current Frontend owner also owns Employee Console. For the next frontend implementation follow [Employee Console plan](implementation/EMPLOYEE-CONSOLE-IMPLEMENTATION-PLAN.md), [current AGENTS.md](../AGENTS.md), and latest docs/main. Historical content below is intentionally preserved.
+
+
 > **CURRENT IMPLEMENTATION NOTICE — 2026-09-30**  
 > Shared implementation baseline is **v0.1.2**. For current coding decisions, read `docs/implementation/IMPLEMENTATION-MASTER-PLAN.md` first. Older H-03 “Honeymoon mapping unresolved” language in pre-v0.1.2 planning is superseded.
 
