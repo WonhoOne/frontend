@@ -169,7 +169,7 @@ Code vs contract contradiction: identify exact file/line and required owner; do 
 - `CONFIRMED` (approved requirement/contract/team choice);
 - `FRONTEND PROPOSAL` (suggested implementation UX);
 - `TBD` (requires user choice or more research);
-- `BLOCKED BY SHCONTRACT` (requires shared contract) — canonical label for this package: `BLOCKED BY SHARED CONTRACT`.
+- `BLOCKED BY SHARED CONTRACT` (requires a missing or changed approved shared contract).
 
 The status matrix must distinguish **PLANNED vs DRAFT vs REVIEW vs COMPLETE**, with evidence commit and next action. Do not report an unexecuted test as passed.
 
