@@ -1,5 +1,8 @@
 # Mister World Frontend — Implementation Master Plan
 
+> **CURRENT READING NOTICE (2026-10-13): HISTORICAL CUSTOMER-ONLY PLAN.** This v0.1.2/2026-09-30 plan preserves the Customer implementation baseline; its initial no-Backend/live-read status, open H-xx gates, and PR-01 start instruction are NOT current. The approved shared baseline is now docs/main v0.2, and Customer/Voice B9 integration is FINAL PASS. Current Frontend ownership **includes Employee Console**, per docs/main repository responsibilities and frontend/AGENTS.md. For the NEW Employee scope, use [Employee Console Implementation Plan](EMPLOYEE-CONSOLE-IMPLEMENTATION-PLAN.md); do not reuse the Customer routes/screens as Console screens.
+
+
 > Status: **IMPLEMENTATION READY**
 > Version: **Master Plan v1 — Shared Baseline v0.1.2**
 > Date: **2026-09-30**
@@ -31,8 +34,8 @@
 
 # 1. What This Document Is
 
-이 문서는 Mister World Customer Frontend의
-**최종 구현 실행 기준**이다.
+이 문서는 2026-09-30 당시 Mister World Customer Frontend의
+**구현 실행 기준 기록**이다. 현재 승인된 담당 범위 및 API 상태 판단은 위 CURRENT READING NOTICE와 docs/main을 따른다.
 
 상세 근거는:
 
@@ -53,10 +56,10 @@ Master Plan과 해당 IMP/Screen 관련 CP는 반드시 읽는다.
 
 ```text
 1. WonhoOne/docs/main latest approved Shared Contract
-2. IMPLEMENTATION-MASTER-PLAN.md
-3. CP0~CP9 implementation checkpoints
-4. current frontend planning/screens
-5. historical audits/handoffs
+2. frontend/AGENTS.md current repository responsibility and boundaries
+3. EMPLOYEE-CONSOLE-IMPLEMENTATION-PLAN.md for current Employee work
+4. This document and CP0~CP9 for the historical Customer plan only
+5. historical customer planning/screens, audits and handoffs
 ```
 
 Frontend가 Shared Domain/API/Business Rule을 재정의하지 않는다.
@@ -74,9 +77,10 @@ STOP
 
 # 3. Project Scope
 
-Frontend Owner responsibility:
+Current Frontend Owner responsibility (this document describes only the Customer portion; see Employee plan):
 
 ```text
+Employee Console (new scope, separately planned)
 React + TypeScript Customer GUI
 Login/Signup UI
 Tour discovery
@@ -96,8 +100,7 @@ Backend business logic
 MySQL
 Backend persistence
 SMS provider
-Voice Recognition/STT engine
-Employee Console
+Voice Recognition/STT engine (scoped to the approved Voice owner/directory)
 Shared API invention
 ```
 
