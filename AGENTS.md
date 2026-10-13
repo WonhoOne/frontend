@@ -23,11 +23,11 @@ Before writing or modifying code, read the latest approved documents in `WonhoOn
 
 Then read `README.md`, `src/README.md`, and the frontend-owned implementation package:
 
-1. `docs/implementation/IMPLEMENTATION-MASTER-PLAN.md`
-2. the relevant `docs/implementation/checkpoints/CP*.md`
-3. `docs/planning/00-PLANNING-INDEX.md`
-4. the relevant `docs/planning/screens/*.md`
-5. `docs/planning/12-IMPLEMENTATION-HANDOFF.md`
+1. `docs/implementation/EMPLOYEE-CONSOLE-IMPLEMENTATION-PLAN.md` for all Employee Console work (latest scope, v0.2 APIs, gates)
+2. `docs/implementation/IMPLEMENTATION-MASTER-PLAN.md` (historical 2026-09-30 Customer implementation baseline; its v0.1.2 gates and PR-01 start action are not current)
+3. the relevant `docs/implementation/checkpoints/CP*.md` for historical Customer scope
+4. `docs/planning/00-PLANNING-INDEX.md` and relevant Customer `docs/planning/screens/*.md` where needed
+5. `docs/planning/12-IMPLEMENTATION-HANDOFF.md` (historical Customer handoff)
 
 The CP6-H / CP6-I audit files under `docs/planning/audits/` are historical evidence. Their v0.1.1/H-03 conclusions were superseded by Shared Baseline v0.1.2.
 
