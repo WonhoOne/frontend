@@ -3,7 +3,7 @@
 > Updated: 2026-10-13
 > Document phase: P0 — PLAN THE PLANNING
 > Status: **P0 PROPOSAL — USER REVIEW / MERGE REQUIRED**
-> Approved P1 checkpoint progress: **0 / 11 main CPs; 0 subordinate units completed**
+> Approved P1 checkpoint progress: **0 / 12 main CPs (CP0–CP11); 0 subordinate units completed**
 > Next action: **review/approve P0 plan PR**. Only after merge, start `CP0-A`.
 
 ## Source and branch state
@@ -15,7 +15,7 @@
 | [historical frontend PR #3](https://github.com/WonhoOne/frontend/pull/3) | reference: Customer planning package CP0–CP11 |
 | [historical frontend PR #7](https://github.com/WonhoOne/frontend/pull/7) | reference: Customer implementation CP0–CP9 plan |
 | [closed frontend PR #44](https://github.com/WonhoOne/frontend/pull/44) | **CLOSED, NOT MERGED, NOT A CURRENT SPEC** |
-| P0 replacement planning PR | Proposed on branch `docs/employee-console-planning-program-20261013`; verify actual PR number/status |
+| P0 replacement planning PR | [Frontend PR #45 — P0 planning program](https://github.com/WonhoOne/frontend/pull/45), open for review, unmerged; branch `docs/employee-console-planning-program-20261013` |
 | Employee detailed planning CP0–CP11 | **NOT STARTED** |
 | Employee implementation | **NOT STARTED** |
 
