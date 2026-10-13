@@ -1,5 +1,8 @@
 # Frontend Agent Instructions
 
+> **Employee Console P0 gate (2026-10-13):** Before making Employee Console UX/code decisions, read [docs/employee-console/README.md](docs/employee-console/README.md), [00-PLANNING-PROGRAM.md](docs/employee-console/00-PLANNING-PROGRAM.md) and [01-PROGRESS-AND-HANDOFF.md](docs/employee-console/01-PROGRESS-AND-HANDOFF.md). These are a proposed **planning program**, not a completed Employee UI spec. Do not begin Employee implementation until the detailed CP0–CP11 package has been reviewed, audited and explicitly approved; the historical Customer master plan is not an Employee implementation handoff.
+
+
 This repository implements the Mister World **Customer GUI**, **Employee Console**, **Frontend ↔ Backend live integration**, and scoped **AI Voice browser/runtime integration** in the approved Voice directories. The normal Frontend repository owner remains **김태우**; **이한결** owns only the scoped AI Voice implementation described below.
 
 `WonhoOne/docs` **main** is the approved common SSOT. Always use the **latest approved baseline and contracts present on `docs/main`**; it currently includes **Baseline v0.2** (`baseline/BASELINE-v0.2.md`). A docs feature branch or unmerged PR is a proposal and must not be treated as approved until merged into `docs/main`.
