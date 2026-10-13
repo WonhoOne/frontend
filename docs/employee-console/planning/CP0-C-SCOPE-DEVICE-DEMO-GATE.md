@@ -1,6 +1,6 @@
 # CP0-C — Employee Console Scope, Device Policy and Demo Readiness
 
-> **Status: REVIEW / DECISION PENDING. Do NOT mark CP0-C COMPLETE or CP0 frozen yet.**
+> **Status: REVIEW — device-policy DEC-C01 APPROVED A (PC-only); PR merge and final CP0 signoff pending. Do NOT mark CP0 frozen while #46/#47/#48 are unmerged.**
 > Date: 2026-10-13 (Asia/Seoul)
 > Owner: 김태우 / `WonhoOne/frontend`
 > Program: [P0 approved planning program](../00-PLANNING-PROGRAM.md) → P1 CP0-C → CP1-A
@@ -21,7 +21,7 @@ Set an **evidence-backed** Employee scope and non-goals; propose—not presume�
 - `SHARED SSOT CONFIRMED`: approved docs/main v0.2 requirements/domain/API contract.
 - `IMPLEMENTATION OBSERVED`: backend/main and frontend/main from CP0-A/CP0-B.
 - `FRONTEND PROPOSAL`: this draft's recommended UX/device/demo/time targets; not an assignment requirement.
-- `TBD — OWNER DECISION`: specifically confirm device support choice and any demo constraints.
+- `OWNER CONFIRMED`: on 2026-10-13, user explicitly chose Employee support **Option A — PC-only**. Device scope is locked; remaining demo environment and scheduling logistics remain proposals/TBD.
 - `RUNTIME UNVERIFIED`: an actual Employee demo account/deployed URL/database availability or completion of course midterm submissions.
 
 ## 2. Read the ORIGINAL assignment correctly (two pages)
@@ -86,7 +86,7 @@ Known Domain rules: Themes `HONEYMOON_ROMANCE`, `PARENTS_HEALING`, `GOLF_CHALLEN
 
 **Confirmed:** The professor assignment does not mandate Employee mobile; shared v0.2 NFRs do not contain Employee-specific responsive breakpoint requirements; the Customer app's mobile-first tokens are reusable implementation infrastructure but do not create a new evaluation obligation.
 
-**FRONTEND PROPOSAL (recommended, NOT confirmed):**
+**OWNER-APPROVED POLICY — Option A, confirmed 2026-10-13:**
 
 | Option | Required acceptance / non-goals | Scope and cost |
 | --- | --- | --- |
@@ -94,9 +94,9 @@ Known Domain rules: Themes `HONEYMOON_ROMANCE`, `PARENTS_HEALING`, `GOLF_CHALLEN
 | **B. Desktop + tablet** | All core Employee operations also verified at e.g. 768–1024px (table density, layout overflow, form grouping, focus); phone out of scope | Medium extra CP2/CP6/CP9/QA work |
 | **C. Full responsive including phones** | In addition to desktop/tablet, all operations fully supported on ~390px phones (possibly redesign table→cards, action placements, input patterns) | Highest effort, not required by assignment |
 
-**Proposed default = A**, not a final decision. If owner instead prefers the earlier casual desktop+tablet idea, **record B explicitly**. The UI must remain usable with focus order, semantic controls, zoom and accessibility **within the approved device scope**; desktop-only does not justify ignoring keyboard/a11y.
+**CONFIRMED DEC-C01: Option A — Desktop/PC-only.** The user explicitly chose A on 2026-10-13. Required Employee functionality will be planned and tested for desktop browser workflows (the 1280px+ reference is a suggested QA baseline, exact browser/viewport matrix belongs to CP9). Tablet and phone responsive layouts are **not Employee acceptance gates**; they may incidentally render but no functionality guarantee is added. Focus order, keyboard navigation, semantic controls and zoom remain required for accessible desktop interaction. Option B/C rows are historical evaluated alternatives, not accepted scope.
 
-**OWNER DECISION NEEDED:** select `A`, `B`, or `C`. Until then status remains `TBD`; do not write a CP9 mobile acceptance gate or confirm CP0-C.
+**OWNER DECISION RESOLVED:** `A` chosen. CP9 must honor desktop-only scope; mobile/tablet QA is not mandated. CP0-C is still in REVIEW until the stacked PRs are merged and the CP0 gate verified.
 
 ## 6. Proposed Employee demonstration script (not yet owner-approved)
 
@@ -170,7 +170,7 @@ CP0-C is the place to record who runs the demonstration and where. The source do
 
 | Decision ID | Question | Current state | Impact/next owner |
 | --- | --- | --- | --- |
-| **DEC-C01 (BLOCKING)** | Employee responsive support A desktop only / B desktop+tablet / C full responsive? | **TBD**, proposal A | **User** must answer, locks CP0-C/CP9 |
+| **DEC-C01 (RESOLVED 2026-10-13)** | Employee responsive scope | **CONFIRMED: A — PC-only**. Desktop browser flows required, tablet/phone not acceptance targets | Owner decision accepted; feed into CP1 and CP9 |
 | DEC-C02 | Is proposed minimal demo D1–D4 sufficient for presentation, or is there an additional required employee operation? | **PROPOSED**, user/team may amend | User/team; only add scope docs-first if real assignment demands |
 | DEC-C03 | Local vs hosted demo? Is real Employee user provisioned in target DB? Who can reset fixtures? | **RUNTIME UNVERIFIED** | Backend/demo operator by P2 testing; not prerequisite to designing CP1 |
 | DEC-C04 | Are the suggested Oct31 planning/Nov16 coding targets realistic relative to team assignments? | **PROPOSED**, not contractual | User/team may change; protect Nov23/24 due dates |
@@ -185,11 +185,11 @@ CP0-C is the place to record who runs the demonstration and where. The source do
 
 1. [Frontend PR #46 — CP0-A](https://github.com/WonhoOne/frontend/pull/46), `main` target, **currently OPEN**.
 2. [Frontend PR #47 — CP0-B](https://github.com/WonhoOne/frontend/pull/47), currently targets CP0-A branch; **only after #46 merges**, retarget #47 to `main`, recheck diff/merge.
-3. **CP0-C** this stacked report branch targets CP0-B branch while earlier PRs are unmerged. Only after #47 merges, retarget this PR to `main`, review owner decision amendment, recheck diff/merge. **Do not mark COMPLETE while DEC-C01 is unresolved.**
+3. **CP0-C** this stacked report branch targets CP0-B branch while earlier PRs are unmerged. After #47 merges, retarget this PR to `main`, review owner-approved **A PC-only** decision, recheck diff/merge. CP0-C is **READY FOR REVIEW** with DEC-C01 resolved, but **NOT COMPLETE** until its PR is merged and CP0 closure verified.
 4. After the CP0 gate is actually complete and user says proceed, begin **CP1-A — Employee tasks and flows** (not screen mockups yet).
 
-**Exact current stage:** CP0-C drafted, `REVIEW / BLOCKED ON DEC-C01`; the prerequisite CP0-A/B PRs are also awaiting merge; **P2 implementation still NOT STARTED**.
+**Exact current stage:** CP0-C owner device decision recorded (`A PC-only`), `REVIEW / MERGE PENDING`; prior CP0-A/B PRs still awaiting merge. Other demo logistics are assigned to later readiness checks and do not force a new UI feature. **P2 implementation still NOT STARTED**.
 
-**Next user question:** "직원 콘솔 지원 기기를 A: PC 전용(권장) / B: PC+태블릿 / C: 모바일까지 전체 지원 중 어느 것으로 확정할까요?"
+**Next action:** merge review dependency chain #46 → #47 → #48. User subsequently requested progression to **CP1-A**; any CP1-A document prepared before the merges remains **DRAFT/DEPENDENT**, not an approved downstream stage.
 
 No app code, shared API code or device/IA decision was modified by this document; no new tests executed.
