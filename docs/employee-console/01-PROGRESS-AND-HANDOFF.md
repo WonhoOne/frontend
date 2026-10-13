@@ -20,6 +20,7 @@
 | CP0-A PR branch | [PR #46 — Frontend runtime and reuse audit](https://github.com/WonhoOne/frontend/pull/46), **OPEN / REVIEW / unmerged**; branch `docs/employee-console-cp0-a-runtime-inventory-20261013` |
 | CP0-B stacked branch | [PR #47 — Backend contract audit](https://github.com/WonhoOne/frontend/pull/47), **OPEN / REVIEW / unmerged**, currently targets CP0-A branch, **must retarget to main after #46 merges** |
 | CP0-C stacked PR | [PR #48 — Scope/device/demo gate](https://github.com/WonhoOne/frontend/pull/48), **OPEN / DRAFT / DEVICE A APPROVED**; targets CP0-B branch, retarget to main after #46/#47 merge |
+| CP1-A stacked PR | [PR #49 — Employee task flows](https://github.com/WonhoOne/frontend/pull/49), **OPEN / DRAFT / DEPENDENT**, targets CP0-C branch; only retarget to main after #48 merge |
 | Employee implementation | **NOT STARTED** |
 
 ## Stage tracker
