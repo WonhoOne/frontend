@@ -18,7 +18,7 @@
 | P0 replacement planning PR | [Frontend PR #45 — P0 planning program](https://github.com/WonhoOne/frontend/pull/45), **MERGED 2026-10-13** |
 | Employee detailed planning CP0–CP11 | **IN PROGRESS: CP0-A artifact committed for review; no subsequent CP started** |
 | CP0-A PR branch | [PR #46 — Frontend runtime and reuse audit](https://github.com/WonhoOne/frontend/pull/46), **OPEN / REVIEW / unmerged**; branch `docs/employee-console-cp0-a-runtime-inventory-20261013` |
-| CP0-B stacked branch | `docs/employee-console-cp0-b-backend-contract-audit-20261013` based on CP0-A branch, must merge **after** #46; PR number to be verified |
+| CP0-B stacked branch | [PR #47 — Backend contract audit](https://github.com/WonhoOne/frontend/pull/47), **OPEN / REVIEW / unmerged**, currently targets CP0-A branch, **must retarget to main after #46 merges** |
 | Employee implementation | **NOT STARTED** |
 
 ## Stage tracker
