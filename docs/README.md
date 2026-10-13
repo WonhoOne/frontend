@@ -2,7 +2,18 @@
 
 This directory contains **frontend-owned documentation only**.
 
-## Where to start
+## Current status and reading order
+
+As of 2026-10-13, the approved frontend responsibility includes **Customer GUI + Employee Console + Backend live integration**, with Voice directories assigned separately in AGENTS.md. The Customer/Voice B9 gate is complete. **Employee Console is not yet implemented.** The older Customer-only CP documents and pre-implementation handoffs remain historical evidence, not instructions to restart foundation.
+
+Start with:
+
+0. [`implementation/EMPLOYEE-CONSOLE-IMPLEMENTATION-PLAN.md`](implementation/EMPLOYEE-CONSOLE-IMPLEMENTATION-PLAN.md) — **current Employee Console implementation scope, API map and checkpoints**
+1. [`../AGENTS.md`](../AGENTS.md) — current repository ownership/boundaries and mandatory SSOT reading
+2. [`implementation/IMPLEMENTATION-MASTER-PLAN.md`](implementation/IMPLEMENTATION-MASTER-PLAN.md) — historical Customer implementation baseline (2026-09-30)
+3. [`B9 integration closeout`](https://github.com/WonhoOne/docs/blob/main/B9-INTEGRATION-CLOSEOUT.md) — completed Customer/Voice evidence
+
+## Historical Customer planning package
 
 1. [`IMPLEMENTATION-START-HANDOFF.md`](IMPLEMENTATION-START-HANDOFF.md) — **next-session implementation handoff**
 2. [`planning/00-PLANNING-INDEX.md`](planning/00-PLANNING-INDEX.md) — master planning index and current status
