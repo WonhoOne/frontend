@@ -114,7 +114,7 @@ Keep the current Customer/Voice B9 completion record immutable. A new Employee g
 ## 9. Definition of done and handoff
 
 - All **FR-10/FR-11** Employee UI actions work against approved real Backend APIs, with verified persistence; employee access role security enforced server-side and correctly represented in the client.
-- TourProduct create/edit includes the exact allowed style-price set. 409 THEME_LOCKED does not erase form edits or disguise itself as success. Inventory quantity addition reflects returned server balance.
+- TourProduct create/edit includes the exact allowed style-price set. 409 TOUR_PRODUCT_THEME_LOCKED does not erase form edits or disguise itself as success. Inventory quantity addition reflects returned server balance.
 - Test matrix includes 200/201 success, empty, loading, validation failure, 401, 403, 409 where applicable, network/5xx, keyboard/focus and responsive screens. Confirm NFR-02/NFR-03/NFR-06 in latest SSOT.
 - PR includes requirement IDs, routes, actual APIs, contract impact, test results and unresolved gaps. Do not claim tests run or gates complete before evidence exists.
 - If Shared API/domain semantics need change, open a docs-first proposal and coordinate with Backend owner; this local plan may adjust routes, layout, UI labels and component arrangement without redefining contracts.
