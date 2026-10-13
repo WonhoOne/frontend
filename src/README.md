@@ -1,6 +1,6 @@
 # Source Structure
 
-This directory is the human-facing application structure for the Mister World customer frontend.
+This directory is the human-facing application structure for the Mister World Customer GUI and Employee Console.
 
 The repository intentionally keeps the top-level source model small:
 
@@ -30,4 +30,6 @@ Do not let raw Backend DTOs leak into page components, and do not turn mock shap
 The detailed architecture and contract gates live in:
 
 - `docs/planning/08-COMPONENT-ARCHITECTURE.md`
-- `docs/planning/12-IMPLEMENTATION-HANDOFF.md`
+- `docs/planning/12-IMPLEMENTATION-HANDOFF.md` (historical Customer-specific planning)
+- `docs/implementation/EMPLOYEE-CONSOLE-IMPLEMENTATION-PLAN.md` (current Employee Console scope/next implementation)
+- `AGENTS.md` (current owners and Voice directory exception)
