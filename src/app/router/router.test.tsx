@@ -102,10 +102,11 @@ describe('foundation route table', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('uses GlobalHeader for public routes without interpreting Auth state', () => {
+  it('uses GlobalHeader for public routes without interpreting Auth state', async () => {
     renderRoute(routePaths.tours);
 
-    const primaryNavigation = screen.getByRole('navigation', { name: 'Primary' });
+    // Pages are route-lazy (D-A4), so the first render waits for the page module.
+    const primaryNavigation = await screen.findByRole('navigation', { name: 'Primary' });
 
     expect(within(primaryNavigation).getByRole('link', { name: 'Tours' })).toHaveAttribute(
       'aria-current',
@@ -116,9 +117,12 @@ describe('foundation route table', () => {
     ).toHaveAttribute('href', '/login');
   });
 
-  it('uses TransactionHeader for configuration and reservation routes', () => {
+  it('uses TransactionHeader for configuration and reservation routes', async () => {
     renderRoute(routePaths.reservationReview);
 
+    expect(
+      await screen.findByRole('heading', { level: 1, name: routeTitles.reservationReview }),
+    ).toBeVisible();
     expect(screen.queryByRole('navigation', { name: 'Primary' })).not.toBeInTheDocument();
     expect(screen.getByText(routeTitles.reservationReview, { selector: 'header p' })).toBeVisible();
     expect(

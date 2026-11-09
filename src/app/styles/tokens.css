@@ -21,6 +21,9 @@
   --mw-accent-soft: #eee3d2;
   --mw-accent-faint: #f6efe4;
   --mw-on-accent: #181512;
+  /* ACCESSIBILITY: brass used as text (links). --mw-accent is 3.9:1 on light surfaces;
+     this shade is ≥ 4.8:1 on canvas, surfaces and accent tints (WCAG AA body text). */
+  --mw-accent-text: #7a5c33;
 
   /* Semantic colors */
   --mw-success: #2f6b50;

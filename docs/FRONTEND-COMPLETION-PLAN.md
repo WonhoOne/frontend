@@ -68,9 +68,9 @@ Frontend는 아래 **D-A, D-B, D-C가 모두 충족될 때 완료**다. 각 항�
 | D-A1 | S01–S11 모든 route가 실제 Backend로 동작 | ✅ |
 | D-A2 | Customer critical journey가 CI의 Real Backend + MySQL에서 PASS | ✅ |
 | D-A3 | Voice B9-C/B9-D PASS, Voice가 Reservation을 자동 제출하지 않음 | ✅ |
-| D-A4 | Route lazy splitting 적용, production build에 >500 kB chunk 경고 없음 (또는 원인과 수용 사유 문서화) | ⬜ |
+| D-A4 | Route lazy splitting 적용, production build에 >500 kB chunk 경고 없음 (또는 원인과 수용 사유 문서화) | ✅ W4 PR — Page 단위 `React.lazy` + `Suspense` (layout/header는 즉시), 최대 chunk 287 kB, 경고 없음 |
 | D-A5 | Master Plan §8 기준: 150줄 이상 non-Voice Page/Feature 파일에 WHY/CONTRACT/INVARIANT 중심 한국어 설명 주석 | ⬜ |
-| D-A7 | 공용 `TextLink` 대비 3.9:1 → 4.5:1 이상 (E-PR5에서 발견, Customer 화면 영향) | ⬜ |
+| D-A7 | 공용 `TextLink` 대비 3.9:1 → 4.5:1 이상 (E-PR5에서 발견, Customer 화면 영향) | ✅ W4 PR — `--mw-accent-text` (#7A5C33, 밝은 배경 전부 ≥ 4.86:1)를 TextLink와 accent 글자색 17곳에 적용 |
 | D-A6 | NFR-04/05 Frontend 관점 측정 결과 기록 (통합 시나리오 성공 수, 주요 요청 응답시간). NFR-01은 Voice 소유자 근거를 링크 | ⬜ |
 
 Voice 디렉터리(`src/integrations/voice`, `src/features/voice-bridge`)는 이한결 소유 범위이므로 D-A5 주석 보강 대상에서 제외한다.
@@ -168,7 +168,7 @@ CP / 구현 단위 1개
 | W1 | COMPLETE | #46–#51 merged in order; delegated decisions recorded in Employee ledger (W1 closeout PR) | 2026-11-09 |
 | W2 | COMPLETE | P1 CP0–CP11 PASS: #54, #55, P1-5 PR | 2026-11-09 |
 | W3 | COMPLETE (on merge of #59, #60 and E-PR5) | E-PR1 #57, E-PR2 #58 merged; release gate met — [verification](employee-console/planning/audits/E-PR5-CP9-CP10-VERIFICATION.md) | 2026-11-09 |
-| W4 | NOT STARTED | — | — |
+| W4 | IN PROGRESS | D-A4, D-A7 done (W4 PR); D-A5 comments, D-A6 NFR record next | 2026-11-09 |
 | W5 | NOT STARTED | — | — |
 
 ---
