@@ -26,6 +26,10 @@ function formatPrice(amount: number, currency: string) {
   }).format(amount);
 }
 
+/**
+ * 이전 여행 목록 본문. Backend가 준 순서(최근 순, FR-09)를 그대로 보여준다.
+ * 여행 이력 cache는 My Trips와 공유하므로 한 번 읽으면 두 화면이 같은 값을 쓴다.
+ */
 function HistoryContent({
   dataSource,
   onExplore,
@@ -134,6 +138,11 @@ function HistoryContent({
   );
 }
 
+/**
+ * 로그인 직후 한 번 보여주는 "이전 여행" 안내 (S10, 고객 전용).
+ * WHY: 같은 내용을 화면 크기에 맞는 접근성 surface로 보여준다 — 데스크톱은 Dialog,
+ * 작은 화면은 BottomSheet. 둘 다 같은 닫기 계약을 따른다.
+ */
 export function PreviousTripsPopup({
   dataSource,
   onExplore,

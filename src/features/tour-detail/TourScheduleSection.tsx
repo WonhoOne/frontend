@@ -44,6 +44,13 @@ function ScheduleSkeleton() {
   );
 }
 
+/**
+ * 일정 하나를 native radio로 고르는 카드.
+ *
+ * CONTRACT: 선택 가능 여부(`isSelectable`)와 모집 현황 문구는 Backend의 `reservable`과
+ * `recruitment` projection에서 온다. Frontend가 확정 여부나 모집 인원을 다시 계산하지 않는다 (FR-07, F1-09).
+ * 선택할 수 없는 일정도 숨기지 않고 비활성으로 보여 이유를 읽을 수 있게 한다.
+ */
 function ScheduleChoice({
   choice,
   isSelected,
@@ -81,6 +88,10 @@ function ScheduleChoice({
   );
 }
 
+/**
+ * Tour Detail의 일정 영역. 상세 정보와 별도로 읽고, 실패해도 상세 화면은 유지한 채
+ * 이 영역만 다시 시도한다 (S03 "Schedule errors local").
+ */
 export function TourScheduleSection({
   onChange,
   onRetry,

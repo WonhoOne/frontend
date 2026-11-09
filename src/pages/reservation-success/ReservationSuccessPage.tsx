@@ -24,6 +24,13 @@ interface ReservationSuccessPageProps {
   dataSource?: Pick<ReservationDataSource, 'getReservation'>;
 }
 
+/**
+ * S06 Reservation Success.
+ *
+ * CONTRACT: 화면 내용은 navigation state가 아니라 `GET /reservations/{id}`로 다시 읽은
+ * Backend 값이다. 새로고침해도 같은 내용을 보여주고, 가격·확정 여부를 추측하지 않는다.
+ * 비공개 정보이므로 401/403/404를 각각 다른 안내로 보여준다(로그인 반복 없음).
+ */
 export function ReservationSuccessPage({
   dataSource = reservationDataSource,
 }: ReservationSuccessPageProps = {}) {

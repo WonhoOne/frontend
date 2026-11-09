@@ -41,6 +41,11 @@ import { Button, PageContainer, Skeleton, TextLink } from '@/shared/ui';
 
 import styles from '@/pages/reservation-review/ReservationReviewPage.module.css';
 
+/**
+ * 409/422 뒤 최신 상품·일정 정보를 다시 읽는 진행 상태.
+ * WHY: 충돌이 났을 때 화면이 옛 cache로 정정 화면을 보여주지 않도록, 정정 링크를
+ * 누르기 전에 최신 truth를 받아 둔다. 실패해도 정정 화면이 다시 요청한다.
+ */
 type ConflictTruthState = 'idle' | 'refreshing' | 'refreshed' | 'failed';
 
 interface ReservationReviewPageProps {
@@ -50,6 +55,7 @@ interface ReservationReviewPageProps {
   refreshConflictTruth?: (tourProductIdentity: string) => Promise<boolean>;
 }
 
+/** 기본 구현은 앱 공용 QueryClient의 상품·일정 cache를 무효화하고 다시 읽는다. */
 function defaultRefreshConflictTruth(tourProductIdentity: string) {
   return refreshReservationConflictTruth(queryClient, tourProductIdentity);
 }
@@ -68,6 +74,10 @@ function correctionTargetLabel(target: ReservationCorrectionTarget) {
   return labels[target];
 }
 
+/**
+ * Draft가 가리키는 상품/일정을 확인할 수 없을 때의 복구 화면.
+ * INVARIANT: Draft는 지우지 않는다. 다시 읽기(retry)나 상품 목록으로만 안내한다.
+ */
 function ReviewIdentityRecovery({
   onRetry,
   isRetrying = false,
@@ -100,6 +110,13 @@ function ReviewIdentityRecovery({
   );
 }
 
+/**
+ * Review에 보여줄 실제 상품명·일정을 Backend에서 읽어 Draft와 맞춘다.
+ *
+ * CONTRACT: Draft에는 id만 있다. 화면에는 raw id나 임시 문구 대신 Backend가 준
+ * `TourProduct.name`과 일정 날짜를 보여준다 (B9-D #42). 둘 중 하나라도 읽지 못하거나
+ * Draft의 선택이 응답에 없으면 Review를 그리지 않고 복구 화면을 보여준다.
+ */
 function ReservationReviewSelection({
   resourceId,
   draft,
@@ -149,6 +166,18 @@ function ReservationReviewSelection({
   );
 }
 
+/**
+ * S05 Reservation Review — 예약을 실제로 제출하는 유일한 화면.
+ *
+ * CONTRACT:
+ * - 제출은 사용자가 버튼을 눌렀을 때만 일어난다. Voice나 로그인 복귀는 자동 제출하지
+ *   않는다 (FR-13, Master Plan §17).
+ * - 제출은 비관적이다. Backend가 성공을 확정해야 Success로 이동하고 Draft를 비운다.
+ * - 결과를 알 수 없으면(응답 유실) 중복 예약을 막기 위해 다시 제출을 잠근다.
+ * - 409/422는 Draft를 자동으로 고치지 않는다. 사용자가 원래 단계에서 직접 고친다.
+ *
+ * DataSource들은 테스트에서 주입할 수 있게 prop으로 받고, 기본값은 app composition이다.
+ */
 export function ReservationReviewPage({
   dataSource = reservationDataSource,
   detailDataSource = tourDetailDataSource,
@@ -162,6 +191,14 @@ export function ReservationReviewPage({
   const [conflictTruthState, setConflictTruthState] = useState<ConflictTruthState>('idle');
   const handoff = getReviewDraftHandoffState({ draft, hydrationStatus });
 
+  /**
+   * 제출 흐름:
+   * 1. Draft → 제출 입력 (완성되지 않았으면 아무것도 하지 않음)
+   * 2. 오프라인이면 요청을 보내지 않고 "보내지 않음" 실패로 표시
+   * 3. 401 → ReturnContext 저장 후 로그인 (돌아와도 자동 제출 없음)
+   * 4. 충돌/검증 실패 → 최신 truth를 다시 읽어 정정 안내
+   * 5. 확정 성공 → Draft 정리 action 후 Success로 이동
+   */
   async function submitReservation() {
     const intent = createReservationIntent(draft, canonicalReservationCreateIdentityResolver);
     if (intent.status !== 'ready') return;
@@ -212,6 +249,7 @@ export function ReservationReviewPage({
       }
     }
 
+    // INVARIANT: Draft는 Backend가 성공을 확정한 경우에만 비운다 (ReservationDraft clear 규칙).
     const transition = createConfirmedReservationTransition(result, Date.now());
     if (transition !== null) {
       dispatch(transition.draftAction);
@@ -245,6 +283,8 @@ export function ReservationReviewPage({
                 error: mutationState.error,
               })
             : null;
+      // WHY: 결과를 모르는 요청, 권한 거부, 정정이 필요한 실패에서는 같은 내용을 다시
+      // 보내도 의미가 없거나 중복 예약 위험이 있으므로 제출 버튼을 잠근다.
       const retryBlocked =
         networkRecovery?.retryPolicy === 'blocked-until-resolved' ||
         failureDetail?.kind === 'forbidden' ||
@@ -452,6 +492,8 @@ export function ReservationReviewPage({
     return null;
   }
 
+  // Draft 복원이 끝나고 Review에 들어올 만큼 완성된 경우에만 실제 데이터를 읽는다.
+  // 그 외(복원 실패, 미완성, Draft 없음)는 아래 복구 안내를 보여준다.
   if (handoff.status === 'ready') {
     const resourceId = parseBackendResourceIdentity(draft.tourProductId ?? undefined);
     if (resourceId === null) return <ReviewIdentityRecovery />;

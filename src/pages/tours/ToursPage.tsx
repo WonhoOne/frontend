@@ -41,6 +41,7 @@ interface ToursPageViewProps {
   onRetryTheme?: (theme: TourTheme) => void;
 }
 
+/** Backend 오류 문구를 그대로 보여주지 않고 원인 종류별 고정 문구를 쓴다 (Master Plan §25). */
 const collectionErrorCopy: Record<
   TourDiscoveryCollectionErrorReason,
   { title: string; message: string }
@@ -59,6 +60,12 @@ const collectionErrorCopy: Record<
   },
 };
 
+/**
+ * 상품 목록 영역의 상태별 화면 (loading / empty / error / ready).
+ *
+ * CONTRACT: Theme 하나에 상품이 여러 개일 수 있고(Theme ≠ TourProduct), Theme별로 묶어
+ * 보여준다. 일부 Theme만 실패하면 성공한 Theme은 유지하고 실패한 Theme만 다시 시도한다.
+ */
 function ToursCollectionStateView({
   collectionState,
   focusedTheme,
@@ -155,6 +162,7 @@ function ToursCollectionStateView({
   );
 }
 
+/** Data fetching 없는 표현 계층. 테스트·미리보기에서 상태를 직접 넣어 쓴다. */
 export function ToursPageView(props: ToursPageViewProps) {
   return (
     <div className={styles.page}>
@@ -193,6 +201,10 @@ export interface ToursPageProps {
   dataSource?: TourDiscoveryDataSource;
 }
 
+/**
+ * S02 Tours route 진입점.
+ * `?theme=`가 있으면 그 Theme 그룹으로 안내만 하고(focusedTheme), 다른 Theme을 숨기지 않는다.
+ */
 export function ToursPage({ dataSource = tourDiscoveryDataSource }: ToursPageProps) {
   const [searchParams] = useSearchParams();
   const focusedTheme = readThemeFromSearchParams(searchParams);
