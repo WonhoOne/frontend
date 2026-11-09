@@ -1,18 +1,23 @@
-/* 주 동작 링크를 primary button처럼 보이게 한다 (CP2-A V1/V2, CP2-B §4.1). */
+/* 주 동작 링크를 공용 primary Button과 같은 모양으로 그린다 (Button.module.css .primary/.medium). */
 .primaryAction {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   min-block-size: var(--mw-control-min-target);
-  padding-inline: var(--mw-space-5);
-  border-radius: var(--mw-radius-pill);
-  background: var(--mw-ink);
-  color: var(--mw-surface-elevated);
+  padding: var(--mw-space-3) var(--mw-space-4);
+  border: 1px solid var(--mw-accent);
+  border-radius: var(--mw-radius-md);
+  background: var(--mw-accent);
+  color: var(--mw-on-accent);
+  font-size: var(--mw-font-size-body-sm);
   font-weight: var(--mw-font-weight-semibold);
+  line-height: var(--mw-line-height-body-sm);
   text-decoration: none;
 }
 
 .primaryAction:hover {
-  background: var(--mw-ink-soft);
+  border-color: var(--mw-accent-hover);
+  background: var(--mw-accent-hover);
 }
 
 .statusRegion:empty {

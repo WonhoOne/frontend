@@ -51,3 +51,8 @@
   display: grid;
   gap: var(--mw-space-3);
 }
+
+.notFoundLink:link,
+.notFoundLink:visited {
+  color: var(--mw-ink-soft);
+}

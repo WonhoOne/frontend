@@ -8,7 +8,7 @@
 
 .inner {
   display: flex;
-  gap: var(--mw-space-8);
+  gap: var(--mw-space-6);
   align-items: center;
   max-inline-size: var(--mw-container-main);
   min-block-size: 64px;
@@ -49,6 +49,7 @@
 
 .navLink {
   display: inline-flex;
+  white-space: nowrap;
   align-items: center;
   min-block-size: var(--mw-control-min-target);
   padding-inline: var(--mw-space-3);
@@ -67,6 +68,11 @@
 .navLinkActive {
   border-block-end-color: var(--mw-accent);
   color: var(--mw-ink);
+}
+
+/* 200% 확대(CSS 640px)에서도 메뉴와 로그아웃 글자가 단어 중간에서 끊기지 않게 한다 (CP9 L1). */
+.account :where(button) {
+  white-space: nowrap;
 }
 
 .account {

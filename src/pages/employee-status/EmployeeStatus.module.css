@@ -27,3 +27,9 @@
   gap: var(--mw-space-4);
   align-items: center;
 }
+
+/* CP9 A11: 공용 TextLink accent(3.9:1) 대신 ink-soft로 대비 기준을 맞춘다. */
+.actions a:link,
+.actions a:visited {
+  color: var(--mw-ink-soft);
+}

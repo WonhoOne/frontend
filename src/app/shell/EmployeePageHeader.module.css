@@ -17,6 +17,13 @@
   font-size: var(--mw-font-size-body-sm);
 }
 
+/* CP9 A11: 공용 TextLink의 accent(3.9:1)를 직원 화면에서는 ink-soft(11:1)로 덮어쓴다.
+   TextLink의 :visited 규칙보다 우선하도록 요소+class로 지정한다. */
+a.breadcrumb:link,
+a.breadcrumb:visited {
+  color: var(--mw-ink-soft);
+}
+
 .title {
   display: flex;
   gap: var(--mw-space-3);
@@ -31,7 +38,8 @@
 .count {
   font-size: var(--mw-font-size-heading-sm);
   font-weight: var(--mw-font-weight-regular);
-  color: var(--mw-text-tertiary);
+  /* CP9 A11: tertiary(3.1:1)는 본문 대비 기준 미달이라 secondary(4.9:1)를 쓴다. */
+  color: var(--mw-text-secondary);
 }
 
 .meta {
