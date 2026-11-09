@@ -1,0 +1,73 @@
+.card {
+  max-inline-size: var(--mw-container-reading);
+  border: var(--mw-border-subtle);
+  border-radius: var(--mw-radius-md);
+  background: var(--mw-surface-elevated);
+  box-shadow: var(--mw-elevation-1);
+}
+
+.table {
+  inline-size: 100%;
+  border-collapse: collapse;
+}
+
+.caption {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.table th,
+.table td {
+  padding: var(--mw-space-4) var(--mw-space-5);
+  border-block-end: var(--mw-border-subtle);
+  text-align: start;
+}
+
+.table thead th {
+  font-size: var(--mw-font-size-label-sm);
+  font-weight: var(--mw-font-weight-semibold);
+  color: var(--mw-text-secondary);
+}
+
+.table tbody th {
+  font-weight: var(--mw-font-weight-medium);
+}
+
+.table tbody tr:last-child th,
+.table tbody tr:last-child td {
+  border-block-end: none;
+}
+
+.numeric {
+  font-variant-numeric: tabular-nums;
+  text-align: end !important;
+}
+
+.action {
+  inline-size: 1%;
+  white-space: nowrap;
+  text-align: end !important;
+}
+
+.highlighted th,
+.highlighted td {
+  animation: highlight-fade var(--mw-motion-cinematic) var(--mw-ease-standard) 1.2s forwards;
+  background: var(--mw-accent-faint);
+}
+
+@keyframes highlight-fade {
+  to {
+    background: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .highlighted th,
+  .highlighted td {
+    animation: none;
+  }
+}
