@@ -43,7 +43,8 @@ export function LoginPage() {
     setIsSubmitting(true);
 
     try {
-      await auth.login({ loginId, password });
+      // SECURITY: Customer 로그인 화면은 CUSTOMER session만 받아들인다.
+      await auth.login({ loginId, password }, { expectedRole: 'CUSTOMER' });
       // SECURITY/LIFECYCLE: ReturnContext is consumed only after authentication
       // succeeds. Navigation recovery never retries the interrupted transaction.
       const returnContext = consumeReturnContext();

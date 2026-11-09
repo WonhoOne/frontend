@@ -47,7 +47,12 @@ describe('auth private cache lifecycle', () => {
     const { result } = renderHook(() => useAuth(), { wrapper });
 
     await waitFor(() => expect(result.current.state.status).toBe('unauthenticated'));
-    await act(() => result.current.login({ loginId: 'synthetic', password: 'input-only' }));
+    await act(() =>
+      result.current.login(
+        { loginId: 'synthetic', password: 'input-only' },
+        { expectedRole: 'CUSTOMER' },
+      ),
+    );
 
     act(() => {
       result.current.invalidateSession(new AuthError('INVALID_ACCESS_TOKEN'));

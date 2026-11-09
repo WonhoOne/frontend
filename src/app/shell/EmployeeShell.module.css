@@ -1,0 +1,89 @@
+.root {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--mw-z-header);
+  background: var(--mw-surface-elevated);
+  border-block-end: var(--mw-border-subtle);
+}
+
+.inner {
+  display: flex;
+  gap: var(--mw-space-8);
+  align-items: center;
+  max-inline-size: var(--mw-container-main);
+  min-block-size: 64px;
+  margin-inline: auto;
+  padding-inline: var(--mw-page-gutter);
+}
+
+.brand {
+  display: flex;
+  flex-shrink: 0;
+  gap: var(--mw-space-2);
+  align-items: baseline;
+  margin: 0;
+}
+
+.wordmark {
+  font-weight: var(--mw-font-weight-semibold);
+  font-size: var(--mw-font-size-body-md);
+  letter-spacing: var(--mw-tracking-heading);
+  color: var(--mw-ink);
+}
+
+.context {
+  padding: 2px var(--mw-space-2);
+  border-radius: var(--mw-radius-xs);
+  background: var(--mw-surface-muted);
+  font-size: var(--mw-font-size-label-sm);
+  line-height: var(--mw-line-height-label-sm);
+  color: var(--mw-text-secondary);
+}
+
+.nav {
+  display: flex;
+  gap: var(--mw-space-2);
+  align-items: stretch;
+  align-self: stretch;
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--mw-control-min-target);
+  padding-inline: var(--mw-space-3);
+  border-block-end: 2px solid transparent;
+  font-size: var(--mw-font-size-label-md);
+  font-weight: var(--mw-font-weight-medium);
+  color: var(--mw-text-secondary);
+  text-decoration: none;
+}
+
+.navLink:hover {
+  color: var(--mw-ink);
+}
+
+/* 현재 위치는 색만이 아니라 밑줄로도 구분한다 (CP9 A10). */
+.navLinkActive {
+  border-block-end-color: var(--mw-accent);
+  color: var(--mw-ink);
+}
+
+.account {
+  display: flex;
+  flex: 1 1 auto;
+  gap: var(--mw-space-3);
+  align-items: center;
+  justify-content: flex-end;
+  min-inline-size: 0;
+}
+
+/* 1024px에서는 nav가 줄바꿈되기 전에 이름이 먼저 줄어든다 (CP9 L1). */
+.name {
+  overflow: hidden;
+  min-inline-size: 0;
+  font-size: var(--mw-font-size-body-sm);
+  color: var(--mw-text-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

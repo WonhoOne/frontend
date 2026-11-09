@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router';
 
 import { routePaths } from '@/app/router/paths';
-import { useAuth } from '@/features/auth';
+import { isCustomerSession, useAuth } from '@/features/auth';
 
 import styles from '@/app/shell/GlobalHeader.module.css';
 
@@ -83,7 +83,8 @@ export function GlobalHeader() {
             </NavLink>
           ))}
 
-          {auth.state.status === 'authenticated' ? (
+          {/* SECURITY: EMPLOYEE session은 고객 계정 링크(My Trips)를 갖지 않는다. */}
+          {isCustomerSession(auth.state) ? (
             <Link
               aria-label={`Account — ${auth.state.user.name}`}
               className={styles.link}

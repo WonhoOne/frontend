@@ -5,7 +5,13 @@ import { MemoryRouter } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { GlobalHeader } from '@/app/shell/GlobalHeader';
-import { AuthProvider, type AuthDataSource, type LoginResult, useAuth } from '@/features/auth';
+import {
+  AuthProvider,
+  type AuthDataSource,
+  type LoginResult,
+  type UserRole,
+  useAuth,
+} from '@/features/auth';
 
 const loginResult: LoginResult = {
   accessToken: 'synthetic-token',
@@ -14,22 +20,22 @@ const loginResult: LoginResult = {
   user: { id: 7, role: 'CUSTOMER', name: 'Synthetic Customer' },
 };
 
-function LoginHarness() {
+function LoginHarness({ expectedRole = 'CUSTOMER' }: { expectedRole?: UserRole }) {
   const auth = useAuth();
 
   return (
     <button
       disabled={auth.state.status !== 'unauthenticated'}
-      onClick={() => void auth.login({ loginId: 'synthetic', password: 'input' })}
+      onClick={() => void auth.login({ loginId: 'synthetic', password: 'input' }, { expectedRole })}
     >
       Authenticate
     </button>
   );
 }
 
-function renderHeader(initialEntry = '/tours') {
+function renderHeader(initialEntry = '/tours', result: LoginResult = loginResult) {
   const dataSource: AuthDataSource = {
-    login: vi.fn().mockResolvedValue(loginResult),
+    login: vi.fn().mockResolvedValue(result),
     signup: vi.fn().mockRejectedValue(new Error('not used')),
   };
 
@@ -37,7 +43,7 @@ function renderHeader(initialEntry = '/tours') {
     <MemoryRouter initialEntries={[initialEntry]}>
       <AuthProvider dataSource={dataSource}>
         <GlobalHeader />
-        <LoginHarness />
+        <LoginHarness expectedRole={result.user.role} />
       </AuthProvider>
     </MemoryRouter>,
   );
@@ -67,6 +73,21 @@ describe('GlobalHeader account state', () => {
 
     await waitFor(() => expect(account).toHaveAttribute('href', '/my-trips'));
     expect(screen.queryByRole('link', { name: 'Login / Account' })).not.toBeInTheDocument();
+  });
+
+  it('does not give an EMPLOYEE session the customer account link', async () => {
+    renderHeader('/tours', {
+      ...loginResult,
+      user: { id: 201, role: 'EMPLOYEE', name: 'Synthetic Employee' },
+    });
+
+    const authenticate = screen.getByRole('button', { name: 'Authenticate' });
+    await waitFor(() => expect(authenticate).toBeEnabled());
+    fireEvent.click(authenticate);
+
+    await waitFor(() => expect(authenticate).toBeDisabled());
+    expect(screen.queryByRole('link', { name: /Synthetic Employee/ })).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Login / Account' })).toHaveAttribute('href', '/login');
   });
 
   it('keeps My Trips as the route-active item when authenticated account points to the archive', async () => {

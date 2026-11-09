@@ -41,9 +41,11 @@ function Harness({ intent }: { intent: PostLoginHistoryIntent }) {
   return (
     <button
       onClick={() => {
-        void auth.login({ loginId: 'synthetic', password: 'input' }).then(() => {
-          setPostLoginHistoryIntent(intent);
-        });
+        void auth
+          .login({ loginId: 'synthetic', password: 'input' }, { expectedRole: 'CUSTOMER' })
+          .then(() => {
+            setPostLoginHistoryIntent(intent);
+          });
       }}
     >
       Authenticate

@@ -127,7 +127,14 @@ jobs:
       DB_PASSWORD: f2-disposable-test-only-password
       JWT_SECRET: f2-disposable-jwt-signing-key-at-least-32-bytes
       SMS_DELIVERY_ENABLED: 'false'
-      EMPLOYEE_BOOTSTRAP_ENABLED: 'false'
+      # Disposable CI-only Employee account for the real Employee journey
+      # (tests/f2-mysql/employee.spec.ts). Not a real credential.
+      EMPLOYEE_BOOTSTRAP_ENABLED: 'true'
+      EMPLOYEE_LOGIN_ID: f2-ci-employee
+      EMPLOYEE_PASSWORD: f2-disposable-employee-password
+      EMPLOYEE_NAME: Synthetic Employee
+      EMPLOYEE_ADDRESS: Synthetic integration address
+      EMPLOYEE_CONTACT: '01000000009'
       DEMO_PROVISIONING_ENABLED: 'true'
       DEMO_EXPECTED_DATABASE: misterworld
       BUSINESS_TIME_ZONE: Asia/Seoul

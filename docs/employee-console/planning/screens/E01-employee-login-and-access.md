@@ -109,7 +109,7 @@ User re-submits. No automatic retry of login (mutation retry 0).
 
 - One H1 per state. Skip link to `<main>`. Top bar is `<header>` with `<nav aria-label="직원 메뉴">`; active link `aria-current="page"`.
 - Error alert `role="alert"`; expiry/sign-out notice `role="status"`.
-- Focus: page load → H1 (RouteFocusManager); failed submit → alert.
+- Focus: route change → `<main>` (RouteFocusManager); failed submit → alert.
 - All controls ≥ 44px target; visible focus (`--mw-focus-outline`).
 
 ## 18. API / Shared Contract Dependency

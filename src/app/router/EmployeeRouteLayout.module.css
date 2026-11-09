@@ -1,0 +1,8 @@
+.main {
+  min-block-size: 100dvh;
+  background: var(--mw-canvas);
+}
+
+.main:focus {
+  outline: none;
+}
