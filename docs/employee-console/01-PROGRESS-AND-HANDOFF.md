@@ -1,10 +1,10 @@
 # Employee Console — Progress Ledger and Next-Session Handoff
 
 > Updated: 2026-11-09
-> Document phase: P1 — CP6 (screen specs)
-> Status: **P0, CP0–CP5 COMPLETE; CP0 FROZEN (2026-11-09).**
-> P1 checkpoint progress: **CP0–CP5 COMPLETE; CP6-0 NEXT; CP6–CP11 NOT STARTED**
-> Next action: **CP6-0 — screen inventory and spec template, then CP6-A … CP6-F.**
+> Document phase: P1 — CP6-G/H/I (audits)
+> Status: **P0, CP0–CP5, CP6-0 – CP6-F COMPLETE; CP0 FROZEN (2026-11-09).**
+> P1 checkpoint progress: **CP0–CP5 and CP6-0 – CP6-F COMPLETE; CP6-G NEXT; CP7–CP11 NOT STARTED**
+> Next action: **CP6-G cross-screen consistency audit, CP6-H contract/TBD audit, CP6-I readiness audit.**
 > Execution mode: owner delegated execution on 2026-11-09 — see [Frontend Completion Plan](../FRONTEND-COMPLETION-PLAN.md) §5 for what the agent decides and where it stops.
 
 ## 2026-11-09 — W1 closeout and delegated decisions
@@ -17,6 +17,12 @@
 | CP1-A | COMPLETE. Its open IA items were answered in CP1-B |
 | CP1-B | COMPLETE. **IA-01..IA-05, IA-07 APPROVED by DELEGATED DECISION 2026-11-09**: `/employee/login` on shared login API; Products list as landing, no dashboard; two primary areas (여행상품 / 재고 관리); addressable `/employee/tours`, `/employee/tours/new`, `/employee/tours/:tourId/edit`; stock add inside `/employee/inventory`; return to list after create. IA-08 → CP6-D, IA-10 → CP2/CP6 |
 | CP2-A | IN PROGRESS. Mobbin re-checked 2026-11-09: HTTP 403 bot block. **DELEGATED DECISION:** visual evidence from official Shopify/Square/Wix help-center screenshots, same PASS checklist (CP2-A §8) |
+
+## 2026-11-09 — CP6-0 – CP6-F COMPLETE (delegated decision)
+
+- [CP6-0 Screen Inventory](planning/CP6-0-SCREEN-INVENTORY.md): E00 shell, E01 login/access, E02 list, E03 create, E04 edit, E05 inventory; 20-heading template with device scope replacing mobile; shared display labels (Customer Theme/Style names, catalog item names, `₩` format).
+- Screen specs: [E01](planning/screens/E01-employee-login-and-access.md), [E02](planning/screens/E02-product-list.md), [E03](planning/screens/E03-product-create.md), [E04](planning/screens/E04-product-edit.md), [E05](planning/screens/E05-inventory.md) — all READY.
+- [CP6-F Cross-Screen Journeys](planning/CP6-F-CROSS-SCREEN-JOURNEYS.md): navigation map, single dirty-guard policy, session/role transitions, consistency pre-check, EJ01–EJ10 journeys.
 
 ## 2026-11-09 — CP4, CP5 COMPLETE (delegated decision)
 
@@ -54,7 +60,7 @@
 | [historical frontend PR #7](https://github.com/WonhoOne/frontend/pull/7) | reference: Customer implementation CP0–CP9 plan |
 | [closed frontend PR #44](https://github.com/WonhoOne/frontend/pull/44) | **CLOSED, NOT MERGED, NOT A CURRENT SPEC** |
 | P0 replacement planning PR | [Frontend PR #45 — P0 planning program](https://github.com/WonhoOne/frontend/pull/45), **MERGED 2026-10-13** |
-| Employee detailed planning CP0–CP11 | **CP0–CP5 COMPLETE**; CP6-0 NEXT |
+| Employee detailed planning CP0–CP11 | **CP0–CP5, CP6-0 – CP6-F COMPLETE**; CP6-G NEXT |
 | CP0-A PR branch | [PR #46 — Frontend runtime and reuse audit](https://github.com/WonhoOne/frontend/pull/46), **MERGED to main 2026-11-09** |
 | CP0-B stacked branch | [PR #47 — Backend contract audit](https://github.com/WonhoOne/frontend/pull/47), **MERGED to main 2026-11-09** |
 | CP0-C stacked PR | [PR #48 — Scope/device/demo gate](https://github.com/WonhoOne/frontend/pull/48), **MERGED to main 2026-11-09** |
@@ -79,7 +85,7 @@
 | CP3 — component/design-system reuse | `COMPLETE (2026-11-09, delegated decision)` | [CP3 Component Reuse and Contracts](planning/CP3-COMPONENT-REUSE-AND-CONTRACTS.md) |
 | CP4 — operational motion/feedback | `COMPLETE (2026-11-09, delegated decision)` | [CP4 Motion and Feedback](planning/CP4-MOTION-AND-FEEDBACK.md) |
 | CP5 — data/mutation UI state | `COMPLETE (2026-11-09, delegated decision)` | [CP5 Data and Mutation States](planning/CP5-DATA-AND-MUTATION-STATES.md) |
-| CP6 — screens, cross-screen/contract/readiness audits | `NOT STARTED` | No Employee screen specs |
+| CP6 — screens, cross-screen/contract/readiness audits | `CP6-0 – CP6-F COMPLETE (2026-11-09); CP6-G/H/I NEXT` | [CP6-0](planning/CP6-0-SCREEN-INVENTORY.md), [screens](planning/screens/), [CP6-F](planning/CP6-F-CROSS-SCREEN-JOURNEYS.md) |
 | CP7 — implementation architecture | `NOT STARTED` | No design against existing modules |
 | CP8 — API/data UX | `NOT STARTED` | No final query/mutation policy |
 | CP9 — approved device scope + a11y | `NOT STARTED` | **A PC-only already approved**, exact desktop viewport/browser + keyboard/a11y checks still TBD |
@@ -140,7 +146,8 @@
 2. **RESOLVED CP1 IA:** IA-01..IA-05, IA-07 (delegated decision, 2026-11-09). IA-08 edit-success destination → CP6-D.
 3. **RESOLVED CP2-B:** visual direction and save placement (sticky bottom action bar).
 4. **RESOLVED CP5:** ambiguous POST outcomes, invalid responses, concurrent stock additions, PUT Theme 409 (CP8 refines DTO mapping only).
-5. DEC-C03: demo DB and Employee account provisioning — Backend/demo operator; checked again in W3/W5.
+5. **RESOLVED CP6:** screen inventory (E00–E05), create/edit as separate routes sharing `ProductForm`.
+6. DEC-C03: demo DB and Employee account provisioning — Backend/demo operator; checked again in W3/W5.
 
 ## How to continue in a fresh chat
 
