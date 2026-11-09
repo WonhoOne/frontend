@@ -6,6 +6,8 @@ export type BackendContractName =
   | 'TourSchedule[]'
   | 'AuthLoginResponse'
   | 'AuthSignupResponse'
+  | 'Inventory'
+  | 'Inventory[]'
   | 'Reservation'
   | 'TravelHistory'
   | 'TravelHistory[]';

@@ -42,6 +42,14 @@ export {
 } from '@/integrations/backend/contracts/reservation';
 export type { TourProductWriteRequestDto } from '@/integrations/backend/contracts/employeeTourProduct';
 export {
+  decodeInventoryDto,
+  decodeInventoryListDto,
+  inventoryItemTypes,
+  type InventoryAddRequestDto,
+  type InventoryDto,
+  type InventoryItemTypeDto,
+} from '@/integrations/backend/contracts/inventory';
+export {
   decodeTourProductDto,
   decodeTourProductListDto,
   tourStyles,

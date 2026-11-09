@@ -3,7 +3,7 @@ import process from 'node:process';
 import { expect, test } from '@playwright/test';
 
 /**
- * Real Backend + MySQL Employee journeys (CP10 EJ01, EJ02, EJ03, EJ04, EJ06).
+ * Real Backend + MySQL Employee journeys (CP10 EJ01–EJ06).
  *
  * ORDER: this spec writes TourProducts, so it runs after the customer and Voice specs
  * that expect the seeded one-product catalog (see `playwright.f2-mysql.config.ts`).
@@ -24,10 +24,7 @@ function requiredEnv(name: string) {
   return value;
 }
 
-test('real Backend Employee sign-in, product create/edit, Theme lock and CUSTOMER refusal', async ({
-  page,
-  request,
-}) => {
+test('real Backend Employee journeys EJ01–EJ06', async ({ page, request }) => {
   const employeeLoginId = requiredEnv('EMPLOYEE_LOGIN_ID');
   const employeePassword = requiredEnv('EMPLOYEE_PASSWORD');
   const employeeName = requiredEnv('EMPLOYEE_NAME');
@@ -134,6 +131,37 @@ test('real Backend Employee sign-in, product create/edit, Theme lock and CUSTOME
   const seeded = afterEdits.find((product) => product.name === 'F2 Synthetic Golf');
   expect(seeded?.theme).toBe('GOLF_CHALLENGE');
   expect(seeded?.description).toBe('Edited by the real Employee journey.');
+
+  // EJ05 — add stock as a positive delta; the row shows the server total and it persists.
+  const inventoryBefore = (await (
+    await request.get(`${backend}/employee/inventory`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  ).json()) as Array<{ itemType: string; quantity: number }>;
+  const golfBallBefore = inventoryBefore.find((item) => item.itemType === 'GOLF_BALL')!.quantity;
+
+  await page
+    .getByRole('navigation', { name: '직원 메뉴' })
+    .getByRole('link', { name: '재고 관리' })
+    .click();
+  await page.getByRole('button', { name: '골프공 재고 추가' }).click();
+  const stockDialog = page.getByRole('dialog', { name: '골프공 재고 추가' });
+  await stockDialog.getByLabel(/추가할 수량/).fill('5');
+  await stockDialog.getByRole('button', { name: '추가', exact: true }).click();
+  await expect(
+    page.getByRole('status').filter({
+      hasText: `골프공 재고를 5개 추가했습니다. 현재 ${new Intl.NumberFormat('ko-KR').format(golfBallBefore + 5)}개`,
+    }),
+  ).toBeVisible();
+
+  const inventoryAfter = (await (
+    await request.get(`${backend}/employee/inventory`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  ).json()) as Array<{ itemType: string; quantity: number }>;
+  expect(inventoryAfter.find((item) => item.itemType === 'GOLF_BALL')?.quantity).toBe(
+    golfBallBefore + 5,
+  );
 
   await page.getByRole('button', { name: '로그아웃' }).click();
   await expect(page.getByText('로그아웃했습니다.')).toBeVisible();
