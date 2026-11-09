@@ -1,10 +1,10 @@
 # Employee Console — Progress Ledger and Next-Session Handoff
 
 > Updated: 2026-11-09
-> Document phase: P1 — CP6-G/H/I (audits)
-> Status: **P0, CP0–CP5, CP6-0 – CP6-F COMPLETE; CP0 FROZEN (2026-11-09).**
-> P1 checkpoint progress: **CP0–CP5 and CP6-0 – CP6-F COMPLETE; CP6-G NEXT; CP7–CP11 NOT STARTED**
-> Next action: **CP6-G cross-screen consistency audit, CP6-H contract/TBD audit, CP6-I readiness audit.**
+> Document phase: P1 — CP7 (implementation architecture)
+> Status: **P0, CP0–CP6 COMPLETE (CP6-G/H/I PASS); CP0 FROZEN (2026-11-09).**
+> P1 checkpoint progress: **CP0–CP6 COMPLETE; CP7 NEXT; CP8–CP11 NOT STARTED**
+> Next action: **CP7-A/B — implementation architecture against current code.**
 > Execution mode: owner delegated execution on 2026-11-09 — see [Frontend Completion Plan](../FRONTEND-COMPLETION-PLAN.md) §5 for what the agent decides and where it stops.
 
 ## 2026-11-09 — W1 closeout and delegated decisions
@@ -17,6 +17,10 @@
 | CP1-A | COMPLETE. Its open IA items were answered in CP1-B |
 | CP1-B | COMPLETE. **IA-01..IA-05, IA-07 APPROVED by DELEGATED DECISION 2026-11-09**: `/employee/login` on shared login API; Products list as landing, no dashboard; two primary areas (여행상품 / 재고 관리); addressable `/employee/tours`, `/employee/tours/new`, `/employee/tours/:tourId/edit`; stock add inside `/employee/inventory`; return to list after create. IA-08 → CP6-D, IA-10 → CP2/CP6 |
 | CP2-A | IN PROGRESS. Mobbin re-checked 2026-11-09: HTTP 403 bot block. **DELEGATED DECISION:** visual evidence from official Shopify/Square/Wix help-center screenshots, same PASS checklist (CP2-A §8) |
+
+## 2026-11-09 — CP6-G/H/I PASS
+
+- [Audit record](planning/audits/CP6-GHI-EMPLOYEE-SPEC-AUDITS.md). G: five inconsistencies found and fixed (dialog close control, GET 401 with dirty form, 409 action label, `{tourId}` placeholder, Style/KRW display names). H: every endpoint, field and code exists in REST v0.2; **0 invented contract elements**. I: E00–E05 all PASS readiness.
 
 ## 2026-11-09 — CP6-0 – CP6-F COMPLETE (delegated decision)
 
@@ -60,7 +64,7 @@
 | [historical frontend PR #7](https://github.com/WonhoOne/frontend/pull/7) | reference: Customer implementation CP0–CP9 plan |
 | [closed frontend PR #44](https://github.com/WonhoOne/frontend/pull/44) | **CLOSED, NOT MERGED, NOT A CURRENT SPEC** |
 | P0 replacement planning PR | [Frontend PR #45 — P0 planning program](https://github.com/WonhoOne/frontend/pull/45), **MERGED 2026-10-13** |
-| Employee detailed planning CP0–CP11 | **CP0–CP5, CP6-0 – CP6-F COMPLETE**; CP6-G NEXT |
+| Employee detailed planning CP0–CP11 | **CP0–CP6 COMPLETE**; CP7 NEXT |
 | CP0-A PR branch | [PR #46 — Frontend runtime and reuse audit](https://github.com/WonhoOne/frontend/pull/46), **MERGED to main 2026-11-09** |
 | CP0-B stacked branch | [PR #47 — Backend contract audit](https://github.com/WonhoOne/frontend/pull/47), **MERGED to main 2026-11-09** |
 | CP0-C stacked PR | [PR #48 — Scope/device/demo gate](https://github.com/WonhoOne/frontend/pull/48), **MERGED to main 2026-11-09** |
@@ -85,7 +89,7 @@
 | CP3 — component/design-system reuse | `COMPLETE (2026-11-09, delegated decision)` | [CP3 Component Reuse and Contracts](planning/CP3-COMPONENT-REUSE-AND-CONTRACTS.md) |
 | CP4 — operational motion/feedback | `COMPLETE (2026-11-09, delegated decision)` | [CP4 Motion and Feedback](planning/CP4-MOTION-AND-FEEDBACK.md) |
 | CP5 — data/mutation UI state | `COMPLETE (2026-11-09, delegated decision)` | [CP5 Data and Mutation States](planning/CP5-DATA-AND-MUTATION-STATES.md) |
-| CP6 — screens, cross-screen/contract/readiness audits | `CP6-0 – CP6-F COMPLETE (2026-11-09); CP6-G/H/I NEXT` | [CP6-0](planning/CP6-0-SCREEN-INVENTORY.md), [screens](planning/screens/), [CP6-F](planning/CP6-F-CROSS-SCREEN-JOURNEYS.md) |
+| CP6 — screens, cross-screen/contract/readiness audits | `COMPLETE (2026-11-09); CP6-G/H/I PASS` | [CP6-0](planning/CP6-0-SCREEN-INVENTORY.md), [screens](planning/screens/), [CP6-F](planning/CP6-F-CROSS-SCREEN-JOURNEYS.md), [audits](planning/audits/CP6-GHI-EMPLOYEE-SPEC-AUDITS.md) |
 | CP7 — implementation architecture | `NOT STARTED` | No design against existing modules |
 | CP8 — API/data UX | `NOT STARTED` | No final query/mutation policy |
 | CP9 — approved device scope + a11y | `NOT STARTED` | **A PC-only already approved**, exact desktop viewport/browser + keyboard/a11y checks still TBD |

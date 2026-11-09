@@ -41,7 +41,7 @@
 
 | Event | Result |
 | --- | --- |
-| GET 401 anywhere | Clear Employee private caches → `/employee/login?returnTo=<current>` (replace) + expiry notice |
+| GET 401 anywhere | Clear Employee private caches → `/employee/login?returnTo=<current>` (replace) + expiry notice — **unless a dirty E03/E04 form is on screen**, then the write-401 alert below is used so input is not lost without warning (CP6-G G2) |
 | Write 401 in E03/E04 | Alert with `다시 로그인` (no auto redirect, CP5 §3.5) |
 | Write 401 in E05 dialog | Close dialog → same as GET 401 (dialog has no long input to lose) |
 | 403 anywhere | Permission state inside shell |

@@ -18,7 +18,7 @@
 
 ### Edit screen data source (closes CP1-A F02 / CP1-B §6 open item)
 
-**Decision:** the editor reads the product from the **Employee list query** and selects it by ID. It does **not** use public `GET /api/v1/tours/{id}` and does not invent an Employee detail endpoint.
+**Decision:** the editor reads the product from the **Employee list query** and selects it by ID. It does **not** use public `GET /api/v1/tours/{tourId}` and does not invent an Employee detail endpoint.
 
 - Why: same private role and representation as the list; no extra endpoint; the list has no pagination, so it always contains every product.
 - The editor initializes its form **once**, from the first response fetched **after the editor mounted** (`refetchOnMount: 'always'`), so it never starts from a stale cache entry.
@@ -34,7 +34,7 @@
 | Background refetch | Keep content; existing `RefreshIndicator` | Same | **Do not** overwrite form values while editing |
 | Refetch fails, data exists | Keep content; small inline note "최신 정보를 불러오지 못했습니다" + retry | Same | Keep form |
 | First load fails (network / 5xx) | `SectionError` with retry | Same | `SectionError` with retry |
-| 401 | Clear private cache → `/employee/login` with return target | Same | Same |
+| 401 | Clear private cache → `/employee/login` with return target; **exception:** if a dirty form is on screen (E03/E04), show the §3.5 alert instead of redirecting (CP6-G G2) | Same | Same (form not yet dirty on initial load) |
 | 403 | Permission state (CP4 §3) | Same | Same |
 | Response fails runtime decode | `SectionError` ("데이터 형식이 올바르지 않습니다"), no partial render; `ContractMappingError` logged without payload | Same | Same |
 
@@ -62,14 +62,14 @@ editing ──submit──▶ validating(client) ──fail──▶ editing + e
                          └─network/timeout──▶ UNKNOWN (§3.4)
 ```
 
-### 3.2 Product update — `PUT /api/v1/employee/tours/{id}`
+### 3.2 Product update — `PUT /api/v1/employee/tours/{tourId}`
 
 Same as create, plus:
 
 | Response | Behavior |
 | --- | --- |
 | 200 | Stay on editor; form re-initializes from the **response body**; `저장` disabled (clean); status line; list query invalidated |
-| 409 `TOUR_PRODUCT_THEME_LOCKED` | Keep all edits; alert explains only Theme cannot change because schedules exist; action "테마를 원래대로 되돌리기" resets only the Theme field to the loaded value (price rows follow §3.6) |
+| 409 `TOUR_PRODUCT_THEME_LOCKED` | Keep all edits; alert explains only Theme cannot change because schedules exist; action "테마 되돌리기" resets only the Theme field to the loaded value (price rows follow §3.6) |
 | 404 `TOUR_PRODUCT_NOT_FOUND` | Replace form with not-found state + link to list |
 | network/timeout | UNKNOWN, but **PUT is a complete replacement and idempotent**, so "다시 저장" re-sends the same body without extra confirmation |
 

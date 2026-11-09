@@ -63,7 +63,7 @@ Page: per-row secondary `재고 추가` (accessible name "{품목} 재고 추가
 - Dialog opens with the row's current server quantity at the time of opening.
 - Input: digits only; validation on submit: empty → "추가할 수량을 입력해 주세요."; 0 or negative → "1개 이상 입력해 주세요."; non-integer → "정수로 입력해 주세요."; above technical bound → "수량이 너무 큽니다."
 - Preview "추가 후 재고" = current + input; text only.
-- `추가` → `isLoading`; Escape and outside click blocked while in flight; close button disabled while in flight.
+- `추가` → `isLoading`; Escape and outside click blocked while in flight. The close button stays enabled (Dialog contract); closing does not cancel the request — a later 200 still updates the row and status line, and an unknown result shows the status line "재고 추가 결과를 확인하지 못했습니다. 현재 재고를 확인해 주세요." plus a refetch (CP6-G G1).
 - 200 → dialog closes; row shows `response.quantity`; status line "{품목} 재고를 {n}개 추가했습니다. 현재 {total}개"; row highlight; invalidate `['employee','inventory']`; focus back to that row's `재고 추가`.
 - If a background refetch changes the current quantity while the dialog is open (idle), the dialog's 현재 재고 and preview update and a note says "다른 곳에서 재고가 바뀌어 현재 재고를 갱신했습니다."
 
