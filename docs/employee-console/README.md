@@ -1,6 +1,6 @@
 # Employee Console — Durable Planning Entry Point
 
-> Status: **P0 PROGRAM MERGED; P1 CP1-B IA DRAFT / DEPENDENT (not UI plan complete or implementation-ready)**
+> Status: **P0 PROGRAM MERGED; P1 CP2-A SOURCE RESEARCH PARTIAL / MOBBIN VISUAL INSPECTION BLOCKED** (not UI plan complete or implementation-ready)
 > Last reviewed: 2026-10-13
 > Owner: 김태우; source repo: WonhoOne/frontend
 > Shared contract: latest approved WonhoOne/docs/main; frontend development policy: ../../AGENTS.md
@@ -20,14 +20,15 @@
 - [CP0-C — Scope, device support and demo gate](planning/CP0-C-SCOPE-DEVICE-DEMO-GATE.md): owner **approved A PC-only on 2026-10-13**; required scope and course final dates; PR #48 still draft/staged behind #46/#47.
 - [CP1-A — Operator tasks and end-to-end flows](planning/CP1-A-OPERATOR-TASK-FLOWS.md): 7 Employee tasks/flowcharts and acceptance scenarios, explicitly **DRAFT / DEPENDENT** on CP0 PR merges; no UI implementation.
 - [CP1-B — Proposed IA and role-safe navigation](planning/CP1-B-INFORMATION-ARCHITECTURE.md): source-backed alternative comparison, proposed Employee login/Products/Inventory navigation and URL table. **DRAFT / DEPENDENT; owner approval of IA-01..IA-05 required**, no implemented routes.
-- **Next action:** device A (PC-only) is confirmed; owner reviews IA-01..IA-05, then review/merge docs PR chain **#46 → #47 → #48 → #49 → CP1-B PR** in order. Only after CP1-B approval: CP2-A visual Mobbin audit. Progress ledger remains authoritative.
+- [CP2-A — Source-grounded reference research and Mobbin visual gate](planning/CP2-A-REFERENCE-EVIDENCE-REGISTER.md): Shopify/Wix/Square official interaction documentation compared for Product/Inventory. **PARTIAL / NO VISUAL PASS:** actual Mobbin screens could not be inspected in this session; next session needs Mobbin/screenshot-accessible review before CP2-B.
+- **Next action:** device A (PC-only) confirmed; owner reviews CP1-B IA, review/merge docs PRs **#46 → #47 → #48 → #49 → #50 → CP2-A draft** in order. Then **finish CP2-A actual Mobbin screenshot inspection**; no CP2-B style decision on metadata/help text alone. Progress ledger is authoritative.
 
 ## What is and is not completed
 
 | Program | Status | Meaning |
 | --- | --- | --- |
 | P0 — Plan the planning | **MERGED** | [PR #45](https://github.com/WonhoOne/frontend/pull/45), merged 2026-10-13 |
-| P1 — Detailed Employee design (CP0–CP11) | **CP1-B DRAFT / DEPENDENT** | CP0-C device A confirmed, prior PRs unmerged; staff IA comparison proposed but not approved; CP2 onward unstarted |
+| P1 — Detailed Employee design (CP0–CP11) | **CP2-A PARTIAL / VISUAL BLOCKED** | Official source comparisons committed; Mobbin visual review not done, CP1-B owner review and stack merges pending; CP2-B onward unstarted |
 | P2 — Employee Console code | **NOT STARTED** | No employee route/page/API runtime implementation claimed |
 
 The earlier [frontend PR #44](https://github.com/WonhoOne/frontend/pull/44) is **closed unmerged**. Its premature Employee implementation plan is **not** the current approved specification.
@@ -36,7 +37,7 @@ The earlier [frontend PR #44](https://github.com/WonhoOne/frontend/pull/44) is *
 
 > Read the latest WonhoOne/frontend main branch and this folder's README, 00-PLANNING-PROGRAM.md, 01-PROGRESS-AND-HANDOFF.md, and references/00-MOBBIN-DISCOVERY.md. Verify P0 approval/merge and latest WonhoOne/docs/main first. Then execute **only** the progress ledger's next_checkpoint, using current code/contract evidence and the program's output gate. Do not implement any feature, invent a missing contract, or mark CP as complete without creating a durable checkpoint artifact/commit and updating the ledger.
 
-**Current next action:** review the CP1-B proposed IA (IA-01..IA-05) and merge dependent docs PRs in order **#46 → #47 → #48 → #49 → CP1-B PR**, retarget each to main after predecessors merge and verify diff. Device support **A PC-only** is approved. **Next planned CP: CP2-A visual Mobbin reference comparison**, only after IA decision and user continuation. Nothing here is a final Employee UI spec.
+**Current next action:** review/merge stacked docs PRs in order **#46 → #47 → #48 → #49 → #50 → CP2-A draft**, retarget each to main after predecessors merge and verify diff. Device **A PC-only** approved, IA-01..IA-05 pending owner review. **Next needed work: finish actual Mobbin screenshot-level visual analysis for CP2-A** with connected app or inspectable screenshots. Do not start CP2-B art direction before that gate. No Employee UI implementation yet.
 
 ## Progress bookkeeping
 

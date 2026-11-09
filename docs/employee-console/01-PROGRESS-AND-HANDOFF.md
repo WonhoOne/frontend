@@ -1,10 +1,10 @@
 # Employee Console — Progress Ledger and Next-Session Handoff
 
 > Updated: 2026-10-13
-> Document phase: P1 — CP1-B (Employee information architecture)
-> Status: **P0 MERGED; CP0-A/B/C #46/#47/#48 and CP1-A #49 OPEN; CP1-B DRAFT / DEPENDENT / IA OWNER REVIEW PENDING**
-> P1 checkpoint progress: **CP0-A/B REVIEW, CP0-C owner-approved A PC-only but unmerged, CP1-A DRAFT and CP1-B DRAFT; CP2 onward NOT STARTED**
-> Next action: **owner reviews proposed IA-01..IA-05, and reviews/merges #46 → #47 → #48 → #49 → CP1-B dependent PR in order**. A PC-only is already owner-approved.
+> Document phase: P1 — CP2-A (Reference research; Mobbin visual audit blocked)
+> Status: **P0 MERGED; CP0-A/B/C #46–#48 and CP1-A/B #49/#50 OPEN; CP2-A PARTIAL / MOBBIN VISUAL ACCESS BLOCKED**
+> P1 checkpoint progress: **CP0-A/B REVIEW, CP0-C A PC-only approved/unmerged, CP1-A/B DRAFT, CP2-A partial provider-doc research committed / Mobbin screenshot inspection NOT COMPLETE; CP2-B onward NOT STARTED**
+> Next action: **restore actual Mobbin screen access (or provide screenshots/browser session), visually finish CP2-A; independently review/merge stacked PRs #46 → #47 → #48 → #49 → #50 → CP2-A draft PR in order.** Owner IA-01..IA-05 review remains pending. No CP2-B visual direction yet.
 
 ## Source and branch state
 
@@ -16,12 +16,13 @@
 | [historical frontend PR #7](https://github.com/WonhoOne/frontend/pull/7) | reference: Customer implementation CP0–CP9 plan |
 | [closed frontend PR #44](https://github.com/WonhoOne/frontend/pull/44) | **CLOSED, NOT MERGED, NOT A CURRENT SPEC** |
 | P0 replacement planning PR | [Frontend PR #45 — P0 planning program](https://github.com/WonhoOne/frontend/pull/45), **MERGED 2026-10-13** |
-| Employee detailed planning CP0–CP11 | **CP0-A/B REVIEW, CP0-C device approved but unmerged, CP1-A/B DRAFT**; CP2 onward NOT STARTED |
+| Employee detailed planning CP0–CP11 | **CP0-A/B REVIEW; CP0-C PC-only approved but PR pending; CP1-A/B DRAFT; CP2-A PARTIAL BLOCKED on screenshot inspection**; CP2-B onward NOT STARTED |
 | CP0-A PR branch | [PR #46 — Frontend runtime and reuse audit](https://github.com/WonhoOne/frontend/pull/46), **OPEN / REVIEW / unmerged**; branch `docs/employee-console-cp0-a-runtime-inventory-20261013` |
 | CP0-B stacked branch | [PR #47 — Backend contract audit](https://github.com/WonhoOne/frontend/pull/47), **OPEN / REVIEW / unmerged**, currently targets CP0-A branch, **must retarget to main after #46 merges** |
 | CP0-C stacked PR | [PR #48 — Scope/device/demo gate](https://github.com/WonhoOne/frontend/pull/48), **OPEN / DRAFT / DEVICE A APPROVED**; targets CP0-B branch, retarget to main after #46/#47 merge |
 | CP1-A stacked PR | [PR #49 — Employee task flows](https://github.com/WonhoOne/frontend/pull/49), **OPEN / DRAFT / DEPENDENT**, targets CP0-C branch; only retarget to main after #48 merge |
 | CP1-B stacked PR | [PR #50 — Information architecture & role-safe routes](https://github.com/WonhoOne/frontend/pull/50), **OPEN / DRAFT / OWNER IA REVIEW PENDING**, targets CP1-A branch; only retarget to main after #49 merge |
+| CP2-A stacked PR | [PR #51 — Provider reference comparison, Mobbin visual pending](https://github.com/WonhoOne/frontend/pull/51), **OPEN / DRAFT / PARTIAL VISUAL BLOCKED**, targets CP1-B branch; retarget after #50 merge and complete screenshot review before CP2-A PASS |
 | Employee implementation | **NOT STARTED** |
 
 ## Stage tracker
@@ -35,14 +36,15 @@
 | CP0-C — scope and device policy | `REVIEW / OWNER DECISION APPROVED` | [CP0-C scope, device and demo gate](planning/CP0-C-SCOPE-DEVICE-DEMO-GATE.md); **A PC-only confirmed** 2026-10-13; Nov23 final report, Nov24 demo; [PR #48](https://github.com/WonhoOne/frontend/pull/48) draft/stacked, unmerged |
 | CP1-A — Employee operator tasks/flows | `DRAFT / DEPENDENT` | [CP1-A task flows](planning/CP1-A-OPERATOR-TASK-FLOWS.md): auth, Product list/create/edit, inventory read/add, session exit + errors and acceptance scenarios; on branch based on CP0-C unmerged head |
 | CP1-B — site IA/navigation | `DRAFT / DEPENDENT / IA OWNER REVIEW PENDING` | [CP1-B Information Architecture](planning/CP1-B-INFORMATION-ARCHITECTURE.md): proposals only for Employee login, Product/Inventory nav, create/edit URL structure, role-safe deep links. No routes approved. |
-| CP2 — visual reference comparison/direction | `NOT STARTED` | Full Mobbin visual review pending |
+| CP2-A — reference screen and flow audit | `PARTIAL / MOBBIN VISUAL BLOCKED` | [CP2-A provider reference evidence](planning/CP2-A-REFERENCE-EVIDENCE-REGISTER.md) compares official Shopify/Wix/Square documented Product/Inventory interactions; actual Mobbin screenshots not accessible/viewed, so **NO CP2-A PASS** |
+| CP2-B — visual direction | `NOT STARTED / DEPENDENT` | Cannot decide art direction before CP2-A visual verification and CP1-B IA signoff |
 | CP3 — component/design-system reuse | `NOT STARTED` | No reuse matrix |
 | CP4 — operational motion/feedback | `NOT STARTED` | No motion contract |
 | CP5 — data/mutation UI state | `NOT STARTED` | No state-machine evidence |
 | CP6 — screens, cross-screen/contract/readiness audits | `NOT STARTED` | No Employee screen specs |
 | CP7 — implementation architecture | `NOT STARTED` | No design against existing modules |
 | CP8 — API/data UX | `NOT STARTED` | No final query/mutation policy |
-| CP9 — approved device scope + a11y | `NOT STARTED` | Device support undecided |
+| CP9 — approved device scope + a11y | `NOT STARTED` | **A PC-only already approved**, exact desktop viewport/browser + keyboard/a11y checks still TBD |
 | CP10 — Employee QA acceptance | `NOT STARTED` | No per-screen E2E matrix |
 | CP11 — final audit and implementation handoff | `NOT STARTED` | No approved final implementation plan |
 | P2 coding | `BLOCKED ON P1 GATE` | Do not code on basis of P0 document |
@@ -87,6 +89,13 @@
 - **Owner review requested:** accept IA-01..IA-05 as a group or request changes. Exact nav chrome, table/card layout, stock inline vs modal, graphic design are **deferred** to visual CP2-A and screen CP6.
 - #46/#47/#48/#49 **not merged** on check; CP1-B lives atop CP1-A. Only after owner review and ordered merge is CP1-B COMPLETE. Tests not run; no runtime code changed.
 
+## CP2-A — provider reference research, visual access BLOCKED (2026-10-13)
+
+- [CP2-A research register](planning/CP2-A-REFERENCE-EVIDENCE-REGISTER.md) documents **OFFICIAL-DOC VERIFIED** workflows in Shopify, Wix and Square (Product list/create/edit, Inventory read/add). It is **not a Mobbin visual screenshot review**.
+- Retained exact Mobbin candidate URLs from earlier pre-scout. In this session Mobbin action was **not available**; direct opening the flow links through public web search failed. UI layout/spacing/motion/validation screen appearances were **not seen**, so CP2-A **NOT PASS**.
+- **Strong contract-specific finding:** Shopify official documentation distinguishes `Set to` (stock replacement) versus `Adjust by` (delta). Wix's set-current-quantity workflow cannot be copied because our approved Inventory POST is **positive addition only**. Square's “Receive stock” is a functionally closer reference, but placement/modal UI needs screenshots.
+- **Next dependency:** review IA-01..IA-05 from CP1-B, merge PRs #46–#50 in sequence and finally CP2-A research PR, then *complete actual screen-level visual inspection* with usable Mobbin browser/connector or provided reference screenshots. Do not issue CP2-B visual decision on titles/docs alone. No Employee frontend code/tests changed.
+
 ## Open decisions (do not silently assume)
 
 1. **RESOLVED DEC-C01:** Owner chose **A — desktop/PC-only** on 2026-10-13. Employee phone/tablet responsive layouts are **not** mandatory; do not re-ask or introduce mobile QA gates.
@@ -102,7 +111,7 @@
 3. Read [00-PLANNING-PROGRAM.md](00-PLANNING-PROGRAM.md) for exact CP0-A definition, inputs and gate.
 4. Review/merge #46 first, retarget/review/merge #47 against latest main, then retarget/review/merge CP0-C PR against latest main **after user decision**. Never mark earlier PRs merged before verified.
 5. CP0-C report is updated and decision A already recorded. **Do not redo CP0-C research or ask device choice again**. Process review merges in sequence. If CP1-A source-flow drafting was explicitly requested before merge, it must be on a dependent draft PR with clear blockers, never declared approved.
-6. User requested the next checkpoint again, so [CP1-B IA DRAFT](planning/CP1-B-INFORMATION-ARCHITECTURE.md) is now authored on CP1-A's **unmerged head**. Review/merge PRs in order #46 → #47 → #48 → #49 → CP1-B, retargeting each base to main after predecessors merge. Obtain IA-01..IA-05 owner approval; no UI implementation until CP11.
+6. User asked '다음' and CP2-A primary-source comparison was started on a branch based on CP1-B. **Complete CP2-A actual image-level Mobbin inspection before claiming PASS**; current source comparison is partial. Merge #46 → #47 → #48 → #49 → #50 → CP2-A draft in dependency order; obtain IA-01..IA-05 owner review. Never jump to CP2-B styling or coding while this visual gate is blocked.
 
 ## Checkpoint update template
 
