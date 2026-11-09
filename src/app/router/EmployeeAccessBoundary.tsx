@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { Navigate, Outlet, useLocation } from 'react-router';
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router';
 
 import { employeeRouteBuilders } from '@/app/router/paths';
 import { LoadingState } from '@/app/state';
 import { isEmployeeSession, toSafeEmployeeReturnTo, useAuth } from '@/features/auth';
 import { EmployeeAccessDenied } from '@/pages/employee-status/EmployeeAccessDenied';
-import { Skeleton } from '@/shared/ui';
+import { Button, Skeleton } from '@/shared/ui';
+
+import styles from '@/app/router/EmployeeAccessBoundary.module.css';
 
 /** 로그인 화면에 왜 왔는지 알려주는 navigation state다. */
 export interface EmployeeLoginNavigationState {
@@ -19,12 +21,14 @@ export interface EmployeeLoginNavigationState {
  * `/api/v1/employee/**`에서 EMPLOYEE role로 검사한다.
  *
  * - 비로그인: 현재 경로를 검증된 returnTo로 붙여 직원 로그인으로 보낸다.
+ * - 직원으로 있다가 session이 사라짐(401, 만료): 화면을 유지한 채 다시 로그인 안내.
  * - 고객 session: redirect loop 대신 권한 안내를 보여준다.
  * - 직원 session: 하위 route를 그린다.
  */
 export function EmployeeAccessBoundary() {
   const auth = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const [wasEmployee, setWasEmployee] = useState(false);
   const isEmployee = isEmployeeSession(auth.state);
 
@@ -43,12 +47,32 @@ export function EmployeeAccessBoundary() {
   }
 
   if (auth.state.status === 'unauthenticated') {
-    const state: EmployeeLoginNavigationState | null = wasEmployee
-      ? { reason: 'session-expired' }
-      : null;
     const returnTo = toSafeEmployeeReturnTo(`${location.pathname}${location.search}`);
+    const loginPath = employeeRouteBuilders.login(returnTo);
 
-    return <Navigate replace state={state} to={employeeRouteBuilders.login(returnTo)} />;
+    if (!wasEmployee) {
+      return <Navigate replace to={loginPath} />;
+    }
+
+    // SAFETY (CP6-G G2): 일하던 중 session이 사라졌다. 화면과 입력은 그대로 두고
+    // 다시 로그인할 길만 알린다. 이동은 사용자가 고르며, 저장하지 않은 입력이 있으면
+    // 편집 화면의 unsaved-changes guard가 한 번 더 확인한다.
+    const state: EmployeeLoginNavigationState = { reason: 'session-expired' };
+
+    return (
+      <>
+        <div className={styles.expired} role="alert">
+          <p>
+            세션이 만료되었습니다. 다시 로그인하면 이 화면으로 돌아옵니다. 저장하지 않은 입력은
+            유지되지 않으니 필요하면 먼저 복사해 두세요.
+          </p>
+          <Button onClick={() => void navigate(loginPath, { replace: true, state })} size="small">
+            다시 로그인
+          </Button>
+        </div>
+        <Outlet />
+      </>
+    );
   }
 
   if (!isEmployee) {

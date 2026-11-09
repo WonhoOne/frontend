@@ -1,0 +1,22 @@
+.root {
+  display: grid;
+  gap: var(--mw-space-1);
+  margin: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  gap: var(--mw-space-3);
+  font-size: var(--mw-font-size-body-sm);
+}
+
+.row dt {
+  color: var(--mw-text-secondary);
+}
+
+.row dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}

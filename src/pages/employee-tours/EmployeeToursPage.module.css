@@ -1,0 +1,49 @@
+/* 주 동작 링크를 primary button처럼 보이게 한다 (CP2-A V1/V2, CP2-B §4.1). */
+.primaryAction {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--mw-control-min-target);
+  padding-inline: var(--mw-space-5);
+  border-radius: var(--mw-radius-pill);
+  background: var(--mw-ink);
+  color: var(--mw-surface-elevated);
+  font-weight: var(--mw-font-weight-semibold);
+  text-decoration: none;
+}
+
+.primaryAction:hover {
+  background: var(--mw-ink-soft);
+}
+
+.statusRegion:empty {
+  display: none;
+}
+
+.status {
+  margin: 0 0 var(--mw-space-4);
+  padding: var(--mw-space-3) var(--mw-space-4);
+  border-radius: var(--mw-radius-sm);
+  background: var(--mw-success-soft);
+  color: var(--mw-ink);
+}
+
+.refreshError {
+  margin: 0 0 var(--mw-space-3);
+  font-size: var(--mw-font-size-body-sm);
+  color: var(--mw-text-secondary);
+}
+
+.inlineRetry {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--mw-ink);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.skeleton {
+  display: grid;
+  gap: var(--mw-space-2);
+}

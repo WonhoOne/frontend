@@ -5,6 +5,11 @@ import { afterAll, afterEach, beforeAll } from 'vitest';
 
 import { server } from '@/mocks/server';
 
+// jsdom does not implement layout scrolling. Pages may call it after navigation.
+if (typeof Element !== 'undefined' && typeof Element.prototype.scrollIntoView !== 'function') {
+  Element.prototype.scrollIntoView = () => undefined;
+}
+
 beforeAll(() => {
   server.listen({
     onUnhandledRequest: 'error',

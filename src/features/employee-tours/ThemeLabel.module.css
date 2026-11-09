@@ -1,0 +1,28 @@
+.root {
+  display: inline-flex;
+  gap: var(--mw-space-2);
+  align-items: center;
+}
+
+.dot {
+  flex-shrink: 0;
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: var(--mw-radius-pill);
+}
+
+.honeymoon {
+  background: var(--mw-theme-honeymoon);
+}
+
+.parents {
+  background: var(--mw-theme-parents);
+}
+
+.golf {
+  background: var(--mw-theme-golf);
+}
+
+.trekking {
+  background: var(--mw-theme-trekking);
+}

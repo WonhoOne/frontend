@@ -208,15 +208,21 @@ describe('Employee routes', () => {
     );
   });
 
-  it('tells the employee when the session expired and returns to the same page', async () => {
+  it('keeps the page and offers sign-in again when the session expires', async () => {
     const { router } = renderEmployee('/employee/login?returnTo=%2Femployee%2Finventory');
 
     await signIn('short-employee');
     await screen.findByRole('heading', { level: 1, name: '재고 관리' });
 
-    expect(
-      await screen.findByText('세션이 만료되어 다시 로그인해야 합니다.', {}, { timeout: 3000 }),
-    ).toBeVisible();
+    // SAFETY: no automatic redirect — the page (and any input) stays until the user acts.
+    const banner = await screen.findByRole('alert', {}, { timeout: 3000 });
+    expect(banner).toHaveTextContent('세션이 만료되었습니다.');
+    expect(screen.getByRole('heading', { level: 1, name: '재고 관리' })).toBeVisible();
+    expect(router.state.location.pathname).toBe('/employee/inventory');
+
+    fireEvent.click(screen.getByRole('button', { name: '다시 로그인' }));
+
+    expect(await screen.findByText('세션이 만료되어 다시 로그인해야 합니다.')).toBeVisible();
     expect(router.state.location.pathname).toBe('/employee/login');
     expect(new URLSearchParams(router.state.location.search).get('returnTo')).toBe(
       '/employee/inventory',

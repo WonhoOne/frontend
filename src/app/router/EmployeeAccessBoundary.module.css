@@ -1,0 +1,17 @@
+.expired {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--mw-z-sticky);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mw-space-3);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--mw-space-3) var(--mw-page-gutter);
+  border-block-end: var(--mw-border-danger);
+  background: var(--mw-danger-soft);
+}
+
+.expired p {
+  margin: 0;
+}

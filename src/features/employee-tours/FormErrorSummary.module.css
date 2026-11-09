@@ -1,0 +1,27 @@
+.root {
+  padding: var(--mw-space-4) var(--mw-space-5);
+  border: var(--mw-border-danger);
+  border-radius: var(--mw-radius-md);
+  background: var(--mw-danger-soft);
+}
+
+.root:focus-visible {
+  outline: var(--mw-focus-outline);
+  outline-offset: var(--mw-focus-offset);
+}
+
+.title {
+  margin: 0 0 var(--mw-space-2);
+  font-weight: var(--mw-font-weight-semibold);
+}
+
+.list {
+  display: grid;
+  gap: var(--mw-space-1);
+  margin: 0;
+  padding-inline-start: var(--mw-space-5);
+}
+
+.list a {
+  color: var(--mw-ink);
+}
