@@ -1,10 +1,10 @@
 # Employee Console — Progress Ledger and Next-Session Handoff
 
 > Updated: 2026-11-09
-> Document phase: P1 — CP2-A (visual evidence cards pending)
-> Status: **P0 + CP0-A/B/C + CP1-A/B COMPLETE and merged (#45–#50). CP0 FROZEN. CP2-A IN PROGRESS (partial register merged via #51).**
-> P1 checkpoint progress: **CP0-A, CP0-B, CP0-C, CP1-A, CP1-B COMPLETE; CP2-A IN PROGRESS; CP2-B onward NOT STARTED**
-> Next action: **finish CP2-A visual evidence cards from official provider help-center screenshots (CP2-A §8 protocol), mark CP2-A PASS, then CP2-B.**
+> Document phase: P1 — CP2-B (visual direction)
+> Status: **P0, CP0-A/B/C, CP1-A/B COMPLETE; CP0 FROZEN. CP2-A PASS (2026-11-09).**
+> P1 checkpoint progress: **CP0-A, CP0-B, CP0-C, CP1-A, CP1-B COMPLETE; CP2-A PASS; CP2-B NEXT; CP3 onward NOT STARTED**
+> Next action: **CP2-B — Employee Console visual direction** from the [CP2-A §9 adopt/reject table](planning/CP2-A-REFERENCE-EVIDENCE-REGISTER.md) and current Customer tokens.
 > Execution mode: owner delegated execution on 2026-11-09 — see [Frontend Completion Plan](../FRONTEND-COMPLETION-PLAN.md) §5 for what the agent decides and where it stops.
 
 ## 2026-11-09 — W1 closeout and delegated decisions
@@ -18,6 +18,13 @@
 | CP1-B | COMPLETE. **IA-01..IA-05, IA-07 APPROVED by DELEGATED DECISION 2026-11-09**: `/employee/login` on shared login API; Products list as landing, no dashboard; two primary areas (여행상품 / 재고 관리); addressable `/employee/tours`, `/employee/tours/new`, `/employee/tours/:tourId/edit`; stock add inside `/employee/inventory`; return to list after create. IA-08 → CP6-D, IA-10 → CP2/CP6 |
 | CP2-A | IN PROGRESS. Mobbin re-checked 2026-11-09: HTTP 403 bot block. **DELEGATED DECISION:** visual evidence from official Shopify/Square/Wix help-center screenshots, same PASS checklist (CP2-A §8) |
 
+## 2026-11-09 — CP2-A PASS
+
+- Six visual evidence cards (V1–V6) viewed in a browser from first-party sources: Shopify App Home Index and Details live previews, Wix Products and Inventory screenshots, Square Edit item and "Stock received" popover screenshots.
+- Coverage: Product list (Shopify, Wix), Product create/edit (Shopify, Square), Inventory add (Square adopt, Wix reject).
+- Strongest finding: Square's row-anchored popover "Current stock → Received → New total → Cancel/Done" matches the additive Inventory contract; Wix's inline overwrite of the current quantity is rejected.
+- Open for CP2-B: save placement (dirty-only save bar vs fixed editor header Save).
+
 ## Source and branch state
 
 | Artifact | State |
@@ -28,7 +35,7 @@
 | [historical frontend PR #7](https://github.com/WonhoOne/frontend/pull/7) | reference: Customer implementation CP0–CP9 plan |
 | [closed frontend PR #44](https://github.com/WonhoOne/frontend/pull/44) | **CLOSED, NOT MERGED, NOT A CURRENT SPEC** |
 | P0 replacement planning PR | [Frontend PR #45 — P0 planning program](https://github.com/WonhoOne/frontend/pull/45), **MERGED 2026-10-13** |
-| Employee detailed planning CP0–CP11 | **CP0-A/B/C, CP1-A/B COMPLETE (merged 2026-11-09); CP2-A IN PROGRESS**; CP2-B onward NOT STARTED |
+| Employee detailed planning CP0–CP11 | **CP0-A/B/C, CP1-A/B COMPLETE; CP2-A PASS**; CP2-B NEXT |
 | CP0-A PR branch | [PR #46 — Frontend runtime and reuse audit](https://github.com/WonhoOne/frontend/pull/46), **MERGED to main 2026-11-09** |
 | CP0-B stacked branch | [PR #47 — Backend contract audit](https://github.com/WonhoOne/frontend/pull/47), **MERGED to main 2026-11-09** |
 | CP0-C stacked PR | [PR #48 — Scope/device/demo gate](https://github.com/WonhoOne/frontend/pull/48), **MERGED to main 2026-11-09** |
@@ -48,7 +55,7 @@
 | CP0-C — scope and device policy | `COMPLETE / CP0 FROZEN` | [CP0-C scope, device and demo gate](planning/CP0-C-SCOPE-DEVICE-DEMO-GATE.md); **A PC-only confirmed** 2026-10-13; Nov23 final report, Nov24 demo; [PR #48](https://github.com/WonhoOne/frontend/pull/48) draft/stacked, unmerged |
 | CP1-A — Employee operator tasks/flows | `COMPLETE` | [CP1-A task flows](planning/CP1-A-OPERATOR-TASK-FLOWS.md): auth, Product list/create/edit, inventory read/add, session exit + errors and acceptance scenarios; on branch based on CP0-C unmerged head |
 | CP1-B — site IA/navigation | `COMPLETE / IA-01..05, IA-07 DELEGATED APPROVAL` | [CP1-B Information Architecture](planning/CP1-B-INFORMATION-ARCHITECTURE.md): proposals only for Employee login, Product/Inventory nav, create/edit URL structure, role-safe deep links. No routes approved. |
-| CP2-A — reference screen and flow audit | `IN PROGRESS / SUBSTITUTE VISUAL SOURCE APPROVED` | [CP2-A provider reference evidence](planning/CP2-A-REFERENCE-EVIDENCE-REGISTER.md) compares official Shopify/Wix/Square documented Product/Inventory interactions; actual Mobbin screenshots not accessible/viewed, so **NO CP2-A PASS** |
+| CP2-A — reference screen and flow audit | `PASS (2026-11-09)` | [CP2-A provider reference evidence](planning/CP2-A-REFERENCE-EVIDENCE-REGISTER.md) compares official Shopify/Wix/Square documented Product/Inventory interactions; actual Mobbin screenshots not accessible/viewed, so **NO CP2-A PASS** |
 | CP2-B — visual direction | `NOT STARTED / DEPENDENT` | Cannot decide art direction before CP2-A visual verification and CP1-B IA signoff |
 | CP3 — component/design-system reuse | `NOT STARTED` | No reuse matrix |
 | CP4 — operational motion/feedback | `NOT STARTED` | No motion contract |
@@ -112,7 +119,7 @@
 
 1. **RESOLVED DEC-C01:** A — desktop/PC-only (owner, 2026-10-13).
 2. **RESOLVED CP1 IA:** IA-01..IA-05, IA-07 (delegated decision, 2026-11-09). IA-08 edit-success destination → CP6-D.
-3. CP2: visual evidence from official provider screenshots (CP2-A §8); visual direction is decided in CP2-B, not from titles.
+3. CP2-B: save placement (dirty-only save bar vs fixed editor header Save) and overall console visual direction.
 4. CP5/CP8: ambiguous POST outcomes, invalid API responses, concurrent stock additions, PUT Theme 409; Backend is final authority.
 5. DEC-C03: demo DB and Employee account provisioning — Backend/demo operator; checked again in W3/W5.
 
@@ -120,7 +127,7 @@
 
 1. Verify actual GitHub state (main SHA, open PRs). Do not trust this text over GitHub.
 2. Read [Frontend Completion Plan](../FRONTEND-COMPLETION-PLAN.md) (§5 delegated rules, §7 ledger), current `WonhoOne/docs/main` and `frontend/AGENTS.md`.
-3. Do the ledger's next action only: **CP2-A visual evidence cards** under the [CP2-A §8 protocol](planning/CP2-A-REFERENCE-EVIDENCE-REGISTER.md). Do not reopen CP0-C device scope or CP1-B IA-01..05/07 decisions.
+3. Do the ledger's next action only (currently **CP2-B**). Do not reopen CP0-C device scope, CP1-B IA-01..05/07 or CP2-A evidence.
 4. Each CP unit: commit the artifact, update this ledger, PR to `main`, CI green, merge — then continue to the next CP.
 5. Employee code starts only after CP11 Final Audit PASS.
 
