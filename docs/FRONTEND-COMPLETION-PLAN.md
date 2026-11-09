@@ -45,8 +45,8 @@
 | B9 통합 Gate | ✅ FINAL PASS | docs/main `f49d045` |
 | `npm run verify` | ✅ PASS — 108 files / 1,887 tests (2026-11-09 로컬 재실행) | typecheck, lint, format, unit, build |
 | CI (E2E + Real Backend smoke + Real Backend/MySQL 고객 여정) | ✅ PASS | run `38355772127` (main과 동일 코드, 2026-10-13) |
-| Employee Console 기획 | 🟡 P0 merged; CP0-A~CP2-A는 stacked PR #46–#51 (미머지); CP2-B 이후 미착수 | `employee-console/01-PROGRESS-AND-HANDOFF.md` (#51 branch) |
-| Employee Console 코드 | ❌ 없음 | route/page/DataSource 0 |
+| Employee Console 기획 | ✅ CP0–CP11 complete (#45–#56) — 2026-11-09 갱신 | `employee-console/01-PROGRESS-AND-HANDOFF.md` |
+| Employee Console 코드 | ✅ E01–E05 구현, release gate met (#57–#61) — 2026-11-09 갱신 | [E-PR5 verification](employee-console/planning/audits/E-PR5-CP9-CP10-VERIFICATION.md) |
 | Backend Employee API | ✅ 존재 (5 endpoints + EmployeeBootstrap, 기본 비활성) | CP0-B audit (#47) |
 
 Customer 쪽에서 Master Plan 자체 기준 대비 남은 항목:
