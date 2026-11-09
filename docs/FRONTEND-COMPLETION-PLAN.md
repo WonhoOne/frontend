@@ -1,6 +1,6 @@
 # Frontend Completion Plan — Definition of Done & Execution Schedule
 
-> Status: **ACTIVE — 현재 Frontend 완료 기준과 남은 작업 순서의 단일 기준 문서**
+> Status: **COMPLETE (2026-11-09) — D-A, D-B, D-C 충족. 남은 일은 팀/Backend 결정 2건(§8, release record §5)과 시연 준비**
 > Created: 2026-11-09 (Asia/Seoul)
 > Owner: 김태우 (Frontend). 실행 위임: Owner가 2026-11-09 Claude Code agent에게 전체 진행을 위임함 (§5)
 > Base snapshots at creation:
@@ -45,8 +45,8 @@
 | B9 통합 Gate | ✅ FINAL PASS | docs/main `f49d045` |
 | `npm run verify` | ✅ PASS — 108 files / 1,887 tests (2026-11-09 로컬 재실행) | typecheck, lint, format, unit, build |
 | CI (E2E + Real Backend smoke + Real Backend/MySQL 고객 여정) | ✅ PASS | run `38355772127` (main과 동일 코드, 2026-10-13) |
-| Employee Console 기획 | 🟡 P0 merged; CP0-A~CP2-A는 stacked PR #46–#51 (미머지); CP2-B 이후 미착수 | `employee-console/01-PROGRESS-AND-HANDOFF.md` (#51 branch) |
-| Employee Console 코드 | ❌ 없음 | route/page/DataSource 0 |
+| Employee Console 기획 | ✅ CP0–CP11 complete (#45–#56) — 2026-11-09 갱신 | `employee-console/01-PROGRESS-AND-HANDOFF.md` |
+| Employee Console 코드 | ✅ E01–E05 구현, release gate met (#57–#61) — 2026-11-09 갱신 | [E-PR5 verification](employee-console/planning/audits/E-PR5-CP9-CP10-VERIFICATION.md) |
 | Backend Employee API | ✅ 존재 (5 endpoints + EmployeeBootstrap, 기본 비활성) | CP0-B audit (#47) |
 
 Customer 쪽에서 Master Plan 자체 기준 대비 남은 항목:
@@ -91,13 +91,13 @@ Voice 디렉터리(`src/integrations/voice`, `src/features/voice-bridge`)는 이
 
 | ID | 기준 | 현재 |
 | --- | --- | --- |
-| D-C1 | 최종 SHA에서 `npm ci`, `npm run verify`, `npm run test:e2e`, `npm run build`, `npm audit --omit=dev --audit-level=high` PASS | ⬜ |
-| D-C2 | CI Real Backend smoke + Customer 여정 + Employee 여정 PASS | ⬜ |
-| D-C3 | Production mock 차단 검사 PASS (`scripts/assert-production-mock-safety.mjs`) | ⬜ |
-| D-C4 | Release metadata 기록 (Master Plan §46: Frontend/docs/Backend SHA, Node, 범위, 열린 gate, 알려진 S2/S3) | ⬜ |
-| D-C5 | 문서 정합성: Master Plan 상태, Employee ledger, 이 문서 §7이 실제 상태와 일치 | ⬜ |
-| D-C6 | 시연 시나리오 확정: Customer + Voice + Employee, 시연 환경과 계정 준비 체크리스트 | ⬜ |
-| D-C7 | Release severity: S0 = 0, S1 = 0 (Master Plan §41) | ⬜ |
+| D-C1 | 최종 SHA에서 `npm ci`, `npm run verify`, `npm run test:e2e`, `npm run build`, `npm audit --omit=dev --audit-level=high` PASS | ✅ `dbcf793` — [release record](release/DEMO-AND-RELEASE.md) §2.1 |
+| D-C2 | CI Real Backend smoke + Customer 여정 + Employee 여정 PASS | ✅ run `42587874049` |
+| D-C3 | Production mock 차단 검사 PASS (`scripts/assert-production-mock-safety.mjs`) | ✅ |
+| D-C4 | Release metadata 기록 (Master Plan §46: Frontend/docs/Backend SHA, Node, 범위, 열린 gate, 알려진 S2/S3) | ✅ [release record](release/DEMO-AND-RELEASE.md) §1 |
+| D-C5 | 문서 정합성: Master Plan 상태, Employee ledger, 이 문서 §7이 실제 상태와 일치 | ✅ |
+| D-C6 | 시연 시나리오 확정: Customer + Voice + Employee, 시연 환경과 계정 준비 체크리스트 | ✅ [demo runbook](release/DEMO-AND-RELEASE.md) §3–§4 (계정·DB 준비는 Backend/demo operator, DEC-C03) |
+| D-C7 | Release severity: S0 = 0, S1 = 0 (Master Plan §41) | ✅ |
 
 최종 보고서와 발표 자료 자체는 팀 산출물이며 이 저장소의 완료 기준이 아니다. 이 저장소는 D-C4, D-C6을 통해 보고서에 들어갈 근거를 제공한다.
 
@@ -167,9 +167,9 @@ CP / 구현 단위 1개
 | W0 | COMPLETE | [PR #52](https://github.com/WonhoOne/frontend/pull/52) merged | 2026-11-09 |
 | W1 | COMPLETE | #46–#51 merged in order; delegated decisions recorded in Employee ledger (W1 closeout PR) | 2026-11-09 |
 | W2 | COMPLETE | P1 CP0–CP11 PASS: #54, #55, P1-5 PR | 2026-11-09 |
-| W3 | COMPLETE (on merge of #59, #60 and E-PR5) | E-PR1 #57, E-PR2 #58 merged; release gate met — [verification](employee-console/planning/audits/E-PR5-CP9-CP10-VERIFICATION.md) | 2026-11-09 |
-| W4 | COMPLETE (on merge of #64) | D-A4, D-A7 (#62); D-A6 measurement (#63) + record; D-A5 comments + Configure invalid-id fix (#64) | 2026-11-09 |
-| W5 | NOT STARTED | — | — |
+| W3 | COMPLETE | E-PR1–E-PR5 merged (#57–#61); Employee release gate met | 2026-11-09 |
+| W4 | COMPLETE | D-A4, D-A7 (#62); D-A6 (#63 + §9); D-A5 + Configure invalid-id fix (#64) | 2026-11-09 |
+| W5 | COMPLETE | Code freeze `dbcf793`; local release gate PASS; release record + demo runbook | 2026-11-09 |
 
 ---
 

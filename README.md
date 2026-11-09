@@ -2,7 +2,9 @@
 
 > **Employee Console:** detailed planning (CP0–CP11) is complete and implementation is authorized — see [Employee Console README](docs/employee-console/README.md) and the [progress ledger](docs/employee-console/01-PROGRESS-AND-HANDOFF.md). Employee routes/UI are being implemented in the PR order of CP11 §3.
 
-Customer-facing web GUI for Mister World.
+Mister World web frontend: the Customer GUI (with AI Voice) and the Employee Console (`/employee`).
+
+**Release and demo:** [`docs/release/DEMO-AND-RELEASE.md`](docs/release/DEMO-AND-RELEASE.md) (release metadata, gates, demo runbook and script).
 
 ## Start here
 
@@ -75,6 +77,15 @@ VITE_ENABLE_MOCKS=true npm run dev
 ```
 
 Foundation intentionally ships with an empty shared MSW handler registry. Add Product handlers only after the relevant Backend contract is approved.
+
+## Employee Console
+
+Open `/employee` and sign in with an EMPLOYEE account. EMPLOYEE accounts are created by the Backend (`EmployeeBootstrap`), not by public signup. The console is designed for desktop browsers (PC-only scope).
+
+- `/employee/tours` — product list, `/employee/tours/new` — create, `/employee/tours/:tourId/edit` — edit
+- `/employee/inventory` — stock and positive stock addition
+
+Planning and verification: [`docs/employee-console/README.md`](docs/employee-console/README.md).
 
 ## Verification
 
