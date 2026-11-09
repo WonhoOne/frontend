@@ -33,9 +33,9 @@ test.describe('Employee products', () => {
     await page.getByRole('button', { name: '저장' }).click();
 
     await expect(page).toHaveURL(/\/employee\/tours$/);
-    await expect(page.getByRole('status')).toContainText(
-      '‘제주 골프 3일’ 여행상품을 만들었습니다.',
-    );
+    await expect(
+      page.getByRole('status').filter({ hasText: '‘제주 골프 3일’ 여행상품을 만들었습니다.' }),
+    ).toBeVisible();
     await expect(table.getByRole('link', { name: '제주 골프 3일' })).toBeVisible();
 
     expect(api.writes).toEqual([

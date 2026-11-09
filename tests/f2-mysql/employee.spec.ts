@@ -76,7 +76,9 @@ test('real Backend Employee sign-in, product create and CUSTOMER refusal', async
   await page.getByRole('button', { name: '저장' }).click();
 
   await expect(page).toHaveURL(/\/employee\/tours$/);
-  await expect(page.getByRole('status')).toContainText(`‘${productName}’ 여행상품을 만들었습니다.`);
+  await expect(
+    page.getByRole('status').filter({ hasText: `‘${productName}’ 여행상품을 만들었습니다.` }),
+  ).toBeVisible();
   await expect(page.getByRole('link', { name: productName })).toBeVisible();
 
   const token = ((await apiLogin.json()) as { accessToken: string }).accessToken;
