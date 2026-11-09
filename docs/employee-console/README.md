@@ -17,15 +17,16 @@
 
 - [CP0-A — Frontend runtime and reuse inventory](planning/CP0-A-FRONTEND-RUNTIME-INVENTORY.md): current source/code audit, explicit Employee login incompatibility, Customer shell segregation risk, reuse/new candidates. **Status: REVIEW on CP0-A PR; not yet merged to main.**
 - [CP0-B — Backend Employee contract audit](planning/CP0-B-BACKEND-EMPLOYEE-CONTRACT-AUDIT.md): matched docs/main v0.2 against real Backend controllers, security, DTO, validators, Product lock/Inventory additive logic and existing tests. **Status: REVIEW on dependent CP0-B branch; merge CP0-A first.**
-- [CP0-C — Scope, device support and demo gate](planning/CP0-C-SCOPE-DEVICE-DEMO-GATE.md): grounded in original two-page assignment plus approved v0.2; course final due Nov23/demo Nov24; feature/non-goal matrix, explicit **A/B/C device-policy owner decision** and bounded demo proposal. **Status: DRAFT / blocked on owner choice and PR merge dependencies.**
-- **Next action:** choose Employee console device scope **A desktop-only (proposed) / B desktop+tablet / C desktop+tablet+mobile**. Then review/merge source audit PRs #46 → #47 → CP0-C stacked PR in order. **After CP0 freeze, CP1-A task flows**. The progress ledger is authoritative.
+- [CP0-C — Scope, device support and demo gate](planning/CP0-C-SCOPE-DEVICE-DEMO-GATE.md): owner **approved A PC-only on 2026-10-13**; required scope and course final dates; PR #48 still draft/staged behind #46/#47.
+- [CP1-A — Operator tasks and end-to-end flows](planning/CP1-A-OPERATOR-TASK-FLOWS.md): 7 Employee tasks/flowcharts and acceptance scenarios, explicitly **DRAFT / DEPENDENT** on CP0 PR merges. IA, routes and visuals **not** decided.
+- **Next action:** device A (PC-only) is **confirmed**; review/merge documentation PR chain #46 → #47 → #48 → CP1-A dependent PR, then plan **CP1-B IA/nav**. The progress ledger is authoritative.
 
 ## What is and is not completed
 
 | Program | Status | Meaning |
 | --- | --- | --- |
 | P0 — Plan the planning | **MERGED** | [PR #45](https://github.com/WonhoOne/frontend/pull/45), merged 2026-10-13 |
-| P1 — Detailed Employee design (CP0–CP11) | **CP0-C DRAFT** | CP0-A/B source audits on review PRs; CP0-C awaits owner device decision/merge; CP1 onward unstarted |
+| P1 — Detailed Employee design (CP0–CP11) | **CP1-A DRAFT / DEPENDENT** | CP0-C device A confirmed, prior PRs unmerged; Task flows documented but not yet approved; CP1-B onward unstarted |
 | P2 — Employee Console code | **NOT STARTED** | No employee route/page/API runtime implementation claimed |
 
 The earlier [frontend PR #44](https://github.com/WonhoOne/frontend/pull/44) is **closed unmerged**. Its premature Employee implementation plan is **not** the current approved specification.
@@ -34,7 +35,7 @@ The earlier [frontend PR #44](https://github.com/WonhoOne/frontend/pull/44) is *
 
 > Read the latest WonhoOne/frontend main branch and this folder's README, 00-PLANNING-PROGRAM.md, 01-PROGRESS-AND-HANDOFF.md, and references/00-MOBBIN-DISCOVERY.md. Verify P0 approval/merge and latest WonhoOne/docs/main first. Then execute **only** the progress ledger's next_checkpoint, using current code/contract evidence and the program's output gate. Do not implement any feature, invent a missing contract, or mark CP as complete without creating a durable checkpoint artifact/commit and updating the ledger.
 
-**Current next action:** obtain **explicit CP0-C device-support choice**, amend draft and merge stacked PRs #46 → #47 → CP0-C in that order. **Next checkpoint:** CP1-A only after CP0 freeze and user continuation. Do not equate source audits or this CP0-C draft with a finalized Employee UI spec.
+**Current next action:** review/merge #46 → #47 → #48 → CP1-A in order, retarget dependent PR bases to main after predecessors merge and recheck each diff. Device support **A PC-only approved**. **Next checkpoint:** CP1-B only after prerequisites and user instruction. Nothing here is a final Employee UI spec.
 
 ## Progress bookkeeping
 
