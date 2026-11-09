@@ -25,6 +25,12 @@ function formatPrice(amount: number, currency: string) {
   }).format(amount);
 }
 
+/**
+ * S11 My Trips route 진입점.
+ *
+ * SECURITY: 고객 본인 데이터다. 고객 session이 아니면(비로그인 또는 EMPLOYEE) private
+ * query를 시작하기 전에 ReturnContext를 저장하고 고객 로그인으로 보낸다.
+ */
 export function MyTripsPage() {
   const auth = useAuth();
   const navigate = useNavigate();
@@ -67,6 +73,7 @@ export function MyTripsPage() {
   return <AuthenticatedMyTrips dataSource={travelHistoryDataSource} />;
 }
 
+/** 고객 session이 확인된 뒤의 목록. 완료된 여행만, Backend가 준 최근 순서대로 보여준다 (FR-09). */
 export function AuthenticatedMyTrips({ dataSource }: { dataSource: TravelHistoryDataSource }) {
   const navigate = useNavigate();
   const history = useTravelHistory(dataSource);

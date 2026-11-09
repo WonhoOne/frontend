@@ -21,6 +21,12 @@ import {
   type RecruitmentUnitDto,
 } from '@/integrations/backend/contracts/tourSchedule';
 
+/*
+ * REST v0.2 Reservation 계약 (`POST/GET /api/v1/reservations`).
+ *
+ * CONTRACT: 옵션 id는 공통 Product Catalog의 canonical id다. 가격·할인·모집 현황은
+ * Backend가 계산한 값이며 Frontend는 검증만 하고 다시 계산하지 않는다 (BR-12, BR-26).
+ */
 export const hotelOptions = ['HOTEL_3_STAR', 'HOTEL_4_STAR', 'HOTEL_5_STAR'] as const;
 export type HotelOptionDto = (typeof hotelOptions)[number];
 
@@ -121,6 +127,9 @@ function decodeRecruitment(value: unknown, path: string): ReservationRecruitment
   };
 }
 
+/**
+ * 할인은 없거나(null) Loyalty 5% 하나뿐이다 (FR-15). 다른 종류나 비율은 계약 위반으로 거부한다.
+ */
 function decodeDiscount(value: unknown, path: string): ReservationDiscountDto | null {
   if (value === null) {
     return null;
@@ -142,6 +151,7 @@ function decodeDiscount(value: unknown, path: string): ReservationDiscountDto | 
   };
 }
 
+/** 금액은 모두 양의 정수 KRW다. 통화가 KRW가 아니면 표시하지 않고 계약 위반으로 처리한다. */
 function decodePrice(value: unknown, path: string): ReservationPriceDto {
   const contract = 'Reservation' as const;
   const record = expectRecord(value, contract, path);
@@ -159,6 +169,10 @@ function decodePrice(value: unknown, path: string): ReservationPriceDto {
   };
 }
 
+/**
+ * Reservation 응답 전체를 검증한다. 시작일이 종료일보다 늦는 등 의미상 불가능한 값도
+ * 화면에 내보내지 않고 ContractMappingError로 드러낸다.
+ */
 export function decodeReservationResponseDto(value: unknown): ReservationResponseDto {
   const contract = 'Reservation' as const;
   const record = expectRecord(value, contract, '$');

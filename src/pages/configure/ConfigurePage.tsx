@@ -22,6 +22,7 @@ import { Button, PageContainer, Skeleton, TextLink } from '@/shared/ui';
 
 import styles from '@/pages/configure/ConfigurePage.module.css';
 
+/** 공개 상품 정보를 다시 읽는 동안의 화면. Draft는 이미 복원되어 있다. */
 function ProductLoadingState() {
   return (
     <PageContainer variant="reading">
@@ -36,6 +37,10 @@ function ProductLoadingState() {
   );
 }
 
+/**
+ * 공개 상품 정보를 읽지 못했을 때의 안내.
+ * INVARIANT: 저장된 선택(Draft)은 지우지 않는다. 다시 읽기 또는 상세 화면으로만 안내한다.
+ */
 function ProductErrorState({
   onRetry,
   tourProductIdentity,
@@ -66,6 +71,13 @@ function ProductErrorState({
   );
 }
 
+/**
+ * Configure 화면의 가격 표시 상태.
+ *
+ * CONTRACT: 공개 TourProduct의 Style 가격과 인원으로 만든 **추정치**다. 최종 할인·총액은
+ * 예약 생성 때 Backend가 정한다 (F1-09 Configure/price boundary).
+ * 새로 읽는 중이거나 실패하면 이전 값을 "이전 금액"으로만 보여주고 확정값처럼 보이지 않게 한다.
+ */
 function pricePresentation(
   product: TourDetailModel,
   draft: ReturnType<typeof useReservationDraft>['draft'],
@@ -105,6 +117,13 @@ interface ResolvedConfigurePageProps {
   tourProductIdentity: string;
 }
 
+/**
+ * 유효한 상품 id가 있을 때의 Configure 화면.
+ *
+ * WHY: Configure는 Tour Detail에서 넘겨받은 Draft(상품·Style·일정)가 있어야 시작할 수 있다.
+ * Draft가 없거나, 복원에 실패했거나, URL의 상품과 Draft의 상품이 다르면 아무것도 추측하지
+ * 않고 원래 단계로 돌아가는 안내를 보여준다. 상품·일정은 Draft를 믿지 않고 다시 읽는다.
+ */
 function ResolvedConfigurePage({
   backendTourProductId,
   tourProductIdentity,
@@ -250,12 +269,25 @@ function ResolvedConfigurePage({
   );
 }
 
+/** S04 Configure route 진입점. URL의 `tourId`를 canonical Backend id로 바꿔 넘긴다. */
 export function ConfigurePage() {
   const { tourId } = useParams();
   const backendTourProductId = parseResourceIdRouteParam(tourId);
 
   if (backendTourProductId === null) {
-    return null;
+    // WHY: 주소의 상품 id가 올바르지 않으면 빈 화면 대신 복구 안내를 보여준다
+    // (W4에서 발견: 이전에는 H1도 링크도 없는 빈 화면이었다).
+    return (
+      <PageContainer variant="reading">
+        <section className={styles.recovery}>
+          <p className={styles.eyebrow}>Trip configuration</p>
+          <h1>Configure</h1>
+          <h2>This trip couldn't be found</h2>
+          <p>The address does not point to a tour. Start again from the tour list.</p>
+          <TextLink to={routePaths.tours}>Browse tours</TextLink>
+        </section>
+      </PageContainer>
+    );
   }
 
   return (

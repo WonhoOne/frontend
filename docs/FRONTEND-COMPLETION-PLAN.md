@@ -69,9 +69,9 @@ Frontend는 아래 **D-A, D-B, D-C가 모두 충족될 때 완료**다. 각 항�
 | D-A2 | Customer critical journey가 CI의 Real Backend + MySQL에서 PASS | ✅ |
 | D-A3 | Voice B9-C/B9-D PASS, Voice가 Reservation을 자동 제출하지 않음 | ✅ |
 | D-A4 | Route lazy splitting 적용, production build에 >500 kB chunk 경고 없음 (또는 원인과 수용 사유 문서화) | ✅ W4 PR — Page 단위 `React.lazy` + `Suspense` (layout/header는 즉시), 최대 chunk 287 kB, 경고 없음 |
-| D-A5 | Master Plan §8 기준: 150줄 이상 non-Voice Page/Feature 파일에 WHY/CONTRACT/INVARIANT 중심 한국어 설명 주석 | ⬜ |
+| D-A5 | Master Plan §8 기준: 150줄 이상 non-Voice Page/Feature 파일에 WHY/CONTRACT/INVARIANT 중심 한국어 설명 주석 | ✅ W4 comments PR — 12개 파일 보강, 남은 1개는 export 전용 `reservation/index.ts` |
 | D-A7 | 공용 `TextLink` 대비 3.9:1 → 4.5:1 이상 (E-PR5에서 발견, Customer 화면 영향) | ✅ W4 PR — `--mw-accent-text` (#7A5C33, 밝은 배경 전부 ≥ 4.86:1)를 TextLink와 accent 글자색 17곳에 적용 |
-| D-A6 | NFR-04/05 Frontend 관점 측정 결과 기록 (통합 시나리오 성공 수, 주요 요청 응답시간). NFR-01은 Voice 소유자 근거를 링크 | ⬜ |
+| D-A6 | NFR-04/05 Frontend 관점 측정 결과 기록 (통합 시나리오 성공 수, 주요 요청 응답시간). NFR-01은 Voice 소유자 근거를 링크 | ✅ §9 (NFR-04 공식 시나리오 목록은 팀 결정 필요) |
 
 Voice 디렉터리(`src/integrations/voice`, `src/features/voice-bridge`)는 이한결 소유 범위이므로 D-A5 주석 보강 대상에서 제외한다.
 
@@ -168,7 +168,7 @@ CP / 구현 단위 1개
 | W1 | COMPLETE | #46–#51 merged in order; delegated decisions recorded in Employee ledger (W1 closeout PR) | 2026-11-09 |
 | W2 | COMPLETE | P1 CP0–CP11 PASS: #54, #55, P1-5 PR | 2026-11-09 |
 | W3 | COMPLETE (on merge of #59, #60 and E-PR5) | E-PR1 #57, E-PR2 #58 merged; release gate met — [verification](employee-console/planning/audits/E-PR5-CP9-CP10-VERIFICATION.md) | 2026-11-09 |
-| W4 | IN PROGRESS | D-A4, D-A7 done (W4 PR); D-A5 comments, D-A6 NFR record next | 2026-11-09 |
+| W4 | COMPLETE (on merge of #64) | D-A4, D-A7 (#62); D-A6 measurement (#63) + record; D-A5 comments + Configure invalid-id fix (#64) | 2026-11-09 |
 | W5 | NOT STARTED | — | — |
 
 ---
@@ -183,3 +183,38 @@ CP / 구현 단위 1개
 | Inventory POST에 idempotency 계약 없음 | 중복 재고 추가 | 불확실한 결과에서 자동 재시도 금지, 재조회 후 사용자 확인 (CP5-B/CP8-B에서 확정) |
 | Java `long` 재고 수량 vs JS number 정밀도 | 잘못된 표시 | Decoder에서 safe integer 검증 (CP8-A에서 확정) |
 | 로컬에 Playwright 브라우저와 Backend/MySQL 없음 | 로컬 E2E 근거 부족 | `npx playwright install chromium`으로 로컬 E2E 실행, Real Backend 근거는 CI job으로 확보 |
+
+---
+
+## 9. NFR evidence from the Frontend (2026-11-09)
+
+### NFR-05 — 주요 Backend 요청 응답시간 3초 이내
+
+Measured in the real Backend + MySQL CI job (`tests/f2-mysql/nfr-response-time.spec.ts`, run `42586422376`), after the Customer, Voice and Employee journeys, 20 sequential samples per request:
+
+| Request | p50 | p95 | max |
+| --- | ---: | ---: | ---: |
+| `GET /tours` | 8 ms | 13 ms | 13 ms |
+| `GET /tours/{id}` | 7 ms | 10 ms | 10 ms |
+| `GET /tour-schedules?tourId` | 10 ms | 17 ms | 17 ms |
+| `POST /auth/login` | 81 ms | 98 ms | 98 ms |
+| `GET /employee/tours` | 7 ms | 8 ms | 8 ms |
+| `GET /employee/inventory` | 5 ms | 13 ms | 13 ms |
+
+All far below 3,000 ms (the spec fails if any sample reaches it). This is the CI runner with a local MySQL, not a production load test.
+
+### NFR-04 — 통합 시나리오 10개 중 9개 이상 성공
+
+The shared docs do **not** list the 10 integration scenarios. The Frontend does not define them. Real Backend journeys the Frontend runs on every PR (all passing on `main`):
+
+1. Customer signup → login → configure → explicit reservation → detail (`authenticated.spec.ts`)
+2. Voice choices → GUI review → explicit submit (`voice-reservation.spec.ts`)
+3. Employee sign-in (EJ01) · 4. product create (EJ02) · 5. product edit (EJ03) · 6. Theme lock 409 recovery (EJ04) · 7. stock add (EJ05) · 8. CUSTOMER refused on Employee login (EJ06) (`employee.spec.ts`)
+9. NFR-05 response times (`nfr-response-time.spec.ts`)
+10. Public read smoke (`Real Backend public read smoke` job)
+
+**Team decision needed:** confirm or replace this list as the official NFR-04 scenario set in `WonhoOne/docs` (docs-first; not changed here).
+
+### NFR-01 — Voice 인식률 90%
+
+Voice-owned evidence (이한결): B9-C FINAL PASS and the final Chrome real-microphone smoke 10/10 in `WonhoOne/docs/B9-INTEGRATION-CLOSEOUT.md`. No new measurement here.

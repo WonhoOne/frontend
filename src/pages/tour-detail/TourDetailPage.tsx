@@ -36,6 +36,11 @@ import { Button, PageContainer, TextLink } from '@/shared/ui';
 
 import styles from '@/pages/tour-detail/TourDetailPage.module.css';
 
+/**
+ * Style·일정 선택을 어디에 저장할지 page가 정한다.
+ * WHY: 실제 화면은 ReservationDraft에 저장하고(새로고침·Voice와 공유), 테스트/미리보기는
+ * selection 없이 component 내부 state로 동작한다.
+ */
 interface TourDetailSelection {
   style: TourDetailStyle | null;
   scheduleKey: string | null;
@@ -73,6 +78,7 @@ const coreErrorCopy: Record<TourDetailCoreErrorReason, { title: string; message:
   },
 };
 
+/** 상품을 찾지 못했거나 읽지 못했을 때의 전체 화면 안내. 목록으로 돌아갈 길을 항상 준다. */
 function TourDetailStatePage({
   isRetrying = false,
   message,
@@ -103,6 +109,13 @@ function TourDetailStatePage({
   );
 }
 
+/**
+ * 상품 정보를 받은 뒤의 상세 화면.
+ *
+ * INVARIANT: 선택한 일정이 지금 응답에서 선택 가능(`isSelectable`)하지 않으면
+ * 선택되지 않은 것으로 본다. Backend의 `reservable` 판정을 Frontend가 다시 계산하지 않는다.
+ * Configure로 넘기는 값은 상품 id, Style, 일정 id 세 가지뿐이다 (F1 handoff).
+ */
 function TourDetailReadyView({
   onConfigure,
   onRetrySchedule,
@@ -122,6 +135,7 @@ function TourDetailReadyView({
   const selectedScheduleKey = selection ? selection.scheduleKey : localScheduleKey;
   const resolvedScheduleState: TourScheduleSectionState = scheduleState ?? { status: 'loading' };
 
+  // 일정 목록이 새로 바뀌어 저장된 선택이 더 이상 유효하지 않으면 선택을 비운 것으로 본다.
   const effectiveScheduleKey =
     resolvedScheduleState.status === 'ready' &&
     resolvedScheduleState.choices.some(
@@ -228,6 +242,10 @@ function TourDetailReadyView({
   );
 }
 
+/**
+ * 상태(loading / not-found / error / ready)에 따라 화면을 고르는 표현 계층.
+ * Data fetching이 없어 테스트와 미리보기에서 그대로 쓸 수 있다.
+ */
 export function TourDetailPageView({
   coreState,
   onConfigure,
@@ -293,6 +311,12 @@ interface ResolvedTourDetailPageProps {
   scheduleDataSource: TourScheduleDataSource;
 }
 
+/**
+ * 유효한 상품 id가 있을 때 상세와 일정을 읽고 선택을 ReservationDraft에 기록한다.
+ *
+ * WHY: 다른 상품의 Draft가 남아 있으면 그 Style/일정을 이 화면에 보여주지 않는다.
+ * 이 상품에서 처음 선택하는 순간 새 Draft를 시작한다(`START_DRAFT`).
+ */
 function ResolvedTourDetailPage({
   detailDataSource,
   resourceId,
@@ -356,6 +380,10 @@ export interface TourDetailPageProps {
   scheduleDataSource?: TourScheduleDataSource;
 }
 
+/**
+ * S03 Tour Detail route 진입점. URL의 `tourId`가 canonical 양의 정수가 아니면 요청 없이
+ * not-found를 보여준다.
+ */
 export function TourDetailPage({
   detailDataSource = tourDetailDataSource,
   scheduleDataSource = tourScheduleDataSource,

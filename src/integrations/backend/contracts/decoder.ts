@@ -4,6 +4,15 @@ import {
   type ContractMappingFailureReason,
 } from '@/integrations/backend/contracts/contractMappingError';
 
+/*
+ * Backend 응답 runtime 검증 helper 모음 (CP8, F1-09).
+ *
+ * CONTRACT: 모든 helper는 기대와 다르면 값을 고치거나 기본값을 넣지 않고
+ * ContractMappingError(contract, path, reason)를 던진다. 원본 payload는 오류에 담지 않는다.
+ * 정수는 `Number.isSafeInteger`로 확인해 JS가 정확히 표현할 수 없는 값을 거부한다.
+ */
+
+/** 검증 실패를 한 형태로 던진다. 반환 타입 `never`로 호출부의 흐름 분석을 돕는다. */
 export function mappingFailure(
   contract: BackendContractName,
   path: string,
@@ -126,6 +135,10 @@ function daysInMonth(year: number, month: number) {
   return [4, 6, 9, 11].includes(month) ? 30 : 31;
 }
 
+/**
+ * `YYYY-MM-DD` 형식이면서 실제 달력에 있는 날짜인지 확인한다(윤년 포함).
+ * WHY: `Date` parsing은 2026-02-30 같은 값을 다음 달로 넘겨 버리므로 직접 검사한다.
+ */
 export function expectIsoCalendarDate(
   value: unknown,
   contract: BackendContractName,

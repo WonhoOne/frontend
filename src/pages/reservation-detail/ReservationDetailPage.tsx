@@ -23,6 +23,10 @@ interface ReservationDetailPageProps {
   dataSource?: Pick<ReservationDataSource, 'getReservation'>;
 }
 
+/**
+ * S07 Reservation Detail. Success와 같은 비공개 조회를 쓰지만, 다시 방문하는 화면이라
+ * "방금 완료" 문구 없이 예약 정보만 보여준다. 401/403/404 처리 원칙은 Success와 같다.
+ */
 export function ReservationDetailPage({
   dataSource = reservationDataSource,
 }: ReservationDetailPageProps = {}) {
