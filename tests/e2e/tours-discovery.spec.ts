@@ -119,6 +119,11 @@ test.describe('Tours discovery collection', () => {
   }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/tours');
+    // The Tours page is route-lazy and its products come from the API, so wait for the
+    // content before walking the keyboard order.
+    await expect(
+      page.getByRole('link', { name: 'View Honeymoon Romance · Journey 01 tour details' }),
+    ).toBeVisible();
 
     for (const linkName of [
       'Skip to main content',

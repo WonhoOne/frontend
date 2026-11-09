@@ -26,7 +26,7 @@
 }
 
 .eyebrow {
-  color: var(--mw-accent);
+  color: var(--mw-accent-text);
   font-size: var(--mw-font-size-label-sm);
   font-weight: var(--mw-font-weight-semibold);
   letter-spacing: var(--mw-tracking-eyebrow);

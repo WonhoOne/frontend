@@ -1,3 +1,4 @@
+import { lazy, Suspense, type ComponentType } from 'react';
 import { Navigate, type RouteObject } from 'react-router';
 
 import { AppRouteLayout, type AppRouteHandle } from '@/app/router/AppRouteLayout';
@@ -11,25 +12,33 @@ import {
   routePatterns,
   routeTitles,
 } from '@/app/router/paths';
-import { ConfigurePage } from '@/pages/configure/ConfigurePage';
-import { EmployeeInventoryPage } from '@/pages/employee-inventory/EmployeeInventoryPage';
-import { EmployeeLoginPage } from '@/pages/employee-login/EmployeeLoginPage';
 import { EmployeeNotFound } from '@/pages/employee-status/EmployeeNotFound';
-import { EmployeeTourCreatePage } from '@/pages/employee-tour-create/EmployeeTourCreatePage';
-import { EmployeeTourEditPage } from '@/pages/employee-tour-edit/EmployeeTourEditPage';
-import { EmployeeToursPage } from '@/pages/employee-tours/EmployeeToursPage';
 import { HomePage } from '@/pages/home/HomePage';
-import { LoginPage } from '@/pages/login/LoginPage';
-import { MyTripsPage } from '@/pages/my-trips/MyTripsPage';
-import { ReservationDetailPage } from '@/pages/reservation-detail/ReservationDetailPage';
-import { ReservationReviewPage } from '@/pages/reservation-review/ReservationReviewPage';
-import { ReservationSuccessPage } from '@/pages/reservation-success/ReservationSuccessPage';
-import { SignupPage } from '@/pages/signup/SignupPage';
-import { TourDetailPage } from '@/pages/tour-detail/TourDetailPage';
-import { ToursPage } from '@/pages/tours/ToursPage';
 
 function handle(chrome: AppRouteHandle['chrome'], title: string): AppRouteHandle {
   return { chrome, title };
+}
+
+/**
+ * Page 단위 code splitting (Master Plan §44, Completion Plan D-A4).
+ *
+ * WHY: 모든 Page를 한 bundle에 넣으면 첫 화면이 쓰지 않는 Configure, Reservation,
+ * Employee Console 코드까지 내려받는다. Page는 route에 들어갈 때 불러온다.
+ * Home은 첫 진입 화면(LCP)이라 즉시 불러온다.
+ *
+ * CONTRACT: Router의 route-level `lazy`는 첫 진입 때 layout과 header까지 함께 늦추므로
+ * 쓰지 않는다. Layout은 바로 그리고 Page 영역만 `React.lazy` + `Suspense`로 늦춘다.
+ * Router navigation은 transition으로 처리되어 이동 중에는 이전 Page가 유지된다.
+ * `handle`(chrome metadata)은 정적으로 둔다.
+ */
+function lazyPage<Module>(load: () => Promise<Module>, pick: (module: Module) => ComponentType) {
+  const LazyPage = lazy(async () => ({ default: pick(await load()) }));
+
+  return (
+    <Suspense fallback={null}>
+      <LazyPage />
+    </Suspense>
+  );
 }
 
 /**
@@ -47,14 +56,44 @@ export const appRoutes: RouteObject[] = [
     element: <EmployeeRouteLayout />,
     children: [
       { index: true, element: <Navigate replace to={employeeRoutePaths.tours} /> },
-      { path: employeeRoutePaths.login, element: <EmployeeLoginPage /> },
+      {
+        path: employeeRoutePaths.login,
+        element: lazyPage(
+          () => import('@/pages/employee-login/EmployeeLoginPage'),
+          (module) => module.EmployeeLoginPage,
+        ),
+      },
       {
         element: <EmployeeAccessBoundary />,
         children: [
-          { path: employeeRoutePaths.tours, element: <EmployeeToursPage /> },
-          { path: employeeRoutePaths.tourCreate, element: <EmployeeTourCreatePage /> },
-          { path: employeeRoutePatterns.tourEdit, element: <EmployeeTourEditPage /> },
-          { path: employeeRoutePaths.inventory, element: <EmployeeInventoryPage /> },
+          {
+            path: employeeRoutePaths.tours,
+            element: lazyPage(
+              () => import('@/pages/employee-tours/EmployeeToursPage'),
+              (module) => module.EmployeeToursPage,
+            ),
+          },
+          {
+            path: employeeRoutePaths.tourCreate,
+            element: lazyPage(
+              () => import('@/pages/employee-tour-create/EmployeeTourCreatePage'),
+              (module) => module.EmployeeTourCreatePage,
+            ),
+          },
+          {
+            path: employeeRoutePatterns.tourEdit,
+            element: lazyPage(
+              () => import('@/pages/employee-tour-edit/EmployeeTourEditPage'),
+              (module) => module.EmployeeTourEditPage,
+            ),
+          },
+          {
+            path: employeeRoutePaths.inventory,
+            element: lazyPage(
+              () => import('@/pages/employee-inventory/EmployeeInventoryPage'),
+              (module) => module.EmployeeInventoryPage,
+            ),
+          },
           { path: '*', element: <EmployeeNotFound /> },
         ],
       },
@@ -70,47 +109,74 @@ export const appRoutes: RouteObject[] = [
       },
       {
         path: routePaths.tours,
-        element: <ToursPage />,
+        element: lazyPage(
+          () => import('@/pages/tours/ToursPage'),
+          (module) => module.ToursPage,
+        ),
         handle: handle('global', routeTitles.tours),
       },
       {
         path: routePatterns.tourDetail,
-        element: <TourDetailPage />,
+        element: lazyPage(
+          () => import('@/pages/tour-detail/TourDetailPage'),
+          (module) => module.TourDetailPage,
+        ),
         handle: handle('global', routeTitles.tourDetail),
       },
       {
         path: routePatterns.configure,
-        element: <ConfigurePage />,
+        element: lazyPage(
+          () => import('@/pages/configure/ConfigurePage'),
+          (module) => module.ConfigurePage,
+        ),
         handle: handle('transaction', routeTitles.configure),
       },
       {
         path: routePaths.reservationReview,
-        element: <ReservationReviewPage />,
+        element: lazyPage(
+          () => import('@/pages/reservation-review/ReservationReviewPage'),
+          (module) => module.ReservationReviewPage,
+        ),
         handle: handle('transaction', routeTitles.reservationReview),
       },
       {
         path: routePatterns.reservationSuccess,
-        element: <ReservationSuccessPage />,
+        element: lazyPage(
+          () => import('@/pages/reservation-success/ReservationSuccessPage'),
+          (module) => module.ReservationSuccessPage,
+        ),
         handle: handle('transaction', routeTitles.reservationSuccess),
       },
       {
         path: routePatterns.reservationDetail,
-        element: <ReservationDetailPage />,
+        element: lazyPage(
+          () => import('@/pages/reservation-detail/ReservationDetailPage'),
+          (module) => module.ReservationDetailPage,
+        ),
         handle: handle('transaction', routeTitles.reservationDetail),
       },
       {
         path: routePaths.login,
-        element: <LoginPage />,
+        element: lazyPage(
+          () => import('@/pages/login/LoginPage'),
+          (module) => module.LoginPage,
+        ),
         handle: handle('global', routeTitles.login),
       },
       {
         path: routePaths.signup,
-        element: <SignupPage />,
+        element: lazyPage(
+          () => import('@/pages/signup/SignupPage'),
+          (module) => module.SignupPage,
+        ),
         handle: handle('global', routeTitles.signup),
       },
       {
         path: routePaths.myTrips,
-        element: <MyTripsPage />,
+        element: lazyPage(
+          () => import('@/pages/my-trips/MyTripsPage'),
+          (module) => module.MyTripsPage,
+        ),
         handle: handle('global', routeTitles.myTrips),
       },
       {
