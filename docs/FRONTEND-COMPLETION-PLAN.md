@@ -79,10 +79,10 @@ Voice 디렉터리(`src/integrations/voice`, `src/features/voice-bridge`)는 이
 | ID | 기준 | 현재 |
 | --- | --- | --- |
 | D-B1 | Employee CP0–CP11이 각 output gate를 통과하고 main에 머지됨 | ✅ (P1-5 PR 머지 시) |
-| D-B2 | Employee 로그인 + 역할 구분: EMPLOYEE는 Employee 영역에 진입, CUSTOMER/비로그인은 차단, 401/403 복구 | ⬜ |
+| D-B2 | Employee 로그인 + 역할 구분: EMPLOYEE는 Employee 영역에 진입, CUSTOMER/비로그인은 차단, 401/403 복구 | ✅ E-PR1 (#57) |
 | D-B3 | TourProduct 목록 / 생성 / 수정: Theme별 허용 Style 전체의 KRW 가격, 409 `TOUR_PRODUCT_THEME_LOCKED` 처리 | ⬜ |
 | D-B4 | Inventory 조회 + 양수 수량 추가: 추가는 delta, 불확실한 POST 결과에서 자동 재시도 없음 | ⬜ |
-| D-B5 | Employee 화면이 Customer 전용 부작용(Customer header, Voice, Previous Trips)을 띄우지 않음 | ⬜ |
+| D-B5 | Employee 화면이 Customer 전용 부작용(Customer header, Voice, Previous Trips)을 띄우지 않음 | ✅ E-PR1 (#57) |
 | D-B6 | Unit/Component 테스트 + Mock/Real parity + CI의 Real Backend/MySQL Employee 여정 PASS | ⬜ |
 | D-B7 | CP0-C에서 결정한 지원 범위(PC 전용)의 키보드/포커스/줌 접근성 확인 | ⬜ |
 
@@ -166,7 +166,7 @@ CP / 구현 단위 1개
 | W0 | COMPLETE | [PR #52](https://github.com/WonhoOne/frontend/pull/52) merged | 2026-11-09 |
 | W1 | COMPLETE | #46–#51 merged in order; delegated decisions recorded in Employee ledger (W1 closeout PR) | 2026-11-09 |
 | W2 | COMPLETE | P1 CP0–CP11 PASS: #54, #55, P1-5 PR | 2026-11-09 |
-| W3 | NEXT | E-PR1 … E-PR5 (Employee CP11 §3), targets 11/10–11/14 | 2026-11-09 |
+| W3 | IN PROGRESS | E-PR1 merged (#57); E-PR2 in review; E-PR3–E-PR5 next | 2026-11-09 |
 | W4 | NOT STARTED | — | — |
 | W5 | NOT STARTED | — | — |
 

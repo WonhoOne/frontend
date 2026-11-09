@@ -24,7 +24,10 @@ function requiredEnv(name: string) {
   return value;
 }
 
-test('real Backend Employee sign-in, product create and CUSTOMER refusal', async ({ page, request }) => {
+test('real Backend Employee sign-in, product create and CUSTOMER refusal', async ({
+  page,
+  request,
+}) => {
   const employeeLoginId = requiredEnv('EMPLOYEE_LOGIN_ID');
   const employeePassword = requiredEnv('EMPLOYEE_PASSWORD');
   const employeeName = requiredEnv('EMPLOYEE_NAME');
