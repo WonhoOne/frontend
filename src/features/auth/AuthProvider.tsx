@@ -7,6 +7,7 @@ import {
   AuthError,
   type AuthState,
   type LoginInput,
+  type LoginOptions,
   type SignupInput,
   type SignupResult,
 } from '@/features/auth/authTypes';
@@ -86,8 +87,24 @@ export function AuthProvider({
   }, [activeSessionStore, becomeUnauthenticated, now, state.status]);
 
   const login = useCallback(
-    async (input: LoginInput) => {
+    async (input: LoginInput, options: LoginOptions) => {
       const result = await dataSource.login(input);
+
+      // SECURITY: 기대하지 않은 role이면 token을 어디에도 저장하지 않는다.
+      // 기존 session(있다면)은 그대로 둔다.
+      if (result.user.role !== options.expectedRole) {
+        throw new AuthError('FORBIDDEN');
+      }
+
+      // SECURITY: 로그인된 상태에서 다른 사용자/role로 다시 로그인하면 상태가
+      // authenticated → authenticated로 바뀌어 아래 auth-loss effect가 실행되지 않는다.
+      // 이전 사용자의 private server state가 남지 않도록 여기서 직접 비운다.
+      if (
+        state.status === 'authenticated' &&
+        (state.user.id !== result.user.id || state.user.role !== result.user.role)
+      ) {
+        onAuthLoss?.();
+      }
 
       activeSessionStore.setSession({
         accessToken: result.accessToken,
@@ -98,7 +115,7 @@ export function AuthProvider({
         user: result.user,
       });
     },
-    [activeSessionStore, dataSource, now],
+    [activeSessionStore, dataSource, now, onAuthLoss, state],
   );
 
   const signup = useCallback(

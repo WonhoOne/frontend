@@ -1,8 +1,14 @@
 export type CustomerRole = 'CUSTOMER';
 
+/**
+ * CONTRACT: REST v0.2 login은 CUSTOMER와 EMPLOYEE를 같은 endpoint로 인증한다.
+ * 어느 화면이 어떤 role을 받아들이는지는 login 호출자가 `expectedRole`로 정한다.
+ */
+export type UserRole = 'CUSTOMER' | 'EMPLOYEE';
+
 export interface AuthUser {
   id: number;
-  role: CustomerRole;
+  role: UserRole;
   name: string;
 }
 
@@ -14,6 +20,15 @@ export type AuthState =
 export interface LoginInput {
   loginId: string;
   password: string;
+}
+
+export interface LoginOptions {
+  /**
+   * SECURITY: 이 화면이 받아들이는 role이다. 다른 role로 인증되면 session을
+   * 저장하지 않고 `FORBIDDEN`으로 거부한다. Customer 화면에 EMPLOYEE session이,
+   * Employee 화면에 CUSTOMER session이 섞이지 않게 하는 단일 지점이다.
+   */
+  expectedRole: UserRole;
 }
 
 export interface LoginResult {

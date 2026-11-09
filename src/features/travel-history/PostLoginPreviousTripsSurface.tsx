@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { useAuth } from '@/features/auth';
+import { isCustomerSession, useAuth } from '@/features/auth';
 import { PreviousTripsPopup } from '@/features/travel-history/PreviousTripsPopup';
 import type { TravelHistoryDataSource } from '@/features/travel-history/TravelHistoryDataSource';
 import {
@@ -21,15 +21,17 @@ export function PostLoginPreviousTripsSurface({
 }: PostLoginPreviousTripsSurfaceProps) {
   const auth = useAuth();
   const intent = usePostLoginHistoryIntent();
-  const open = auth.state.status === 'authenticated' && intent === 'show-previous-trips';
+  // SECURITY: 이전 여행 팝업은 고객 본인의 Travel History다. EMPLOYEE session에서는 열지 않는다.
+  const customerSignedIn = isCustomerSession(auth.state);
+  const open = customerSignedIn && intent === 'show-previous-trips';
 
   useEffect(() => {
-    if (auth.state.status === 'authenticated' && intent === 'suppress') {
+    if (customerSignedIn && intent === 'suppress') {
       clearPostLoginHistoryIntent();
     }
-  }, [auth.state.status, intent]);
+  }, [customerSignedIn, intent]);
 
-  if (auth.state.status !== 'authenticated') {
+  if (!customerSignedIn) {
     return null;
   }
 

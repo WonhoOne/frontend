@@ -161,7 +161,7 @@ describe('BackendAuthDataSource', () => {
     await expect(pending).rejects.toEqual(expect.objectContaining({ code: 'UNKNOWN' }));
   });
 
-  it('rejects an EMPLOYEE login before creating a customer-app AuthUser', async () => {
+  it('maps an EMPLOYEE login without deciding which screen may accept it', async () => {
     const requestJson = vi.fn().mockResolvedValue(
       backendResponse({
         accessToken: 'employee-token',
@@ -175,9 +175,13 @@ describe('BackendAuthDataSource', () => {
       }),
     );
     const source = new BackendAuthDataSource({ requestJson });
-    const pending = source.login({ loginId: 'employee', password: 'input-only' });
 
-    await expect(pending).rejects.toEqual(expect.objectContaining({ code: 'FORBIDDEN' }));
+    // CONTRACT: role acceptance is decided by AuthProvider.login({ expectedRole }).
+    await expect(source.login({ loginId: 'employee', password: 'input-only' })).resolves.toEqual(
+      expect.objectContaining({
+        user: { id: 201, role: 'EMPLOYEE', name: 'Synthetic Employee' },
+      }),
+    );
   });
 
   it('surfaces malformed API error contracts instead of hiding drift', async () => {

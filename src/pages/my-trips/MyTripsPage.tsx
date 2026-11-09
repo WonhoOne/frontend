@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 
 import { routePaths } from '@/app/router/paths';
 import { travelHistoryDataSource } from '@/app/providers/travelHistoryDataSource';
-import { saveReturnContext, useAuth } from '@/features/auth';
+import { isCustomerSession, saveReturnContext, useAuth } from '@/features/auth';
 import {
   isBrowserOffline,
   type TravelHistoryDataSource,
@@ -29,8 +29,14 @@ export function MyTripsPage() {
   const auth = useAuth();
   const navigate = useNavigate();
 
+  // SECURITY: My Trips는 고객 본인 데이터다. EMPLOYEE session은 비로그인처럼 고객 로그인으로 보낸다.
+  const customerSignedIn = isCustomerSession(auth.state);
+  const needsCustomerLogin =
+    auth.state.status === 'unauthenticated' ||
+    (auth.state.status === 'authenticated' && !customerSignedIn);
+
   useEffect(() => {
-    if (auth.state.status !== 'unauthenticated') {
+    if (!needsCustomerLogin) {
       return;
     }
 
@@ -40,9 +46,9 @@ export function MyTripsPage() {
       returnTo: routePaths.myTrips,
     });
     void navigate(routePaths.login, { replace: true });
-  }, [auth.state.status, navigate]);
+  }, [needsCustomerLogin, navigate]);
 
-  if (auth.state.status !== 'authenticated') {
+  if (!customerSignedIn) {
     return (
       <div className={styles.page}>
         <PageContainer>

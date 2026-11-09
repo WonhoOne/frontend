@@ -1,5 +1,4 @@
 import {
-  AuthError,
   type LoginInput,
   type LoginResult,
   type SignupInput,
@@ -29,11 +28,12 @@ export function toSignupRequestDto(input: SignupInput): SignupRequestDto {
   };
 }
 
+/**
+ * CONTRACT: 승인된 role을 그대로 Frontend model로 옮긴다.
+ * WHY: role 허용 여부는 화면마다 다르므로 adapter가 아니라
+ * `AuthProvider.login`의 `expectedRole` 검사가 결정한다.
+ */
 export function adaptLoginResponseDto(dto: LoginResponseDto): LoginResult {
-  if (dto.user.role !== 'CUSTOMER') {
-    throw new AuthError('FORBIDDEN');
-  }
-
   return {
     accessToken: dto.accessToken,
     tokenType: dto.tokenType,

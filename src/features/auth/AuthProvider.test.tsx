@@ -22,6 +22,16 @@ const loginResult: LoginResult = {
   },
 };
 
+const employeeLoginResult: LoginResult = {
+  ...loginResult,
+  accessToken: 'employee-token',
+  user: { id: 201, role: 'EMPLOYEE', name: 'Synthetic Employee' },
+};
+
+function createDataSourceWithLogin(login: AuthDataSource['login']): AuthDataSource {
+  return { ...createDataSource(), login };
+}
+
 function createDataSource(): AuthDataSource {
   return {
     login: vi.fn().mockResolvedValue(loginResult),
@@ -59,7 +69,12 @@ describe('AuthProvider', () => {
     const { result } = renderHook(() => useAuth(), { wrapper });
     await waitFor(() => expect(result.current.state.status).toBe('unauthenticated'));
 
-    await act(() => result.current.login({ loginId: 'synthetic', password: 'input-only' }));
+    await act(() =>
+      result.current.login(
+        { loginId: 'synthetic', password: 'input-only' },
+        { expectedRole: 'CUSTOMER' },
+      ),
+    );
 
     expect(result.current.state).toEqual({
       status: 'authenticated',
@@ -79,7 +94,12 @@ describe('AuthProvider', () => {
     const { result } = renderHook(() => useAuth(), { wrapper });
     await waitFor(() => expect(result.current.state.status).toBe('unauthenticated'));
 
-    await act(() => result.current.login({ loginId: 'synthetic', password: 'input-only' }));
+    await act(() =>
+      result.current.login(
+        { loginId: 'synthetic', password: 'input-only' },
+        { expectedRole: 'CUSTOMER' },
+      ),
+    );
 
     expect(sessionStore.getAccessToken()).toBe('synthetic-token');
     expect(sessionStore.getExpiresAt()).toBe(61_000);
@@ -100,7 +120,12 @@ describe('AuthProvider', () => {
     );
     const { result } = renderHook(() => useAuth(), { wrapper });
     await waitFor(() => expect(result.current.state.status).toBe('unauthenticated'));
-    await act(() => result.current.login({ loginId: 'synthetic', password: 'input-only' }));
+    await act(() =>
+      result.current.login(
+        { loginId: 'synthetic', password: 'input-only' },
+        { expectedRole: 'CUSTOMER' },
+      ),
+    );
 
     act(() => sessionStore.clear());
 
@@ -138,11 +163,95 @@ describe('AuthProvider', () => {
     const { result } = renderHook(() => useAuth(), { wrapper });
     await waitFor(() => expect(result.current.state.status).toBe('unauthenticated'));
 
-    await act(() => result.current.login({ loginId: 'synthetic', password: 'input-only' }));
+    await act(() =>
+      result.current.login(
+        { loginId: 'synthetic', password: 'input-only' },
+        { expectedRole: 'CUSTOMER' },
+      ),
+    );
     act(() => result.current.signOut());
 
     await waitFor(() => expect(onAuthLoss).toHaveBeenCalledTimes(1));
     expect(result.current.state).toEqual({ status: 'unauthenticated' });
+  });
+
+  it('refuses a role the screen did not expect and stores no session', async () => {
+    const sessionStore = new MemoryAuthSessionStore();
+    const dataSource = createDataSourceWithLogin(vi.fn().mockResolvedValue(employeeLoginResult));
+    const wrapper = ({ children }: PropsWithChildren) => (
+      <AuthProvider dataSource={dataSource} sessionStore={sessionStore}>
+        {children}
+      </AuthProvider>
+    );
+    const { result } = renderHook(() => useAuth(), { wrapper });
+    await waitFor(() => expect(result.current.state.status).toBe('unauthenticated'));
+
+    await expect(
+      act(() =>
+        result.current.login(
+          { loginId: 'employee', password: 'input-only' },
+          { expectedRole: 'CUSTOMER' },
+        ),
+      ),
+    ).rejects.toEqual(expect.objectContaining({ code: 'FORBIDDEN' }));
+
+    expect(result.current.state).toEqual({ status: 'unauthenticated' });
+    expect(sessionStore.getAccessToken()).toBeNull();
+  });
+
+  it('accepts EMPLOYEE when the Employee screen expects it', async () => {
+    const dataSource = createDataSourceWithLogin(vi.fn().mockResolvedValue(employeeLoginResult));
+    const wrapper = ({ children }: PropsWithChildren) => (
+      <AuthProvider dataSource={dataSource}>{children}</AuthProvider>
+    );
+    const { result } = renderHook(() => useAuth(), { wrapper });
+    await waitFor(() => expect(result.current.state.status).toBe('unauthenticated'));
+
+    await act(() =>
+      result.current.login(
+        { loginId: 'employee', password: 'input-only' },
+        { expectedRole: 'EMPLOYEE' },
+      ),
+    );
+
+    expect(result.current.state).toEqual({
+      status: 'authenticated',
+      user: { id: 201, role: 'EMPLOYEE', name: 'Synthetic Employee' },
+    });
+  });
+
+  it('clears private state when a different identity logs in while authenticated', async () => {
+    const onAuthLoss = vi.fn();
+    const login = vi.fn().mockResolvedValue(loginResult);
+    const dataSource = createDataSourceWithLogin(login);
+    const wrapper = ({ children }: PropsWithChildren) => (
+      <AuthProvider dataSource={dataSource} onAuthLoss={onAuthLoss}>
+        {children}
+      </AuthProvider>
+    );
+    const { result } = renderHook(() => useAuth(), { wrapper });
+    await waitFor(() => expect(result.current.state.status).toBe('unauthenticated'));
+    await act(() =>
+      result.current.login(
+        { loginId: 'synthetic', password: 'input-only' },
+        { expectedRole: 'CUSTOMER' },
+      ),
+    );
+    expect(onAuthLoss).not.toHaveBeenCalled();
+
+    login.mockResolvedValue(employeeLoginResult);
+    await act(() =>
+      result.current.login(
+        { loginId: 'employee', password: 'input-only' },
+        { expectedRole: 'EMPLOYEE' },
+      ),
+    );
+
+    expect(onAuthLoss).toHaveBeenCalledTimes(1);
+    expect(result.current.state).toEqual({
+      status: 'authenticated',
+      user: employeeLoginResult.user,
+    });
   });
 
   it.each(['AUTHENTICATION_REQUIRED', 'INVALID_ACCESS_TOKEN', 'ACCESS_TOKEN_EXPIRED'] as const)(
@@ -156,7 +265,12 @@ describe('AuthProvider', () => {
       );
       const { result } = renderHook(() => useAuth(), { wrapper });
       await waitFor(() => expect(result.current.state.status).toBe('unauthenticated'));
-      await act(() => result.current.login({ loginId: 'synthetic', password: 'input-only' }));
+      await act(() =>
+        result.current.login(
+          { loginId: 'synthetic', password: 'input-only' },
+          { expectedRole: 'CUSTOMER' },
+        ),
+      );
 
       let handled = false;
       act(() => {
@@ -180,7 +294,12 @@ describe('AuthProvider', () => {
     await waitFor(() => expect(result.current.state.status).toBe('unauthenticated'));
 
     expect(result.current.invalidateSession(new AuthError('LOGIN_FAILED'))).toBe(false);
-    await act(() => result.current.login({ loginId: 'synthetic', password: 'input-only' }));
+    await act(() =>
+      result.current.login(
+        { loginId: 'synthetic', password: 'input-only' },
+        { expectedRole: 'CUSTOMER' },
+      ),
+    );
 
     expect(result.current.invalidateSession(new AuthError('FORBIDDEN'))).toBe(false);
     expect(result.current.state.status).toBe('authenticated');
@@ -207,7 +326,12 @@ describe('AuthProvider', () => {
     });
     expect(result.current.state.status).toBe('unauthenticated');
 
-    await act(() => result.current.login({ loginId: 'synthetic', password: 'input-only' }));
+    await act(() =>
+      result.current.login(
+        { loginId: 'synthetic', password: 'input-only' },
+        { expectedRole: 'CUSTOMER' },
+      ),
+    );
     expect(result.current.state.status).toBe('authenticated');
 
     now = 2_000;

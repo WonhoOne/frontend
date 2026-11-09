@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import type { PropsWithChildren } from 'react';
-import { MemoryRouter, Route, Routes } from 'react-router';
+import { MemoryRouter, Route, Routes, useNavigate } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
@@ -11,6 +11,7 @@ import {
   clearReturnContext,
   consumeReturnContext,
   type AuthDataSource,
+  useAuth,
 } from '@/features/auth';
 import {
   travelHistoryQueryKey,
@@ -24,6 +25,24 @@ function authSource(): AuthDataSource {
     login: vi.fn().mockRejectedValue(new Error('not used')),
     signup: vi.fn().mockRejectedValue(new Error('not used')),
   };
+}
+
+function EmployeeSignInThenOpenMyTrips() {
+  const auth = useAuth();
+  const navigate = useNavigate();
+
+  return (
+    <button
+      disabled={auth.state.status !== 'unauthenticated'}
+      onClick={() =>
+        void auth
+          .login({ loginId: 'employee', password: 'input' }, { expectedRole: 'EMPLOYEE' })
+          .then(() => navigate('/my-trips'))
+      }
+    >
+      Employee sign in
+    </button>
+  );
 }
 
 function QueryWrapper({ children, queryClient }: PropsWithChildren<{ queryClient: QueryClient }>) {
@@ -60,6 +79,40 @@ describe('MyTripsPage', () => {
       intent: 'continue-navigation',
       returnTo: '/my-trips',
     });
+  });
+
+  it('treats an EMPLOYEE session as not signed in as a customer', async () => {
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const employeeAuth: AuthDataSource = {
+      login: vi.fn().mockResolvedValue({
+        accessToken: 'employee-token',
+        tokenType: 'Bearer',
+        expiresIn: 60,
+        user: { id: 201, role: 'EMPLOYEE', name: 'Synthetic Employee' },
+      }),
+      signup: vi.fn().mockRejectedValue(new Error('not used')),
+    };
+
+    render(
+      <QueryWrapper queryClient={queryClient}>
+        <AuthProvider dataSource={employeeAuth}>
+          <MemoryRouter initialEntries={['/start']}>
+            <Routes>
+              <Route path="/start" element={<EmployeeSignInThenOpenMyTrips />} />
+              <Route path="/my-trips" element={<MyTripsPage />} />
+              <Route path="/login" element={<p>Login destination</p>} />
+            </Routes>
+          </MemoryRouter>
+        </AuthProvider>
+      </QueryWrapper>,
+    );
+
+    const signIn = screen.getByRole('button', { name: 'Employee sign in' });
+    await waitFor(() => expect(signIn).toBeEnabled());
+    fireEvent.click(signIn);
+
+    expect(await screen.findByText('Login destination')).toBeVisible();
+    expect(queryClient.getQueryState(travelHistoryQueryKey)).toBeUndefined();
   });
 
   it('renders the shared history result in the backend-provided order', async () => {
