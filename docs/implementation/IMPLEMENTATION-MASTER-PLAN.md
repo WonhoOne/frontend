@@ -1,5 +1,7 @@
 # Mister World Frontend — Implementation Master Plan
 
+> **Current status note (2026-11-09):** §18 Contract Gates, §20 Live Integration Reality and §58 Final Status record the planning-time state of 2026-09-30. Customer implementation and live integration have since completed (B9 FINAL PASS). Current completion status and remaining work are tracked in [`../FRONTEND-COMPLETION-PLAN.md`](../FRONTEND-COMPLETION-PLAN.md). The architecture and code standards in this document remain in force.
+>
 > Status: **IMPLEMENTATION READY**
 > Version: **Master Plan v1 — Shared Baseline v0.1.2**
 > Date: **2026-09-30**

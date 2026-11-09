@@ -6,7 +6,8 @@ Customer-facing web GUI for Mister World.
 
 ## Start here
 
-- **Implementation start handoff:** [`docs/IMPLEMENTATION-START-HANDOFF.md`](docs/IMPLEMENTATION-START-HANDOFF.md)
+- **Current completion plan and Definition of Done:** [`docs/FRONTEND-COMPLETION-PLAN.md`](docs/FRONTEND-COMPLETION-PLAN.md)
+- **Implementation start handoff (historical, Customer start):** [`docs/IMPLEMENTATION-START-HANDOFF.md`](docs/IMPLEMENTATION-START-HANDOFF.md)
 - Frontend documentation: [`docs/README.md`](docs/README.md)
 - Frontend planning index: [`docs/planning/00-PLANNING-INDEX.md`](docs/planning/00-PLANNING-INDEX.md)
 - Implementation handoff: [`docs/planning/12-IMPLEMENTATION-HANDOFF.md`](docs/planning/12-IMPLEMENTATION-HANDOFF.md)
