@@ -1,10 +1,10 @@
 # Employee Console — Progress Ledger and Next-Session Handoff
 
 > Updated: 2026-11-09
-> Document phase: P1 — CP4 (motion / feedback)
-> Status: **P0, CP0, CP1, CP2, CP3 COMPLETE; CP0 FROZEN (2026-11-09).**
-> P1 checkpoint progress: **CP0–CP3 COMPLETE; CP4 NEXT; CP5 onward NOT STARTED**
-> Next action: **CP4 — operational motion and feedback.**
+> Document phase: P1 — CP6 (screen specs)
+> Status: **P0, CP0–CP5 COMPLETE; CP0 FROZEN (2026-11-09).**
+> P1 checkpoint progress: **CP0–CP5 COMPLETE; CP6-0 NEXT; CP6–CP11 NOT STARTED**
+> Next action: **CP6-0 — screen inventory and spec template, then CP6-A … CP6-F.**
 > Execution mode: owner delegated execution on 2026-11-09 — see [Frontend Completion Plan](../FRONTEND-COMPLETION-PLAN.md) §5 for what the agent decides and where it stops.
 
 ## 2026-11-09 — W1 closeout and delegated decisions
@@ -17,6 +17,11 @@
 | CP1-A | COMPLETE. Its open IA items were answered in CP1-B |
 | CP1-B | COMPLETE. **IA-01..IA-05, IA-07 APPROVED by DELEGATED DECISION 2026-11-09**: `/employee/login` on shared login API; Products list as landing, no dashboard; two primary areas (여행상품 / 재고 관리); addressable `/employee/tours`, `/employee/tours/new`, `/employee/tours/:tourId/edit`; stock add inside `/employee/inventory`; return to list after create. IA-08 → CP6-D, IA-10 → CP2/CP6 |
 | CP2-A | IN PROGRESS. Mobbin re-checked 2026-11-09: HTTP 403 bot block. **DELEGATED DECISION:** visual evidence from official Shopify/Square/Wix help-center screenshots, same PASS checklist (CP2-A §8) |
+
+## 2026-11-09 — CP4, CP5 COMPLETE (delegated decision)
+
+- [CP4 Motion and Feedback](planning/CP4-MOTION-AND-FEEDBACK.md): reuse existing route/dialog/button motion; no toast system; page status line (`role="status"`), form error summary and alerts (`role="alert"`); focus rules; writes pessimistic. IA-08 decided: stay on editor after a successful edit.
+- [CP5 Data and Mutation States](planning/CP5-DATA-AND-MUTATION-STATES.md): private query keys `['employee','tour-products']`, `['employee','inventory']`; editor reads from the Employee list (no new endpoint); read and write state machines for all status codes; UNKNOWN outcome handling (no auto-resend for POSTs, PUT re-send allowed); Theme-switch keeps hidden price values; dirty guard.
 
 ## 2026-11-09 — CP3 COMPLETE (delegated decision)
 
@@ -49,7 +54,7 @@
 | [historical frontend PR #7](https://github.com/WonhoOne/frontend/pull/7) | reference: Customer implementation CP0–CP9 plan |
 | [closed frontend PR #44](https://github.com/WonhoOne/frontend/pull/44) | **CLOSED, NOT MERGED, NOT A CURRENT SPEC** |
 | P0 replacement planning PR | [Frontend PR #45 — P0 planning program](https://github.com/WonhoOne/frontend/pull/45), **MERGED 2026-10-13** |
-| Employee detailed planning CP0–CP11 | **CP0–CP3 COMPLETE**; CP4 NEXT |
+| Employee detailed planning CP0–CP11 | **CP0–CP5 COMPLETE**; CP6-0 NEXT |
 | CP0-A PR branch | [PR #46 — Frontend runtime and reuse audit](https://github.com/WonhoOne/frontend/pull/46), **MERGED to main 2026-11-09** |
 | CP0-B stacked branch | [PR #47 — Backend contract audit](https://github.com/WonhoOne/frontend/pull/47), **MERGED to main 2026-11-09** |
 | CP0-C stacked PR | [PR #48 — Scope/device/demo gate](https://github.com/WonhoOne/frontend/pull/48), **MERGED to main 2026-11-09** |
@@ -72,8 +77,8 @@
 | CP2-A — reference screen and flow audit | `PASS (2026-11-09)` | [CP2-A provider reference evidence](planning/CP2-A-REFERENCE-EVIDENCE-REGISTER.md) compares official Shopify/Wix/Square documented Product/Inventory interactions; actual Mobbin screenshots not accessible/viewed, so **NO CP2-A PASS** |
 | CP2-B — visual direction | `COMPLETE (2026-11-09, delegated decision)` | [CP2-B Visual Direction](planning/CP2-B-VISUAL-DIRECTION.md) |
 | CP3 — component/design-system reuse | `COMPLETE (2026-11-09, delegated decision)` | [CP3 Component Reuse and Contracts](planning/CP3-COMPONENT-REUSE-AND-CONTRACTS.md) |
-| CP4 — operational motion/feedback | `NOT STARTED` | No motion contract |
-| CP5 — data/mutation UI state | `NOT STARTED` | No state-machine evidence |
+| CP4 — operational motion/feedback | `COMPLETE (2026-11-09, delegated decision)` | [CP4 Motion and Feedback](planning/CP4-MOTION-AND-FEEDBACK.md) |
+| CP5 — data/mutation UI state | `COMPLETE (2026-11-09, delegated decision)` | [CP5 Data and Mutation States](planning/CP5-DATA-AND-MUTATION-STATES.md) |
 | CP6 — screens, cross-screen/contract/readiness audits | `NOT STARTED` | No Employee screen specs |
 | CP7 — implementation architecture | `NOT STARTED` | No design against existing modules |
 | CP8 — API/data UX | `NOT STARTED` | No final query/mutation policy |
@@ -134,7 +139,7 @@
 1. **RESOLVED DEC-C01:** A — desktop/PC-only (owner, 2026-10-13).
 2. **RESOLVED CP1 IA:** IA-01..IA-05, IA-07 (delegated decision, 2026-11-09). IA-08 edit-success destination → CP6-D.
 3. **RESOLVED CP2-B:** visual direction and save placement (sticky bottom action bar).
-4. CP5/CP8: ambiguous POST outcomes, invalid API responses, concurrent stock additions, PUT Theme 409; Backend is final authority.
+4. **RESOLVED CP5:** ambiguous POST outcomes, invalid responses, concurrent stock additions, PUT Theme 409 (CP8 refines DTO mapping only).
 5. DEC-C03: demo DB and Employee account provisioning — Backend/demo operator; checked again in W3/W5.
 
 ## How to continue in a fresh chat
