@@ -45,6 +45,12 @@
   font-weight: var(--mw-font-weight-medium);
 }
 
+/* CP9 A11: 상품명 링크는 accent(3.9:1) 대신 ink로 대비 기준을 맞춘다. 밑줄로 링크임을 유지한다. */
+a.name:link,
+a.name:visited {
+  color: var(--mw-ink);
+}
+
 .meta {
   display: block;
   margin-block-start: var(--mw-space-1);

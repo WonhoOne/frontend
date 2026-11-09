@@ -16,8 +16,8 @@
 | Page heading | `heading-lg` (32px at ≥1024px) for page H1; `heading-sm` (20px) for section titles. No display sizes. |
 | Body | Table cells and form inputs `body-md` (16px); secondary meta `body-sm` (14px), color `--mw-text-secondary`. |
 | Surfaces | Page background `--mw-canvas`; content in `--mw-surface-elevated` cards with `--mw-border-subtle` and `--mw-radius-md`; elevation only `--mw-elevation-1`. |
-| Primary action | Existing charcoal primary `Button` (Customer CTA rule). One primary action per view. |
-| Accent | Brass `--mw-accent` only for focus ring and current-nav indicator. Never as a fill for large areas. |
+| Primary action | Existing primary `Button` style — brass accent fill with dark text, as implemented in `Button.module.css` (corrected 2026-11-09 in E-PR5: an earlier draft said charcoal, which did not match the code). One primary action per view. |
+| Accent | Brass `--mw-accent` for the primary button fill (existing Button), focus ring and current-nav indicator. Never as a fill for large areas. |
 | Theme color | Theme accents (`--mw-theme-*`) only as an 8px dot **beside the Theme title text**. State is never color-only. |
 | Chrome | Persistent **top bar** (not a sidebar), separate from Customer header. |
 | Width | `--mw-container-main` (1280px) with desktop `--mw-page-gutter`; editor form column max `--mw-container-reading` (760px). |

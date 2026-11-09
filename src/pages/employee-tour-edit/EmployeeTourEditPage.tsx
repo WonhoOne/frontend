@@ -45,7 +45,9 @@ function ProductNotFound() {
         title="상품을 찾을 수 없습니다"
       />
       <p className={styles.text}>목록에서 다시 선택해 주세요.</p>
-      <TextLink to={employeeRoutePaths.tours}>여행상품 목록으로</TextLink>
+      <TextLink className={styles.notFoundLink ?? ''} to={employeeRoutePaths.tours}>
+        여행상품 목록으로
+      </TextLink>
     </PageContainer>
   );
 }

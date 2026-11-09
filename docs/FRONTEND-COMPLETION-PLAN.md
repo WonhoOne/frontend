@@ -70,6 +70,7 @@ Frontend는 아래 **D-A, D-B, D-C가 모두 충족될 때 완료**다. 각 항�
 | D-A3 | Voice B9-C/B9-D PASS, Voice가 Reservation을 자동 제출하지 않음 | ✅ |
 | D-A4 | Route lazy splitting 적용, production build에 >500 kB chunk 경고 없음 (또는 원인과 수용 사유 문서화) | ⬜ |
 | D-A5 | Master Plan §8 기준: 150줄 이상 non-Voice Page/Feature 파일에 WHY/CONTRACT/INVARIANT 중심 한국어 설명 주석 | ⬜ |
+| D-A7 | 공용 `TextLink` 대비 3.9:1 → 4.5:1 이상 (E-PR5에서 발견, Customer 화면 영향) | ⬜ |
 | D-A6 | NFR-04/05 Frontend 관점 측정 결과 기록 (통합 시나리오 성공 수, 주요 요청 응답시간). NFR-01은 Voice 소유자 근거를 링크 | ⬜ |
 
 Voice 디렉터리(`src/integrations/voice`, `src/features/voice-bridge`)는 이한결 소유 범위이므로 D-A5 주석 보강 대상에서 제외한다.
@@ -78,13 +79,13 @@ Voice 디렉터리(`src/integrations/voice`, `src/features/voice-bridge`)는 이
 
 | ID | 기준 | 현재 |
 | --- | --- | --- |
-| D-B1 | Employee CP0–CP11이 각 output gate를 통과하고 main에 머지됨 | ✅ (P1-5 PR 머지 시) |
+| D-B1 | Employee CP0–CP11이 각 output gate를 통과하고 main에 머지됨 | ✅ #45–#56 |
 | D-B2 | Employee 로그인 + 역할 구분: EMPLOYEE는 Employee 영역에 진입, CUSTOMER/비로그인은 차단, 401/403 복구 | ✅ E-PR1 (#57) |
 | D-B3 | TourProduct 목록 / 생성 / 수정: Theme별 허용 Style 전체의 KRW 가격, 409 `TOUR_PRODUCT_THEME_LOCKED` 처리 | ✅ E-PR2 + E-PR3 (real Backend 409 포함) |
 | D-B4 | Inventory 조회 + 양수 수량 추가: 추가는 delta, 불확실한 POST 결과에서 자동 재시도 없음 | ✅ E-PR4 |
 | D-B5 | Employee 화면이 Customer 전용 부작용(Customer header, Voice, Previous Trips)을 띄우지 않음 | ✅ E-PR1 (#57) |
-| D-B6 | Unit/Component 테스트 + Mock/Real parity + CI의 Real Backend/MySQL Employee 여정 PASS | ⬜ |
-| D-B7 | CP0-C에서 결정한 지원 범위(PC 전용)의 키보드/포커스/줌 접근성 확인 | ⬜ |
+| D-B6 | Unit/Component 테스트 + Mock/Real parity + CI의 Real Backend/MySQL Employee 여정 PASS | ✅ EJ01–EJ10 mock 10/10, EJ01–EJ06 real 6/6 |
+| D-B7 | CP0-C에서 결정한 지원 범위(PC 전용)의 키보드/포커스/줌 접근성 확인 | ✅ CP9 A1–A13, L1–L4 (E-PR5) |
 
 ### D-C. 제출 기준선 (Release / Submission)
 
@@ -166,7 +167,7 @@ CP / 구현 단위 1개
 | W0 | COMPLETE | [PR #52](https://github.com/WonhoOne/frontend/pull/52) merged | 2026-11-09 |
 | W1 | COMPLETE | #46–#51 merged in order; delegated decisions recorded in Employee ledger (W1 closeout PR) | 2026-11-09 |
 | W2 | COMPLETE | P1 CP0–CP11 PASS: #54, #55, P1-5 PR | 2026-11-09 |
-| W3 | IN PROGRESS | E-PR1 (#57) merged; E-PR2–E-PR4 in review; E-PR5 next | 2026-11-09 |
+| W3 | COMPLETE (on merge of #59, #60 and E-PR5) | E-PR1 #57, E-PR2 #58 merged; release gate met — [verification](employee-console/planning/audits/E-PR5-CP9-CP10-VERIFICATION.md) | 2026-11-09 |
 | W4 | NOT STARTED | — | — |
 | W5 | NOT STARTED | — | — |
 

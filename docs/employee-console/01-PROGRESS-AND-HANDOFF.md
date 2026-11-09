@@ -1,10 +1,10 @@
 # Employee Console — Progress Ledger and Next-Session Handoff
 
 > Updated: 2026-11-09
-> Document phase: **P2 — implementation (E-PR1–E-PR4 done; E-PR5 QA closure next)**
+> Document phase: **P2 COMPLETE — Employee release gate met (E-PR5)**
 > Status: **P1 COMPLETE — CP0–CP11 PASS (2026-11-09). P2 implementation authorized (CP11, delegated decision).**
 > P1 checkpoint progress: **12 / 12 main CPs COMPLETE**
-> Next action: **E-PR5 Employee QA closure** per [CP11 §3](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md).
+> Next action: **Employee Console complete.** Remaining Frontend work continues in [Completion Plan](../FRONTEND-COMPLETION-PLAN.md) W4/W5 (Customer completion items, release freeze, demo account DEC-C03).
 > Execution mode: owner delegated execution on 2026-11-09 — see [Frontend Completion Plan](../FRONTEND-COMPLETION-PLAN.md) §5 for what the agent decides and where it stops.
 
 ## 2026-11-09 — W1 closeout and delegated decisions
@@ -17,6 +17,13 @@
 | CP1-A | COMPLETE. Its open IA items were answered in CP1-B |
 | CP1-B | COMPLETE. **IA-01..IA-05, IA-07 APPROVED by DELEGATED DECISION 2026-11-09**: `/employee/login` on shared login API; Products list as landing, no dashboard; two primary areas (여행상품 / 재고 관리); addressable `/employee/tours`, `/employee/tours/new`, `/employee/tours/:tourId/edit`; stock add inside `/employee/inventory`; return to list after create. IA-08 → CP6-D, IA-10 → CP2/CP6 |
 | CP2-A | IN PROGRESS. Mobbin re-checked 2026-11-09: HTTP 403 bot block. **DELEGATED DECISION:** visual evidence from official Shopify/Square/Wix help-center screenshots, same PASS checklist (CP2-A §8) |
+
+## 2026-11-09 — P2 E-PR5 QA closure — Employee release gate MET
+
+- [Verification report](planning/audits/E-PR5-CP9-CP10-VERIFICATION.md): EJ01–EJ10 browser 10/10, EJ01–EJ06 real Backend 6/6, NFR-02/03 PASS, CP9 A1–A13 and L1–L4 PASS at 1280 / 1024 / 200% zoom.
+- Fixed in E-PR5: header count and link contrast on Employee screens, top-bar labels breaking at 200% zoom, create link now matches the primary Button (CP2-B corrected: primary is brass in code).
+- Added `employee-keyboard.spec.ts` (EJ10 keyboard-only, skip link, reduced motion).
+- Open outside Employee scope: shared `TextLink` contrast 3.9:1 on Customer screens → Completion Plan W4.
 
 ## 2026-11-09 — P2 E-PR4 Inventory
 
@@ -107,7 +114,7 @@
 | CP1-A stacked PR | [PR #49 — Employee task flows](https://github.com/WonhoOne/frontend/pull/49), **MERGED to main 2026-11-09** |
 | CP1-B stacked PR | [PR #50 — Information architecture & role-safe routes](https://github.com/WonhoOne/frontend/pull/50), **MERGED to main 2026-11-09** |
 | CP2-A stacked PR | [PR #51 — Provider reference comparison (partial)](https://github.com/WonhoOne/frontend/pull/51), **MERGED to main 2026-11-09** |
-| Employee implementation | **FEATURE-COMPLETE — access, products, inventory; QA closure (E-PR5) next** |
+| Employee implementation | **COMPLETE — access, products, inventory, QA closure** |
 
 ## Stage tracker
 
@@ -131,7 +138,7 @@
 | CP9 — approved device scope + a11y | `COMPLETE (2026-11-09)` | [CP9](planning/CP9-ACCESSIBILITY-AND-DEVICE-SCOPE.md) |
 | CP10 — Employee QA acceptance | `COMPLETE (2026-11-09)` | [CP10](planning/CP10-QA-ACCEPTANCE.md) |
 | CP11 — final audit and implementation handoff | `COMPLETE — P1 FINAL AUDIT PASS (2026-11-09)` | [CP11](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md) |
-| P2 coding | `IN PROGRESS — E-PR1–E-PR4 done; E-PR5 next` | [CP11 §3](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md) |
+| P2 coding | `COMPLETE — E-PR1–E-PR5; release gate met` | [verification](planning/audits/E-PR5-CP9-CP10-VERIFICATION.md) |
 
 ## CP0-A verified key findings (2026-10-13, documentation-only)
 
