@@ -1,6 +1,6 @@
 # Employee Console — Durable Planning Entry Point
 
-> Status: **P1 IN PROGRESS — CP0-A/B/C and CP1-A/B COMPLETE (merged 2026-11-09); CP2-A IN PROGRESS** (not implementation-ready)
+> Status: **P1 IN PROGRESS — CP0–CP5 COMPLETE; CP6 next** (not implementation-ready)
 > Last reviewed: 2026-11-09 — execution delegated by owner, see [Frontend Completion Plan](../FRONTEND-COMPLETION-PLAN.md)
 > Owner: 김태우; source repo: WonhoOne/frontend
 > Shared contract: latest approved WonhoOne/docs/main; frontend development policy: ../../AGENTS.md
@@ -20,15 +20,18 @@
 - [CP0-C — Scope, device support and demo gate](planning/CP0-C-SCOPE-DEVICE-DEMO-GATE.md): owner **approved A PC-only on 2026-10-13**; required scope and course final dates; **Status: COMPLETE (merged #48), CP0 frozen.**
 - [CP1-A — Operator tasks and end-to-end flows](planning/CP1-A-OPERATOR-TASK-FLOWS.md): 7 Employee tasks/flowcharts and acceptance scenarios, **Status: COMPLETE (merged #49).**
 - [CP1-B — Proposed IA and role-safe navigation](planning/CP1-B-INFORMATION-ARCHITECTURE.md): source-backed alternative comparison, proposed Employee login/Products/Inventory navigation and URL table. **Status: COMPLETE (merged #50); IA-01..05, IA-07 approved by delegated decision 2026-11-09**, no implemented routes yet.
-- [CP2-A — Source-grounded reference research and Mobbin visual gate](planning/CP2-A-REFERENCE-EVIDENCE-REGISTER.md): Shopify/Wix/Square official interaction documentation compared for Product/Inventory. **PARTIAL / NO VISUAL PASS:** Mobbin blocked (HTTP 403, re-checked 2026-11-09); visual evidence now comes from official provider screenshots (§8). **IN PROGRESS.**
-- **Next action:** finish CP2-A visual evidence cards (official provider screenshots, CP2-A §8), mark CP2-A PASS, then CP2-B. CP0 is frozen and CP1-B IA-01..05/07 are approved; do not reopen them. Progress ledger is authoritative.
+- [CP2-A — Source-grounded reference research and Mobbin visual gate](planning/CP2-A-REFERENCE-EVIDENCE-REGISTER.md): Shopify/Wix/Square official interaction documentation compared for Product/Inventory. **PARTIAL / NO VISUAL PASS:** **PASS (2026-11-09)**: visual evidence cards V1–V6 from official Shopify/Wix/Square screenshots and live previews (Mobbin blocked, §8).
+- [CP2-B — Visual direction](planning/CP2-B-VISUAL-DIRECTION.md): same tokens, operational composition; top bar chrome; list/editor/inventory/login compositions. **Status: COMPLETE (delegated decision 2026-11-09).**
+- [CP3 — Component reuse and contracts](planning/CP3-COMPONENT-REUSE-AND-CONTRACTS.md): verified reuse matrix, 3 shared additions, Employee-only component contracts. **Status: COMPLETE (delegated decision 2026-11-09).**
+- [CP4 — Motion and feedback](planning/CP4-MOTION-AND-FEEDBACK.md) and [CP5 — Data and mutation states](planning/CP5-DATA-AND-MUTATION-STATES.md). **Status: COMPLETE (delegated decision 2026-11-09).**
+- **Next action:** CP6-0 screen inventory, then CP6-A … CP6-F. CP0–CP5 decisions are closed; do not reopen them. Progress ledger is authoritative.
 
 ## What is and is not completed
 
 | Program | Status | Meaning |
 | --- | --- | --- |
 | P0 — Plan the planning | **MERGED** | [PR #45](https://github.com/WonhoOne/frontend/pull/45), merged 2026-10-13 |
-| P1 — Detailed Employee design (CP0–CP11) | **IN PROGRESS — CP0, CP1 complete; CP2-A in progress** | See [progress ledger](01-PROGRESS-AND-HANDOFF.md) for per-CP state |
+| P1 — Detailed Employee design (CP0–CP11) | **IN PROGRESS — CP0–CP5 complete** | See [progress ledger](01-PROGRESS-AND-HANDOFF.md) for per-CP state |
 | P2 — Employee Console code | **NOT STARTED** | No employee route/page/API runtime implementation claimed |
 
 The earlier [frontend PR #44](https://github.com/WonhoOne/frontend/pull/44) is **closed unmerged**. Its premature Employee implementation plan is **not** the current approved specification.
@@ -37,7 +40,7 @@ The earlier [frontend PR #44](https://github.com/WonhoOne/frontend/pull/44) is *
 
 > Read the latest WonhoOne/frontend main branch and this folder's README, 00-PLANNING-PROGRAM.md, 01-PROGRESS-AND-HANDOFF.md, and references/00-MOBBIN-DISCOVERY.md. Verify P0 approval/merge and latest WonhoOne/docs/main first. Then execute **only** the progress ledger's next_checkpoint, using current code/contract evidence and the program's output gate. Do not implement any feature, invent a missing contract, or mark CP as complete without creating a durable checkpoint artifact/commit and updating the ledger.
 
-**Current next action:** CP2-A visual evidence cards (official provider screenshots, CP2-A §8), then CP2-B. CP0 frozen; CP1-B IA-01..05/07 approved (delegated decision 2026-11-09).
+**Current next action:** CP6-0 screen inventory and screen specs. CP0 frozen; CP1-B IA-01..05/07 approved (delegated decision 2026-11-09).
 
 ## Progress bookkeeping
 

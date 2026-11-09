@@ -1,6 +1,6 @@
 # CP2-A — Real-Product Reference Research: Evidence Register and Visual-Access Blocker
 
-> **Status: IN PROGRESS — partial register merged via [PR #51](https://github.com/WonhoOne/frontend/pull/51) on 2026-11-09. Visual evidence still required for PASS; Mobbin re-checked 2026-11-09 and blocked (HTTP 403), substitute visual source approved by delegated decision (§8).** Not an approved design direction and not permission to start CP2-B.
+> **Status: PASS (2026-11-09)** — visual evidence cards V1–V6 in §9 from official provider screenshots/live previews (substitute source per §8; Mobbin blocked by HTTP 403). Partial register first merged via [PR #51](https://github.com/WonhoOne/frontend/pull/51). Not itself a design direction; CP2-B decides visuals.
 > Date: 2026-10-13 (Asia/Seoul). Owner: 김태우 / WonhoOne/frontend.
 > Stage chain: P0 #45 merged; CP0-A #46 → CP0-B #47 → CP0-C #48 → CP1-A #49 → CP1-B #50 are **unmerged stacked PRs** at check; this CP2-A branch is based on CP1-B branch. Retarget review PRs to main one at a time after predecessor merge.
 > Confirmed scope: **A — Employee PC-only** (2026-10-13). Mobile/tablet layout acceptance not required.
@@ -145,3 +145,95 @@ This source comparison is a **useful partial output**, not a substitute for actu
 **Why:** the screenshots are first-party images of the real admin products; they are reachable without bypassing access controls; the deadline (2026-11-23) does not allow waiting for a Mobbin route that is blocked.
 
 **Next:** complete the visual evidence cards under this protocol (W2, first unit), then mark CP2-A PASS and start CP2-B.
+
+## 9. Visual evidence cards (2026-11-09)
+
+All cards below were **viewed directly in a browser on 2026-11-09**. `OBSERVED` = visible in the image or live preview. `INFERRED` = our reasoning, not visible. No image is copied into this repository; links point to the first-party source.
+
+### V1 — Shopify admin, resource Index template (Product list)
+
+- Source: [shopify.dev — App Home patterns → Templates → Index](https://shopify.dev/docs/api/app-home/latest/patterns/templates/resource-index), live rendered "Preview" of the example "Display an index table with filters, search, and bulk actions".
+- OBSERVED:
+  - Page heading ("Puzzles") at top-left; page actions at top-right: two secondary buttons (Export, Import) and one dark primary button (Create).
+  - Empty-state card: illustration, short heading, one-line description, `Learn more` + primary `Create` button.
+  - Table inside a bordered card. Columns: name (with small thumbnail, name is a link), a numeric column right-aligned (Pieces), Created (relative date), Status (colored badge: Active / Draft).
+  - One primary action per page; row navigation is the resource name link, not a separate Edit button.
+- INFERRED: a single primary "create" action at page top-right and name-as-link rows suit our Product list (IA-04). Bulk actions, filters and thumbnails have no approved contract or need for ≤ tens of products.
+
+### V2 — Wix Stores dashboard, Products list
+
+- Source: [Wix Help — Customizing the Product List](https://support.wix.com/en/article/wix-stores-customizing-the-product-list-and-saving-your-view), screenshot "product list page in the dashboard".
+- OBSERVED:
+  - Heading "Products" followed by a muted total count ("255").
+  - Top-right: secondary "More Actions" dropdown and a filled primary "+ New Product" button.
+  - Toolbar row: saved-view selector, Filter, export, column settings, search box.
+  - Table columns: checkbox, thumbnail, Name, Type, Price, Inventory, Ribbon, row overflow menu (`…`).
+- INFERRED: two independent providers place the create action top-right as the one filled primary button; a visible item count next to the title is cheap and useful. Saved views, ribbons, bulk checkboxes are out of scope.
+
+### V3 — Shopify admin, Details template (Product edit)
+
+- Source: [shopify.dev — Templates → Details](https://shopify.dev/docs/api/app-home/latest/patterns/templates/details), live rendered "Preview" of "Present a product details view with editable fields and sidebar".
+- OBSERVED:
+  - Breadcrumb link to the collection ("Puzzles") above the title; resource name as the page heading.
+  - Top-right page actions: `Duplicate` (secondary) and `Delete` (destructive, red text).
+  - Two columns: main column with a section heading ("Puzzle information") and a card of stacked labeled fields (name, description textarea, price, URL), each with a one-line help text under the field; right sidebar with a summary card (status badge) and notes.
+  - No always-visible Save button in the form. The page text states the form uses `data-save-bar`, which "displays save/discard controls when the form has unsaved changes".
+- INFERRED: label-above-field + help-text-below is the expected admin form grammar; dirty-state save/discard is first-class, which matches CP1-A/CP1-B dirty-form recovery. Delete/Duplicate are rejected (no approved API).
+
+### V4 — Square Dashboard, Edit item (Product create/edit)
+
+- Source: [Square Support — Create and edit items](https://squareup.com/help/us/en/article/8335-create-and-edit-items), image "Edit item" (dashboard screenshot).
+- OBSERVED:
+  - Full-page editor with its own top bar: close `×` at top-left, `Actions` dropdown and a filled blue `Save` button at top-right; the global dashboard navigation is not shown.
+  - First field is an "Item type" selector; then Name, Kitchen nickname, Price (greyed out with the note "You can change the price for each variation of this item below in Variations"), description textarea, image tiles.
+  - Right column cards: Categories, Locations and channels.
+- INFERRED: a type selector at the top that changes which price inputs apply is the closest analogue to our Theme → allowed TourStyle price set (BR-17/21). An always-visible Save in a fixed editor header is the alternative to V3's dirty-only save bar; CP2-B/CP6-C must choose one.
+
+### V5 — Wix Stores dashboard, Inventory tab (counter-example)
+
+- Source: [Wix Help — Updating Inventory Levels](https://support.wix.com/en/article/wix-stores-updating-inventory), screenshot "inventory tab … where you mark inventory levels".
+- OBSERVED:
+  - Heading "Inventory" with count; location selector; filter and search toolbar.
+  - Table columns: checkbox, thumbnail, Name, SKU, Inventory, Category, overflow menu.
+  - The Inventory cell is an inline editable field containing the **current quantity** (e.g. `0`), or an "In stock" dropdown.
+- INFERRED: editing the current number in place means "set the new total". **REJECTED** for us: BR-24/25 and `POST /employee/inventory` only add a positive delta.
+
+### V6 — Square Dashboard, "Stock received" popover (Inventory add)
+
+- Source: [Square Support — View, receive, and adjust inventory](https://squareup.com/help/us/en/article/6110-manage-inventory-with-the-retail-pos-app), image "Manage inventory" (stock update popover).
+- OBSERVED:
+  - Inventory table per location with columns Committed / Available / On hand; the On hand cell opens a popover anchored to that row.
+  - Popover content top-to-bottom: "Stock action" select set to "Stock received"; "Current stock 35" (read-only); "Received" numeric input (focused, `0`); "New total 35" (read-only preview); Unit cost; Vendor; `Cancel` and filled `Done` buttons.
+- INFERRED: this is the exact semantic our contract needs — current balance shown, **amount to add** entered, resulting total previewed, explicit confirm. Stock-action selector, unit cost and vendor are out of scope (only one action exists for us).
+
+### Coverage against §6 checklist
+
+| Task | Viewed providers | Count |
+| --- | --- | --- |
+| Product list | V1 Shopify, V2 Wix | 2 ✅ |
+| Product create/edit | V3 Shopify, V4 Square | 2 ✅ |
+| Inventory read/add | V6 Square (adopt), V5 Wix (reject) | 2 ✅ |
+
+### Patterns carried into CP2-B (adopt / reject)
+
+| Pattern | Evidence | Decision |
+| --- | --- | --- |
+| Title (+ count) left, one filled primary create action right | V1, V2 | **ADOPT** for Product list |
+| Name-as-link row navigation; numbers right-aligned; status as badge | V1 | **ADOPT** (no status field exists → no badge for Product; use Theme label instead) |
+| Breadcrumb back to list above editor title | V3 | **ADOPT** |
+| Labeled field + one-line help text under field, grouped in section cards | V3, V4 | **ADOPT** |
+| Type selector first, dependent price inputs below | V4 (+ BR-17/21) | **ADOPT** as Theme → allowed TourStyle price inputs |
+| Save placement: dirty-only save bar (V3) vs fixed editor header Save (V4) | V3, V4 | **DECIDE IN CP2-B** |
+| Inline overwrite of current stock in table cell | V5 | **REJECT** (contract is additive) |
+| Row-anchored "current → add → new total" with Cancel / confirm | V6 | **ADOPT** for stock add (inline vs dialog finalised in CP6-E) |
+| Bulk select, filters, saved views, thumbnails, delete/duplicate, unit cost/vendor | V1–V6 | **REJECT** (no approved API or need) |
+
+## 10. CP2-A gate (2026-11-09)
+
+- [x] ≥ 2 viewed providers per task (§9 coverage table)
+- [x] Evidence cards separate OBSERVED from INFERRED, with first-party source links and view date
+- [x] Contract conflicts rejected explicitly (V5 overwrite, bulk/delete features)
+- [x] CP1-B IA-01..IA-05 approved and #46–#50 merged (W1 closeout)
+- [x] Substitute source decision recorded (§8)
+
+**CP2-A: PASS (2026-11-09).** Next: **CP2-B — Employee Console visual direction**, using §9 adopt/reject table and the current Customer design tokens.
