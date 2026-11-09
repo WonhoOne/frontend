@@ -28,7 +28,7 @@ There is **no toast system**, and CP4 does not add one. Feedback stays where the
 
 | Event | Channel | Accessibility |
 | --- | --- | --- |
-| Product created (201) | Navigate to list; **page status line** under the H1: "‘{상품명}’ 여행상품을 만들었습니다."; new row highlighted | Status line in `role="status"` (polite); focus moves to the H1 by `RouteFocusManager` |
+| Product created (201) | Navigate to list; **page status line** under the H1: "‘{상품명}’ 여행상품을 만들었습니다."; new row highlighted | Status line in `role="status"` (polite); focus moves to `<main>` by `RouteFocusManager` |
 | Product updated (200) | Stay on editor (IA-08 decision: stay, so the employee can verify the saved values; screen detail in CP6-D); status line above the form: "변경 사항을 저장했습니다."; `저장` returns to disabled (not dirty) | `role="status"` |
 | Stock added (200) | Dialog closes; row shows the **server** quantity; row highlight; status line under the H1: "{품목} 재고를 {n}개 추가했습니다. 현재 {total}개" | `role="status"`; focus returns to that row's `재고 추가` button (Dialog default) |
 | Field validation (client or 422) | Inline `error` on each field (`TextField`/`SelectField`/`TextAreaField`) **plus** an error summary box at the top of the form listing each problem as a link to its field | Summary gets focus on failed submit; `role="alert"` |
@@ -43,10 +43,10 @@ Status lines are cleared on the next navigation or the next submit. Only one sta
 
 ## 4. Focus rules
 
-1. Route change: focus H1 (existing `RouteFocusManager`).
+1. Route change: focus the `<main id="main-content">` landmark (existing `RouteFocusManager`; corrected 2026-11-09 from "H1" after reading the source).
 2. Failed submit: focus the error summary (or the single alert for 409 / unknown result).
 3. Dialog close: focus returns to the opener button (existing `Dialog`).
-4. After create → list: H1 receives focus; the status line is announced politely.
+4. After create → list: `<main>` receives focus (route change); the status line is announced politely.
 5. Never move focus on background refresh.
 
 ## 5. Interaction timing

@@ -50,3 +50,34 @@ export const routeBuilders = {
     return `/reservations/${encodePathSegment(reservationId)}`;
   },
 } as const;
+
+/**
+ * Employee Console route 정의다 (CP1-B IA-01/IA-04/IA-05 승인 경로).
+ *
+ * CONTRACT: Frontend client route일 뿐 Backend endpoint가 아니다.
+ * 접근 권한의 최종 판단은 Backend의 EMPLOYEE role 검사가 한다.
+ */
+export const employeeRoutePaths = {
+  root: '/employee',
+  login: '/employee/login',
+  tours: '/employee/tours',
+  tourCreate: '/employee/tours/new',
+  inventory: '/employee/inventory',
+} as const;
+
+export const employeeRoutePatterns = {
+  tourEdit: '/employee/tours/:tourId/edit',
+} as const;
+
+export const employeeRouteBuilders = {
+  tourEdit(tourId: string) {
+    return `/employee/tours/${encodePathSegment(tourId)}/edit`;
+  },
+  login(returnTo: string | null) {
+    if (returnTo === null) {
+      return employeeRoutePaths.login;
+    }
+
+    return `${employeeRoutePaths.login}?${new URLSearchParams({ returnTo }).toString()}`;
+  },
+} as const;

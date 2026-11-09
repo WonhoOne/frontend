@@ -1,9 +1,15 @@
-import type { RouteObject } from 'react-router';
+import { Navigate, type RouteObject } from 'react-router';
 
 import { AppRouteLayout, type AppRouteHandle } from '@/app/router/AppRouteLayout';
+import { EmployeeAccessBoundary } from '@/app/router/EmployeeAccessBoundary';
+import { EmployeeRouteLayout } from '@/app/router/EmployeeRouteLayout';
 import { NotFound } from '@/app/router/NotFound';
-import { routePaths, routePatterns, routeTitles } from '@/app/router/paths';
+import { employeeRoutePaths, routePaths, routePatterns, routeTitles } from '@/app/router/paths';
 import { ConfigurePage } from '@/pages/configure/ConfigurePage';
+import { EmployeeInventoryPage } from '@/pages/employee-inventory/EmployeeInventoryPage';
+import { EmployeeLoginPage } from '@/pages/employee-login/EmployeeLoginPage';
+import { EmployeeNotFound } from '@/pages/employee-status/EmployeeNotFound';
+import { EmployeeToursPage } from '@/pages/employee-tours/EmployeeToursPage';
 import { HomePage } from '@/pages/home/HomePage';
 import { LoginPage } from '@/pages/login/LoginPage';
 import { MyTripsPage } from '@/pages/my-trips/MyTripsPage';
@@ -19,12 +25,31 @@ function handle(chrome: AppRouteHandle['chrome'], title: string): AppRouteHandle
 }
 
 /**
- * Customer route table과 route-level chrome metadata의 단일 정의 지점이다.
+ * Customer route table과 route-level chrome metadata, 그리고 Employee route table의
+ * 단일 정의 지점이다.
  *
  * CONTRACT: 승인된 route path와 Page 조합만 정의한다.
  * loader, Backend 호출, Auth guard, Product data는 포함하지 않는다.
  */
 export const appRoutes: RouteObject[] = [
+  {
+    // CONTRACT: Employee 영역은 Customer layout의 형제다. Customer `*`가
+    // `/employee/*`를 가로채지 않도록 path로 먼저 분기한다 (CP7 A-1).
+    path: employeeRoutePaths.root,
+    element: <EmployeeRouteLayout />,
+    children: [
+      { index: true, element: <Navigate replace to={employeeRoutePaths.tours} /> },
+      { path: employeeRoutePaths.login, element: <EmployeeLoginPage /> },
+      {
+        element: <EmployeeAccessBoundary />,
+        children: [
+          { path: employeeRoutePaths.tours, element: <EmployeeToursPage /> },
+          { path: employeeRoutePaths.inventory, element: <EmployeeInventoryPage /> },
+          { path: '*', element: <EmployeeNotFound /> },
+        ],
+      },
+    ],
+  },
   {
     element: <AppRouteLayout />,
     children: [
