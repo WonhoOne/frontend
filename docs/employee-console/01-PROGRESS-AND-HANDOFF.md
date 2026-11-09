@@ -1,10 +1,10 @@
 # Employee Console — Progress Ledger and Next-Session Handoff
 
 > Updated: 2026-11-09
-> Document phase: **P2 — implementation (E-PR1 next)**
+> Document phase: **P2 — implementation (E-PR1 done, E-PR2 next)**
 > Status: **P1 COMPLETE — CP0–CP11 PASS (2026-11-09). P2 implementation authorized (CP11, delegated decision).**
 > P1 checkpoint progress: **12 / 12 main CPs COMPLETE**
-> Next action: **E-PR1 Foundation & access** per [CP11 §3](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md).
+> Next action: **E-PR2 Product list & create** per [CP11 §3](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md).
 > Execution mode: owner delegated execution on 2026-11-09 — see [Frontend Completion Plan](../FRONTEND-COMPLETION-PLAN.md) §5 for what the agent decides and where it stops.
 
 ## 2026-11-09 — W1 closeout and delegated decisions
@@ -17,6 +17,13 @@
 | CP1-A | COMPLETE. Its open IA items were answered in CP1-B |
 | CP1-B | COMPLETE. **IA-01..IA-05, IA-07 APPROVED by DELEGATED DECISION 2026-11-09**: `/employee/login` on shared login API; Products list as landing, no dashboard; two primary areas (여행상품 / 재고 관리); addressable `/employee/tours`, `/employee/tours/new`, `/employee/tours/:tourId/edit`; stock add inside `/employee/inventory`; return to list after create. IA-08 → CP6-D, IA-10 → CP2/CP6 |
 | CP2-A | IN PROGRESS. Mobbin re-checked 2026-11-09: HTTP 403 bot block. **DELEGATED DECISION:** visual evidence from official Shopify/Square/Wix help-center screenshots, same PASS checklist (CP2-A §8) |
+
+## 2026-11-09 — P2 E-PR1 Foundation & access
+
+- Role-aware `login(input, { expectedRole })`; identity change clears private caches (CP7 A-5); `isCustomerSession` in `GlobalHeader`, `PostLoginPreviousTripsSurface`, `MyTripsPage` (CP7 A-4). Customer login still rejects EMPLOYEE.
+- `/employee` route tree with `EmployeeRouteLayout`, `EmployeeAccessBoundary`, `EmployeeShell`, `EmployeeLoginPage`, access-denied and not-found states; `toSafeEmployeeReturnTo`. Product list and inventory pages are headings only until E-PR2/E-PR4.
+- Tests: unit/RTL (role login, identity change, Customer guards, 12 Employee route cases, 18 returnTo cases); browser EJ01, EJ06, EJ07 with `page.route` stubs; real Backend EJ01 + EJ06 with CI `EmployeeBootstrap` (disposable values).
+- Deviations from CP7/CP11 (recorded): Employee browser stubs use Playwright `page.route` like existing private-API E2E instead of extending the fake server; shared `formatKrw` / `SelectField` / `TextAreaField` / `useUnsavedChangesGuard` and `tourThemeTitle` move to E-PR2 where they are first used. CP4/E01 focus wording corrected: route change focuses `<main>` (actual `RouteFocusManager`).
 
 ## 2026-11-09 — CP7–CP11 COMPLETE, P1 FINAL AUDIT PASS
 
@@ -79,7 +86,7 @@
 | CP1-A stacked PR | [PR #49 — Employee task flows](https://github.com/WonhoOne/frontend/pull/49), **MERGED to main 2026-11-09** |
 | CP1-B stacked PR | [PR #50 — Information architecture & role-safe routes](https://github.com/WonhoOne/frontend/pull/50), **MERGED to main 2026-11-09** |
 | CP2-A stacked PR | [PR #51 — Provider reference comparison (partial)](https://github.com/WonhoOne/frontend/pull/51), **MERGED to main 2026-11-09** |
-| Employee implementation | **AUTHORIZED; E-PR1 next** |
+| Employee implementation | **IN PROGRESS — E-PR1 (access foundation) done** |
 
 ## Stage tracker
 
@@ -103,7 +110,7 @@
 | CP9 — approved device scope + a11y | `COMPLETE (2026-11-09)` | [CP9](planning/CP9-ACCESSIBILITY-AND-DEVICE-SCOPE.md) |
 | CP10 — Employee QA acceptance | `COMPLETE (2026-11-09)` | [CP10](planning/CP10-QA-ACCEPTANCE.md) |
 | CP11 — final audit and implementation handoff | `COMPLETE — P1 FINAL AUDIT PASS (2026-11-09)` | [CP11](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md) |
-| P2 coding | `AUTHORIZED — E-PR1 NEXT` | [CP11 §3](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md) |
+| P2 coding | `IN PROGRESS — E-PR1 done, E-PR2 next` | [CP11 §3](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md) |
 
 ## CP0-A verified key findings (2026-10-13, documentation-only)
 
