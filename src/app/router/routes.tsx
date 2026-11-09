@@ -9,6 +9,7 @@ import { ConfigurePage } from '@/pages/configure/ConfigurePage';
 import { EmployeeInventoryPage } from '@/pages/employee-inventory/EmployeeInventoryPage';
 import { EmployeeLoginPage } from '@/pages/employee-login/EmployeeLoginPage';
 import { EmployeeNotFound } from '@/pages/employee-status/EmployeeNotFound';
+import { EmployeeTourCreatePage } from '@/pages/employee-tour-create/EmployeeTourCreatePage';
 import { EmployeeToursPage } from '@/pages/employee-tours/EmployeeToursPage';
 import { HomePage } from '@/pages/home/HomePage';
 import { LoginPage } from '@/pages/login/LoginPage';
@@ -44,6 +45,7 @@ export const appRoutes: RouteObject[] = [
         element: <EmployeeAccessBoundary />,
         children: [
           { path: employeeRoutePaths.tours, element: <EmployeeToursPage /> },
+          { path: employeeRoutePaths.tourCreate, element: <EmployeeTourCreatePage /> },
           { path: employeeRoutePaths.inventory, element: <EmployeeInventoryPage /> },
           { path: '*', element: <EmployeeNotFound /> },
         ],

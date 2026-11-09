@@ -1,0 +1,15 @@
+.root {
+  position: sticky;
+  inset-block-end: 0;
+  z-index: var(--mw-z-sticky);
+  margin-block-start: var(--mw-space-8);
+  padding-block: var(--mw-space-4);
+  border-block-start: var(--mw-border-subtle);
+  background: var(--mw-canvas);
+}
+
+.inner {
+  display: flex;
+  gap: var(--mw-space-3);
+  justify-content: flex-end;
+}

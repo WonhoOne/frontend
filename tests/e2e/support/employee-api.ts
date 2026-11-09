@@ -49,3 +49,72 @@ export async function signInAsEmployee(page: Page, loginId = 'e2e-employee') {
   await page.getByLabel(/비밀번호/).fill('e2e-input-only');
   await page.getByRole('button', { name: '로그인' }).click();
 }
+
+interface StubTourProduct {
+  id: number;
+  theme: string;
+  name: string;
+  description: string;
+  availableStyles: string[];
+  stylePrices: Array<{ style: string; amount: number; currency: 'KRW' }>;
+}
+
+export const stubGolfProduct: StubTourProduct = {
+  id: 301,
+  theme: 'GOLF_CHALLENGE',
+  name: 'E2E Synthetic Golf',
+  description: 'Synthetic Employee E2E product.',
+  availableStyles: ['CLASSIC', 'GRAND', 'PREMIUM'],
+  stylePrices: [
+    { style: 'CLASSIC', amount: 1200000, currency: 'KRW' },
+    { style: 'GRAND', amount: 1800000, currency: 'KRW' },
+    { style: 'PREMIUM', amount: 2500000, currency: 'KRW' },
+  ],
+};
+
+/**
+ * Stateful Employee TourProduct API stub. Requires the Bearer token from the shipped
+ * login flow, mirrors REST v0.2 response shapes and records write bodies.
+ */
+export async function routeEmployeeTours(
+  page: Page,
+  initial: StubTourProduct[] = [stubGolfProduct],
+) {
+  const products = [...initial];
+  const writes: unknown[] = [];
+
+  await page.route('**/api/v1/employee/tours**', async (route) => {
+    const request = route.request();
+    expect(request.headers().authorization).toBe(`Bearer ${employeeToken}`);
+
+    if (request.method() === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(products),
+      });
+      return;
+    }
+
+    if (request.method() === 'POST') {
+      const body = request.postDataJSON() as Omit<StubTourProduct, 'id' | 'availableStyles'>;
+      writes.push(body);
+      const created: StubTourProduct = {
+        id: Math.max(300, ...products.map((product) => product.id)) + 1,
+        ...body,
+        availableStyles: body.stylePrices.map(({ style }) => style),
+      };
+      products.push(created);
+      await route.fulfill({
+        status: 201,
+        contentType: 'application/json',
+        body: JSON.stringify(created),
+      });
+      return;
+    }
+
+    await route.fallback();
+  });
+
+  return { products, writes };
+}

@@ -89,7 +89,7 @@ N/A.
 | Network / 5xx | Alert "로그인하지 못했습니다. 잠시 후 다시 시도해 주세요." Values kept |
 | Logged in as CUSTOMER (entering any `/employee/*`) | Permission state: H1 "직원 전용 화면입니다", text "현재 고객 계정으로 로그인되어 있습니다.", CTAs per §9 |
 | Employee API 403 while signed in as EMPLOYEE | Same permission state inside shell, text "이 작업을 할 권한이 없습니다." |
-| Arrived after session expiry | Notice (`role="status"`) "세션이 만료되어 다시 로그인해야 합니다." |
+| Session lost while signed in | In-place sticky banner (CP5 §3.5); after `다시 로그인` the login page shows the notice (`role="status"`) "세션이 만료되어 다시 로그인해야 합니다." |
 
 Login error copy never reveals whether the ID exists. Backend `message` text is never shown (stable `code` only).
 

@@ -60,6 +60,23 @@ describe('AuthProvider', () => {
     expect(localSet).not.toHaveBeenCalled();
   });
 
+  it('does not let the bootstrap overwrite a login that finished first', async () => {
+    const wrapper = ({ children }: PropsWithChildren) => (
+      <AuthProvider dataSource={createDataSource()}>{children}</AuthProvider>
+    );
+    const { result } = renderHook(() => useAuth(), { wrapper });
+
+    await act(() =>
+      result.current.login(
+        { loginId: 'synthetic', password: 'input-only' },
+        { expectedRole: 'CUSTOMER' },
+      ),
+    );
+    await act(() => new Promise((resolve) => window.setTimeout(resolve, 5)));
+
+    expect(result.current.state.status).toBe('authenticated');
+  });
+
   it('keeps bearer material out of public auth state after login', async () => {
     const dataSource = createDataSource();
     const wrapper = ({ children }: PropsWithChildren) => (

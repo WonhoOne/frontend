@@ -14,8 +14,10 @@ export type {
 export { OptionCard } from '@/shared/ui/OptionCard/OptionCard';
 export { PageContainer } from '@/shared/ui/PageContainer/PageContainer';
 export type { PageContainerVariant } from '@/shared/ui/PageContainer/PageContainer';
+export { SelectField } from '@/shared/ui/SelectField/SelectField';
 export { Skeleton } from '@/shared/ui/Skeleton/Skeleton';
 export type { SkeletonProps, SkeletonVariant } from '@/shared/ui/Skeleton/Skeleton';
+export { TextAreaField } from '@/shared/ui/TextAreaField/TextAreaField';
 export { TextField } from '@/shared/ui/TextField/TextField';
 export { TextLink } from '@/shared/ui/TextLink/TextLink';
 export type { TextLinkProps } from '@/shared/ui/TextLink/TextLink';

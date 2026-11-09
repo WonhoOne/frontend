@@ -1,0 +1,75 @@
+.card {
+  overflow-x: auto;
+  border: var(--mw-border-subtle);
+  border-radius: var(--mw-radius-md);
+  background: var(--mw-surface-elevated);
+  box-shadow: var(--mw-elevation-1);
+}
+
+.table {
+  inline-size: 100%;
+  border-collapse: collapse;
+}
+
+.caption {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.table th {
+  padding: var(--mw-space-3) var(--mw-space-5);
+  border-block-end: var(--mw-border-subtle);
+  font-size: var(--mw-font-size-label-sm);
+  font-weight: var(--mw-font-weight-semibold);
+  color: var(--mw-text-secondary);
+  text-align: start;
+}
+
+.table td {
+  min-block-size: 56px;
+  padding: var(--mw-space-4) var(--mw-space-5);
+  border-block-end: var(--mw-border-subtle);
+  vertical-align: top;
+}
+
+.table tbody tr:last-child td {
+  border-block-end: none;
+}
+
+.name {
+  display: block;
+  font-weight: var(--mw-font-weight-medium);
+}
+
+.meta {
+  display: block;
+  margin-block-start: var(--mw-space-1);
+  font-size: var(--mw-font-size-body-sm);
+  color: var(--mw-text-secondary);
+}
+
+.prices {
+  inline-size: 18rem;
+}
+
+/* 방금 만든 행 강조 (CP4 §2). 줄인 모션 설정에서는 색만 남고 사라지는 전환이 없다. */
+.highlighted td {
+  animation: highlight-fade var(--mw-motion-cinematic) var(--mw-ease-standard) 1.2s forwards;
+  background: var(--mw-accent-faint);
+}
+
+@keyframes highlight-fade {
+  to {
+    background: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .highlighted td {
+    animation: none;
+  }
+}

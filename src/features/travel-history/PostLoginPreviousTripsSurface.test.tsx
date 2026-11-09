@@ -40,6 +40,9 @@ function Harness({ intent }: { intent: PostLoginHistoryIntent }) {
 
   return (
     <button
+      // Wait for the auth bootstrap (checking → unauthenticated) before logging in;
+      // otherwise the bootstrap can overwrite the new session and the test races.
+      disabled={auth.state.status !== 'unauthenticated'}
       onClick={() => {
         void auth
           .login({ loginId: 'synthetic', password: 'input' }, { expectedRole: 'CUSTOMER' })
@@ -94,7 +97,9 @@ describe('PostLoginPreviousTripsSurface', () => {
   it('opens once after a normal successful login intent', async () => {
     renderSurface({ getTravelHistory: vi.fn().mockResolvedValue([]) }, 'show-previous-trips');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Authenticate' }));
+    const authenticate = screen.getByRole('button', { name: 'Authenticate' });
+    await waitFor(() => expect(authenticate).toBeEnabled());
+    fireEvent.click(authenticate);
 
     expect(await screen.findByRole('dialog', { name: 'Your previous trips' })).toBeVisible();
   });
@@ -103,7 +108,9 @@ describe('PostLoginPreviousTripsSurface', () => {
     const getTravelHistory = vi.fn().mockResolvedValue([]);
     renderSurface({ getTravelHistory }, 'suppress');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Authenticate' }));
+    const authenticate = screen.getByRole('button', { name: 'Authenticate' });
+    await waitFor(() => expect(authenticate).toBeEnabled());
+    fireEvent.click(authenticate);
 
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
     expect(getTravelHistory).not.toHaveBeenCalled();

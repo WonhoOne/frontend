@@ -40,6 +40,7 @@ export {
   type ReservationResponseDto,
   type TransportOptionDto,
 } from '@/integrations/backend/contracts/reservation';
+export type { TourProductWriteRequestDto } from '@/integrations/backend/contracts/employeeTourProduct';
 export {
   decodeTourProductDto,
   decodeTourProductListDto,

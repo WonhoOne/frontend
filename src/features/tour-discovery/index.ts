@@ -15,6 +15,7 @@ export {
 export {
   TOUR_THEME_ORDER,
   themeDiscoveryPresentations,
+  tourThemeTitle,
 } from '@/features/tour-discovery/themeDiscoveryPresentations';
 export { TourStyleExplainer } from '@/features/tour-discovery/TourStyleExplainer';
 export { TourThemeGroup } from '@/features/tour-discovery/TourThemeGroup';

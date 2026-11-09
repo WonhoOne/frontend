@@ -55,7 +55,12 @@ export function AuthProvider({
   useEffect(() => {
     // E01 has no persistent bootstrap. Keep the explicit checking phase while
     // completing bootstrap asynchronously instead of cascading state in an effect.
-    const bootstrapId = window.setTimeout(() => setState(UNAUTHENTICATED), 0);
+    // LIFECYCLE: 아직 'checking'일 때만 비로그인으로 확정한다. 그 사이 로그인이 끝났다면
+    // 새 session을 덮어쓰지 않는다.
+    const bootstrapId = window.setTimeout(
+      () => setState((current) => (current.status === 'checking' ? UNAUTHENTICATED : current)),
+      0,
+    );
     return () => window.clearTimeout(bootstrapId);
   }, []);
 

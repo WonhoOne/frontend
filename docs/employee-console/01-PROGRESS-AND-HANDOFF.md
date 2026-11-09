@@ -1,10 +1,10 @@
 # Employee Console — Progress Ledger and Next-Session Handoff
 
 > Updated: 2026-11-09
-> Document phase: **P2 — implementation (E-PR1 done, E-PR2 next)**
+> Document phase: **P2 — implementation (E-PR1, E-PR2 done; E-PR3 next)**
 > Status: **P1 COMPLETE — CP0–CP11 PASS (2026-11-09). P2 implementation authorized (CP11, delegated decision).**
 > P1 checkpoint progress: **12 / 12 main CPs COMPLETE**
-> Next action: **E-PR2 Product list & create** per [CP11 §3](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md).
+> Next action: **E-PR3 Product edit** per [CP11 §3](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md).
 > Execution mode: owner delegated execution on 2026-11-09 — see [Frontend Completion Plan](../FRONTEND-COMPLETION-PLAN.md) §5 for what the agent decides and where it stops.
 
 ## 2026-11-09 — W1 closeout and delegated decisions
@@ -17,6 +17,14 @@
 | CP1-A | COMPLETE. Its open IA items were answered in CP1-B |
 | CP1-B | COMPLETE. **IA-01..IA-05, IA-07 APPROVED by DELEGATED DECISION 2026-11-09**: `/employee/login` on shared login API; Products list as landing, no dashboard; two primary areas (여행상품 / 재고 관리); addressable `/employee/tours`, `/employee/tours/new`, `/employee/tours/:tourId/edit`; stock add inside `/employee/inventory`; return to list after create. IA-08 → CP6-D, IA-10 → CP2/CP6 |
 | CP2-A | IN PROGRESS. Mobbin re-checked 2026-11-09: HTTP 403 bot block. **DELEGATED DECISION:** visual evidence from official Shopify/Square/Wix help-center screenshots, same PASS checklist (CP2-A §8) |
+
+## 2026-11-09 — P2 E-PR2 Product list & create
+
+- Shared: `formatKrw`, `SelectField`, `TextAreaField`, `useUnsavedChangesGuard`; `tourThemeTitle` exported from `tour-discovery`.
+- `employee-tours` feature (model, Theme→style rules, adapter, Backend/Mock DataSources, private queries, pessimistic mutations, error normalization with `unknown`), E02 list and E03 create.
+- **Spec revision (CP5 §3.5, CP6-F §4, E01 §14):** session loss while signed in keeps the page with a sign-in-again banner instead of redirecting, because the HTTP client clears the session on 401 and a redirect would drop editor input without warning.
+- AuthProvider bootstrap no longer overwrites a login that finished first (also fixed a pre-existing flaky previous-trips test, verified flaky on `6643b9e` before any Employee change).
+- Tests: form rules (17), list/create RTL (10), browser EJ02, EJ08, Honeymoon styles; real Backend EJ02 with persistence re-read (NFR-02). Real E2E projects ordered so Employee writes run after the one-product Customer/Voice specs.
 
 ## 2026-11-09 — P2 E-PR1 Foundation & access
 
@@ -86,7 +94,7 @@
 | CP1-A stacked PR | [PR #49 — Employee task flows](https://github.com/WonhoOne/frontend/pull/49), **MERGED to main 2026-11-09** |
 | CP1-B stacked PR | [PR #50 — Information architecture & role-safe routes](https://github.com/WonhoOne/frontend/pull/50), **MERGED to main 2026-11-09** |
 | CP2-A stacked PR | [PR #51 — Provider reference comparison (partial)](https://github.com/WonhoOne/frontend/pull/51), **MERGED to main 2026-11-09** |
-| Employee implementation | **IN PROGRESS — E-PR1 (access foundation) done** |
+| Employee implementation | **IN PROGRESS — access, product list and create done** |
 
 ## Stage tracker
 
@@ -110,7 +118,7 @@
 | CP9 — approved device scope + a11y | `COMPLETE (2026-11-09)` | [CP9](planning/CP9-ACCESSIBILITY-AND-DEVICE-SCOPE.md) |
 | CP10 — Employee QA acceptance | `COMPLETE (2026-11-09)` | [CP10](planning/CP10-QA-ACCEPTANCE.md) |
 | CP11 — final audit and implementation handoff | `COMPLETE — P1 FINAL AUDIT PASS (2026-11-09)` | [CP11](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md) |
-| P2 coding | `IN PROGRESS — E-PR1 done, E-PR2 next` | [CP11 §3](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md) |
+| P2 coding | `IN PROGRESS — E-PR1, E-PR2 done; E-PR3 next` | [CP11 §3](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md) |
 
 ## CP0-A verified key findings (2026-10-13, documentation-only)
 
