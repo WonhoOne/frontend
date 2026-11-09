@@ -109,7 +109,9 @@ test.describe('Employee product edit', () => {
     await page.getByLabel(/Premium 1인 가격/).fill('2,700,000');
     await save.click();
 
-    await expect(page.getByRole('status')).toContainText('변경 사항을 저장했습니다.');
+    await expect(
+      page.getByRole('status').filter({ hasText: '변경 사항을 저장했습니다.' }),
+    ).toBeVisible();
     await expect(page.getByRole('heading', { level: 1, name: 'E2E Golf Renamed' })).toBeVisible();
     await expect(page).toHaveURL(/\/employee\/tours\/301\/edit$/);
     await expect(save).toBeDisabled();
@@ -140,6 +142,8 @@ test.describe('Employee product edit', () => {
     await page.getByRole('button', { name: '테마 되돌리기' }).click();
     await expect(page.getByLabel(/테마/)).toHaveValue('GOLF_CHALLENGE');
     await page.getByRole('button', { name: '저장' }).click();
-    await expect(page.getByRole('status')).toContainText('변경 사항을 저장했습니다.');
+    await expect(
+      page.getByRole('status').filter({ hasText: '변경 사항을 저장했습니다.' }),
+    ).toBeVisible();
   });
 });

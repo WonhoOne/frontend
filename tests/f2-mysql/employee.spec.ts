@@ -95,7 +95,9 @@ test('real Backend Employee sign-in, product create/edit, Theme lock and CUSTOME
   await page.getByRole('link', { name: productName }).click();
   await page.getByLabel(/Grand 1인 가격/).fill('480000');
   await page.getByRole('button', { name: '저장' }).click();
-  await expect(page.getByRole('status')).toContainText('변경 사항을 저장했습니다.');
+  await expect(
+    page.getByRole('status').filter({ hasText: '변경 사항을 저장했습니다.' }),
+  ).toBeVisible();
   await expect(page.getByLabel(/Grand 1인 가격/)).toHaveValue('480000');
 
   // EJ04 — the seeded product has a schedule: a different Theme is refused with a real 409,
@@ -112,7 +114,9 @@ test('real Backend Employee sign-in, product create/edit, Theme lock and CUSTOME
   await expect(page.getByLabel(/설명/)).toHaveValue('Edited by the real Employee journey.');
   await page.getByRole('button', { name: '테마 되돌리기' }).click();
   await page.getByRole('button', { name: '저장' }).click();
-  await expect(page.getByRole('status')).toContainText('변경 사항을 저장했습니다.');
+  await expect(
+    page.getByRole('status').filter({ hasText: '변경 사항을 저장했습니다.' }),
+  ).toBeVisible();
 
   const afterEdits = (await (
     await request.get(`${backend}/employee/tours`, {
