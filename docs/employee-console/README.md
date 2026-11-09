@@ -17,14 +17,15 @@
 
 - [CP0-A — Frontend runtime and reuse inventory](planning/CP0-A-FRONTEND-RUNTIME-INVENTORY.md): current source/code audit, explicit Employee login incompatibility, Customer shell segregation risk, reuse/new candidates. **Status: REVIEW on CP0-A PR; not yet merged to main.**
 - [CP0-B — Backend Employee contract audit](planning/CP0-B-BACKEND-EMPLOYEE-CONTRACT-AUDIT.md): matched docs/main v0.2 against real Backend controllers, security, DTO, validators, Product lock/Inventory additive logic and existing tests. **Status: REVIEW on dependent CP0-B branch; merge CP0-A first.**
-- **Next action:** review/merge CP0-A PR #46 and then CP0-B's dependent review PR; on user approval next investigation is **CP0-C scope/device/demo policy**. The progress ledger is authoritative.
+- [CP0-C — Scope, device support and demo gate](planning/CP0-C-SCOPE-DEVICE-DEMO-GATE.md): grounded in original two-page assignment plus approved v0.2; course final due Nov23/demo Nov24; feature/non-goal matrix, explicit **A/B/C device-policy owner decision** and bounded demo proposal. **Status: DRAFT / blocked on owner choice and PR merge dependencies.**
+- **Next action:** choose Employee console device scope **A desktop-only (proposed) / B desktop+tablet / C desktop+tablet+mobile**. Then review/merge source audit PRs #46 → #47 → CP0-C stacked PR in order. **After CP0 freeze, CP1-A task flows**. The progress ledger is authoritative.
 
 ## What is and is not completed
 
 | Program | Status | Meaning |
 | --- | --- | --- |
 | P0 — Plan the planning | **MERGED** | [PR #45](https://github.com/WonhoOne/frontend/pull/45), merged 2026-10-13 |
-| P1 — Detailed Employee design (CP0–CP11) | **CP0-A/B REVIEW** | Source audit reports committed on review branches; CP0-C onward not started |
+| P1 — Detailed Employee design (CP0–CP11) | **CP0-C DRAFT** | CP0-A/B source audits on review PRs; CP0-C awaits owner device decision/merge; CP1 onward unstarted |
 | P2 — Employee Console code | **NOT STARTED** | No employee route/page/API runtime implementation claimed |
 
 The earlier [frontend PR #44](https://github.com/WonhoOne/frontend/pull/44) is **closed unmerged**. Its premature Employee implementation plan is **not** the current approved specification.
@@ -33,7 +34,7 @@ The earlier [frontend PR #44](https://github.com/WonhoOne/frontend/pull/44) is *
 
 > Read the latest WonhoOne/frontend main branch and this folder's README, 00-PLANNING-PROGRAM.md, 01-PROGRESS-AND-HANDOFF.md, and references/00-MOBBIN-DISCOVERY.md. Verify P0 approval/merge and latest WonhoOne/docs/main first. Then execute **only** the progress ledger's next_checkpoint, using current code/contract evidence and the program's output gate. Do not implement any feature, invent a missing contract, or mark CP as complete without creating a durable checkpoint artifact/commit and updating the ledger.
 
-**Current next action:** review/merge CP0-A PR #46, then CP0-B stacked PR (verify/retarget branch base as needed). **Next investigation:** CP0-C, after owner requests continuation. Do not equate source audits with final design approval.
+**Current next action:** obtain **explicit CP0-C device-support choice**, amend draft and merge stacked PRs #46 → #47 → CP0-C in that order. **Next checkpoint:** CP1-A only after CP0 freeze and user continuation. Do not equate source audits or this CP0-C draft with a finalized Employee UI spec.
 
 ## Progress bookkeeping
 
