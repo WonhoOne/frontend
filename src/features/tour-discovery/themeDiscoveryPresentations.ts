@@ -80,3 +80,17 @@ export const themeDiscoveryPresentations = [
     },
   },
 ] as const satisfies readonly ThemeDiscoveryPresentation[];
+
+/**
+ * Theme의 화면 표시 이름이다. Customer와 Employee가 같은 이름을 쓰도록 한곳에서 제공한다
+ * (Employee CP3 §2.3, 공개 API를 통한 유일한 cross-feature 의존).
+ */
+export function tourThemeTitle(theme: TourTheme): string {
+  const presentation = themeDiscoveryPresentations.find((item) => item.theme === theme);
+
+  if (presentation === undefined) {
+    throw new RangeError(`Unknown tour theme: ${theme}`);
+  }
+
+  return presentation.title;
+}
