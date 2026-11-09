@@ -167,3 +167,71 @@ export async function routeEmployeeTours(
 
   return { products, writes };
 }
+
+/**
+ * Stateful Employee Inventory API stub (additive POST only). `loseNextAddResponse`
+ * applies the next add on the "server" but aborts the HTTP response, to exercise the
+ * unknown-outcome path without guessing.
+ */
+export async function routeEmployeeInventory(page: Page) {
+  const items = [
+    { id: 1, itemType: 'COUPLE_TSHIRT', quantity: 12 },
+    { id: 2, itemType: 'GINSENG_GIFT', quantity: 0 },
+    { id: 3, itemType: 'GOLF_BALL', quantity: 35 },
+    { id: 4, itemType: 'SCARF', quantity: 8 },
+  ];
+  const adds: Array<{ itemType: string; quantity: number }> = [];
+  const control = { loseNextAddResponse: false };
+
+  await page.route('**/api/v1/employee/inventory', async (route) => {
+    const request = route.request();
+    expect(request.headers().authorization).toBe(`Bearer ${employeeToken}`);
+
+    if (request.method() === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(items),
+      });
+      return;
+    }
+
+    if (request.method() === 'POST') {
+      const body = request.postDataJSON() as { itemType: string; quantity: number };
+      adds.push(body);
+      const item = items.find((candidate) => candidate.itemType === body.itemType);
+
+      if (item === undefined) {
+        await route.fulfill({
+          status: 400,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            code: 'MALFORMED_REQUEST',
+            message: 'Synthetic',
+            fieldErrors: [],
+          }),
+        });
+        return;
+      }
+
+      item.quantity += body.quantity;
+
+      if (control.loseNextAddResponse) {
+        control.loseNextAddResponse = false;
+        await route.abort('connectionreset');
+        return;
+      }
+
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(item),
+      });
+      return;
+    }
+
+    await route.fallback();
+  });
+
+  return { items, adds, control };
+}

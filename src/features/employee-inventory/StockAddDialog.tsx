@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 
 import type { EmployeeInventoryDataSource } from '@/features/employee-inventory/EmployeeInventoryDataSource';
 import {
@@ -71,10 +71,27 @@ export function StockAddDialog({
     quantity: number;
   } | null>(null);
 
+  const [wasOpen, setWasOpen] = useState(false);
+  const quantityInputId = useId();
+
+  // ACCESSIBILITY: autoFocus를 쓰면 Dialog가 '닫을 때 돌아갈 곳'으로 입력칸을 기억해
+  // 열었던 버튼으로 포커스가 돌아가지 않는다. Dialog가 opener를 기억한 다음 frame에
+  // 입력칸으로 옮긴다.
+  useEffect(() => {
+    if (itemType === null) {
+      return undefined;
+    }
+
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById(quantityInputId)?.focus();
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [itemType, quantityInputId]);
   const open = itemType !== null && currentQuantity !== null;
 
-  // LIFECYCLE: 다른 품목으로 열리면 입력과 상태를 새로 시작한다 ('이전 render 정보' 패턴).
-  if (open && openedWith?.itemType !== itemType) {
+  // LIFECYCLE ('이전 render 정보' 패턴): 열릴 때마다 입력과 상태를 새로 시작한다.
+  if (open && !wasOpen) {
+    setWasOpen(true);
     setOpenedWith({ itemType, quantity: currentQuantity });
     setInput('');
     setFieldError(null);
@@ -82,16 +99,18 @@ export function StockAddDialog({
     setUnknown(null);
   }
 
-  if (!open && openedWith !== null && !addStock.isPending) {
-    setOpenedWith(null);
+  if (!open && wasOpen) {
+    setWasOpen(false);
   }
 
-  if (!open || openedWith === null) {
+  // 한 번도 열린 적이 없으면 그릴 것이 없다. 닫힌 뒤에는 Dialog를 open={false}로 남겨
+  // Radix 닫기 과정(열었던 버튼으로 포커스 복귀)이 실행되게 한다.
+  if (openedWith === null) {
     return null;
   }
 
-  const activeItem = itemType;
-  const current = currentQuantity;
+  const activeItem = openedWith.itemType;
+  const current = open ? currentQuantity : openedWith.quantity;
   const label = inventoryItemLabel(activeItem);
   const submitting = addStock.isPending;
   const check = checkStockQuantity(input, current);
@@ -181,7 +200,7 @@ export function StockAddDialog({
           close();
         }
       }}
-      open
+      open={open}
       title={`${label} 재고 추가`}
     >
       <form
@@ -208,7 +227,7 @@ export function StockAddDialog({
             <TextField
               {...(fieldError === null ? {} : { error: fieldError })}
               autoComplete="off"
-              autoFocus
+              id={quantityInputId}
               inputMode="numeric"
               label="추가할 수량 (개)"
               onChange={(event) => setInput(event.target.value)}
