@@ -41,9 +41,9 @@
 
 | Event | Result |
 | --- | --- |
-| GET 401 anywhere | Clear Employee private caches → `/employee/login?returnTo=<current>` (replace) + expiry notice — **unless a dirty E03/E04 form is on screen**, then the write-401 alert below is used so input is not lost without warning (CP6-G G2) |
-| Write 401 in E03/E04 | Alert with `다시 로그인` (no auto redirect, CP5 §3.5) |
-| Write 401 in E05 dialog | Close dialog → same as GET 401 (dialog has no long input to lose) |
+| Session lost while signed in (any 401 or token expiry) | Page stays; sticky banner with `다시 로그인` → `/employee/login?returnTo=<current>` (unsaved-changes dialog asks if needed) — CP5 §3.5, revised in E-PR2 |
+| No session on a fresh visit (reload, bookmark) | Redirect to `/employee/login?returnTo=<current>` (replace) |
+| 401 inside the E05 stock dialog | Same banner; the dialog stays as it is (the result of that POST is already known: rejected) |
 | 403 anywhere | Permission state inside shell |
 | Sign-out | Clear memory token + private caches → `/employee/login` + notice "로그아웃했습니다." |
 | Login as CUSTOMER on `/employee/login` | Session discarded; wrong-account alert (E01) |

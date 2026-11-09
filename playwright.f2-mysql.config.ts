@@ -11,6 +11,12 @@ export default defineConfig({
     ...devices['Desktop Chrome'],
     trace: 'retain-on-failure',
   },
+  // ORDER: Customer/Voice specs assert the seeded one-product catalog. The Employee spec
+  // creates products, so it depends on them and runs last against the same database.
+  projects: [
+    { name: 'customer', testIgnore: /employee\.spec\.ts$/ },
+    { name: 'employee', testMatch: /employee\.spec\.ts$/, dependencies: ['customer'] },
+  ],
   webServer: {
     command: 'npm run dev -- --host 127.0.0.1',
     url: 'http://127.0.0.1:5173',

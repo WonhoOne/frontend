@@ -3,7 +3,10 @@ import process from 'node:process';
 import { expect, test } from '@playwright/test';
 
 /**
- * Real Backend + MySQL Employee access (CP10 EJ01, EJ06).
+ * Real Backend + MySQL Employee journeys (CP10 EJ01, EJ02, EJ06).
+ *
+ * ORDER: this spec writes TourProducts, so it runs after the customer and Voice specs
+ * that expect the seeded one-product catalog (see `playwright.f2-mysql.config.ts`).
  *
  * The EMPLOYEE account is created by the Backend `EmployeeBootstrap` from the
  * disposable CI-only values in `.github/workflows/d11-verify.yml`. They are not real
@@ -21,7 +24,7 @@ function requiredEnv(name: string) {
   return value;
 }
 
-test('real Backend Employee sign-in and CUSTOMER refusal', async ({ page, request }) => {
+test('real Backend Employee sign-in, product create and CUSTOMER refusal', async ({ page, request }) => {
   const employeeLoginId = requiredEnv('EMPLOYEE_LOGIN_ID');
   const employeePassword = requiredEnv('EMPLOYEE_PASSWORD');
   const employeeName = requiredEnv('EMPLOYEE_NAME');
@@ -56,6 +59,32 @@ test('real Backend Employee sign-in and CUSTOMER refusal', async ({ page, reques
   await expect(page).toHaveURL(/\/employee\/tours$/);
   await expect(page.getByRole('heading', { level: 1, name: '여행상품' })).toBeVisible();
   await expect(page.getByText(employeeName)).toBeVisible();
+  await expect(page.getByRole('link', { name: 'F2 Synthetic Golf' })).toBeVisible();
+
+  // EJ02 — create a product through the UI and confirm it is persisted (NFR-02).
+  const productName = 'F2 Employee Trekking';
+  await page.getByRole('link', { name: '+ 새 여행상품' }).click();
+  await page.getByLabel(/테마/).selectOption('OUTDOOR_TREKKING');
+  await page.getByLabel(/상품명/).fill(productName);
+  await page.getByLabel(/설명/).fill('Disposable integration-only Employee product.');
+  await page.getByLabel(/Classic 1인 가격/).fill('300000');
+  await page.getByLabel(/Grand 1인 가격/).fill('450000');
+  await page.getByLabel(/Premium 1인 가격/).fill('700000');
+  await page.getByRole('button', { name: '저장' }).click();
+
+  await expect(page).toHaveURL(/\/employee\/tours$/);
+  await expect(page.getByRole('status')).toContainText(`‘${productName}’ 여행상품을 만들었습니다.`);
+  await expect(page.getByRole('link', { name: productName })).toBeVisible();
+
+  const token = ((await apiLogin.json()) as { accessToken: string }).accessToken;
+  const persisted = (await (
+    await request.get(`${backend}/employee/tours`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  ).json()) as Array<{ name: string; theme: string; stylePrices: Array<{ amount: number }> }>;
+  const created = persisted.find((product) => product.name === productName);
+  expect(created?.theme).toBe('OUTDOOR_TREKKING');
+  expect(created?.stylePrices.map(({ amount }) => amount)).toEqual([300000, 450000, 700000]);
 
   await page.getByRole('button', { name: '로그아웃' }).click();
   await expect(page.getByText('로그아웃했습니다.')).toBeVisible();

@@ -34,7 +34,7 @@
 | Background refetch | Keep content; existing `RefreshIndicator` | Same | **Do not** overwrite form values while editing |
 | Refetch fails, data exists | Keep content; small inline note "최신 정보를 불러오지 못했습니다" + retry | Same | Keep form |
 | First load fails (network / 5xx) | `SectionError` with retry | Same | `SectionError` with retry |
-| 401 | Clear private cache → `/employee/login` with return target; **exception:** if a dirty form is on screen (E03/E04), show the §3.5 alert instead of redirecting (CP6-G G2) | Same | Same (form not yet dirty on initial load) |
+| 401 | Session cleared by the HTTP client and private cache cleared. If the employee was already signed in on this page, the page **stays** with a sign-in-again banner (§3.5, revised 2026-11-09 in E-PR2); a fresh visit without a session redirects to `/employee/login?returnTo=…` | Same | Same |
 | 403 | Permission state (CP4 §3) | Same | Same |
 | Response fails runtime decode | `SectionError` ("데이터 형식이 올바르지 않습니다"), no partial render; `ContractMappingError` logged without payload | Same | Same |
 
@@ -100,12 +100,15 @@ POST create and POST stock add have **no idempotency key** (CP0-B). A lost respo
 
 Never auto-resend. Never claim success or failure without a server response.
 
-### 3.5 Session expiry during a write (401)
+### 3.5 Session expiry while working (401 or token expiry)
 
-- The HTTP client already clears the memory token on protected 401; the Employee feature also clears private caches.
-- Editor: show an alert "세션이 만료되었습니다. 다시 로그인하면 이 화면으로 돌아옵니다. 입력한 내용은 저장되지 않았고 유지되지 않습니다." with `다시 로그인`. **No automatic redirect** while a form has unsaved input, so the employee can copy text first.
-- Form drafts are **not persisted** (Master Plan §42; no private payload in storage). After login the employee returns to the same route and the form reloads from the server.
+Revised 2026-11-09 during E-PR2 after reading the HTTP client: a protected 401 clears the session immediately, so a redirect from the access boundary would unmount an editor and drop its input without warning.
+
+- `EmployeeAccessBoundary` remembers that an Employee session existed. When it disappears, the current page **stays mounted** and a sticky `role="alert"` banner says "세션이 만료되었습니다. 다시 로그인하면 이 화면으로 돌아옵니다. 저장하지 않은 입력은 유지되지 않으니 필요하면 먼저 복사해 두세요." with `다시 로그인`.
+- `다시 로그인` navigates to `/employee/login?returnTo=<current>`; if the editor has unsaved input, the existing unsaved-changes dialog asks once more.
+- Private caches are cleared by `AuthProvider` as before. Form drafts are **not persisted** (Master Plan §42). After login the employee returns to the same route and data reloads from the server.
 - Nothing is re-submitted after login (Master Plan §17 rule applied to Employee).
+- A fresh visit with no session (e.g. reload) still redirects straight to login.
 
 ### 3.6 Product form rules
 
