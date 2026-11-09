@@ -3,7 +3,7 @@ import process from 'node:process';
 import { expect, test } from '@playwright/test';
 
 /**
- * Real Backend + MySQL Employee journeys (CP10 EJ01, EJ02, EJ06).
+ * Real Backend + MySQL Employee journeys (CP10 EJ01, EJ02, EJ03, EJ04, EJ06).
  *
  * ORDER: this spec writes TourProducts, so it runs after the customer and Voice specs
  * that expect the seeded one-product catalog (see `playwright.f2-mysql.config.ts`).
@@ -24,7 +24,7 @@ function requiredEnv(name: string) {
   return value;
 }
 
-test('real Backend Employee sign-in, product create and CUSTOMER refusal', async ({
+test('real Backend Employee sign-in, product create/edit, Theme lock and CUSTOMER refusal', async ({
   page,
   request,
 }) => {
@@ -90,6 +90,50 @@ test('real Backend Employee sign-in, product create and CUSTOMER refusal', async
   const created = persisted.find((product) => product.name === productName);
   expect(created?.theme).toBe('OUTDOOR_TREKKING');
   expect(created?.stylePrices.map(({ amount }) => amount)).toEqual([300000, 450000, 700000]);
+
+  // EJ03 — edit a price on the product just created; the editor shows the server value.
+  await page.getByRole('link', { name: productName }).click();
+  await page.getByLabel(/Grand 1인 가격/).fill('480000');
+  await page.getByRole('button', { name: '저장' }).click();
+  await expect(
+    page.getByRole('status').filter({ hasText: '변경 사항을 저장했습니다.' }),
+  ).toBeVisible();
+  await expect(page.getByLabel(/Grand 1인 가격/)).toHaveValue('480000');
+
+  // EJ04 — the seeded product has a schedule: a different Theme is refused with a real 409,
+  // other edits survive, and a same-Theme save succeeds after reverting the Theme.
+  await page
+    .getByRole('navigation', { name: '직원 메뉴' })
+    .getByRole('link', { name: '여행상품' })
+    .click();
+  await page.getByRole('link', { name: 'F2 Synthetic Golf' }).click();
+  await page.getByLabel(/설명/).fill('Edited by the real Employee journey.');
+  await page.getByLabel(/테마/).selectOption('OUTDOOR_TREKKING');
+  await page.getByRole('button', { name: '저장' }).click();
+  await expect(page.getByRole('alert')).toContainText('테마를 바꿀 수 없습니다');
+  await expect(page.getByLabel(/설명/)).toHaveValue('Edited by the real Employee journey.');
+  await page.getByRole('button', { name: '테마 되돌리기' }).click();
+  await page.getByRole('button', { name: '저장' }).click();
+  await expect(
+    page.getByRole('status').filter({ hasText: '변경 사항을 저장했습니다.' }),
+  ).toBeVisible();
+
+  const afterEdits = (await (
+    await request.get(`${backend}/employee/tours`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  ).json()) as Array<{
+    name: string;
+    theme: string;
+    description: string;
+    stylePrices: Array<{ amount: number }>;
+  }>;
+  expect(afterEdits.find((product) => product.name === productName)?.stylePrices[1]?.amount).toBe(
+    480000,
+  );
+  const seeded = afterEdits.find((product) => product.name === 'F2 Synthetic Golf');
+  expect(seeded?.theme).toBe('GOLF_CHALLENGE');
+  expect(seeded?.description).toBe('Edited by the real Employee journey.');
 
   await page.getByRole('button', { name: '로그아웃' }).click();
   await expect(page.getByText('로그아웃했습니다.')).toBeVisible();

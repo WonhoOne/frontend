@@ -1,10 +1,10 @@
 # Employee Console — Progress Ledger and Next-Session Handoff
 
 > Updated: 2026-11-09
-> Document phase: **P2 — implementation (E-PR1, E-PR2 done; E-PR3 next)**
+> Document phase: **P2 — implementation (E-PR1–E-PR3 done; E-PR4 next)**
 > Status: **P1 COMPLETE — CP0–CP11 PASS (2026-11-09). P2 implementation authorized (CP11, delegated decision).**
 > P1 checkpoint progress: **12 / 12 main CPs COMPLETE**
-> Next action: **E-PR3 Product edit** per [CP11 §3](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md).
+> Next action: **E-PR4 Inventory** per [CP11 §3](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md).
 > Execution mode: owner delegated execution on 2026-11-09 — see [Frontend Completion Plan](../FRONTEND-COMPLETION-PLAN.md) §5 for what the agent decides and where it stops.
 
 ## 2026-11-09 — W1 closeout and delegated decisions
@@ -17,6 +17,12 @@
 | CP1-A | COMPLETE. Its open IA items were answered in CP1-B |
 | CP1-B | COMPLETE. **IA-01..IA-05, IA-07 APPROVED by DELEGATED DECISION 2026-11-09**: `/employee/login` on shared login API; Products list as landing, no dashboard; two primary areas (여행상품 / 재고 관리); addressable `/employee/tours`, `/employee/tours/new`, `/employee/tours/:tourId/edit`; stock add inside `/employee/inventory`; return to list after create. IA-08 → CP6-D, IA-10 → CP2/CP6 |
 | CP2-A | IN PROGRESS. Mobbin re-checked 2026-11-09: HTTP 403 bot block. **DELEGATED DECISION:** visual evidence from official Shopify/Square/Wix help-center screenshots, same PASS checklist (CP2-A §8) |
+
+## 2026-11-09 — P2 E-PR3 Product edit
+
+- E04 edit: fresh post-mount load from the Employee list, Save disabled until changed, complete PUT, form refilled from the response, stays on the page (IA-08).
+- 409 `TOUR_PRODUCT_THEME_LOCKED` keeps other edits and offers `테마 되돌리기`; unknown PUT result re-sends the same body; 404 / non-canonical id → not-found; background change → explicit `최신 내용 불러오기`.
+- Tests: RTL 7 cases; browser EJ03, EJ04 (scripted 409); real Backend EJ03 and EJ04 on the seeded product that has a schedule (real 409), with persisted values re-read.
 
 ## 2026-11-09 — P2 E-PR2 Product list & create
 
@@ -94,7 +100,7 @@
 | CP1-A stacked PR | [PR #49 — Employee task flows](https://github.com/WonhoOne/frontend/pull/49), **MERGED to main 2026-11-09** |
 | CP1-B stacked PR | [PR #50 — Information architecture & role-safe routes](https://github.com/WonhoOne/frontend/pull/50), **MERGED to main 2026-11-09** |
 | CP2-A stacked PR | [PR #51 — Provider reference comparison (partial)](https://github.com/WonhoOne/frontend/pull/51), **MERGED to main 2026-11-09** |
-| Employee implementation | **IN PROGRESS — access, product list and create done** |
+| Employee implementation | **IN PROGRESS — access and products (list/create/edit) done; inventory next** |
 
 ## Stage tracker
 
@@ -118,7 +124,7 @@
 | CP9 — approved device scope + a11y | `COMPLETE (2026-11-09)` | [CP9](planning/CP9-ACCESSIBILITY-AND-DEVICE-SCOPE.md) |
 | CP10 — Employee QA acceptance | `COMPLETE (2026-11-09)` | [CP10](planning/CP10-QA-ACCEPTANCE.md) |
 | CP11 — final audit and implementation handoff | `COMPLETE — P1 FINAL AUDIT PASS (2026-11-09)` | [CP11](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md) |
-| P2 coding | `IN PROGRESS — E-PR1, E-PR2 done; E-PR3 next` | [CP11 §3](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md) |
+| P2 coding | `IN PROGRESS — E-PR1–E-PR3 done; E-PR4 next` | [CP11 §3](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md) |
 
 ## CP0-A verified key findings (2026-10-13, documentation-only)
 

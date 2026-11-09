@@ -4,12 +4,19 @@ import { AppRouteLayout, type AppRouteHandle } from '@/app/router/AppRouteLayout
 import { EmployeeAccessBoundary } from '@/app/router/EmployeeAccessBoundary';
 import { EmployeeRouteLayout } from '@/app/router/EmployeeRouteLayout';
 import { NotFound } from '@/app/router/NotFound';
-import { employeeRoutePaths, routePaths, routePatterns, routeTitles } from '@/app/router/paths';
+import {
+  employeeRoutePaths,
+  employeeRoutePatterns,
+  routePaths,
+  routePatterns,
+  routeTitles,
+} from '@/app/router/paths';
 import { ConfigurePage } from '@/pages/configure/ConfigurePage';
 import { EmployeeInventoryPage } from '@/pages/employee-inventory/EmployeeInventoryPage';
 import { EmployeeLoginPage } from '@/pages/employee-login/EmployeeLoginPage';
 import { EmployeeNotFound } from '@/pages/employee-status/EmployeeNotFound';
 import { EmployeeTourCreatePage } from '@/pages/employee-tour-create/EmployeeTourCreatePage';
+import { EmployeeTourEditPage } from '@/pages/employee-tour-edit/EmployeeTourEditPage';
 import { EmployeeToursPage } from '@/pages/employee-tours/EmployeeToursPage';
 import { HomePage } from '@/pages/home/HomePage';
 import { LoginPage } from '@/pages/login/LoginPage';
@@ -46,6 +53,7 @@ export const appRoutes: RouteObject[] = [
         children: [
           { path: employeeRoutePaths.tours, element: <EmployeeToursPage /> },
           { path: employeeRoutePaths.tourCreate, element: <EmployeeTourCreatePage /> },
+          { path: employeeRoutePatterns.tourEdit, element: <EmployeeTourEditPage /> },
           { path: employeeRoutePaths.inventory, element: <EmployeeInventoryPage /> },
           { path: '*', element: <EmployeeNotFound /> },
         ],
