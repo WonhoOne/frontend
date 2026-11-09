@@ -1,6 +1,6 @@
 # Employee Console — Durable Planning Entry Point
 
-> Status: **P1 IN PROGRESS — CP0–CP6 COMPLETE; CP7 next** (not implementation-ready until CP11)
+> Status: **P1 COMPLETE (CP0–CP11 PASS, 2026-11-09); P2 implementation authorized — E-PR1 next**
 > Last reviewed: 2026-11-09 — execution delegated by owner, see [Frontend Completion Plan](../FRONTEND-COMPLETION-PLAN.md)
 > Owner: 김태우; source repo: WonhoOne/frontend
 > Shared contract: latest approved WonhoOne/docs/main; frontend development policy: ../../AGENTS.md
@@ -26,15 +26,16 @@
 - [CP4 — Motion and feedback](planning/CP4-MOTION-AND-FEEDBACK.md) and [CP5 — Data and mutation states](planning/CP5-DATA-AND-MUTATION-STATES.md). **Status: COMPLETE (delegated decision 2026-11-09).**
 - [CP6-0 screen inventory](planning/CP6-0-SCREEN-INVENTORY.md), screen specs [E01](planning/screens/E01-employee-login-and-access.md)–[E05](planning/screens/E05-inventory.md), [CP6-F journeys](planning/CP6-F-CROSS-SCREEN-JOURNEYS.md). **Status: COMPLETE (delegated decision 2026-11-09).**
 - [CP6-G/H/I audits](planning/audits/CP6-GHI-EMPLOYEE-SPEC-AUDITS.md): consistency fixes applied, contract match (0 invented elements), readiness PASS. **Status: COMPLETE.**
-- **Next action:** CP7 implementation architecture. Earlier decisions are closed; do not reopen them. Progress ledger is authoritative.
+- [CP7 architecture](planning/CP7-IMPLEMENTATION-ARCHITECTURE.md), [CP8 API/data](planning/CP8-API-AND-DATA-MAPPING.md), [CP9 a11y/device](planning/CP9-ACCESSIBILITY-AND-DEVICE-SCOPE.md), [CP10 QA](planning/CP10-QA-ACCEPTANCE.md), [CP11 final audit + PR plan](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md). **Status: COMPLETE.**
+- **Next action:** E-PR1 Foundation & access (CP11 §3). P1 decisions are closed. Progress ledger is authoritative.
 
 ## What is and is not completed
 
 | Program | Status | Meaning |
 | --- | --- | --- |
 | P0 — Plan the planning | **MERGED** | [PR #45](https://github.com/WonhoOne/frontend/pull/45), merged 2026-10-13 |
-| P1 — Detailed Employee design (CP0–CP11) | **IN PROGRESS — CP0–CP6 complete** | See [progress ledger](01-PROGRESS-AND-HANDOFF.md) for per-CP state |
-| P2 — Employee Console code | **NOT STARTED** | No employee route/page/API runtime implementation claimed |
+| P1 — Detailed Employee design (CP0–CP11) | **COMPLETE — final audit PASS** | See [progress ledger](01-PROGRESS-AND-HANDOFF.md) for per-CP state |
+| P2 — Employee Console code | **AUTHORIZED — E-PR1 next** | PR plan in CP11 §3; no Employee code merged yet |
 
 The earlier [frontend PR #44](https://github.com/WonhoOne/frontend/pull/44) is **closed unmerged**. Its premature Employee implementation plan is **not** the current approved specification.
 
@@ -42,7 +43,7 @@ The earlier [frontend PR #44](https://github.com/WonhoOne/frontend/pull/44) is *
 
 > Read the latest WonhoOne/frontend main branch and this folder's README, 00-PLANNING-PROGRAM.md, 01-PROGRESS-AND-HANDOFF.md, and references/00-MOBBIN-DISCOVERY.md. Verify P0 approval/merge and latest WonhoOne/docs/main first. Then execute **only** the progress ledger's next_checkpoint, using current code/contract evidence and the program's output gate. Do not implement any feature, invent a missing contract, or mark CP as complete without creating a durable checkpoint artifact/commit and updating the ledger.
 
-**Current next action:** CP7 implementation architecture. CP0 frozen; CP1-B IA-01..05/07 approved (delegated decision 2026-11-09).
+**Current next action:** E-PR1 Foundation & access. CP0 frozen; CP1-B IA-01..05/07 approved (delegated decision 2026-11-09).
 
 ## Progress bookkeeping
 

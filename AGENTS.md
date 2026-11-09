@@ -1,6 +1,6 @@
 # Frontend Agent Instructions
 
-> **Employee Console P0 gate (2026-10-13):** Before making Employee Console UX/code decisions, read [docs/employee-console/README.md](docs/employee-console/README.md), [00-PLANNING-PROGRAM.md](docs/employee-console/00-PLANNING-PROGRAM.md) and [01-PROGRESS-AND-HANDOFF.md](docs/employee-console/01-PROGRESS-AND-HANDOFF.md). These are a proposed **planning program**, not a completed Employee UI spec. Do not begin Employee implementation until the detailed CP0–CP11 package has been reviewed, audited and explicitly approved; the historical Customer master plan is not an Employee implementation handoff.
+> **Employee Console status (2026-11-09):** Detailed planning P1 (CP0–CP11) is complete and its final audit passed; implementation is authorized in the PR order of [CP11 §3](docs/employee-console/planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md). Before Employee work, read [docs/employee-console/README.md](docs/employee-console/README.md), the [progress ledger](docs/employee-console/01-PROGRESS-AND-HANDOFF.md) and the CP11 §4 reading list. Overall Frontend completion is tracked in [docs/FRONTEND-COMPLETION-PLAN.md](docs/FRONTEND-COMPLETION-PLAN.md).
 
 
 This repository implements the Mister World **Customer GUI**, **Employee Console**, **Frontend ↔ Backend live integration**, and scoped **AI Voice browser/runtime integration** in the approved Voice directories. The normal Frontend repository owner remains **김태우**; **이한결** owns only the scoped AI Voice implementation described below.

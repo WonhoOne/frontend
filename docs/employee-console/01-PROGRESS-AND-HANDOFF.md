@@ -1,10 +1,10 @@
 # Employee Console — Progress Ledger and Next-Session Handoff
 
 > Updated: 2026-11-09
-> Document phase: P1 — CP7 (implementation architecture)
-> Status: **P0, CP0–CP6 COMPLETE (CP6-G/H/I PASS); CP0 FROZEN (2026-11-09).**
-> P1 checkpoint progress: **CP0–CP6 COMPLETE; CP7 NEXT; CP8–CP11 NOT STARTED**
-> Next action: **CP7-A/B — implementation architecture against current code.**
+> Document phase: **P2 — implementation (E-PR1 next)**
+> Status: **P1 COMPLETE — CP0–CP11 PASS (2026-11-09). P2 implementation authorized (CP11, delegated decision).**
+> P1 checkpoint progress: **12 / 12 main CPs COMPLETE**
+> Next action: **E-PR1 Foundation & access** per [CP11 §3](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md).
 > Execution mode: owner delegated execution on 2026-11-09 — see [Frontend Completion Plan](../FRONTEND-COMPLETION-PLAN.md) §5 for what the agent decides and where it stops.
 
 ## 2026-11-09 — W1 closeout and delegated decisions
@@ -17,6 +17,14 @@
 | CP1-A | COMPLETE. Its open IA items were answered in CP1-B |
 | CP1-B | COMPLETE. **IA-01..IA-05, IA-07 APPROVED by DELEGATED DECISION 2026-11-09**: `/employee/login` on shared login API; Products list as landing, no dashboard; two primary areas (여행상품 / 재고 관리); addressable `/employee/tours`, `/employee/tours/new`, `/employee/tours/:tourId/edit`; stock add inside `/employee/inventory`; return to list after create. IA-08 → CP6-D, IA-10 → CP2/CP6 |
 | CP2-A | IN PROGRESS. Mobbin re-checked 2026-11-09: HTTP 403 bot block. **DELEGATED DECISION:** visual evidence from official Shopify/Square/Wix help-center screenshots, same PASS checklist (CP2-A §8) |
+
+## 2026-11-09 — CP7–CP11 COMPLETE, P1 FINAL AUDIT PASS
+
+- [CP7 Implementation Architecture](planning/CP7-IMPLEMENTATION-ARCHITECTURE.md): sibling `EmployeeRouteLayout` + `EmployeeAccessBoundary`; role-aware `login({ expectedRole })`; fixes identity-change private-cache leak (A-5) and Customer `authenticated == CUSTOMER` assumptions (A-4); module map; CI bootstrap env for real Employee E2E.
+- [CP8 API and Data Mapping](planning/CP8-API-AND-DATA-MAPPING.md): reuse TourProduct decoders; new Inventory decoder; write DTO rules; one error normalization with `unknown`; fieldErrors mapping.
+- [CP9 Accessibility and Device Scope](planning/CP9-ACCESSIBILITY-AND-DEVICE-SCOPE.md): desktop Chrome at 1280/1440/1024 + 200% zoom; A1–A14, L1–L4.
+- [CP10 QA Acceptance](planning/CP10-QA-ACCEPTANCE.md): per-screen test matrix; EJ01–EJ10 mock 10/10 and EJ01–EJ06 real 6/6 gate.
+- [CP11 Final Audit and Implementation Plan](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md): Program §I nine conditions PASS; PRs E-PR1 … E-PR5.
 
 ## 2026-11-09 — CP6-G/H/I PASS
 
@@ -64,14 +72,14 @@
 | [historical frontend PR #7](https://github.com/WonhoOne/frontend/pull/7) | reference: Customer implementation CP0–CP9 plan |
 | [closed frontend PR #44](https://github.com/WonhoOne/frontend/pull/44) | **CLOSED, NOT MERGED, NOT A CURRENT SPEC** |
 | P0 replacement planning PR | [Frontend PR #45 — P0 planning program](https://github.com/WonhoOne/frontend/pull/45), **MERGED 2026-10-13** |
-| Employee detailed planning CP0–CP11 | **CP0–CP6 COMPLETE**; CP7 NEXT |
+| Employee detailed planning CP0–CP11 | **COMPLETE (12/12), P1 final audit PASS** |
 | CP0-A PR branch | [PR #46 — Frontend runtime and reuse audit](https://github.com/WonhoOne/frontend/pull/46), **MERGED to main 2026-11-09** |
 | CP0-B stacked branch | [PR #47 — Backend contract audit](https://github.com/WonhoOne/frontend/pull/47), **MERGED to main 2026-11-09** |
 | CP0-C stacked PR | [PR #48 — Scope/device/demo gate](https://github.com/WonhoOne/frontend/pull/48), **MERGED to main 2026-11-09** |
 | CP1-A stacked PR | [PR #49 — Employee task flows](https://github.com/WonhoOne/frontend/pull/49), **MERGED to main 2026-11-09** |
 | CP1-B stacked PR | [PR #50 — Information architecture & role-safe routes](https://github.com/WonhoOne/frontend/pull/50), **MERGED to main 2026-11-09** |
 | CP2-A stacked PR | [PR #51 — Provider reference comparison (partial)](https://github.com/WonhoOne/frontend/pull/51), **MERGED to main 2026-11-09** |
-| Employee implementation | **NOT STARTED** |
+| Employee implementation | **AUTHORIZED; E-PR1 next** |
 
 ## Stage tracker
 
@@ -90,12 +98,12 @@
 | CP4 — operational motion/feedback | `COMPLETE (2026-11-09, delegated decision)` | [CP4 Motion and Feedback](planning/CP4-MOTION-AND-FEEDBACK.md) |
 | CP5 — data/mutation UI state | `COMPLETE (2026-11-09, delegated decision)` | [CP5 Data and Mutation States](planning/CP5-DATA-AND-MUTATION-STATES.md) |
 | CP6 — screens, cross-screen/contract/readiness audits | `COMPLETE (2026-11-09); CP6-G/H/I PASS` | [CP6-0](planning/CP6-0-SCREEN-INVENTORY.md), [screens](planning/screens/), [CP6-F](planning/CP6-F-CROSS-SCREEN-JOURNEYS.md), [audits](planning/audits/CP6-GHI-EMPLOYEE-SPEC-AUDITS.md) |
-| CP7 — implementation architecture | `NOT STARTED` | No design against existing modules |
-| CP8 — API/data UX | `NOT STARTED` | No final query/mutation policy |
-| CP9 — approved device scope + a11y | `NOT STARTED` | **A PC-only already approved**, exact desktop viewport/browser + keyboard/a11y checks still TBD |
-| CP10 — Employee QA acceptance | `NOT STARTED` | No per-screen E2E matrix |
-| CP11 — final audit and implementation handoff | `NOT STARTED` | No approved final implementation plan |
-| P2 coding | `BLOCKED ON P1 GATE` | Do not code on basis of P0 document |
+| CP7 — implementation architecture | `COMPLETE (2026-11-09)` | [CP7](planning/CP7-IMPLEMENTATION-ARCHITECTURE.md) |
+| CP8 — API/data UX | `COMPLETE (2026-11-09)` | [CP8](planning/CP8-API-AND-DATA-MAPPING.md) |
+| CP9 — approved device scope + a11y | `COMPLETE (2026-11-09)` | [CP9](planning/CP9-ACCESSIBILITY-AND-DEVICE-SCOPE.md) |
+| CP10 — Employee QA acceptance | `COMPLETE (2026-11-09)` | [CP10](planning/CP10-QA-ACCEPTANCE.md) |
+| CP11 — final audit and implementation handoff | `COMPLETE — P1 FINAL AUDIT PASS (2026-11-09)` | [CP11](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md) |
+| P2 coding | `AUTHORIZED — E-PR1 NEXT` | [CP11 §3](planning/CP11-FINAL-AUDIT-AND-IMPLEMENTATION-PLAN.md) |
 
 ## CP0-A verified key findings (2026-10-13, documentation-only)
 
@@ -157,9 +165,9 @@
 
 1. Verify actual GitHub state (main SHA, open PRs). Do not trust this text over GitHub.
 2. Read [Frontend Completion Plan](../FRONTEND-COMPLETION-PLAN.md) (§5 delegated rules, §7 ledger), current `WonhoOne/docs/main` and `frontend/AGENTS.md`.
-3. Do the ledger's next action only (currently **CP2-B**). Do not reopen CP0-C device scope, CP1-B IA-01..05/07 or CP2-A evidence.
+3. Do the ledger's next action only (currently **E-PR1**), using the CP11 §4 reading list. Do not reopen P1 decisions.
 4. Each CP unit: commit the artifact, update this ledger, PR to `main`, CI green, merge — then continue to the next CP.
-5. Employee code starts only after CP11 Final Audit PASS.
+5. P1 is complete; implement PRs in CP11 §3 order.
 
 ## Checkpoint update template
 
