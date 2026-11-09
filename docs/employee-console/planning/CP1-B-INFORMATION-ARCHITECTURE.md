@@ -1,6 +1,6 @@
 # CP1-B — Employee Console Information Architecture and Navigation
 
-> Status: DRAFT / DEPENDENT / OWNER IA APPROVAL PENDING
+> Status: **COMPLETE — merged to main via [PR #50](https://github.com/WonhoOne/frontend/pull/50) on 2026-11-09. IA-01..IA-05 and IA-07 APPROVED by DELEGATED DECISION (2026-11-09), see §8.**
 > Written: 2026-10-13 Asia/Seoul — Owner: frontend / 김태우
 > Source sequence: P0 planning PR #45 merged; CP0-A #46 → CP0-B #47 → CP0-C #48 → CP1-A #49 are all unmerged at inspection. This CP1-B branch depends on the unmerged CP1-A branch. Review and retarget in strict order.
 > Owner-confirmed CP0-C decision: A — PC-only Employee Console; mobile and tablet interfaces are NOT acceptance gates. Desktop keyboard accessibility still matters.
@@ -126,18 +126,20 @@ Do not automatically submit any mutation when entering a route, recovering login
 
 | Decision ID | Recommendation | Status / next |
 | --- | --- | --- |
-| IA-01 | Staff-facing /employee/login route; SAME backend login API | **PROPOSED** — owner CP1-B review |
-| IA-02 | Default work area Products, NO separate dashboard | **PROPOSED** — owner CP1-B review |
-| IA-03 | Two primary work areas Products/Inventory; no extra navigation domains | **PROPOSED** — owner CP1-B review |
-| IA-04 | Separate addressable Product list/create/edit URLs, potential shared form code | **PROPOSED** — owner CP1-B review |
-| IA-05 | Add inventory within Inventory overview, not separate route | **PROPOSED** — owner CP1-B review |
+| IA-01 | Staff-facing /employee/login route; SAME backend login API | **APPROVED — DELEGATED DECISION (2026-11-09)** |
+| IA-02 | Default work area Products, NO separate dashboard | **APPROVED — DELEGATED DECISION (2026-11-09)** |
+| IA-03 | Two primary work areas Products/Inventory; no extra navigation domains | **APPROVED — DELEGATED DECISION (2026-11-09)** |
+| IA-04 | Separate addressable Product list/create/edit URLs, potential shared form code | **APPROVED — DELEGATED DECISION (2026-11-09)** |
+| IA-05 | Add inventory within Inventory overview, not separate route | **APPROVED — DELEGATED DECISION (2026-11-09)** |
 | IA-06 | Employee shell separated from Customer Chrome & private-data lifecycle | **DESIGN CONSTRAINT** from CP0-A; CP7 implementation |
-| IA-07 | Return to Products after successful creation | **PROPOSED**, exact copy/focus CP6 |
+| IA-07 | Return to Products after successful creation | **APPROVED — DELEGATED DECISION (2026-11-09)**; exact copy/focus CP6-C |
 | IA-08 | Successful edit: remain vs return to list | **DEFERRED** CP6-D |
 | IA-09 | Safe Employee-only return URL, never use Customer ReservationDraft context unchanged | **PROPOSED POLICY**, CP7/8 method |
 | IA-10 | Inventory inline vs modal; sidebar vs topbar and visual direction | **DEFERRED** CP2 and CP6, requiring actual visual references |
 
-**Owner acceptance request:** Approve IA-01..IA-05 as a compact group or specify changes before marking this checkpoint COMPLETE. User's earlier “다음” authorizes research/drafting only, not silent approval of new route/landing decisions. A/B/C device policy is **already owner-approved A PC-only** and must NOT be revisited.
+**Delegated decision record (2026-11-09):** The owner delegated execution of the remaining Frontend work on 2026-11-09 ([Frontend Completion Plan §5](../../FRONTEND-COMPLETION-PLAN.md)). IA-01..IA-05 and IA-07 are approved as recommended above, because each recommendation follows directly from the source evidence in §1–§6 (Customer login side effects, no dashboard data, FR-10/FR-11 split, deep-link and dirty-form needs, no Inventory sub-resource). IA-08 stays deferred to CP6-D; IA-10 stays deferred to CP2/CP6. The candidate routes in §3 are now the approved Employee route plan; exact chrome and layout remain CP2/CP6 work.
+
+**Original owner acceptance request (2026-10-13):** Approve IA-01..IA-05 as a compact group or specify changes before marking this checkpoint COMPLETE. User's earlier “다음” authorizes research/drafting only, not silent approval of new route/landing decisions. A/B/C device policy is **already owner-approved A PC-only** and must NOT be revisited.
 
 ## 9. Candidate screen inventory for later CP6 (not final screen specifications)
 

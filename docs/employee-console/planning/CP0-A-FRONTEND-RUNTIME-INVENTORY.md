@@ -1,6 +1,6 @@
 # CP0-A — Existing Frontend Runtime and Reuse Inventory
 
-> Status: **REVIEW — source investigation complete, checkpoint artifact committed on PR branch; user review/merge pending**
+> Status: **COMPLETE — merged to main via [PR #46](https://github.com/WonhoOne/frontend/pull/46) on 2026-11-09** (review by delegated execution, see [Frontend Completion Plan §5](../../FRONTEND-COMPLETION-PLAN.md)). Body below preserves the 2026-10-13 audit text.
 > Date: 2026-10-13 (Asia/Seoul)
 > Owner: 김태우 / WonhoOne/frontend
 > Phase: P1 detailed Employee Console planning, **CP0-A only**
