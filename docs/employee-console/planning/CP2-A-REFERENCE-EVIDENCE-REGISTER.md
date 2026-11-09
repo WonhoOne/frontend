@@ -1,6 +1,6 @@
 # CP2-A — Real-Product Reference Research: Evidence Register and Visual-Access Blocker
 
-> **Status: PARTIAL / BLOCKED FOR MOBBIN SCREEN-LEVEL VISUAL PASS.** This is **not a completed CP2-A visual reference audit**, not an approved design direction and not permission to start CP2-B.
+> **Status: IN PROGRESS — partial register merged via [PR #51](https://github.com/WonhoOne/frontend/pull/51) on 2026-11-09. Visual evidence still required for PASS; Mobbin re-checked 2026-11-09 and blocked (HTTP 403), substitute visual source approved by delegated decision (§8).** Not an approved design direction and not permission to start CP2-B.
 > Date: 2026-10-13 (Asia/Seoul). Owner: 김태우 / WonhoOne/frontend.
 > Stage chain: P0 #45 merged; CP0-A #46 → CP0-B #47 → CP0-C #48 → CP1-A #49 → CP1-B #50 are **unmerged stacked PRs** at check; this CP2-A branch is based on CP1-B branch. Retarget review PRs to main one at a time after predecessor merge.
 > Confirmed scope: **A — Employee PC-only** (2026-10-13). Mobile/tablet layout acceptance not required.
@@ -130,3 +130,18 @@ The original planning program requires **visual inspection** of real reference s
 This source comparison is a **useful partial output**, not a substitute for actual Mobbin visual inspection. **Do not proceed to CP2-B as if CP2-A passed.**
 
 **New-chat instruction:** First review the [progress ledger](../01-PROGRESS-AND-HANDOFF.md), actual #46–#50 + this PR status and approved docs/main. Then finish CP2-A actual screenshot inspection with a connected Mobbin tool or browser-capable session. Review/approve CP1-B if not yet done. Append visual evidence cards and adjust the comparison matrix, then update ledger `CP2-A PASS` only on committed proof and owner gate. No employee UI code until P1 CP11.
+
+## 8. 2026-11-09 — Mobbin access re-check and substitute visual source
+
+**Re-check (2026-11-09):** The retained Mobbin flow URL `https://mobbin.com/flows/05cd9569-a24b-4d65-9e10-38fdf09fd88c` was opened in a real browser session. Mobbin returned **HTTP 403 "This request was blocked"** (bot protection), before any sign-in step. Bypassing bot protection is not an acceptable research method, so Mobbin remains unavailable for this project.
+
+**DELEGATED DECISION (2026-11-09) — substitute visual evidence source:**
+
+- CP2-A visual evidence will come from **screenshots embedded in the official public help documentation** of Shopify, Square and Wix (the same providers already compared in §2–§4), viewed directly in a browser.
+- Each evidence card records: provider, help-page URL, date viewed, which screenshot, what is **visibly observed** in the image, and what is only inferred.
+- The §6 PASS checklist still applies unchanged, except that "Mobbin" is read as "official provider screenshot". At least two providers per task (Product list, Product create/edit, Inventory read/add) remain required.
+- Help-center text without a viewed image stays labeled `OFFICIAL-DOC VERIFIED`, never `VISUALLY OBSERVED`.
+
+**Why:** the screenshots are first-party images of the real admin products; they are reachable without bypassing access controls; the deadline (2026-11-23) does not allow waiting for a Mobbin route that is blocked.
+
+**Next:** complete the visual evidence cards under this protocol (W2, first unit), then mark CP2-A PASS and start CP2-B.

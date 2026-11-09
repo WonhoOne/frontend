@@ -78,7 +78,7 @@ Voice 디렉터리(`src/integrations/voice`, `src/features/voice-bridge`)는 이
 
 | ID | 기준 | 현재 |
 | --- | --- | --- |
-| D-B1 | Employee CP0–CP11이 각 output gate를 통과하고 main에 머지됨 | 🟡 CP0~CP2-A 초안/리뷰 |
+| D-B1 | Employee CP0–CP11이 각 output gate를 통과하고 main에 머지됨 | 🟡 CP0, CP1 완료 / CP2-A 진행 중 |
 | D-B2 | Employee 로그인 + 역할 구분: EMPLOYEE는 Employee 영역에 진입, CUSTOMER/비로그인은 차단, 401/403 복구 | ⬜ |
 | D-B3 | TourProduct 목록 / 생성 / 수정: Theme별 허용 Style 전체의 KRW 가격, 409 `TOUR_PRODUCT_THEME_LOCKED` 처리 | ⬜ |
 | D-B4 | Inventory 조회 + 양수 수량 추가: 추가는 delta, 불확실한 POST 결과에서 자동 재시도 없음 | ⬜ |
@@ -163,9 +163,9 @@ CP / 구현 단위 1개
 
 | WS | 상태 | 근거 | 업데이트 |
 | --- | --- | --- | --- |
-| W0 | IN PROGRESS | 이 문서 PR | 2026-11-09 |
-| W1 | NOT STARTED | — | — |
-| W2 | NOT STARTED | — | — |
+| W0 | COMPLETE | [PR #52](https://github.com/WonhoOne/frontend/pull/52) merged | 2026-11-09 |
+| W1 | COMPLETE | #46–#51 merged in order; delegated decisions recorded in Employee ledger (W1 closeout PR) | 2026-11-09 |
+| W2 | IN PROGRESS | CP2-A visual evidence cards (official provider screenshots) | 2026-11-09 |
 | W3 | NOT STARTED | — | — |
 | W4 | NOT STARTED | — | — |
 | W5 | NOT STARTED | — | — |

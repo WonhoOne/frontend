@@ -1,6 +1,6 @@
 # CP1-A — Employee Operator Tasks and End-to-End Task Flows
 
-> **Status: DRAFT / DEPENDENT; CP0 review-and-merge gate is NOT yet complete.** This document is not an approved Employee IA, visual design, route table or screen specification.
+> **Status: COMPLETE — merged to main via [PR #49](https://github.com/WonhoOne/frontend/pull/49) on 2026-11-09.** Open items in §6 were handed to CP1-B and later CPs; CP1-B resolved IA entry/navigation on 2026-11-09.
 > Authored 2026-10-13 (Asia/Seoul), owner 김태우 / `WonhoOne/frontend`.
 > Source chain: P0 program [#45 MERGED](https://github.com/WonhoOne/frontend/pull/45) → [CP0-A #46](https://github.com/WonhoOne/frontend/pull/46) → [CP0-B #47](https://github.com/WonhoOne/frontend/pull/47) → [CP0-C #48](https://github.com/WonhoOne/frontend/pull/48) → **this CP1-A dependent draft**.
 > **OWNER-APPROVED CP0-C DEC-C01: A — PC-only web Employee Console.** Tablet/phone not support acceptance targets. No further device vote is needed.

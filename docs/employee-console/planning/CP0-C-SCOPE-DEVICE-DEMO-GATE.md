@@ -1,6 +1,6 @@
 # CP0-C — Employee Console Scope, Device Policy and Demo Readiness
 
-> **Status: REVIEW — device-policy DEC-C01 APPROVED A (PC-only); PR merge and final CP0 signoff pending. Do NOT mark CP0 frozen while #46/#47/#48 are unmerged.**
+> **Status: COMPLETE — merged to main via [PR #48](https://github.com/WonhoOne/frontend/pull/48) on 2026-11-09. CP0 FROZEN.** DEC-C01 owner-approved A (PC-only); DEC-C02/C04/C06 resolved by delegated decision on 2026-11-09 (§9). DEC-C03/C05 remain open as recorded.
 > Date: 2026-10-13 (Asia/Seoul)
 > Owner: 김태우 / `WonhoOne/frontend`
 > Program: [P0 approved planning program](../00-PLANNING-PROGRAM.md) → P1 CP0-C → CP1-A
@@ -171,11 +171,11 @@ CP0-C is the place to record who runs the demonstration and where. The source do
 | Decision ID | Question | Current state | Impact/next owner |
 | --- | --- | --- | --- |
 | **DEC-C01 (RESOLVED 2026-10-13)** | Employee responsive scope | **CONFIRMED: A — PC-only**. Desktop browser flows required, tablet/phone not acceptance targets | Owner decision accepted; feed into CP1 and CP9 |
-| DEC-C02 | Is proposed minimal demo D1–D4 sufficient for presentation, or is there an additional required employee operation? | **PROPOSED**, user/team may amend | User/team; only add scope docs-first if real assignment demands |
+| DEC-C02 | Is proposed minimal demo D1–D4 sufficient for presentation, or is there an additional required employee operation? | **DELEGATED DECISION (2026-11-09): ACCEPTED D1–D4.** They cover every approved Employee operation (FR-01/10/11); D5 negative cases are QA evidence, not live-demo steps | Team may still amend docs-first if the assignment demands more |
 | DEC-C03 | Local vs hosted demo? Is real Employee user provisioned in target DB? Who can reset fixtures? | **RUNTIME UNVERIFIED** | Backend/demo operator by P2 testing; not prerequisite to designing CP1 |
-| DEC-C04 | Are the suggested Oct31 planning/Nov16 coding targets realistic relative to team assignments? | **PROPOSED**, not contractual | User/team may change; protect Nov23/24 due dates |
+| DEC-C04 | Are the suggested Oct31 planning/Nov16 coding targets realistic relative to team assignments? | **SUPERSEDED (2026-11-09)** by [Frontend Completion Plan §4](../../FRONTEND-COMPLETION-PLAN.md) schedule: P1 by 11/13, P2 11/14–11/19, release 11/21–11/22 | Owner delegated execution; Nov23/24 dates unchanged |
 | DEC-C05 | Were Oct12 report and Oct13 presentation delivered? | **UNKNOWN**; no retroactive assumption | User/team administrative follow-up, not Employee API blocker |
-| DEC-C06 | What browser(s) must be demonstrated? | **UNSPECIFIED BY ASSIGNMENT**; existing frontend Playwright uses Chromium | CP9/CP10, user may specify |
+| DEC-C06 | What browser(s) must be demonstrated? | **DELEGATED DECISION (2026-11-09): desktop Chrome** (automated evidence: Playwright Chromium), matching the B9 final smoke browser | CP9 fixes exact viewport matrix |
 
 **CP0 freeze criteria:** (1) owner approves device choice; (2) confirmed/approved scope and explicit non-goals; (3) demo proposal accepted or bounded outstanding questions assigned; (4) no unaddressed blocker to CP1 IA; (5) CP0-A/B/C artifacts each committed/reviewed/merged in dependency order; (6) progress ledger reflects actual evidence.
 

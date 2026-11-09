@@ -1,6 +1,6 @@
 # CP0-B — Approved Employee API Contract vs Backend Implementation Audit
 
-> Status: **REVIEW / NOT MERGED** — source inspection complete and this checkpoint report persisted to a documentation-only review branch.
+> Status: **COMPLETE — merged to main via [PR #47](https://github.com/WonhoOne/frontend/pull/47) on 2026-11-09.** Key claims re-checked against backend/main `597cf92` on 2026-11-09 (EmployeeBootstrap disabled by default; `/api/v1/employee/**` requires EMPLOYEE). Body below preserves the 2026-10-13 audit text.
 > Date: 2026-10-13 (Asia/Seoul)
 > Owner: 김태우 / `WonhoOne/frontend`
 > Phase: P1 detailed planning, **CP0-B only**
