@@ -79,6 +79,8 @@ export const stubGolfProduct: StubTourProduct = {
 export async function routeEmployeeTours(
   page: Page,
   initial: StubTourProduct[] = [stubGolfProduct],
+  /** Products that have a linked schedule: a different-Theme PUT returns 409 (BR-31). */
+  scheduledIds: ReadonlySet<number> = new Set([stubGolfProduct.id]),
 ) {
   const products = [...initial];
   const writes: unknown[] = [];
@@ -109,6 +111,53 @@ export async function routeEmployeeTours(
         status: 201,
         contentType: 'application/json',
         body: JSON.stringify(created),
+      });
+      return;
+    }
+
+    if (request.method() === 'PUT') {
+      const id = Number(new URL(request.url()).pathname.split('/').at(-1));
+      const index = products.findIndex((product) => product.id === id);
+      const body = request.postDataJSON() as Omit<StubTourProduct, 'id' | 'availableStyles'>;
+      writes.push(body);
+      const current = products[index];
+
+      if (current === undefined) {
+        await route.fulfill({
+          status: 404,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            code: 'TOUR_PRODUCT_NOT_FOUND',
+            message: 'Synthetic',
+            fieldErrors: [],
+          }),
+        });
+        return;
+      }
+
+      if (scheduledIds.has(id) && current.theme !== body.theme) {
+        await route.fulfill({
+          status: 409,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            code: 'TOUR_PRODUCT_THEME_LOCKED',
+            message: 'Synthetic',
+            fieldErrors: [],
+          }),
+        });
+        return;
+      }
+
+      const updated: StubTourProduct = {
+        id,
+        ...body,
+        availableStyles: body.stylePrices.map(({ style }) => style),
+      };
+      products[index] = updated;
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(updated),
       });
       return;
     }
