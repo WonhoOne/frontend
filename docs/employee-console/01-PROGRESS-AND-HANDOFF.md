@@ -1,10 +1,10 @@
 # Employee Console — Progress Ledger and Next-Session Handoff
 
 > Updated: 2026-11-09
-> Document phase: P1 — CP3 (component reuse)
-> Status: **P0, CP0, CP1 COMPLETE; CP0 FROZEN. CP2-A PASS, CP2-B COMPLETE (2026-11-09).**
-> P1 checkpoint progress: **CP0-A/B/C, CP1-A/B COMPLETE; CP2-A PASS; CP2-B COMPLETE; CP3-A NEXT; CP3-B onward NOT STARTED**
-> Next action: **CP3-A — Customer primitive reuse audit** for the compositions in [CP2-B](planning/CP2-B-VISUAL-DIRECTION.md).
+> Document phase: P1 — CP4 (motion / feedback)
+> Status: **P0, CP0, CP1, CP2, CP3 COMPLETE; CP0 FROZEN (2026-11-09).**
+> P1 checkpoint progress: **CP0–CP3 COMPLETE; CP4 NEXT; CP5 onward NOT STARTED**
+> Next action: **CP4 — operational motion and feedback.**
 > Execution mode: owner delegated execution on 2026-11-09 — see [Frontend Completion Plan](../FRONTEND-COMPLETION-PLAN.md) §5 for what the agent decides and where it stops.
 
 ## 2026-11-09 — W1 closeout and delegated decisions
@@ -17,6 +17,12 @@
 | CP1-A | COMPLETE. Its open IA items were answered in CP1-B |
 | CP1-B | COMPLETE. **IA-01..IA-05, IA-07 APPROVED by DELEGATED DECISION 2026-11-09**: `/employee/login` on shared login API; Products list as landing, no dashboard; two primary areas (여행상품 / 재고 관리); addressable `/employee/tours`, `/employee/tours/new`, `/employee/tours/:tourId/edit`; stock add inside `/employee/inventory`; return to list after create. IA-08 → CP6-D, IA-10 → CP2/CP6 |
 | CP2-A | IN PROGRESS. Mobbin re-checked 2026-11-09: HTTP 403 bot block. **DELEGATED DECISION:** visual evidence from official Shopify/Square/Wix help-center screenshots, same PASS checklist (CP2-A §8) |
+
+## 2026-11-09 — CP3 COMPLETE (delegated decision)
+
+- [CP3 Component Reuse and Contracts](planning/CP3-COMPONENT-REUSE-AND-CONTRACTS.md): reuse `Button`, `TextField`, `Dialog`, `Skeleton`/`LoadingState`, `EmptyState`, `SectionError`, `PageContainer` as-is; do not use `PageShell`, Customer headers, `OptionCard`, `BottomSheet`, `ImageFrame`.
+- New shared: `formatKrw`, `SelectField`, `TextAreaField`. Employee-only: `EmployeeShell`, `EmployeePageHeader`, `ProductTable`, `ThemeLabel`, `StylePriceList`, `ProductForm`, `KrwAmountField`, `EditorActionBar`, `InventoryTable`, `StockAddDialog`, `EmployeeLoginForm`.
+- One cross-feature public dependency: `tourThemeTitle(theme)` exported from `tour-discovery`.
 
 ## 2026-11-09 — CP2-B COMPLETE (delegated decision)
 
@@ -43,7 +49,7 @@
 | [historical frontend PR #7](https://github.com/WonhoOne/frontend/pull/7) | reference: Customer implementation CP0–CP9 plan |
 | [closed frontend PR #44](https://github.com/WonhoOne/frontend/pull/44) | **CLOSED, NOT MERGED, NOT A CURRENT SPEC** |
 | P0 replacement planning PR | [Frontend PR #45 — P0 planning program](https://github.com/WonhoOne/frontend/pull/45), **MERGED 2026-10-13** |
-| Employee detailed planning CP0–CP11 | **CP0, CP1, CP2 COMPLETE**; CP3-A NEXT |
+| Employee detailed planning CP0–CP11 | **CP0–CP3 COMPLETE**; CP4 NEXT |
 | CP0-A PR branch | [PR #46 — Frontend runtime and reuse audit](https://github.com/WonhoOne/frontend/pull/46), **MERGED to main 2026-11-09** |
 | CP0-B stacked branch | [PR #47 — Backend contract audit](https://github.com/WonhoOne/frontend/pull/47), **MERGED to main 2026-11-09** |
 | CP0-C stacked PR | [PR #48 — Scope/device/demo gate](https://github.com/WonhoOne/frontend/pull/48), **MERGED to main 2026-11-09** |
@@ -65,7 +71,7 @@
 | CP1-B — site IA/navigation | `COMPLETE / IA-01..05, IA-07 DELEGATED APPROVAL` | [CP1-B Information Architecture](planning/CP1-B-INFORMATION-ARCHITECTURE.md): proposals only for Employee login, Product/Inventory nav, create/edit URL structure, role-safe deep links. No routes approved. |
 | CP2-A — reference screen and flow audit | `PASS (2026-11-09)` | [CP2-A provider reference evidence](planning/CP2-A-REFERENCE-EVIDENCE-REGISTER.md) compares official Shopify/Wix/Square documented Product/Inventory interactions; actual Mobbin screenshots not accessible/viewed, so **NO CP2-A PASS** |
 | CP2-B — visual direction | `COMPLETE (2026-11-09, delegated decision)` | [CP2-B Visual Direction](planning/CP2-B-VISUAL-DIRECTION.md) |
-| CP3 — component/design-system reuse | `NOT STARTED` | No reuse matrix |
+| CP3 — component/design-system reuse | `COMPLETE (2026-11-09, delegated decision)` | [CP3 Component Reuse and Contracts](planning/CP3-COMPONENT-REUSE-AND-CONTRACTS.md) |
 | CP4 — operational motion/feedback | `NOT STARTED` | No motion contract |
 | CP5 — data/mutation UI state | `NOT STARTED` | No state-machine evidence |
 | CP6 — screens, cross-screen/contract/readiness audits | `NOT STARTED` | No Employee screen specs |
