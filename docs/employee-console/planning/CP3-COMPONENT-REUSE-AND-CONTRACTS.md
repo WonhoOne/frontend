@@ -52,7 +52,7 @@ Final file locations follow CP7 module ownership; names and responsibilities are
 | `EmployeePageHeader` | H1 (`heading-lg`), optional muted count, optional breadcrumb link, actions slot (right) | One H1 per page; count rendered as text, e.g. `여행상품 12` |
 | `ProductTable` | Native `<table>` with `<caption>` (visually hidden), columns 상품명 (link) / 테마 / 스타일별 1인 가격 | `<th scope="col">`; name cell is the only interactive element per row |
 | `ThemeLabel` | 8px Theme dot + Theme title text | Dot is `aria-hidden`; text always present (never color-only) |
-| `StylePriceList` | Read-only "CLASSIC 890,000원 · GRAND …" in fixed style order | Uses `formatKrw`; numbers `tabular-nums` |
+| `StylePriceList` | Read-only "Classic ₩890,000 · Grand …" in fixed style order | Uses `formatKrw`; numbers `tabular-nums` |
 | `ProductForm` | Theme `SelectField` first, 상품명 `TextField`, 설명 `TextAreaField`, one KRW field per allowed style | Theme change re-renders price rows for the new allowed set (CP5 decides value carry-over); field errors mapped from `fieldErrors[]` by field path |
 | `KrwAmountField` | `TextField` with `inputMode="numeric"`, suffix "원", helper shows formatted amount | Digits only; positive integer; never sends formatted text |
 | `EditorActionBar` | Sticky bottom bar inside editor: `취소` (secondary), `저장` (primary, `isLoading` while saving) | Edit mode: `저장` disabled until dirty; DOM order after last field |

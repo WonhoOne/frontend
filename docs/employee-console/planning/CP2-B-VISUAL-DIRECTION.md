@@ -57,14 +57,14 @@
 여행상품  12                                               [ + 새 여행상품 ]
 ┌──────────────────────────────────────────────────────────────────────────┐
 │ 상품명                     테마              스타일별 1인 가격              │
-│ 제주 올레 트레킹 5일 →      ● Outdoor Trekking  CLASSIC 890,000원 · GRAND …  │
+│ 제주 올레 트레킹 5일 →      ● Outdoor Trekking  Classic ₩890,000 · Grand …  │
 │ …                                                                        │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
 - H1 + muted count (V2); one primary action top-right (V1, V2).
 - Native `<table>` in a card. Product name is the row link to edit (V1); no separate Edit button column.
-- Theme: dot + the same Theme title the Customer app already shows (`themeDiscoveryPresentations.ts`, e.g. "Outdoor Trekking"), so one Theme has one name across the product. Prices: allowed styles in fixed order CLASSIC → GRAND → PREMIUM, KRW with thousands separators, right-aligned numbers inside the cell.
+- Theme: dot + the same Theme title the Customer app already shows (`themeDiscoveryPresentations.ts`, e.g. "Outdoor Trekking"), so one Theme has one name across the product. Prices: allowed styles in fixed order Classic → Grand → Premium, KRW via `formatKrw` (e.g. `₩890,000`, same as Customer), right-aligned numbers inside the cell.
 - No checkboxes, filters, saved views, thumbnails, status badges (no data or API, CP2-A §9).
 - Empty state uses the existing `EmptyState` with a single primary action (V1 empty card).
 
@@ -79,8 +79,8 @@
 │ 설명   [textarea]                       │
 └─────────────────────────────────────────┘
 ┌ 스타일별 1인 가격 ───────────────────────┐
-│ GRAND   [ 1,200,000 ] 원                │  ← rows appear for the selected Theme only
-│ PREMIUM [ 1,800,000 ] 원                │
+│ Grand   [ 1,200,000 ] 원                │  ← rows appear for the selected Theme only
+│ Premium [ 1,800,000 ] 원                │
 └─────────────────────────────────────────┘
 ──────────────────────────────────────────── sticky action bar
                                 [취소]  [저장]
