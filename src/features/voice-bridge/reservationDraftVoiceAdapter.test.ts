@@ -311,16 +311,8 @@ describe('ReservationDraft Voice adapter', () => {
     });
     const context = selectableContext();
     context.resolveTransportSelectionKey = (option) => option;
-    // Simulate the result from Frontend-owned #66; Voice contains no capacity mapping.
-    const validateCandidateTransportCapacity = vi.fn(
-      ({ participantCount, transportSelectionKey }: {
-        participantCount: number | null;
-        transportSelectionKey: string | null;
-      }) =>
-        participantCount === 4 && transportSelectionKey === 'PRIVATE_LUXURY_CAR_2'
-          ? ('exceeded' as const)
-          : ('fits' as const),
-    );
+    // Simulate a rejection from the common validator. Voice owns no capacity mapping.
+    const validateCandidateTransportCapacity = vi.fn(() => 'exceeded' as const);
     context.validateCandidateTransportCapacity = validateCandidateTransportCapacity;
     const h = harness({ draft: initial, context });
 
