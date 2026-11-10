@@ -189,6 +189,27 @@ describe('live Runtime → Interpreter → V6-A/B → Provider → GUI', () => {
     expect(screen.getByRole('checkbox', { name: /Champagne/ })).not.toBeChecked();
   });
 
+  it('preserves the Draft and explains transport capacity when common preflight rejects a Voice command', () => {
+    const initial = {
+      ...readyDraft(),
+      participantCount: 4,
+      configuration: {
+        hotelSelectionKey: 'HOTEL_4_STAR',
+        transportSelectionKey: 'PREMIUM_VAN_10',
+        mealSelectionKey: 'LOCAL_RESTAURANT',
+        extraSelectionKeys: [],
+      },
+    };
+    const { recognition } = mount(initial);
+    const before = observed;
+    say(recognition, '차량 2인 럭셔리 차량으로 변경');
+    expect(observed).toBe(before);
+    expect(observed.configuration.transportSelectionKey).toBe('PREMIUM_VAN_10');
+    expect(screen.getByRole('status')).toHaveTextContent('cannot carry that many participants');
+    expect(screen.getByRole('status')).toHaveTextContent('No changes were made');
+    expect(screen.getByRole('status')).toHaveTextContent('in the form');
+  });
+
   it('uses latest GUI Draft and never resurrects removed Premium Champagne across remount', () => {
     const first = mount();
     fireEvent.click(screen.getByRole('button', { name: 'GUI Champagne' }));
