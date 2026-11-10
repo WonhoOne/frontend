@@ -170,6 +170,7 @@ CP / 구현 단위 1개
 | W3 | COMPLETE | E-PR1–E-PR5 merged (#57–#61); Employee release gate met | 2026-11-09 |
 | W4 | COMPLETE | D-A4, D-A7 (#62); D-A6 (#63 + §9); D-A5 + Configure invalid-id fix (#64) | 2026-11-09 |
 | W5 | COMPLETE | Code freeze `dbcf793`; local release gate PASS; release record + demo runbook | 2026-11-09 |
+| W6 | IN PROGRESS | UML ↔ 구현 감사 후속 (#66 D-01 결함 수정, #67 Employee 대응표). [Conformance](conformance/README.md) | 2026-11-10 |
 
 ---
 

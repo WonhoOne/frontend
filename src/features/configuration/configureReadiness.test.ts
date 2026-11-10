@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   createContractNeutralConfigureFixture,
   createReadyConfigureRuntimeState,
+  createSharedContractConfigureScenario,
   getConfigureReadiness,
 } from '@/features/configuration';
 import { createEmptyReservationDraft, type ReservationDraftV1 } from '@/features/reservation';
@@ -221,6 +222,66 @@ describe('Configure readiness', () => {
     ).toEqual({
       isReady: true,
       issues: [],
+    });
+  });
+
+  describe('transport capacity (BR-20, frontend#66)', () => {
+    function sharedDraft(participantCount: number | null, transport: string | null) {
+      return {
+        ...readyDraft(),
+        participantCount,
+        configuration: {
+          hotelSelectionKey: 'HOTEL_4_STAR',
+          transportSelectionKey: transport,
+          mealSelectionKey: 'LOCAL_RESTAURANT',
+          extraSelectionKeys: [],
+        },
+      };
+    }
+    const groups = createSharedContractConfigureScenario().groups;
+
+    it('blocks Review when travellers exceed the selected transport capacity', () => {
+      expect(
+        getConfigureReadiness({
+          draft: sharedDraft(4, 'PRIVATE_LUXURY_CAR_2'),
+          expectedTourProductId: '101',
+          groups,
+          participantRule: 'general',
+        }),
+      ).toEqual({ isReady: false, issues: ['transport-capacity'] });
+    });
+
+    it.each([
+      [4, 'PREMIUM_VAN_10'],
+      [2, 'PRIVATE_LUXURY_CAR_2'],
+    ])('allows %i travellers with %s', (participantCount, transport) => {
+      expect(
+        getConfigureReadiness({
+          draft: sharedDraft(participantCount, transport),
+          expectedTourProductId: '101',
+          groups,
+          participantRule: 'general',
+        }),
+      ).toEqual({ isReady: true, issues: [] });
+    });
+
+    it('does not add a capacity issue while the count or transport is still missing', () => {
+      expect(
+        getConfigureReadiness({
+          draft: sharedDraft(null, 'PRIVATE_LUXURY_CAR_2'),
+          expectedTourProductId: '101',
+          groups,
+          participantRule: 'general',
+        }).issues,
+      ).toEqual(['participants']);
+      expect(
+        getConfigureReadiness({
+          draft: sharedDraft(4, null),
+          expectedTourProductId: '101',
+          groups,
+          participantRule: 'general',
+        }).issues,
+      ).toEqual(['transport']);
     });
   });
 });

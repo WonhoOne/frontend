@@ -703,3 +703,40 @@ describe('ReservationReviewPage composition', () => {
     await waitFor(() => expect(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY)).toBeNull());
   });
 });
+
+describe('ReservationReviewPage transport capacity (BR-20, frontend#66)', () => {
+  it('blocks a restored draft whose travellers exceed the transport capacity without sending it', async () => {
+    const storage = new MemoryStorage();
+    const saved = serializeReservationDraft({
+      ...completeDraft(),
+      participantCount: 4,
+      configuration: {
+        ...completeDraft().configuration,
+        transportSelectionKey: 'PRIVATE_LUXURY_CAR_2',
+      },
+    });
+    storage.setItem(RESERVATION_DRAFT_STORAGE_KEY, saved);
+    const createReservation = vi.fn();
+    const dataSource: ReservationDataSource = { createReservation, getReservation: vi.fn() };
+
+    render(
+      <ReservationDraftProvider storage={storage} now={() => 10}>
+        <MemoryRouter initialEntries={['/reservation/review']}>
+          <ReservationReviewPage dataSource={dataSource} />
+        </MemoryRouter>
+      </ReservationDraftProvider>,
+    );
+
+    expect(await screen.findByText('Transport capacity needs attention')).toBeVisible();
+    const submit = screen.getByRole('button', { name: 'Correct before applying' });
+    expect(submit).toBeDisabled();
+    fireEvent.click(submit);
+    expect(createReservation).not.toHaveBeenCalled();
+    expect(screen.getByRole('link', { name: 'Correct configuration' })).toHaveAttribute(
+      'href',
+      '/tours/42/configure',
+    );
+    // Draft는 자동으로 고치지 않는다.
+    expect(storage.getItem(RESERVATION_DRAFT_STORAGE_KEY)).toBe(saved);
+  });
+});

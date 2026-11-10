@@ -40,6 +40,13 @@ export {
 } from '@/features/reservation/participantCount';
 
 export {
+  checkTransportCapacity,
+  TRANSPORT_CAPACITY,
+  type TransportCapacityCandidate,
+  type TransportCapacityCheck,
+} from '@/features/reservation/transportCapacity';
+
+export {
   getConfigureDraftEntryState,
   getReviewDraftHandoffState,
   type ConfigureDraftEntryState,
