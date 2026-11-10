@@ -15,7 +15,11 @@ import {
   createReadyConfigureRuntimeState,
   type ConfigureRuntimeState,
 } from '@/features/configuration/configureRuntimeState';
-import { useReservationDraft, type ParticipantCountRule } from '@/features/reservation';
+import {
+  checkTransportCapacity,
+  useReservationDraft,
+  type ParticipantCountRule,
+} from '@/features/reservation';
 
 import styles from '@/features/configuration/ConfigureDesktop.module.css';
 
@@ -104,6 +108,17 @@ export function ConfigureDesktop({
     runtimeState,
   });
 
+  // BR-20: 인원 수와 차량을 모두 정했을 때만 판정한다. 정원을 넘어도 선택을 바꾸지 않고
+  // Transport 그룹에서 이유를 알린다. Review 차단은 readiness가 같은 검사로 처리한다.
+  const transportCapacity = checkTransportCapacity({
+    participantCount: draft.participantCount,
+    transportSelectionKey: draft.configuration.transportSelectionKey,
+  });
+  const transportCapacityNotice =
+    transportCapacity.status === 'exceeded'
+      ? `The selected transport seats up to ${transportCapacity.capacity} travellers, but ${transportCapacity.participantCount} are traveling. Choose another transport or change the traveller count.`
+      : null;
+
   function selectConfiguration(category: ConfigurationCategory, selectionKey: string) {
     const updatedAt = now();
 
@@ -189,6 +204,7 @@ export function ConfigureDesktop({
             onSelect={(selectionKey) => selectConfiguration(group.category, selectionKey)}
             runtimeState={runtimeState.groups[group.category]}
             selectedKey={selectedKeyForCategory(group.category, draft.configuration)}
+            selectionNotice={group.category === 'transport' ? transportCapacityNotice : null}
             {...(group.category === 'extras'
               ? {
                   selectedKeys: draft.configuration.extraSelectionKeys,

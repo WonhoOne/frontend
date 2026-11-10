@@ -162,7 +162,9 @@ export function MobileTripSummary({
             <p className={styles.requirements}>
               {readiness.issues.includes('extras')
                 ? 'Remove an unavailable Extra before continuing.'
-                : 'Complete the participant count, Hotel, Transport, and Meal to continue.'}
+                : readiness.issues.includes('transport-capacity')
+                  ? 'Too many travellers for the selected Transport. Choose another Transport or change the traveller count.'
+                  : 'Complete the participant count, Hotel, Transport, and Meal to continue.'}
             </p>
           ) : null}
         </div>

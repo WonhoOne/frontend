@@ -16,6 +16,11 @@ interface ConfigurationOptionGroupProps {
   runtimeState?: ConfigurationGroupRuntimeState;
   onRetry?: () => void;
   onReturnToTour?: () => void;
+  /**
+   * 선택은 유효하지만 다른 선택과 함께 쓸 수 없을 때의 안내 (예: 인원이 차량 정원을 넘음).
+   * 옵션을 잠그거나 바꾸지 않고 이유만 알린다.
+   */
+  selectionNotice?: string | null;
 }
 
 function GroupLoading({ heading }: { heading: string }) {
@@ -100,6 +105,7 @@ export function ConfigurationOptionGroup({
   runtimeState = { status: 'ready' },
   onRetry = () => undefined,
   onReturnToTour = () => undefined,
+  selectionNotice = null,
 }: ConfigurationOptionGroupProps) {
   const headingId = useId();
   const isMultiple = group.selectionMode === 'multiple';
@@ -132,6 +138,12 @@ export function ConfigurationOptionGroup({
           <div className={styles.invalidNotice} role="alert">
             Your selected {group.heading.toLowerCase()} option is no longer available. Change the
             selection.
+          </div>
+        ) : null}
+
+        {selectionNotice !== null ? (
+          <div className={styles.invalidNotice} role="alert">
+            {selectionNotice}
           </div>
         ) : null}
 

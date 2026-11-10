@@ -5,6 +5,7 @@ import {
   type ConfigureRuntimeState,
 } from '@/features/configuration/configureRuntimeState';
 import {
+  checkTransportCapacity,
   validateParticipantCount,
   type ParticipantCountRule,
   type ReservationDraftV1,
@@ -17,6 +18,7 @@ export type ConfigureReadinessIssue =
   | 'participants'
   | 'hotel'
   | 'transport'
+  | 'transport-capacity'
   | 'meal'
   | 'extras';
 
@@ -61,8 +63,10 @@ function requiredGroupIsReady({
  *
  * CONTRACT:
  * - Backend final validation authority를 대체하지 않는다.
- * - availability/capacity/price business rule을 재계산하지 않는다.
+ * - availability/price business rule을 재계산하지 않는다.
  * - 현재 보이는 selectable option과 known blocking runtime state만 확인한다.
+ * - 예외: 인원 대비 차량 정원(BR-20)은 Shared Contract에 고정된 값이라 미리 확인한다.
+ *   신청 후 422로 알게 되는 대신 Review 전에 막는다 (UML 감사 D-01, frontend#66).
  * - refreshing/stale/offline policy를 임의로 blocking rule로 만들지 않는다.
  */
 export function getConfigureReadiness({
@@ -118,6 +122,15 @@ export function getConfigureReadiness({
     })
   ) {
     issues.push('transport');
+  }
+
+  if (
+    checkTransportCapacity({
+      participantCount: draft.participantCount,
+      transportSelectionKey: draft.configuration.transportSelectionKey,
+    }).status === 'exceeded'
+  ) {
+    issues.push('transport-capacity');
   }
 
   const mealGroup = groups.find((group) => group.category === 'meal');

@@ -19,6 +19,7 @@ import { routeBuilders, routePaths } from '@/app/router/paths';
 import { saveReturnContext } from '@/features/auth';
 import {
   canonicalReservationCreateIdentityResolver,
+  checkTransportCapacity,
   createConfirmedReservationTransition,
   createReservationIntent,
   createReservationMutationController,
@@ -190,6 +191,13 @@ export function ReservationReviewPage({
   const [mutationState, setMutationState] = useState<ReservationMutationState>(mutation.getState());
   const [conflictTruthState, setConflictTruthState] = useState<ConflictTruthState>('idle');
   const handoff = getReviewDraftHandoffState({ draft, hydrationStatus });
+  // WHY: 복원된 Draft나 Voice로 바뀐 Draft도 Review에 들어올 수 있다. BR-20(차량 정원 ≥ 인원)을
+  // 넘으면 Backend가 422로 거절할 요청이므로 보내기 전에 막고 Configure 정정으로 안내한다 (frontend#66).
+  const transportCapacityExceeded =
+    checkTransportCapacity({
+      participantCount: draft.participantCount,
+      transportSelectionKey: draft.configuration.transportSelectionKey,
+    }).status === 'exceeded';
 
   /**
    * 제출 흐름:
@@ -201,7 +209,7 @@ export function ReservationReviewPage({
    */
   async function submitReservation() {
     const intent = createReservationIntent(draft, canonicalReservationCreateIdentityResolver);
-    if (intent.status !== 'ready') return;
+    if (intent.status !== 'ready' || transportCapacityExceeded) return;
 
     setConflictTruthState('idle');
 
@@ -260,7 +268,11 @@ export function ReservationReviewPage({
   function renderReview(resolver: ReservationReviewSelectionResolver) {
     const review = createReservationReviewModel(draft, resolver);
     if (review !== null) {
-      const validation = presentReservationReviewValidation({ status: 'valid' });
+      const validation = presentReservationReviewValidation(
+        transportCapacityExceeded
+          ? { status: 'blocking', reason: 'transport-capacity-invalid' }
+          : { status: 'valid' },
+      );
       const submitting = mutationState.status === 'submitting';
       const submitRecovery =
         mutationState.status === 'failure'
@@ -378,6 +390,11 @@ export function ReservationReviewPage({
             >
               <h2 id="review-validation">{validation.title}</h2>
               <p>{validation.message}</p>
+              {validation.correctionTarget === 'configure' ? (
+                <TextLink to={routeBuilders.configure(review.tourProductId)}>
+                  Correct configuration
+                </TextLink>
+              ) : null}
             </section>
 
             {mutationState.status === 'auth-interruption' ? (
@@ -473,7 +490,7 @@ export function ReservationReviewPage({
             <div className={styles.submitBar}>
               <Button
                 type="button"
-                disabled={submitting || retryBlocked}
+                disabled={submitting || retryBlocked || transportCapacityExceeded}
                 onClick={() => void submitReservation()}
               >
                 {submitting
@@ -482,7 +499,9 @@ export function ReservationReviewPage({
                     ? 'Submission locked'
                     : retryBlocked
                       ? 'Correct before resubmitting'
-                      : 'Apply for reservation'}
+                      : transportCapacityExceeded
+                        ? 'Correct before applying'
+                        : 'Apply for reservation'}
               </Button>
             </div>
           </div>
