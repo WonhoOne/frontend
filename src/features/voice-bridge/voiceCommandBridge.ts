@@ -24,12 +24,28 @@ export interface VoiceBridgeCapabilities {
   removeOption?: (extraOption: VoiceExtraOption) => void;
 }
 
+/**
+ * Local feature rejection only: the authoritative transport/party-size decision
+ * must come from the shared Configuration candidate validator, never the bridge.
+ */
+export class VoiceCapabilityValidationError extends Error {
+  constructor(public readonly reason: 'TRANSPORT_CAPACITY_EXCEEDED') {
+    super();
+    this.name = 'VoiceCapabilityValidationError';
+  }
+}
+
 export type VoiceBridgeResult =
   | { ok: true; command: VoiceCommandName }
   | {
       ok: false;
       command: VoiceCommandName;
       error: { code: 'CAPABILITY_UNAVAILABLE' | 'CAPABILITY_FAILED' };
+    }
+  | {
+      ok: false;
+      command: VoiceCommandName;
+      error: { code: 'INVALID_COMBINATION'; reason: 'TRANSPORT_CAPACITY_EXCEEDED' };
     };
 
 /**
@@ -69,7 +85,14 @@ export function executeVoiceCommand(
       default:
         return unreachable(command);
     }
-  } catch {
+  } catch (error) {
+    if (error instanceof VoiceCapabilityValidationError) {
+      return {
+        ok: false,
+        command: name,
+        error: { code: 'INVALID_COMBINATION', reason: error.reason },
+      };
+    }
     return { ok: false, command: name, error: { code: 'CAPABILITY_FAILED' } };
   }
 }

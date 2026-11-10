@@ -90,7 +90,9 @@ export function LiveVoiceControl({
           setMessage(
             result?.ok
               ? 'Choice updated. Review your trip in the form before submitting.'
-              : 'This voice choice is unavailable here. Use the form to continue.',
+              : result?.error.code === 'INVALID_COMBINATION'
+                ? 'The selected transport cannot carry that many participants. No changes were made. Choose a different transport or participant count in the form.'
+                : 'This voice choice is unavailable here. Use the form to continue.',
           );
           break;
         }

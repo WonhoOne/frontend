@@ -41,6 +41,7 @@ function selectableContext(): ReservationDraftVoiceContext {
     canSelectStyle: () => true,
     canSelectSchedule: () => true,
     canSetParticipantCount: () => true,
+    validateCandidateTransportCapacity: () => 'fits',
     resolveHotelSelectionKey: (hotelOption) => `fixture:hotel:${hotelOption}`,
     resolveTransportSelectionKey: (transportOption) => `fixture:transport:${transportOption}`,
     resolveMealSelectionKey: (mealOption) => `fixture:meal:${mealOption}`,
@@ -296,6 +297,146 @@ describe('ReservationDraft Voice adapter', () => {
       ).ok,
     ).toBe(true);
     expect(draft.configuration.extraSelectionKeys).toEqual(['CHAMPAGNE']);
+  });
+
+  it('rejects 4 people to a 2-seat transport before dispatch, without substituting a van', () => {
+    const initial = configuredDraft({
+      participantCount: 4,
+      configuration: {
+        hotelSelectionKey: 'HOTEL_4_STAR',
+        transportSelectionKey: 'PREMIUM_VAN_10',
+        mealSelectionKey: 'LOCAL_RESTAURANT',
+        extraSelectionKeys: [],
+      },
+    });
+    const context = selectableContext();
+    context.resolveTransportSelectionKey = (option) => option;
+    // Simulate a rejection from the common validator. Voice owns no capacity mapping.
+    const validateCandidateTransportCapacity = vi.fn(() => 'exceeded' as const);
+    context.validateCandidateTransportCapacity = validateCandidateTransportCapacity;
+    const h = harness({ draft: initial, context });
+
+    expect(
+      execute(
+        {
+          version: 1,
+          command: 'CHANGE_TRANSPORT',
+          args: { transportOption: 'PRIVATE_LUXURY_CAR_2' },
+        },
+        h.capabilities,
+      ),
+    ).toEqual({
+      ok: false,
+      command: 'CHANGE_TRANSPORT',
+      error: { code: 'INVALID_COMBINATION', reason: 'TRANSPORT_CAPACITY_EXCEEDED' },
+    });
+    expect(validateCandidateTransportCapacity).toHaveBeenCalledExactlyOnceWith({
+      participantCount: 4,
+      transportSelectionKey: 'PRIVATE_LUXURY_CAR_2',
+    });
+    expect(h.dispatch).not.toHaveBeenCalled();
+    expect(h.now).not.toHaveBeenCalled();
+    expect(h.getDraft()).toEqual(initial);
+    expect(h.getDraft()).toBe(initial);
+  });
+
+  it('rejects raising participant count beyond the already-selected vehicle capacity', () => {
+    const initial = configuredDraft({
+      participantCount: 2,
+      configuration: {
+        hotelSelectionKey: 'HOTEL_4_STAR',
+        transportSelectionKey: 'PRIVATE_LUXURY_CAR_2',
+        mealSelectionKey: 'LOCAL_RESTAURANT',
+        extraSelectionKeys: [],
+      },
+    });
+    const context = selectableContext();
+    context.validateCandidateTransportCapacity = vi.fn(() => 'exceeded' as const);
+    const h = harness({ draft: initial, context });
+    expect(
+      execute(
+        { version: 1, command: 'SET_PARTICIPANT_COUNT', args: { participantCount: 4 } },
+        h.capabilities,
+      ),
+    ).toEqual({
+      ok: false,
+      command: 'SET_PARTICIPANT_COUNT',
+      error: { code: 'INVALID_COMBINATION', reason: 'TRANSPORT_CAPACITY_EXCEEDED' },
+    });
+    expect(context.validateCandidateTransportCapacity).toHaveBeenCalledExactlyOnceWith({
+      participantCount: 4,
+      transportSelectionKey: 'PRIVATE_LUXURY_CAR_2',
+    });
+    expect(h.dispatch).not.toHaveBeenCalled();
+    expect(h.getDraft()).toBe(initial);
+  });
+
+  it('allows valid pairs and incomplete candidates when the shared preflight says so', () => {
+    const context = selectableContext();
+    context.resolveTransportSelectionKey = (option) => option;
+    context.validateCandidateTransportCapacity = vi.fn(
+      ({ participantCount, transportSelectionKey }) =>
+        participantCount === null || transportSelectionKey === null ? 'incomplete' : 'fits',
+    );
+    const h = harness({
+      draft: configuredDraft({
+        participantCount: 2,
+        configuration: {
+          hotelSelectionKey: 'HOTEL_4_STAR',
+          transportSelectionKey: 'PREMIUM_VAN_10',
+          mealSelectionKey: 'LOCAL_RESTAURANT',
+          extraSelectionKeys: [],
+        },
+      }),
+      context,
+    });
+    expect(
+      execute(
+        {
+          version: 1,
+          command: 'CHANGE_TRANSPORT',
+          args: { transportOption: 'PRIVATE_LUXURY_CAR_2' },
+        },
+        h.capabilities,
+      ).ok,
+    ).toBe(true);
+    h.setDraft(configuredDraft({ participantCount: 4 }));
+    expect(
+      execute(
+        { version: 1, command: 'CHANGE_TRANSPORT', args: { transportOption: 'PREMIUM_VAN_10' } },
+        h.capabilities,
+      ).ok,
+    ).toBe(true);
+    h.setDraft(configuredDraft({ participantCount: null }));
+    expect(
+      execute(
+        { version: 1, command: 'SET_PARTICIPANT_COUNT', args: { participantCount: 2 } },
+        h.capabilities,
+      ).ok,
+    ).toBe(true);
+    const incomplete = configuredDraft({
+      participantCount: 2,
+      configuration: {
+        hotelSelectionKey: null,
+        transportSelectionKey: null,
+        mealSelectionKey: null,
+        extraSelectionKeys: [],
+      },
+    });
+    h.setDraft(incomplete);
+    expect(
+      execute(
+        { version: 1, command: 'SET_PARTICIPANT_COUNT', args: { participantCount: 4 } },
+        h.capabilities,
+      ).ok,
+    ).toBe(true);
+    expect(h.dispatch.mock.calls.map(([action]) => action.type)).toEqual([
+      'SELECT_TRANSPORT',
+      'SELECT_TRANSPORT',
+      'SET_PARTICIPANT_COUNT',
+      'SET_PARTICIPANT_COUNT',
+    ]);
+    expect(context.validateCandidateTransportCapacity).toHaveBeenCalledTimes(4);
   });
 
   it('is idempotent for repeated commands that already match the Draft', () => {

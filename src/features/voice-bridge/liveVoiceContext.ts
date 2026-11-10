@@ -1,5 +1,9 @@
 import type { ConfigurationCategory, ConfigureScenario } from '@/features/configuration';
-import { validateParticipantCount, type ReservationDraftV1 } from '@/features/reservation';
+import {
+  checkTransportCapacity,
+  validateParticipantCount,
+  type ReservationDraftV1,
+} from '@/features/reservation';
 import type { ScheduleChoiceModel, TourDetailModel } from '@/features/tour-detail';
 import type { TourProductSummaryModel } from '@/features/tour-discovery';
 import type { VoiceInterpretationContext } from '@/integrations/voice';
@@ -69,6 +73,7 @@ export function createLiveVoiceContext(
           product.theme === 'HONEYMOON_ROMANCE' ? 'honeymoon' : 'general',
           count,
         ).status === 'valid',
+      validateCandidateTransportCapacity: (candidate) => checkTransportCapacity(candidate).status,
       resolveHotelSelectionKey: (value) => resolve('hotel', value),
       resolveTransportSelectionKey: (value) => resolve('transport', value),
       resolveMealSelectionKey: (value) => resolve('meal', value),

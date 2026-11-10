@@ -2,6 +2,8 @@ import type {
   ReservationDraftAction,
   ReservationDraftSelectionKey,
   ReservationDraftV1,
+  TransportCapacityCandidate,
+  TransportCapacityCheck,
 } from '@/features/reservation';
 import { toCanonicalBackendResourceIdentity } from '@/shared/lib/resourceIdentity';
 
@@ -12,7 +14,7 @@ import type {
   VoiceTourStyle,
   VoiceTransportOption,
 } from '../../integrations/voice/voiceCommand';
-import type { VoiceBridgeCapabilities } from './voiceCommandBridge';
+import { VoiceCapabilityValidationError, type VoiceBridgeCapabilities } from './voiceCommandBridge';
 
 export type ReservationDraftVoiceCapabilities = Pick<
   VoiceBridgeCapabilities,
@@ -39,6 +41,10 @@ export interface ReservationDraftVoiceContext {
   canSelectStyle: (style: VoiceTourStyle) => boolean;
   canSelectSchedule: (scheduleId: number) => boolean;
   canSetParticipantCount: (participantCount: number) => boolean;
+  /** #66 common Configuration validation, shared by GUI Review and Voice preflight. */
+  validateCandidateTransportCapacity: (
+    candidate: TransportCapacityCandidate,
+  ) => TransportCapacityCheck['status'];
   resolveHotelSelectionKey: (hotelOption: VoiceHotelOption) => ReservationDraftSelectionKey | null;
   resolveTransportSelectionKey: (
     transportOption: VoiceTransportOption,
@@ -110,6 +116,10 @@ export function createReservationDraftVoiceCapabilities({
       const context = getContext();
       const draft = requireConfigureDraft(getDraft());
       if (!context.canSetParticipantCount(participantCount)) rejectCurrentContext();
+      rejectInvalidTransportCandidate(context, {
+        participantCount,
+        transportSelectionKey: draft.configuration.transportSelectionKey,
+      });
       if (draft.participantCount === participantCount) return;
 
       dispatch({ type: 'SET_PARTICIPANT_COUNT', participantCount, updatedAt: now() });
@@ -130,6 +140,10 @@ export function createReservationDraftVoiceCapabilities({
       const selectionKey = requireSelectionKey(
         context.resolveTransportSelectionKey(transportOption),
       );
+      rejectInvalidTransportCandidate(context, {
+        participantCount: draft.participantCount,
+        transportSelectionKey: selectionKey,
+      });
       if (draft.configuration.transportSelectionKey === selectionKey) return;
 
       dispatch({ type: 'SELECT_TRANSPORT', selectionKey, updatedAt: now() });
@@ -172,6 +186,16 @@ export function createReservationDraftVoiceCapabilities({
       });
     },
   };
+}
+
+function rejectInvalidTransportCandidate(
+  context: ReservationDraftVoiceContext,
+  candidate: TransportCapacityCandidate,
+): void {
+  // #66 supplies the same rule consumed by GUI readiness; Voice never maps capacities.
+  if (context.validateCandidateTransportCapacity(candidate) === 'exceeded') {
+    throw new VoiceCapabilityValidationError('TRANSPORT_CAPACITY_EXCEEDED');
+  }
 }
 
 function requireProductDraft(draft: ReservationDraftV1): ReservationDraftV1 {

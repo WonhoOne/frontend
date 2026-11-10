@@ -12,6 +12,7 @@ import {
   type VoiceCommand,
   type VoiceCommandName,
 } from '../../integrations/voice/voiceCommand';
+import { VoiceCapabilityValidationError } from './voiceCommandBridge';
 import { executeVoiceCommand, type VoiceBridgeCapabilities } from './index';
 
 type DispatchCase = {
@@ -176,6 +177,26 @@ describe('canonical dispatch boundary', () => {
       }
     },
   );
+
+  it('returns a structured capacity rejection without leaking a capability exception', () => {
+    const changeTransport = vi.fn(() => {
+      throw new VoiceCapabilityValidationError('TRANSPORT_CAPACITY_EXCEEDED');
+    });
+    const result = executeVoiceCommand(
+      {
+        version: 1,
+        command: 'CHANGE_TRANSPORT',
+        args: { transportOption: 'PRIVATE_LUXURY_CAR_2' },
+      },
+      { changeTransport },
+    );
+    expect(result).toEqual({
+      ok: false,
+      command: 'CHANGE_TRANSPORT',
+      error: { code: 'INVALID_COMBINATION', reason: 'TRANSPORT_CAPACITY_EXCEEDED' },
+    });
+    expect(changeTransport).toHaveBeenCalledOnce();
+  });
 
   it.each(['SELECT_TOUR_PRODUCT', 'SELECT_SCHEDULE', 'SET_PARTICIPANT_COUNT'] as const)(
     'preserves the exact numeric argument for %s',

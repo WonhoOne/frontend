@@ -189,6 +189,57 @@ describe('live Runtime → Interpreter → V6-A/B → Provider → GUI', () => {
     expect(screen.getByRole('checkbox', { name: /Champagne/ })).not.toBeChecked();
   });
 
+  it('preserves the Draft and explains transport capacity when common preflight rejects a Voice command', () => {
+    const initial = {
+      ...readyDraft(),
+      participantCount: 4,
+      configuration: {
+        hotelSelectionKey: 'HOTEL_4_STAR',
+        transportSelectionKey: 'PREMIUM_VAN_10',
+        mealSelectionKey: 'LOCAL_RESTAURANT',
+        extraSelectionKeys: [],
+      },
+    };
+    const { recognition } = mount(initial);
+    const before = observed;
+    say(recognition, '차량 2인 럭셔리 차량으로 변경');
+    expect(observed).toBe(before);
+    expect(observed.configuration.transportSelectionKey).toBe('PREMIUM_VAN_10');
+    expect(screen.getByRole('status')).toHaveTextContent('cannot carry that many participants');
+    expect(screen.getByRole('status')).toHaveTextContent('No changes were made');
+    expect(screen.getByRole('status')).toHaveTextContent('in the form');
+  });
+
+  it('uses the same shared capacity rule in both command orders and allows partial Drafts', () => {
+    const { recognition } = mount(readyDraft());
+
+    // Partial Draft: no transport selected yet. Count may be selected first.
+    say(recognition, '인원 4명');
+    expect(observed.participantCount).toBe(4);
+    expect(observed.configuration.transportSelectionKey).toBeNull();
+
+    // A four-person group fits the van.
+    say(recognition, '차량 프리미엄 밴 선택');
+    expect(observed.configuration.transportSelectionKey).toBe('PREMIUM_VAN_10');
+
+    // A smaller car cannot replace the van for four participants.
+    const beforeInvalidTransport = observed;
+    say(recognition, '차량 2인 럭셔리 차량으로 변경');
+    expect(observed).toBe(beforeInvalidTransport);
+
+    // Lowering the count and then selecting the car is valid.
+    say(recognition, '인원 2명');
+    expect(observed.participantCount).toBe(2);
+    say(recognition, '차량 2인 럭셔리 차량으로 변경');
+    expect(observed.configuration.transportSelectionKey).toBe('PRIVATE_LUXURY_CAR_2');
+
+    // Reverse order: attempting to increase the count must not mutate the Draft.
+    const beforeInvalidCount = observed;
+    say(recognition, '인원 4명');
+    expect(observed).toBe(beforeInvalidCount);
+    expect(screen.getByRole('status')).toHaveTextContent('No changes were made');
+  });
+
   it('uses latest GUI Draft and never resurrects removed Premium Champagne across remount', () => {
     const first = mount();
     fireEvent.click(screen.getByRole('button', { name: 'GUI Champagne' }));
