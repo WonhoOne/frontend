@@ -336,3 +336,229 @@ test('B9-D real MySQL Voice choices require explicit GUI reservation submit', as
     ),
   });
 });
+
+// D-01: exercise the merged Voice #71 pre-dispatch guard in a real browser,
+// through the actual Spring Boot/MySQL reservation API. CI STT is deterministic,
+// but no Draft mutation, reservation POST or Backend response is stubbed.
+test('D-01 real MySQL Voice capacity rejection preserves Draft and valid van booking succeeds', async ({
+  page,
+  request,
+}) => {
+  test.setTimeout(120_000);
+  expect(process.env.VITE_ENABLE_MOCKS).toBe('false');
+  expect(process.env.SMS_DELIVERY_ENABLED).toBe('false');
+
+  await expect
+    .poll(
+      async () => {
+        try {
+          return (await request.get(backend + '/tours')).status();
+        } catch {
+          return 0;
+        }
+      },
+      { timeout: 90_000 },
+    )
+    .toBe(200);
+
+  const tours = (await (await request.get(backend + '/tours')).json()) as Array<{
+    id: number;
+    name: string;
+  }>;
+  expect(tours).toHaveLength(1);
+  const product = tours[0]!;
+  const scheduleResponse = await request.get(backend + '/tour-schedules?tourId=' + product.id);
+  expect(scheduleResponse.status()).toBe(200);
+  const schedules = (await scheduleResponse.json()) as Schedule[];
+  expect(schedules).toHaveLength(1);
+  const schedule = schedules[0]!;
+  expect(schedule.reservable).toBe(true);
+
+  // Dedicated synthetic account: no shared customer or session from other tests.
+  const credentials = {
+    loginId: 'd01-voice-capacity',
+    password: 'd01-disposable-test-password',
+    name: 'D01 Synthetic Customer',
+    address: 'D01 synthetic address',
+    contact: '01000000003',
+  };
+  const signup = await request.post(backend + '/auth/signup', { data: credentials });
+  expect(signup.status()).toBe(201);
+  const tokenResponse = await request.post(backend + '/auth/login', {
+    data: { loginId: credentials.loginId, password: credentials.password },
+  });
+  expect(tokenResponse.status()).toBe(200);
+  const token = (await tokenResponse.json()) as { accessToken: string };
+  const headers = { Authorization: 'Bearer ' + token.accessToken };
+
+  const invalidPayload = {
+    scheduleId: schedule.id,
+    participantCount: 4,
+    configuration: {
+      style: 'GRAND',
+      hotelOption: 'HOTEL_4_STAR',
+      transportOption: 'PRIVATE_LUXURY_CAR_2',
+      mealOption: 'LOCAL_RESTAURANT',
+      extraOptions: [],
+    },
+  };
+  const beforeInvalid = (await (
+    await request.get(backend + '/tour-schedules/' + schedule.id)
+  ).json()) as Schedule;
+  // The client guard must not replace the authoritative Backend 422.
+  const invalidResponse = await request.post(backend + '/reservations', {
+    headers,
+    data: invalidPayload,
+  });
+  expect(invalidResponse.status()).toBe(422);
+  const invalidBody = (await invalidResponse.json()) as {
+    code: string;
+    fieldErrors: Array<{ field: string; code: string }>;
+  };
+  expect(invalidBody.code).toBe('VALIDATION_FAILED');
+  expect(invalidBody.fieldErrors).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        field: 'configuration.transportOption',
+        code: 'CAPACITY_EXCEEDED',
+      }),
+    ]),
+  );
+  const afterInvalid = (await (
+    await request.get(backend + '/tour-schedules/' + schedule.id)
+  ).json()) as Schedule;
+  expect(afterInvalid.recruitment).toEqual(beforeInvalid.recruitment);
+
+  await installRecognition(page);
+  const browserPosts: unknown[] = [];
+  page.on('request', (req) => {
+    if (req.method() === 'POST' && new URL(req.url()).pathname === '/api/v1/reservations') {
+      browserPosts.push(req.postDataJSON());
+    }
+  });
+
+  // Seed only product/schedule/style navigation context from the live Backend,
+  // not the participant/transport selections being tested by Voice.
+  await page.goto('/tours');
+  await page.evaluate(
+    ({ productId, scheduleId, key }) => {
+      sessionStorage.setItem(
+        key,
+        JSON.stringify({
+          schemaVersion: 1,
+          tourProductId: productId,
+          tourScheduleId: scheduleId,
+          tourStyle: 'GRAND',
+          participantCount: null,
+          configuration: {
+            hotelSelectionKey: null,
+            transportSelectionKey: null,
+            mealSelectionKey: null,
+            extraSelectionKeys: [],
+          },
+          updatedAt: Date.now(),
+        }),
+      );
+    },
+    { productId: String(product.id), scheduleId: String(schedule.id), key: storageKey },
+  );
+  await page.goto('/tours/' + product.id + '/configure');
+  await expect(page.getByRole('heading', { name: 'Build your trip' })).toBeVisible();
+  await expect(page.getByRole('radio', { name: /Premium van/ })).toBeVisible();
+  await page.getByRole('button', { name: 'Start voice' }).click();
+
+  // Valid: four people fit ten-seat van. Invalid: switching to two seats
+  // cannot dispatch an action or change persisted Draft, including updatedAt.
+  await say(page, '인원 4명');
+  await say(page, '차량 프리미엄 밴 선택');
+  await expect(page.getByRole('radio', { name: /Premium van/ })).toBeChecked();
+  let beforeRejected = await page.evaluate((key) => sessionStorage.getItem(key), storageKey);
+  await say(page, '차량 2인 고급차량 선택');
+  await expect(page.getByRole('status')).toContainText('No changes were made');
+  expect(await page.evaluate((key) => sessionStorage.getItem(key), storageKey)).toBe(
+    beforeRejected,
+  );
+  expect((await readDraft(page)).configuration.transportSelectionKey).toBe('PREMIUM_VAN_10');
+  expect(browserPosts).toEqual([]);
+
+  // Reverse order: 2-person car is valid; raising count to four is rejected.
+  await say(page, '인원 2명');
+  await say(page, '차량 2인 고급차량 선택');
+  await expect(page.getByRole('radio', { name: /Private luxury car/ })).toBeChecked();
+  beforeRejected = await page.evaluate((key) => sessionStorage.getItem(key), storageKey);
+  await say(page, '인원 4명');
+  await expect(page.getByRole('status')).toContainText('No changes were made');
+  expect(await page.evaluate((key) => sessionStorage.getItem(key), storageKey)).toBe(
+    beforeRejected,
+  );
+  expect((await readDraft(page)).participantCount).toBe(2);
+  expect(browserPosts).toEqual([]);
+
+  // Return to 4 + 10 entirely by Voice, then fill other required choices.
+  await say(page, '차량 프리미엄 밴 선택');
+  await say(page, '인원 4명');
+  await say(page, '호텔 4성급 선택');
+  await say(page, '식사 현지식 레스토랑 선택');
+  const validDraft = await readDraft(page);
+  expect(validDraft).toMatchObject({
+    participantCount: 4,
+    configuration: {
+      transportSelectionKey: 'PREMIUM_VAN_10',
+      hotelSelectionKey: 'HOTEL_4_STAR',
+      mealSelectionKey: 'LOCAL_RESTAURANT',
+    },
+  });
+  expect(browserPosts).toEqual([]);
+  const reviewButton = page.getByRole('button', { name: 'Review trip' });
+  await expect(reviewButton).toBeEnabled();
+  await reviewButton.click();
+  await expect(page).toHaveURL('/reservation/review');
+
+  // Voice must never auto-submit; only the explicit GUI button creates a booking.
+  expect(browserPosts).toEqual([]);
+  await page.getByRole('button', { name: 'Apply for reservation' }).click();
+  await expect(page).toHaveURL('/login');
+  expect(browserPosts).toEqual([]);
+  await page.getByRole('textbox', { name: '로그인 ID' }).fill(credentials.loginId);
+  await page.getByLabel('비밀번호').fill(credentials.password);
+  await page.getByRole('button', { name: '로그인' }).click();
+  await expect(page).toHaveURL('/reservation/review');
+  expect(browserPosts).toEqual([]);
+
+  const reservationCreated = page.waitForResponse(
+    (response) =>
+      response.request().method() === 'POST' &&
+      new URL(response.url()).pathname === '/api/v1/reservations',
+  );
+  await page.getByRole('button', { name: 'Apply for reservation' }).click();
+  const bookingResponse = await reservationCreated;
+  expect(bookingResponse.status()).toBe(201);
+  const booking = (await bookingResponse.json()) as {
+    id: number;
+    participantCount: number;
+    configuration: { transportOption: string };
+    schedule: { recruitment: { confirmed: boolean } };
+  };
+  expect(booking.participantCount).toBe(4);
+  expect(booking.configuration.transportOption).toBe('PREMIUM_VAN_10');
+  expect(booking.schedule.recruitment.confirmed).toBe(true);
+  expect(browserPosts).toHaveLength(1);
+  const details = await request.get(backend + '/reservations/' + booking.id, { headers });
+  expect(details.status()).toBe(200);
+  expect(await details.json()).toEqual(booking);
+  await expect(page).toHaveURL('/reservation/' + booking.id + '/success');
+
+  // A rejected Backend bypass after confirmation must not alter recruitment.
+  const beforeSecondInvalid = (await (
+    await request.get(backend + '/tour-schedules/' + schedule.id)
+  ).json()) as Schedule;
+  const secondInvalidResponse = await request.post(backend + '/reservations', {
+    headers,
+    data: invalidPayload,
+  });
+  expect(secondInvalidResponse.status()).toBe(422);
+  const afterSecondInvalid = (await (
+    await request.get(backend + '/tour-schedules/' + schedule.id)
+  ).json()) as Schedule;
+  expect(afterSecondInvalid.recruitment).toEqual(beforeSecondInvalid.recruitment);
+});
