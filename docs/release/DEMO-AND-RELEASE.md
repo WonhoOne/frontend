@@ -1,13 +1,13 @@
 # Frontend Release Record and Demo Runbook (2026-11)
 
-> Status: **RELEASE CANDIDATE — code freeze** (W5 of the [Frontend Completion Plan](../FRONTEND-COMPLETION-PLAN.md))
+> Status: **RELEASE CANDIDATE — code freeze** (W5 of the [Frontend Completion Plan](../FRONTEND-COMPLETION-PLAN.md); refreshed in W6 for the [UML conformance fix](../conformance/README.md))
 > Course deadlines: 2026-11-23 final report + source, 2026-11-24 UML/implementation demo.
 
 ## 1. Release metadata (Master Plan §46)
 
 | Item | Value |
 | --- | --- |
-| Frontend code-freeze SHA | `dbcf79316196035ccaf25b150da144ac79950202` (`WonhoOne/frontend` `main` after #64; later commits are documentation only) |
+| Frontend code-freeze SHA | `9e83125976443feb6c57833b3b51b1290ed24106` (`main` after #69, UML 감사 D-01 정원 검사 수정; later commits are documentation only). Before W6: `dbcf793` |
 | Shared docs SHA | `f49d0457498e8b775f659a27e0c3a96d288d0ba0` (`WonhoOne/docs` `main`, Baseline v0.2, B9 closeout) |
 | Backend SHA used by CI | `597cf92f1baf93211862d4ea5dbfa8a199b808a2` (`WonhoOne/backend` `main`) |
 | Node | 24.21.0 (`.nvmrc`) |
@@ -16,7 +16,7 @@
 
 ### Rollback
 
-Redeploy the previous known-good Frontend SHA above. It is compatible with the same Backend SHA (`597cf92`), because the Employee Console added no Backend or shared-contract change. Rolling back removes the Employee Console only.
+To undo only the W6 capacity check, redeploy `dbcf793` (same Backend SHA; the Backend still rejects over-capacity reservations with 422). To remove the Employee Console as well, redeploy the previous known-good Frontend SHA above. It is compatible with the same Backend SHA (`597cf92`), because the Employee Console added no Backend or shared-contract change. That rollback removes the Employee Console and the W6 capacity check.
 
 ## 2. Release gates (Completion Plan D-C)
 
@@ -31,6 +31,10 @@ Redeploy the previous known-good Frontend SHA above. It is compatible with the s
 | D-C7 Severity S0 = 0, S1 = 0 | PASS | Employee defect log ([E-PR5 report](../employee-console/planning/audits/E-PR5-CP9-CP10-VERIFICATION.md) §4) and W4 fixes; no open S0/S1 |
 
 ### 2.1 Gate evidence
+
+**W6 re-run (2026-11-10)** on `main` `94e182f` (code = freeze `9e83125`), Node 24.21.0: `npm run verify` PASS — 122 files / 2,007 tests · `npm run test:e2e` PASS — 213/213 · `npm audit --omit=dev --audit-level=high` 0 vulnerabilities · CI on #69: `verify`, `Real Backend public read smoke`, `Real Backend + MySQL …` all success (run `42764741157`).
+
+Original W5 run:
 
 Run on 2026-11-09 in a clean worktree of the freeze SHA (`dbcf793`), Node 24.21.0:
 
