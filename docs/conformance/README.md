@@ -12,7 +12,7 @@
 | --- | --- | --- | --- | --- |
 | [#66](https://github.com/WonhoOne/frontend/issues/66) | D-01 · SEQ-04 · SEQ-08 (CRITICAL) | 김태우 | 결함 수정 | [D01-TRANSPORT-CAPACITY.md](D01-TRANSPORT-CAPACITY.md), 코드 PR |
 | [#67](https://github.com/WonhoOne/frontend/issues/67) | D-02 · D-03 · CLS-03 · SEQ-09/10/12 | 김태우 | 대응 근거 | [EMPLOYEE-UML-CONFORMANCE.md](EMPLOYEE-UML-CONFORMANCE.md) |
-| [#68](https://github.com/WonhoOne/frontend/issues/68) | D-01 · SEQ-08 | 이한결 | Voice 결함 수정 | #66의 공통 함수 사용 (Voice 소유 디렉터리, 이 작업에서 수정하지 않음) |
+| [#68](https://github.com/WonhoOne/frontend/issues/68) | D-01 · SEQ-08 | 이한결 | Voice 결함 수정 | ✅ [#71](https://github.com/WonhoOne/frontend/pull/71)에서 `checkTransportCapacity` 직접 사용, [#73](https://github.com/WonhoOne/frontend/pull/73) 실제 MySQL E2E |
 
 ## 2. 진행 순서
 
@@ -23,7 +23,7 @@
 | C3 ✅ [댓글](https://github.com/WonhoOne/frontend/issues/68#issuecomment-6760316051) | #68에 함수 사용법 handoff 댓글 | 이한결이 바로 쓸 수 있는 import 경로·예시·결과 타입 |
 | C4 ✅ [#70](https://github.com/WonhoOne/frontend/pull/70) | #67 대응표와 테스트 근거 문서 PR | CI PASS 후 머지, 회귀가 없으면 코드 변경 없음 |
 | C5 ✅ [댓글](https://github.com/WonhoOne/frontend/issues/67#issuecomment-6760316484) | #67에 주원호용 대응표 요약 댓글, 이슈 정리 | 다이어그램 수정 담당이 표만 보고 고칠 수 있음 |
-| C6 ✅ | Release Record 갱신 | 새 동결 SHA와 gate 결과 기록 |
+| C6 ✅ | Release Record 갱신 (최종 동결 `6448d1b`, #71·#73 반영) | 새 동결 SHA와 gate 결과 기록 |
 
 ## 3. 위임 기준 확인
 
