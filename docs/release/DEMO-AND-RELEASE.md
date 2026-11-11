@@ -7,16 +7,16 @@
 
 | Item | Value |
 | --- | --- |
-| Frontend code-freeze SHA | `9e83125976443feb6c57833b3b51b1290ed24106` (`main` after #69, UML 감사 D-01 정원 검사 수정; later commits are documentation only). Before W6: `dbcf793` |
+| Frontend code-freeze SHA | `6448d1b5930da7558ba734dbd117cb284d4b9a4f` (`main` after #73: #69 GUI capacity check, #71 Voice capacity preflight, #73 real-MySQL Voice E2E; later commits are documentation only). Earlier: `9e83125` (W6 GUI only), `dbcf793` (W5) |
 | Shared docs SHA | `f49d0457498e8b775f659a27e0c3a96d288d0ba0` (`WonhoOne/docs` `main`, Baseline v0.2, B9 closeout) |
-| Backend SHA used by CI | `597cf92f1baf93211862d4ea5dbfa8a199b808a2` (`WonhoOne/backend` `main`) |
+| Backend SHA used by CI | `597cf92f1baf93211862d4ea5dbfa8a199b808a2` (pinned in `.github/workflows/d11-verify.yml`). Backend `main` is now `ac58694`, which adds only a MySQL test (`MySqlRuntimeMySqlIT.java`) — no runtime change |
 | Node | 24.21.0 (`.nvmrc`) |
 | Released scope | Customer GUI S01–S11, AI Voice (B9-C), Employee Console E01–E05 |
 | Previous known-good Frontend | `1e930fa88767dce065d838a75cc9ee38ad7bceeb` (B9 final snapshot, Customer + Voice only) |
 
 ### Rollback
 
-To undo only the W6 capacity check, redeploy `dbcf793` (same Backend SHA; the Backend still rejects over-capacity reservations with 422). To remove the Employee Console as well, redeploy the previous known-good Frontend SHA above. It is compatible with the same Backend SHA (`597cf92`), because the Employee Console added no Backend or shared-contract change. That rollback removes the Employee Console and the W6 capacity check.
+To undo only the W6 capacity checks (GUI and Voice), redeploy `dbcf793` (same Backend SHA; the Backend still rejects over-capacity reservations with 422). To remove the Employee Console as well, redeploy the previous known-good Frontend SHA above. It is compatible with the same Backend SHA (`597cf92`), because the Employee Console added no Backend or shared-contract change. That rollback removes the Employee Console and the W6 capacity check.
 
 ## 2. Release gates (Completion Plan D-C)
 
@@ -32,7 +32,9 @@ To undo only the W6 capacity check, redeploy `dbcf793` (same Backend SHA; the Ba
 
 ### 2.1 Gate evidence
 
-**W6 re-run (2026-11-10)** on `main` `94e182f` (code = freeze `9e83125`), Node 24.21.0: `npm run verify` PASS — 122 files / 2,007 tests · `npm run test:e2e` PASS — 213/213 · `npm audit --omit=dev --audit-level=high` 0 vulnerabilities · CI on #69: `verify`, `Real Backend public read smoke`, `Real Backend + MySQL …` all success (run `42764741157`).
+**Freeze re-run (2026-11-11)** on `main` `6448d1b` after `npm ci`, Node 24.21.0: `npm run verify` PASS — 122 files / 2,013 tests · `npm run test:e2e` PASS — 213/213 · `npm audit --omit=dev --audit-level=high` 0 vulnerabilities · CI on #73 head `899b84d` (same tree as `6448d1b`): `verify`, `Real Backend public read smoke`, `Real Backend + MySQL …` (including the Voice D-01 capacity scenarios) all success (run `42787895748`).
+
+W6 GUI run (2026-11-10) on `main` `94e182f` (code = `9e83125`), Node 24.21.0: `npm run verify` PASS — 122 files / 2,007 tests · `npm run test:e2e` PASS — 213/213 · `npm audit --omit=dev --audit-level=high` 0 vulnerabilities · CI on #69: `verify`, `Real Backend public read smoke`, `Real Backend + MySQL …` all success (run `42764741157`).
 
 Original W5 run:
 
