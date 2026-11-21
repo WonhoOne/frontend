@@ -13,6 +13,7 @@ import {
   type TourScheduleDto,
 } from '@/integrations/backend/contracts';
 import { toCanonicalBackendResourceIdentity, type ResourceId } from '@/shared/lib/resourceIdentity';
+import { themePhotos } from '@/shared/media/themePhotos';
 
 export class TourDetailPresentationError extends Error {
   override readonly name = 'TourDetailPresentationError';
@@ -37,7 +38,11 @@ export function adaptTourProductDetailDto(dto: TourProductDto): TourDetailModel 
     summary: dto.description,
     storyTitle: presentation.storyTitle,
     storyBody: presentation.storyBody,
-    heroMedia: createTourDetailMedia(`${presentation.themeLabel} hero visual unavailable`),
+    heroMedia: {
+      ...createTourDetailMedia(`${presentation.themeLabel} hero visual unavailable`),
+      imageSrc: themePhotos[dto.theme].src,
+      imageAlt: themePhotos[dto.theme].alt,
+    },
     storyMedia: createTourDetailMedia(`${presentation.themeLabel} story visual unavailable`),
     includedExperiences: presentation.includedExperiences,
     availableStyles: [...dto.availableStyles],
