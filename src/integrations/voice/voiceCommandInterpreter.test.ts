@@ -404,20 +404,42 @@ describe('V9.1 real Chrome Korean transcript compatibility', () => {
 describe('controlled STT spacing variants across canonical commands', () => {
   // Do not strip arbitrary whitespace: these are explicit, domain-owned aliases only.
   it.each([
-    ['부모님힐링 테마 선택', { version: 1, command: 'SELECT_THEME', args: { theme: 'PARENTS_HEALING' } }],
-    ['효도 여행 상품 보여 줘', { version: 1, command: 'SHOW_TOURS', args: { theme: 'PARENTS_HEALING' } }],
-    ['골프챌린지 테마 선택', { version: 1, command: 'SELECT_THEME', args: { theme: 'GOLF_CHALLENGE' } }],
-    ['아웃도어트레킹 테마 선택', { version: 1, command: 'SELECT_THEME', args: { theme: 'OUTDOOR_TREKKING' } }],
-    ['호텔 3성급호텔 선택', { version: 1, command: 'CHANGE_HOTEL', args: { hotelOption: 'HOTEL_3_STAR' } }],
-    ['호텔 사성급호텔 선택', { version: 1, command: 'CHANGE_HOTEL', args: { hotelOption: 'HOTEL_4_STAR' } }],
-    ['차량 2인 고급 차량 선택', { version: 1, command: 'CHANGE_TRANSPORT', args: { transportOption: 'PRIVATE_LUXURY_CAR_2' } }],
-    ['차량 2인 럭셔리차량 선택', { version: 1, command: 'CHANGE_TRANSPORT', args: { transportOption: 'PRIVATE_LUXURY_CAR_2' } }],
-    ['차량 10인 승합 고급 차량 선택', { version: 1, command: 'CHANGE_TRANSPORT', args: { transportOption: 'PREMIUM_VAN_10' } }],
-    ['차량 프리미엄밴 선택', { version: 1, command: 'CHANGE_TRANSPORT', args: { transportOption: 'PREMIUM_VAN_10' } }],
-    ['식사 현지식레스토랑 선택', { version: 1, command: 'CHANGE_MEAL', args: { mealOption: 'LOCAL_RESTAURANT' } }],
-    ['고급레스토랑 식사로 변경', { version: 1, command: 'CHANGE_MEAL', args: { mealOption: 'PREMIUM_RESTAURANT' } }],
-  ] as const)('accepts an explicit compound-word variant: %s', (transcript, command) => {
-    success(transcript, command);
+    ['부모님힐링 테마 선택', 'PARENTS_HEALING'],
+    ['골프챌린지 테마 선택', 'GOLF_CHALLENGE'],
+    ['아웃도어트레킹 테마 선택', 'OUTDOOR_TREKKING'],
+  ] as const)('recognizes a theme compound word: %s', (transcript, theme) => {
+    success(transcript, { version: 1, command: 'SELECT_THEME', args: { theme } });
+  });
+
+  it('recognizes a separated theme phrase', () => {
+    success('효도 여행 상품 보여 줘', {
+      version: 1,
+      command: 'SHOW_TOURS',
+      args: { theme: 'PARENTS_HEALING' },
+    });
+  });
+
+  it.each([
+    ['호텔 3성급호텔 선택', 'HOTEL_3_STAR'],
+    ['호텔 사성급호텔 선택', 'HOTEL_4_STAR'],
+  ] as const)('recognizes a hotel compound word: %s', (transcript, hotelOption) => {
+    success(transcript, { version: 1, command: 'CHANGE_HOTEL', args: { hotelOption } });
+  });
+
+  it.each([
+    ['차량 2인 고급 차량 선택', 'PRIVATE_LUXURY_CAR_2'],
+    ['차량 2인 럭셔리차량 선택', 'PRIVATE_LUXURY_CAR_2'],
+    ['차량 10인 승합 고급 차량 선택', 'PREMIUM_VAN_10'],
+    ['차량 프리미엄밴 선택', 'PREMIUM_VAN_10'],
+  ] as const)('recognizes a transport compound word: %s', (transcript, transportOption) => {
+    success(transcript, { version: 1, command: 'CHANGE_TRANSPORT', args: { transportOption } });
+  });
+
+  it.each([
+    ['식사 현지식레스토랑 선택', 'LOCAL_RESTAURANT'],
+    ['고급레스토랑 식사로 변경', 'PREMIUM_RESTAURANT'],
+  ] as const)('recognizes a meal compound word: %s', (transcript, mealOption) => {
+    success(transcript, { version: 1, command: 'CHANGE_MEAL', args: { mealOption } });
   });
 
   it('does not introduce static phrase collisions with different command semantics', () => {
