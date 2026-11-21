@@ -13,11 +13,22 @@ import {
 export const THEME_ALIASES = {
   HONEYMOON_ROMANCE: ['허니문', '신혼여행', 'honeymoon', 'honeymoon romance'],
   PARENTS_HEALING: [
-    '부모님 힐링', '부모님힐링', '부모님 여행', '부모님여행',
-    '효도여행', '효도 여행', 'parents healing',
+    '부모님 힐링',
+    '부모님힐링',
+    '부모님 여행',
+    '부모님여행',
+    '효도여행',
+    '효도 여행',
+    'parents healing',
   ],
   GOLF_CHALLENGE: ['골프', '골프 챌린지', '골프챌린지', 'golf', 'golf challenge'],
-  OUTDOOR_TREKKING: ['아웃도어 트레킹', '아웃도어트레킹', '트레킹', 'outdoor trekking', 'trekking'],
+  OUTDOOR_TREKKING: [
+    '아웃도어 트레킹',
+    '아웃도어트레킹',
+    '트레킹',
+    'outdoor trekking',
+    'trekking',
+  ],
 } as const satisfies Record<VoiceTheme, readonly string[]>;
 
 export const STYLE_ALIASES = {
@@ -27,9 +38,36 @@ export const STYLE_ALIASES = {
 } as const satisfies Record<VoiceTourStyle, readonly string[]>;
 
 export const HOTEL_ALIASES = {
-  HOTEL_3_STAR: ['3성급', '3성급 호텔', '3성급호텔', '삼성급', '삼성급 호텔', '삼성급호텔', '3 star', '3 star hotel'],
-  HOTEL_4_STAR: ['4성급', '4성급 호텔', '4성급호텔', '사성급', '사성급 호텔', '사성급호텔', '4 star', '4 star hotel'],
-  HOTEL_5_STAR: ['5성급', '5성급 호텔', '5성급호텔', '오성급', '오성급 호텔', '오성급호텔', '5 star', '5 star hotel'],
+  HOTEL_3_STAR: [
+    '3성급',
+    '3성급 호텔',
+    '3성급호텔',
+    '삼성급',
+    '삼성급 호텔',
+    '삼성급호텔',
+    '3 star',
+    '3 star hotel',
+  ],
+  HOTEL_4_STAR: [
+    '4성급',
+    '4성급 호텔',
+    '4성급호텔',
+    '사성급',
+    '사성급 호텔',
+    '사성급호텔',
+    '4 star',
+    '4 star hotel',
+  ],
+  HOTEL_5_STAR: [
+    '5성급',
+    '5성급 호텔',
+    '5성급호텔',
+    '오성급',
+    '오성급 호텔',
+    '오성급호텔',
+    '5 star',
+    '5 star hotel',
+  ],
 } as const satisfies Record<VoiceHotelOption, readonly string[]>;
 
 export const TRANSPORT_ALIASES = {
@@ -43,9 +81,13 @@ export const TRANSPORT_ALIASES = {
     'private luxury car',
   ],
   PREMIUM_VAN_10: [
-    '10인 승합 고급차량', '10인 승합 고급 차량',
-    '10인 프리미엄 밴', '10인 프리미엄밴',
-    '프리미엄 밴', '프리미엄밴', 'premium van',
+    '10인 승합 고급차량',
+    '10인 승합 고급 차량',
+    '10인 프리미엄 밴',
+    '10인 프리미엄밴',
+    '프리미엄 밴',
+    '프리미엄밴',
+    'premium van',
   ],
 } as const satisfies Record<VoiceTransportOption, readonly string[]>;
 
