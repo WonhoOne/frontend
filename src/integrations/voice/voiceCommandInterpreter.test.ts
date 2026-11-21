@@ -400,3 +400,46 @@ describe('V9.1 real Chrome Korean transcript compatibility', () => {
     failure(text, 'UNRECOGNIZED');
   });
 });
+
+describe('controlled STT spacing variants across canonical commands', () => {
+  // Do not strip arbitrary whitespace: these are explicit, domain-owned aliases only.
+  it.each([
+    ['부모님힐링 테마 선택', { version: 1, command: 'SELECT_THEME', args: { theme: 'PARENTS_HEALING' } }],
+    ['효도 여행 상품 보여 줘', { version: 1, command: 'SHOW_TOURS', args: { theme: 'PARENTS_HEALING' } }],
+    ['골프챌린지 테마 선택', { version: 1, command: 'SELECT_THEME', args: { theme: 'GOLF_CHALLENGE' } }],
+    ['아웃도어트레킹 테마 선택', { version: 1, command: 'SELECT_THEME', args: { theme: 'OUTDOOR_TREKKING' } }],
+    ['호텔 3성급호텔 선택', { version: 1, command: 'CHANGE_HOTEL', args: { hotelOption: 'HOTEL_3_STAR' } }],
+    ['호텔 사성급호텔 선택', { version: 1, command: 'CHANGE_HOTEL', args: { hotelOption: 'HOTEL_4_STAR' } }],
+    ['차량 2인 고급 차량 선택', { version: 1, command: 'CHANGE_TRANSPORT', args: { transportOption: 'PRIVATE_LUXURY_CAR_2' } }],
+    ['차량 2인 럭셔리차량 선택', { version: 1, command: 'CHANGE_TRANSPORT', args: { transportOption: 'PRIVATE_LUXURY_CAR_2' } }],
+    ['차량 10인 승합 고급 차량 선택', { version: 1, command: 'CHANGE_TRANSPORT', args: { transportOption: 'PREMIUM_VAN_10' } }],
+    ['차량 프리미엄밴 선택', { version: 1, command: 'CHANGE_TRANSPORT', args: { transportOption: 'PREMIUM_VAN_10' } }],
+    ['식사 현지식레스토랑 선택', { version: 1, command: 'CHANGE_MEAL', args: { mealOption: 'LOCAL_RESTAURANT' } }],
+    ['고급레스토랑 식사로 변경', { version: 1, command: 'CHANGE_MEAL', args: { mealOption: 'PREMIUM_RESTAURANT' } }],
+  ] as const)('accepts an explicit compound-word variant: %s', (transcript, command) => {
+    success(transcript, command);
+  });
+
+  it('does not introduce static phrase collisions with different command semantics', () => {
+    const seen = new Map<string, string>();
+    for (const { transcript, command } of VOICE_PHRASES) {
+      const value = JSON.stringify(command);
+      const previous = seen.get(transcript);
+      if (previous !== undefined) expect(value).toBe(previous);
+      else seen.set(transcript, value);
+    }
+  });
+
+  it.each([
+    '차량 2인 고급 차 량 선택',
+    '차량 2인 고급 차량 선택 샴페인 추가',
+    '고급 차량 선택',
+    '상품 부모님힐링 선택',
+  ])('still rejects unsupported or incomplete phrases: %s', (transcript) => {
+    failure(transcript, 'UNRECOGNIZED');
+  });
+
+  it('keeps unsupported reservation submission blocked with the new variants', () => {
+    failure('예약해 줘 차량 2인 고급 차량 선택', 'UNSUPPORTED_INTENT');
+  });
+});
