@@ -22,13 +22,7 @@ export const THEME_ALIASES = {
     'parents healing',
   ],
   GOLF_CHALLENGE: ['골프', '골프 챌린지', '골프챌린지', 'golf', 'golf challenge'],
-  OUTDOOR_TREKKING: [
-    '아웃도어 트레킹',
-    '아웃도어트레킹',
-    '트레킹',
-    'outdoor trekking',
-    'trekking',
-  ],
+  OUTDOOR_TREKKING: ['아웃도어 트레킹', '아웃도어트레킹', '트레킹', 'outdoor trekking', 'trekking'],
 } as const satisfies Record<VoiceTheme, readonly string[]>;
 
 export const STYLE_ALIASES = {
