@@ -8,11 +8,16 @@ import {
 } from './voiceCommand';
 
 // Voice-local 명시적 어휘이며 공유 계약이나 Backend catalog를 대체하지 않는다.
+// Chrome STT가 복합 명사를 붙이거나 띄는 경우만 명시적으로 수용한다.
+// 전체 공백 제거는 동적 상품명의 구분과 안전한 문장 경계를 파괴하므로 금지한다.
 export const THEME_ALIASES = {
   HONEYMOON_ROMANCE: ['허니문', '신혼여행', 'honeymoon', 'honeymoon romance'],
-  PARENTS_HEALING: ['부모님 힐링', '부모님 여행', '효도여행', 'parents healing'],
-  GOLF_CHALLENGE: ['골프', '골프 챌린지', 'golf', 'golf challenge'],
-  OUTDOOR_TREKKING: ['아웃도어 트레킹', '트레킹', 'outdoor trekking', 'trekking'],
+  PARENTS_HEALING: [
+    '부모님 힐링', '부모님힐링', '부모님 여행', '부모님여행',
+    '효도여행', '효도 여행', 'parents healing',
+  ],
+  GOLF_CHALLENGE: ['골프', '골프 챌린지', '골프챌린지', 'golf', 'golf challenge'],
+  OUTDOOR_TREKKING: ['아웃도어 트레킹', '아웃도어트레킹', '트레킹', 'outdoor trekking', 'trekking'],
 } as const satisfies Record<VoiceTheme, readonly string[]>;
 
 export const STYLE_ALIASES = {
@@ -22,25 +27,32 @@ export const STYLE_ALIASES = {
 } as const satisfies Record<VoiceTourStyle, readonly string[]>;
 
 export const HOTEL_ALIASES = {
-  HOTEL_3_STAR: ['3성급', '3성급 호텔', '삼성급', '삼성급 호텔', '3 star', '3 star hotel'],
-  HOTEL_4_STAR: ['4성급', '4성급 호텔', '사성급', '사성급 호텔', '4 star', '4 star hotel'],
-  HOTEL_5_STAR: ['5성급', '5성급 호텔', '오성급', '오성급 호텔', '5 star', '5 star hotel'],
+  HOTEL_3_STAR: ['3성급', '3성급 호텔', '3성급호텔', '삼성급', '삼성급 호텔', '삼성급호텔', '3 star', '3 star hotel'],
+  HOTEL_4_STAR: ['4성급', '4성급 호텔', '4성급호텔', '사성급', '사성급 호텔', '사성급호텔', '4 star', '4 star hotel'],
+  HOTEL_5_STAR: ['5성급', '5성급 호텔', '5성급호텔', '오성급', '오성급 호텔', '오성급호텔', '5 star', '5 star hotel'],
 } as const satisfies Record<VoiceHotelOption, readonly string[]>;
 
 export const TRANSPORT_ALIASES = {
   PRIVATE_LUXURY_CAR_2: [
     '2인 고급차량',
+    '2인 고급 차량',
     '2인 럭셔리 차량',
+    '2인 럭셔리차량',
     '프라이빗 럭셔리 카',
+    '프라이빗 럭셔리카',
     'private luxury car',
   ],
-  PREMIUM_VAN_10: ['10인 승합 고급차량', '10인 프리미엄 밴', '프리미엄 밴', 'premium van'],
+  PREMIUM_VAN_10: [
+    '10인 승합 고급차량', '10인 승합 고급 차량',
+    '10인 프리미엄 밴', '10인 프리미엄밴',
+    '프리미엄 밴', '프리미엄밴', 'premium van',
+  ],
 } as const satisfies Record<VoiceTransportOption, readonly string[]>;
 
 export const MEAL_ALIASES = {
   LUNCH_BOX: ['도시락', 'lunch box'],
-  LOCAL_RESTAURANT: ['현지식 레스토랑', 'local restaurant'],
-  PREMIUM_RESTAURANT: ['고급 레스토랑', 'premium restaurant'],
+  LOCAL_RESTAURANT: ['현지식 레스토랑', '현지식레스토랑', 'local restaurant'],
+  PREMIUM_RESTAURANT: ['고급 레스토랑', '고급레스토랑', 'premium restaurant'],
 } as const satisfies Record<VoiceMealOption, readonly string[]>;
 
 export const EXTRA_ALIASES = {
