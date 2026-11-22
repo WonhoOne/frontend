@@ -2,6 +2,7 @@ import type {
   ThemeDiscoveryPresentation,
   TourTheme,
 } from '@/features/tour-discovery/tourDiscovery.model';
+import { themePhotos } from '@/shared/media/themePhotos';
 
 export const TOUR_THEME_ORDER = [
   'HONEYMOON_ROMANCE',
@@ -16,7 +17,7 @@ export const TOUR_THEME_ORDER = [
  * CONTRACT:
  * - Theme catalog / included offering / allowed style은 docs/main v0.1.2를 따른다.
  * - copy와 local media mapping은 Frontend presentation 책임이다.
- * - imageSrc가 null인 것은 Backend image field를 추측하지 않기 위한 의도적인 상태다.
+ * - 사진은 Backend image field가 아니라 Theme별 Frontend 자산(`themePhotos`)이다.
  */
 export const themeDiscoveryPresentations = [
   {
@@ -30,8 +31,8 @@ export const themeDiscoveryPresentations = [
     ],
     availableStyles: ['GRAND', 'PREMIUM'],
     media: {
-      imageSrc: null,
-      imageAlt: '',
+      imageSrc: themePhotos.HONEYMOON_ROMANCE.src,
+      imageAlt: themePhotos.HONEYMOON_ROMANCE.alt,
       fallbackLabel: 'Honeymoon Romance',
     },
   },
@@ -46,8 +47,8 @@ export const themeDiscoveryPresentations = [
     ],
     availableStyles: ['GRAND', 'PREMIUM'],
     media: {
-      imageSrc: null,
-      imageAlt: '',
+      imageSrc: themePhotos.PARENTS_HEALING.src,
+      imageAlt: themePhotos.PARENTS_HEALING.alt,
       fallbackLabel: 'Parents Healing',
     },
   },
@@ -58,8 +59,8 @@ export const themeDiscoveryPresentations = [
     highlights: ['Golf resort theme', 'Golf accessories and golf balls', '10-seat luxury vehicle'],
     availableStyles: ['CLASSIC', 'GRAND', 'PREMIUM'],
     media: {
-      imageSrc: null,
-      imageAlt: '',
+      imageSrc: themePhotos.GOLF_CHALLENGE.src,
+      imageAlt: themePhotos.GOLF_CHALLENGE.alt,
       fallbackLabel: 'Golf Challenge',
     },
   },
@@ -74,8 +75,8 @@ export const themeDiscoveryPresentations = [
     ],
     availableStyles: ['CLASSIC', 'GRAND', 'PREMIUM'],
     media: {
-      imageSrc: null,
-      imageAlt: '',
+      imageSrc: themePhotos.OUTDOOR_TREKKING.src,
+      imageAlt: themePhotos.OUTDOOR_TREKKING.alt,
       fallbackLabel: 'Outdoor Trekking',
     },
   },
