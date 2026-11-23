@@ -13,6 +13,7 @@ import {
   type TourScheduleDto,
 } from '@/integrations/backend/contracts';
 import { toCanonicalBackendResourceIdentity, type ResourceId } from '@/shared/lib/resourceIdentity';
+import { storyPhotos } from '@/shared/media/detailPhotos';
 import { themePhotos } from '@/shared/media/themePhotos';
 
 export class TourDetailPresentationError extends Error {
@@ -43,7 +44,10 @@ export function adaptTourProductDetailDto(dto: TourProductDto): TourDetailModel 
       imageSrc: themePhotos[dto.theme].src,
       imageAlt: themePhotos[dto.theme].alt,
     },
-    storyMedia: createTourDetailMedia(`${presentation.themeLabel} story visual unavailable`),
+    storyMedia: createTourDetailMedia(
+      `${presentation.themeLabel} story visual unavailable`,
+      storyPhotos[dto.theme],
+    ),
     includedExperiences: presentation.includedExperiences,
     availableStyles: [...dto.availableStyles],
     stylePrices: dto.stylePrices.map((price) => ({ ...price })),
