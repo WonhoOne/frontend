@@ -1,8 +1,10 @@
 import type {
   CreateReservationInput,
+  ReservationConfigurationModel,
   ReservationModel,
 } from '@/features/reservation/reservation.model';
 import type {
+  ReservationConfigurationUpdateRequestDto,
   ReservationCreateRequestDto,
   ReservationResponseDto,
 } from '@/integrations/backend/contracts';
@@ -25,6 +27,21 @@ export function toReservationCreateRequestDto(
       transportOption: input.configuration.transportOption,
       mealOption: input.configuration.mealOption,
       extraOptions: [...input.configuration.extraOptions],
+    },
+  };
+}
+
+/** Allow-listed `PUT …/configuration` body. Unexpected runtime properties never leak. */
+export function toReservationConfigurationUpdateRequestDto(
+  configuration: ReservationConfigurationModel,
+): ReservationConfigurationUpdateRequestDto {
+  return {
+    configuration: {
+      style: configuration.style,
+      hotelOption: configuration.hotelOption,
+      transportOption: configuration.transportOption,
+      mealOption: configuration.mealOption,
+      extraOptions: [...configuration.extraOptions],
     },
   };
 }

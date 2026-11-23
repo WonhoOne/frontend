@@ -67,6 +67,7 @@ export {
 export { canonicalReservationCreateIdentityResolver } from '@/features/reservation/canonicalReservationCreateIdentityResolver';
 export {
   adaptReservationResponseDto,
+  toReservationConfigurationUpdateRequestDto,
   toReservationCreateRequestDto,
 } from '@/features/reservation/reservation.adapter';
 export type { ReservationDataSource } from '@/features/reservation/reservation.dataSource';
@@ -164,3 +165,15 @@ export {
 } from '@/features/reservation/reservationSuccessTransition';
 
 export { mockReservationCreateIdentityResolver } from '@/features/reservation/mockReservationCreateIdentityResolver';
+
+export {
+  allowedStylesForReservation,
+  isReservationModifiable,
+  localIsoDate,
+  presentReservationEditFailure,
+  reservationOptionLabel,
+  reservationStyleLabel,
+  type ReservationEditFailure,
+} from '@/features/reservation/reservationEdit';
+export { useUpdateReservationConfiguration } from '@/features/reservation/reservationEdit.mutation';
+export { ReservationEditDialog } from '@/features/reservation/ReservationEditDialog';

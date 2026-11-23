@@ -1,14 +1,22 @@
+import { useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import { useParams } from 'react-router';
 
 import { reservationDataSource } from '@/app/providers/reservationDataSource';
 import { routePaths } from '@/app/router/paths';
 import {
+  isReservationModifiable,
+  localIsoDate,
   ReservationDataSourceError,
+  ReservationEditDialog,
+  reservationOptionLabel,
+  reservationQueryKeys,
+  reservationStyleLabel,
   useReservationDetail,
   type ReservationDataSource,
 } from '@/features/reservation';
 import { parseBackendResourceIdentity } from '@/shared/lib/resourceIdentity';
-import { PageContainer, Skeleton, TextLink } from '@/shared/ui';
+import { Button, PageContainer, Skeleton, TextLink } from '@/shared/ui';
 import styles from '@/pages/reservation-detail/ReservationDetailPage.module.css';
 
 function formatKrw(value: number) {
@@ -21,6 +29,9 @@ function formatKrw(value: number) {
 
 interface ReservationDetailPageProps {
   dataSource?: Pick<ReservationDataSource, 'getReservation'>;
+  editDataSource?: Pick<ReservationDataSource, 'updateReservationConfiguration'>;
+  /** 테스트용 오늘 날짜 (`YYYY-MM-DD`). 기본값은 브라우저 현지 날짜다. */
+  today?: string;
 }
 
 /**
@@ -29,10 +40,16 @@ interface ReservationDetailPageProps {
  */
 export function ReservationDetailPage({
   dataSource = reservationDataSource,
+  editDataSource = reservationDataSource,
+  today = localIsoDate(),
 }: ReservationDetailPageProps = {}) {
   const { reservationId } = useParams();
   const parsedId = parseBackendResourceIdentity(reservationId);
   const query = useReservationDetail(dataSource, parsedId);
+  const queryClient = useQueryClient();
+  const [editing, setEditing] = useState(false);
+  const [editStatus, setEditStatus] = useState<string | null>(null);
+  const [editClosed, setEditClosed] = useState(false);
   const privateError =
     query.error instanceof ReservationDataSourceError ? query.error.detail : null;
 
@@ -92,6 +109,7 @@ export function ReservationDetailPage({
     );
 
   const stale = query.isFetching || query.isError;
+  const modifiable = !editClosed && isReservationModifiable(reservation.schedule.startDate, today);
   return (
     <PageContainer variant="transaction">
       <article className={styles.page}>
@@ -101,7 +119,27 @@ export function ReservationDetailPage({
           <p>
             Your reservation snapshot reflects the configuration and price returned by the service.
           </p>
+          {modifiable ? (
+            <div>
+              <Button
+                onClick={() => {
+                  setEditStatus(null);
+                  setEditing(true);
+                }}
+                variant="secondary"
+              >
+                Edit trip
+              </Button>
+            </div>
+          ) : (
+            <p className={styles.eyebrow}>
+              Changes are closed for this trip because its departure date has arrived.
+            </p>
+          )}
         </header>
+        <div aria-live="polite" className={styles.statusRegion} role="status">
+          {editStatus === null ? null : <p className={styles.success}>{editStatus}</p>}
+        </div>
         {stale ? (
           <p role="status" className={styles.notice}>
             Showing the last confirmed reservation snapshot while the latest refresh is unavailable.
@@ -122,7 +160,7 @@ export function ReservationDetailPage({
             </div>
             <div>
               <dt>Style</dt>
-              <dd>{reservation.configuration.style}</dd>
+              <dd>{reservationStyleLabel(reservation.configuration.style)}</dd>
             </div>
           </dl>
         </section>
@@ -131,19 +169,22 @@ export function ReservationDetailPage({
           <dl className={styles.summary}>
             <div>
               <dt>Hotel</dt>
-              <dd>{reservation.configuration.hotelOption}</dd>
+              <dd>{reservationOptionLabel(reservation.configuration.hotelOption)}</dd>
             </div>
             <div>
               <dt>Transport</dt>
-              <dd>{reservation.configuration.transportOption}</dd>
+              <dd>{reservationOptionLabel(reservation.configuration.transportOption)}</dd>
             </div>
             <div>
               <dt>Meal</dt>
-              <dd>{reservation.configuration.mealOption}</dd>
+              <dd>{reservationOptionLabel(reservation.configuration.mealOption)}</dd>
             </div>
             <div>
               <dt>Extras</dt>
-              <dd>{reservation.configuration.extraOptions.join(', ') || 'None'}</dd>
+              <dd>
+                {reservation.configuration.extraOptions.map(reservationOptionLabel).join(', ') ||
+                  'None'}
+              </dd>
             </div>
           </dl>
         </section>
@@ -178,6 +219,24 @@ export function ReservationDetailPage({
         </section>
         <TextLink to={routePaths.tours}>Browse tours</TextLink>
       </article>
+      <ReservationEditDialog
+        dataSource={editDataSource}
+        onClose={() => setEditing(false)}
+        onNeedsRefresh={() => {
+          void queryClient.invalidateQueries({
+            queryKey: reservationQueryKeys.detail(reservation.id),
+          });
+        }}
+        onClosedForChanges={() => setEditClosed(true)}
+        onUpdated={(updated) => {
+          setEditing(false);
+          setEditStatus(
+            `Trip updated. The service recalculated the total to ${formatKrw(updated.price.total)}.`,
+          );
+        }}
+        open={editing}
+        reservation={reservation}
+      />
     </PageContainer>
   );
 }

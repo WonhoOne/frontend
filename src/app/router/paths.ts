@@ -63,6 +63,7 @@ export const employeeRoutePaths = {
   tours: '/employee/tours',
   tourCreate: '/employee/tours/new',
   inventory: '/employee/inventory',
+  schedules: '/employee/schedules',
 } as const;
 
 export const employeeRoutePatterns = {

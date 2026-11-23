@@ -94,6 +94,13 @@ export const appRoutes: RouteObject[] = [
               (module) => module.EmployeeInventoryPage,
             ),
           },
+          {
+            path: employeeRoutePaths.schedules,
+            element: lazyPage(
+              () => import('@/pages/employee-schedules/EmployeeSchedulesPage'),
+              (module) => module.EmployeeSchedulesPage,
+            ),
+          },
           { path: '*', element: <EmployeeNotFound /> },
         ],
       },

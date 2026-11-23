@@ -121,6 +121,7 @@ describe('Employee routes', () => {
     const nav = screen.getByRole('navigation', { name: '직원 메뉴' });
     expect(nav).toHaveTextContent('여행상품');
     expect(nav).toHaveTextContent('재고 관리');
+    expect(nav).toHaveTextContent('출발 관리');
     expect(screen.getByText('Synthetic Employee')).toBeVisible();
     expect(screen.queryByRole('link', { name: 'Login / Account' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /My Trips/ })).not.toBeInTheDocument();

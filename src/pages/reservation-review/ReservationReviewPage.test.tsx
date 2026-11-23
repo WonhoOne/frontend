@@ -290,6 +290,7 @@ describe('ReservationReviewPage composition', () => {
     const dataSource: ReservationDataSource = {
       createReservation,
       getReservation: vi.fn().mockRejectedValue(new Error('not used')),
+      updateReservationConfiguration: vi.fn().mockRejectedValue(new Error('not used')),
     };
 
     render(
@@ -348,6 +349,7 @@ describe('ReservationReviewPage composition', () => {
     const dataSource: ReservationDataSource = {
       createReservation,
       getReservation: vi.fn().mockRejectedValue(new Error('not used')),
+      updateReservationConfiguration: vi.fn().mockRejectedValue(new Error('not used')),
     };
 
     render(
@@ -391,6 +393,7 @@ describe('ReservationReviewPage composition', () => {
     const dataSource: ReservationDataSource = {
       createReservation,
       getReservation: vi.fn().mockRejectedValue(new Error('not used')),
+      updateReservationConfiguration: vi.fn().mockRejectedValue(new Error('not used')),
     };
 
     render(
@@ -432,6 +435,7 @@ describe('ReservationReviewPage composition', () => {
     const dataSource: ReservationDataSource = {
       createReservation,
       getReservation: vi.fn().mockRejectedValue(new Error('not used')),
+      updateReservationConfiguration: vi.fn().mockRejectedValue(new Error('not used')),
     };
 
     render(
@@ -477,6 +481,7 @@ describe('ReservationReviewPage composition', () => {
     const dataSource: ReservationDataSource = {
       createReservation,
       getReservation: vi.fn().mockRejectedValue(new Error('not used')),
+      updateReservationConfiguration: vi.fn().mockRejectedValue(new Error('not used')),
     };
 
     render(
@@ -523,6 +528,7 @@ describe('ReservationReviewPage composition', () => {
     const dataSource: ReservationDataSource = {
       createReservation,
       getReservation: vi.fn().mockRejectedValue(new Error('not used')),
+      updateReservationConfiguration: vi.fn().mockRejectedValue(new Error('not used')),
     };
 
     render(
@@ -562,6 +568,7 @@ describe('ReservationReviewPage composition', () => {
       const dataSource: ReservationDataSource = {
         createReservation,
         getReservation: vi.fn().mockRejectedValue(new Error('not used')),
+        updateReservationConfiguration: vi.fn().mockRejectedValue(new Error('not used')),
       };
 
       render(
@@ -603,6 +610,7 @@ describe('ReservationReviewPage composition', () => {
     const dataSource: ReservationDataSource = {
       createReservation,
       getReservation: vi.fn().mockRejectedValue(new Error('not used')),
+      updateReservationConfiguration: vi.fn().mockRejectedValue(new Error('not used')),
     };
     const onlineDescriptor = Object.getOwnPropertyDescriptor(navigator, 'onLine');
     Object.defineProperty(navigator, 'onLine', { configurable: true, value: false });
@@ -649,6 +657,7 @@ describe('ReservationReviewPage composition', () => {
     const reservationSource: ReservationDataSource = {
       createReservation,
       getReservation: vi.fn().mockRejectedValue(new Error('not used')),
+      updateReservationConfiguration: vi.fn().mockRejectedValue(new Error('not used')),
     };
     const loginResult: LoginResult = {
       accessToken: 'synthetic-token',
@@ -717,7 +726,11 @@ describe('ReservationReviewPage transport capacity (BR-20, frontend#66)', () => 
     });
     storage.setItem(RESERVATION_DRAFT_STORAGE_KEY, saved);
     const createReservation = vi.fn();
-    const dataSource: ReservationDataSource = { createReservation, getReservation: vi.fn() };
+    const dataSource: ReservationDataSource = {
+      createReservation,
+      getReservation: vi.fn(),
+      updateReservationConfiguration: vi.fn(),
+    };
 
     render(
       <ReservationDraftProvider storage={storage} now={() => 10}>

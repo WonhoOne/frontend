@@ -109,3 +109,103 @@ export async function openAuthenticatedReservation(
   await expect.poll(() => reservationReads).toBeGreaterThan(0);
   return { getReservationReads: () => reservationReads };
 }
+
+/**
+ * v0.3 demo: a future trip whose configuration can be changed. The stub recalculates
+ * the price from the style unit price like the Backend, and records PUT bodies.
+ */
+export async function openEditableReservation(page: Page) {
+  const unitPrices: Readonly<Record<string, number>> = {
+    CLASSIC: 1200000,
+    GRAND: 1800000,
+    PREMIUM: 2500000,
+  };
+  const reservation = {
+    ...reservationDto,
+    id: 802,
+    participantCount: 3,
+    tourProduct: { id: 202, theme: 'OUTDOOR_TREKKING', name: 'Synthetic Trekking' },
+    schedule: {
+      id: 502,
+      startDate: '2099-12-19',
+      endDate: '2099-12-21',
+      recruitment: { unit: 'PARTICIPANT', currentCount: 3, requiredCount: 3, confirmed: true },
+    },
+    configuration: {
+      style: 'CLASSIC',
+      hotelOption: 'HOTEL_3_STAR',
+      transportOption: 'PREMIUM_VAN_10',
+      mealOption: 'LUNCH_BOX',
+      extraOptions: [] as string[],
+    },
+    price: {
+      unitPrice: 1200000,
+      subtotal: 3600000,
+      discount: null,
+      total: 3600000,
+      currency: 'KRW',
+    },
+  };
+  const writes: unknown[] = [];
+
+  await page.route('**/api/v1/auth/login', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        accessToken,
+        tokenType: 'Bearer',
+        expiresIn: 3600,
+        user: { id: 101, role: 'CUSTOMER', name: 'Synthetic Customer' },
+      }),
+    });
+  });
+
+  await page.route('**/api/v1/reservations/802**', async (route) => {
+    const request = route.request();
+    expect(request.headers().authorization).toBe(`Bearer ${accessToken}`);
+
+    if (request.method() === 'PUT') {
+      expect(new URL(request.url()).pathname).toBe('/api/v1/reservations/802/configuration');
+      const body = request.postDataJSON() as { configuration: typeof reservation.configuration };
+      writes.push(body);
+      const unitPrice = unitPrices[body.configuration.style] ?? 0;
+      reservation.configuration = body.configuration;
+      reservation.price = {
+        ...reservation.price,
+        unitPrice,
+        subtotal: unitPrice * reservation.participantCount,
+        total: unitPrice * reservation.participantCount,
+      };
+    }
+
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(reservation),
+    });
+  });
+
+  await page.goto('/login');
+  await page.evaluate(
+    ({ key, target }) => {
+      sessionStorage.setItem(
+        key,
+        JSON.stringify({
+          schemaVersion: 1,
+          returnTo: target,
+          intent: 'continue-navigation',
+          draftSchemaVersion: 1,
+          createdAt: Date.now(),
+        }),
+      );
+    },
+    { key: returnContextKey, target: '/reservations/802' },
+  );
+  await page.getByRole('textbox', { name: '로그인 ID' }).fill('synthetic-customer');
+  await page.getByLabel('비밀번호').fill('synthetic-password');
+  await page.getByRole('button', { name: '로그인' }).click();
+  await expect(page).toHaveURL('/reservations/802');
+
+  return { writes };
+}
