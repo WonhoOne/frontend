@@ -53,3 +53,14 @@
   border-radius: var(--mw-radius-sm);
   color: var(--mw-text-secondary);
 }
+
+.statusRegion:empty {
+  display: none;
+}
+
+.success {
+  margin: 0;
+  padding: var(--mw-space-3) var(--mw-space-4);
+  border-radius: var(--mw-radius-sm);
+  background: var(--mw-success-soft);
+}

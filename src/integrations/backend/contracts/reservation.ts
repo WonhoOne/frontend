@@ -53,6 +53,14 @@ export interface ReservationCreateRequestDto {
   configuration: ReservationConfigurationDto;
 }
 
+/**
+ * `PUT /api/v1/reservations/{id}/configuration` request body (v0.3 demo).
+ * CONTRACT: participantCount와 schedule은 바꿀 수 없으므로 configuration만 보낸다.
+ */
+export interface ReservationConfigurationUpdateRequestDto {
+  configuration: ReservationConfigurationDto;
+}
+
 export interface ReservationRecruitmentDto {
   unit: RecruitmentUnitDto;
   currentCount: number;

@@ -13,6 +13,7 @@ export interface EmployeeSignOutNavigationState {
 const navItems = [
   { label: '여행상품', to: employeeRoutePaths.tours },
   { label: '재고 관리', to: employeeRoutePaths.inventory },
+  { label: '출발 관리', to: employeeRoutePaths.schedules },
 ] as const;
 
 /**

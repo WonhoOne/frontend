@@ -84,6 +84,30 @@ export const mockReservationDataSource: ReservationDataSource = {
 
     return Promise.resolve(reservation);
   },
+
+  updateReservationConfiguration(reservationId, configuration) {
+    const current =
+      mockReservationById.get(reservationId) ??
+      (reservationId === mockReservationSuccessFixture.id
+        ? mockReservationSuccessFixture
+        : undefined);
+
+    if (current === undefined) {
+      return Promise.reject(
+        new ReservationDataSourceError({
+          kind: 'not-found',
+          code: 'RESERVATION_NOT_FOUND',
+        }),
+      );
+    }
+
+    const updated: ReservationModel = {
+      ...current,
+      configuration: { ...configuration, extraOptions: [...configuration.extraOptions] },
+    };
+    mockReservationById.set(reservationId, updated);
+    return Promise.resolve(updated);
+  },
 };
 
 export function resetMockReservationDataSource() {

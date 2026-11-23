@@ -1,0 +1,83 @@
+.card {
+  overflow-x: auto;
+  border: var(--mw-border-subtle);
+  border-radius: var(--mw-radius-md);
+  background: var(--mw-surface-elevated);
+  box-shadow: var(--mw-elevation-1);
+}
+
+.table {
+  inline-size: 100%;
+  border-collapse: collapse;
+}
+
+.caption {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.table th,
+.table td {
+  padding: var(--mw-space-4) var(--mw-space-5);
+  border-block-end: var(--mw-border-subtle);
+  text-align: start;
+}
+
+.table thead th {
+  font-size: var(--mw-font-size-label-sm);
+  font-weight: var(--mw-font-weight-semibold);
+  color: var(--mw-text-secondary);
+}
+
+.table tbody th {
+  font-weight: var(--mw-font-weight-medium);
+}
+
+.table tbody tr:last-child th,
+.table tbody tr:last-child td {
+  border-block-end: none;
+}
+
+.numeric {
+  font-variant-numeric: tabular-nums;
+  text-align: end !important;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.status {
+  display: inline-block;
+  padding: var(--mw-space-1) var(--mw-space-2);
+  border-radius: var(--mw-radius-sm);
+  background: var(--mw-accent-faint);
+  white-space: nowrap;
+}
+
+.status[data-status='DEPARTED'] {
+  background: var(--mw-warning-soft);
+}
+
+.status[data-status='COMPLETED'] {
+  background: var(--mw-success-soft);
+}
+
+.action {
+  inline-size: 1%;
+  white-space: nowrap;
+  text-align: end !important;
+}
+
+.action > * + * {
+  margin-inline-start: var(--mw-space-2);
+}
+
+.highlighted th,
+.highlighted td {
+  background: var(--mw-accent-faint);
+}

@@ -33,6 +33,7 @@ export {
   type HotelOptionDto,
   type MealOptionDto,
   type ReservationConfigurationDto,
+  type ReservationConfigurationUpdateRequestDto,
   type ReservationCreateRequestDto,
   type ReservationDiscountDto,
   type ReservationPriceDto,
@@ -49,6 +50,18 @@ export {
   type InventoryDto,
   type InventoryItemTypeDto,
 } from '@/integrations/backend/contracts/inventory';
+export {
+  decodeEmployeeTourScheduleDto,
+  decodeEmployeeTourScheduleListDto,
+  decodeScheduleCompletionDto,
+  decodeScheduleDepartureDto,
+  scheduleOperationStatuses,
+  type DeductedInventoryItemDto,
+  type EmployeeTourScheduleDto,
+  type ScheduleCompletionDto,
+  type ScheduleDepartureDto,
+  type ScheduleOperationStatusDto,
+} from '@/integrations/backend/contracts/employeeTourSchedule';
 export {
   decodeTourProductDto,
   decodeTourProductListDto,

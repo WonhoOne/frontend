@@ -235,3 +235,148 @@ export async function routeEmployeeInventory(page: Page) {
 
   return { items, adds, control };
 }
+
+interface StubSchedule {
+  id: number;
+  tourId: number;
+  tourName: string;
+  theme: string;
+  startDate: string;
+  endDate: string;
+  participantCount: number;
+  confirmed: boolean;
+  operationStatus: 'SCHEDULED' | 'DEPARTED' | 'COMPLETED';
+}
+
+const souvenirByTheme: Readonly<Record<string, string>> = {
+  HONEYMOON_ROMANCE: 'COUPLE_TSHIRT',
+  PARENTS_HEALING: 'GINSENG_GIFT',
+  GOLF_CHALLENGE: 'GOLF_BALL',
+  OUTDOOR_TREKKING: 'SCARF',
+};
+
+export const stubTrekkingSchedule: StubSchedule = {
+  id: 5,
+  tourId: 2,
+  tourName: 'E2E Synthetic Trekking',
+  theme: 'OUTDOOR_TREKKING',
+  startDate: '2026-12-19',
+  endDate: '2026-12-21',
+  participantCount: 3,
+  confirmed: true,
+  operationStatus: 'SCHEDULED',
+};
+
+/**
+ * Stateful v0.3 demo departure-operations stub. Deducts from the given inventory
+ * items (pass the `items` of `routeEmployeeInventory`) so the inventory page reflects it.
+ */
+export async function routeEmployeeSchedules(
+  page: Page,
+  inventory: Array<{ itemType: string; quantity: number }>,
+  initial: StubSchedule[] = [stubTrekkingSchedule],
+) {
+  const schedules = initial.map((schedule) => ({ ...schedule }));
+  const conflict = (code: string, message = 'Synthetic') => ({
+    status: 409,
+    contentType: 'application/json',
+    body: JSON.stringify({ code, message, fieldErrors: [] }),
+  });
+
+  await page.route('**/api/v1/employee/tour-schedules**', async (route) => {
+    const request = route.request();
+    expect(request.headers().authorization).toBe(`Bearer ${employeeToken}`);
+    const segments = new URL(request.url()).pathname.split('/');
+    const action = segments.at(-1);
+
+    if (request.method() === 'GET' && action === 'tour-schedules') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(schedules),
+      });
+      return;
+    }
+
+    if (request.method() !== 'POST') {
+      await route.fallback();
+      return;
+    }
+
+    const schedule = schedules.find((candidate) => candidate.id === Number(segments.at(-2)));
+
+    if (schedule === undefined) {
+      await route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          code: 'TOUR_SCHEDULE_NOT_FOUND',
+          message: 'Synthetic',
+          fieldErrors: [],
+        }),
+      });
+      return;
+    }
+
+    if (action === 'departure') {
+      if (schedule.operationStatus !== 'SCHEDULED') {
+        await route.fulfill(conflict('SCHEDULE_ALREADY_DEPARTED'));
+        return;
+      }
+
+      if (!schedule.confirmed) {
+        await route.fulfill(conflict('SCHEDULE_NOT_CONFIRMED'));
+        return;
+      }
+
+      const itemType = souvenirByTheme[schedule.theme] ?? 'SCARF';
+      const quantity =
+        schedule.theme === 'HONEYMOON_ROMANCE'
+          ? Math.floor(schedule.participantCount / 2)
+          : schedule.participantCount;
+      const item = inventory.find((candidate) => candidate.itemType === itemType);
+
+      if (item === undefined || item.quantity < quantity) {
+        await route.fulfill(
+          conflict(
+            'INSUFFICIENT_INVENTORY',
+            `${itemType} stock ${item?.quantity ?? 0} is below the required ${quantity}.`,
+          ),
+        );
+        return;
+      }
+
+      item.quantity -= quantity;
+      schedule.operationStatus = 'DEPARTED';
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          schedule,
+          deductedItems:
+            quantity === 0 ? [] : [{ itemType, quantity, remainingQuantity: item.quantity }],
+        }),
+      });
+      return;
+    }
+
+    if (action === 'completion') {
+      if (schedule.operationStatus !== 'DEPARTED') {
+        await route.fulfill(conflict('SCHEDULE_NOT_DEPARTED'));
+        return;
+      }
+
+      schedule.operationStatus = 'COMPLETED';
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ schedule }),
+      });
+      return;
+    }
+
+    await route.fallback();
+  });
+
+  return { schedules };
+}

@@ -21,6 +21,12 @@ export const apiErrorCodes = [
   'TOUR_PRODUCT_THEME_LOCKED',
   'VALIDATION_FAILED',
   'INTERNAL_ERROR',
+  // v0.3 demo additions: reservation configuration change, employee departure operations.
+  'RESERVATION_NOT_MODIFIABLE',
+  'SCHEDULE_NOT_CONFIRMED',
+  'SCHEDULE_ALREADY_DEPARTED',
+  'SCHEDULE_NOT_DEPARTED',
+  'INSUFFICIENT_INVENTORY',
 ] as const;
 
 export type ApiErrorCode = (typeof apiErrorCodes)[number];
