@@ -46,3 +46,9 @@ export {
   type VoiceRuntimeError,
   type VoiceInterpretationFailure,
 } from './voiceRuntime';
+export {
+  type SpeechSynthesisAdapter,
+  type SpeechSynthesisSpeakOptions,
+} from './speechSynthesisAdapter';
+export { createBrowserSpeechSynthesisAdapter } from './browserSpeechSynthesisAdapter';
+export { matchGuidedVoiceUtterance, type GuidedVoiceUtterance } from './voiceGuidedDialogGrammar';

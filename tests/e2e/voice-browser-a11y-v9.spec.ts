@@ -1,4 +1,5 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import { installInstantSpeechSynthesis } from './support/instant-speech-synthesis';
 
 const storageKey = 'mister-world:reservation-draft:v1';
 const readyDraft = {
@@ -27,6 +28,7 @@ interface VoiceProbe {
 }
 
 async function install(page: Page, mode: BrowserMode = 'standard', extras: string[] = []) {
+  await installInstantSpeechSynthesis(page);
   await page.addInitScript(
     ({ mode, key, draft, extras }) => {
       if (sessionStorage.getItem(key) === null) {

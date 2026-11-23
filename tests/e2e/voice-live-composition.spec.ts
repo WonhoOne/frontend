@@ -1,7 +1,9 @@
 import { expect, test, type Page } from '@playwright/test';
+import { installInstantSpeechSynthesis } from './support/instant-speech-synthesis';
 
 const storageKey = 'mister-world:reservation-draft:v1';
 async function installRecognition(page: Page) {
+  await installInstantSpeechSynthesis(page);
   await page.addInitScript(() => {
     class FakeRecognition {
       static current: FakeRecognition | undefined;
