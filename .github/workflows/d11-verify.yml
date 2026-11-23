@@ -62,7 +62,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: WonhoOne/backend
-          ref: 597cf92f1baf93211862d4ea5dbfa8a199b808a2
+          ref: d48509ac5a41758e31724a60f86cb08aaf3272f9
           path: .f1-backend-smoke
 
       - name: Set up Java 21
@@ -148,7 +148,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: WonhoOne/backend
-          ref: 597cf92f1baf93211862d4ea5dbfa8a199b808a2
+          ref: d48509ac5a41758e31724a60f86cb08aaf3272f9
           path: .f2-backend
       - uses: actions/setup-java@v4
         with:
