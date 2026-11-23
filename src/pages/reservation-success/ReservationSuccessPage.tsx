@@ -7,6 +7,7 @@ import {
   useReservationDetail,
   type ReservationDataSource,
 } from '@/features/reservation';
+import { useVoiceReservationConfirmation } from '@/features/voice-bridge/live';
 import { parseBackendResourceIdentity } from '@/shared/lib/resourceIdentity';
 import { PageContainer, Skeleton, TextLink } from '@/shared/ui';
 
@@ -39,6 +40,11 @@ export function ReservationSuccessPage({
   const query = useReservationDetail(dataSource, parsedId);
   const privateError =
     query.error instanceof ReservationDataSourceError ? query.error.detail : null;
+  // Spoken only when this product's Draft was prepared with Voice in this browser session.
+  useVoiceReservationConfirmation({
+    tourProductId: query.data ? String(query.data.tourProduct.id) : undefined,
+    startDate: query.data?.schedule.startDate,
+  });
 
   if (parsedId === null || privateError?.kind === 'not-found')
     return (

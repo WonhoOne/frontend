@@ -1,7 +1,9 @@
-import { useSyncExternalStore } from 'react';
+import { useContext, useSyncExternalStore } from 'react';
 import { useQueryClient, type QueryClient, type QueryKey } from '@tanstack/react-query';
 import { matchPath, useLocation, useNavigate } from 'react-router';
 import { routeBuilders, routePaths, routePatterns } from '@/app/router/paths';
+import { isCustomerSession } from '@/features/auth';
+import { AuthContext } from '@/features/auth/authContext';
 import { createSharedContractConfigureScenario } from '@/features/configuration';
 import { useReservationDraft } from '@/features/reservation';
 import {
@@ -25,6 +27,9 @@ export function CustomerVoiceControl() {
   const { draft } = useReservationDraft();
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  // Optional read of the existing session (no HTTP); outside AuthProvider the name is omitted.
+  const auth = useContext(AuthContext);
+  const customerName = auth && isCustomerSession(auth.state) ? auth.state.user.name : null;
   const configure = matchPath(routePatterns.configure, pathname);
   const detail = matchPath(routePatterns.tourDetail, pathname);
   const id = parseResourceIdRouteParam((configure ?? detail)?.params.tourId);
@@ -64,6 +69,7 @@ export function CustomerVoiceControl() {
   return (
     <>
       <LiveVoiceControl
+        guidedDialog={{ getCustomerName: () => customerName }}
         getChoices={() => ({
           screen,
           products:

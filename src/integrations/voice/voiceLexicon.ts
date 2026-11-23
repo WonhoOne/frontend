@@ -11,7 +11,14 @@ import {
 // Chrome STT가 복합 명사를 붙이거나 띄는 경우만 명시적으로 수용한다.
 // 전체 공백 제거는 동적 상품명의 구분과 안전한 문장 경계를 파괴하므로 금지한다.
 export const THEME_ALIASES = {
-  HONEYMOON_ROMANCE: ['허니문', '신혼여행', 'honeymoon', 'honeymoon romance'],
+  HONEYMOON_ROMANCE: [
+    '허니문',
+    '허니문 낭만',
+    '허니문낭만',
+    '신혼여행',
+    'honeymoon',
+    'honeymoon romance',
+  ],
   PARENTS_HEALING: [
     '부모님 힐링',
     '부모님힐링',

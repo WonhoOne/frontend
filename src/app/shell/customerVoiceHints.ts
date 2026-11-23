@@ -5,6 +5,7 @@ import {
 } from '@/features/voice-bridge/liveVoiceContext';
 import {
   interpretVoiceTranscriptWithContext,
+  matchGuidedVoiceUtterance,
   type VoiceCommand,
   type VoiceExtraOption,
   type VoiceHotelOption,
@@ -105,7 +106,25 @@ export function createVoiceCommandHints(
     shown.add(kind);
     hints.push({ phrase, description: candidate.description });
   }
+  const natural = guidedDialogHint(choices, context.interpretation);
+  if (natural) hints.push(natural);
   return hints;
+}
+
+/**
+ * One conversational example for the guided dialog, shown on discovery when a honeymoon
+ * tour is on screen. Re-validated by the same dialog grammar that live Voice uses.
+ */
+function guidedDialogHint(
+  choices: LiveVoiceChoices,
+  interpretation: LiveContext['interpretation'],
+): VoiceCommandHint | null {
+  if (choices.screen !== 'discovery') return null;
+  if (!choices.products.some((product) => product.theme === 'HONEYMOON_ROMANCE')) return null;
+  const phrase = '허니문 낭만 투어 좋겠어요';
+  const utterance = matchGuidedVoiceUtterance(phrase, interpretation);
+  if (utterance?.kind !== 'CHOOSE_THEME' || utterance.theme !== 'HONEYMOON_ROMANCE') return null;
+  return { phrase, description: 'Tell the voice guide your pick' };
 }
 
 function discoveryCandidates(choices: LiveVoiceChoices): HintCandidate[] {

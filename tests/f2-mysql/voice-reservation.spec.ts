@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { installInstantSpeechSynthesis } from '../e2e/support/instant-speech-synthesis';
 
 const backend = 'http://127.0.0.1:8080/api/v1';
 const storageKey = 'mister-world:reservation-draft:v1';
@@ -41,6 +42,7 @@ interface Draft {
 // CI has no microphone. Only the native recognition boundary is replaced;
 // transcripts still enter the production adapter → runtime → interpreter → bridge.
 async function installRecognition(page: Page) {
+  await installInstantSpeechSynthesis(page);
   await page.addInitScript(() => {
     class Recognition {
       static current: Recognition | undefined;

@@ -50,11 +50,18 @@ export interface CreateVoiceRuntimeOptions {
   speechRecognitionAdapter: SpeechRecognitionAdapter;
   /** Called for each final transcript, after transcript delivery; never cached. */
   getInterpretationContext: () => VoiceInterpretationContext;
+  /**
+   * Optional pre-interpreter hook for final transcripts (e.g. a guided dialog layer).
+   * Returning true consumes the transcript: no command or interpretation-failure event follows.
+   * Returning false keeps the existing exact grammar unchanged.
+   */
+  interceptFinalTranscript?: (transcript: string, context: VoiceInterpretationContext) => boolean;
 }
 
 export function createVoiceRuntime({
   speechRecognitionAdapter: adapter,
   getInterpretationContext,
+  interceptFinalTranscript,
 }: CreateVoiceRuntimeOptions): VoiceRuntime {
   let disposed = false;
   const listeners = new Set<VoiceRuntimeListener>();
@@ -103,6 +110,16 @@ export function createVoiceRuntime({
           return;
         }
         if (disposed) return;
+        if (interceptFinalTranscript) {
+          let consumed: boolean;
+          try {
+            consumed = interceptFinalTranscript(transcript, context);
+          } catch {
+            emit({ type: 'runtime-error', error: { code: 'CONTEXT_UNAVAILABLE' } });
+            return;
+          }
+          if (consumed || disposed) return;
+        }
         const result = interpretVoiceTranscriptWithContext(transcript, context);
         if (result.ok) {
           emit({
