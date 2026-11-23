@@ -4,6 +4,8 @@ import type {
   TourDetailStyle,
   TourDetailTheme,
 } from '@/features/tour-detail/tourDetail.model';
+import { experiencePhotos } from '@/shared/media/detailPhotos';
+import type { ThemePhoto } from '@/shared/media/themePhotos';
 
 interface ThemeDetailPresentation {
   theme: TourDetailTheme;
@@ -15,10 +17,13 @@ interface ThemeDetailPresentation {
   includedExperiences: readonly IncludedExperienceModel[];
 }
 
-export function createTourDetailMedia(fallbackLabel: string): TourDetailMediaModel {
+export function createTourDetailMedia(
+  fallbackLabel: string,
+  photo?: ThemePhoto,
+): TourDetailMediaModel {
   return {
-    imageSrc: null,
-    imageAlt: '',
+    imageSrc: photo?.src ?? null,
+    imageAlt: photo?.alt ?? '',
     fallbackLabel,
   };
 }
@@ -37,19 +42,22 @@ export const themeDetailPresentations = {
         key: 'romantic-room',
         title: 'Romantic room decoration',
         description: 'A two-person romantic room setup is included in this Theme offering.',
-        media: createTourDetailMedia('Romantic room experience'),
+        media: createTourDetailMedia('Romantic room experience', experiencePhotos.romanticRoom),
       },
       {
         key: 'couple-shirts',
         title: 'Commemorative T-shirts',
         description: 'Commemorative T-shirts for the couple are included.',
-        media: createTourDetailMedia('Couple commemorative T-shirts'),
+        media: createTourDetailMedia(
+          'Couple commemorative T-shirts',
+          experiencePhotos.coupleShirts,
+        ),
       },
       {
         key: 'private-vehicle',
         title: 'Private luxury vehicle',
         description: 'A private luxury vehicle for two is included.',
-        media: createTourDetailMedia('Private luxury vehicle for two'),
+        media: createTourDetailMedia('Private luxury vehicle for two', experiencePhotos.privateCar),
       },
     ],
   },
@@ -66,19 +74,19 @@ export const themeDetailPresentations = {
         key: 'massage',
         title: 'Massage and acupressure',
         description: 'A massage and acupressure service is included in this Theme offering.',
-        media: createTourDetailMedia('Massage and acupressure service'),
+        media: createTourDetailMedia('Massage and acupressure service', experiencePhotos.massage),
       },
       {
         key: 'ginseng',
         title: 'Health ginseng souvenir',
         description: 'A health ginseng souvenir is included.',
-        media: createTourDetailMedia('Health ginseng souvenir'),
+        media: createTourDetailMedia('Health ginseng souvenir', experiencePhotos.ginseng),
       },
       {
         key: 'luxury-vehicle',
         title: 'Luxury group vehicle',
         description: 'A 10-seat luxury vehicle is included.',
-        media: createTourDetailMedia('10-seat luxury vehicle'),
+        media: createTourDetailMedia('10-seat luxury vehicle', experiencePhotos.groupVan),
       },
     ],
   },
@@ -95,19 +103,22 @@ export const themeDetailPresentations = {
         key: 'golf-resort-theme',
         title: 'Golf resort theme',
         description: 'The journey is built around the approved golf resort Theme offering.',
-        media: createTourDetailMedia('Golf resort theme'),
+        media: createTourDetailMedia('Golf resort theme', experiencePhotos.golfResort),
       },
       {
         key: 'golf-accessories',
         title: 'Golf accessories',
         description: 'Golf accessories and golf balls are included.',
-        media: createTourDetailMedia('Golf accessories and golf balls'),
+        media: createTourDetailMedia(
+          'Golf accessories and golf balls',
+          experiencePhotos.golfAccessories,
+        ),
       },
       {
         key: 'luxury-vehicle',
         title: 'Luxury group vehicle',
         description: 'A 10-seat luxury vehicle is included.',
-        media: createTourDetailMedia('10-seat luxury vehicle'),
+        media: createTourDetailMedia('10-seat luxury vehicle', experiencePhotos.groupVan),
       },
     ],
   },
@@ -124,19 +135,22 @@ export const themeDetailPresentations = {
         key: 'trekking-theme',
         title: 'Trekking and mountain adventure',
         description: 'Trekking, mountain and adventure experiences define this Theme offering.',
-        media: createTourDetailMedia('Trekking and mountain adventure'),
+        media: createTourDetailMedia(
+          'Trekking and mountain adventure',
+          experiencePhotos.trekkingAdventure,
+        ),
       },
       {
         key: 'scarf',
         title: 'Outdoor souvenir scarf',
         description: 'An outdoor souvenir scarf is included.',
-        media: createTourDetailMedia('Outdoor souvenir scarf'),
+        media: createTourDetailMedia('Outdoor souvenir scarf', experiencePhotos.scarf),
       },
       {
         key: 'luxury-vehicle',
         title: 'Luxury group vehicle',
         description: 'A 10-seat luxury vehicle is included.',
-        media: createTourDetailMedia('10-seat luxury vehicle'),
+        media: createTourDetailMedia('10-seat luxury vehicle', experiencePhotos.groupVan),
       },
     ],
   },
